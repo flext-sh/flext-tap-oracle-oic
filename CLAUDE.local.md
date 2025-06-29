@@ -245,7 +245,7 @@ class OICSingerPatterns:
 ### **PyAuto Ecosystem Integration**
 
 - **target-oracle-oic**: Round-trip integration for OIC metadata management
-- **flx-oracle-oic**: Unified FLX adapter with Singer tap integration
+- **flext-oracle-oic**: Unified FLX adapter with Singer tap integration
 - **oracle-oic-ext**: Meltano extension for lifecycle management
 - **client-b-poc-oic-wms**: POC reference implementation
 

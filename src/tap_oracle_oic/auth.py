@@ -103,7 +103,7 @@ class OICOAuth2Authenticator(OAuthAuthenticator):
         """
         auth_endpoint = stream.config.get("oauth_token_url")
 
-        # Build OAuth2 scope exactly like flx-http-oracle-oic (working implementation)
+        # Build OAuth2 scope exactly like flext-http-oracle-oic (working implementation)
         client_aud = stream.config.get("oauth_client_aud", "")
         if client_aud:
             # Build scope like: "audience:443urn:opc:resource:consumer::all audience:443/ic/api/"
