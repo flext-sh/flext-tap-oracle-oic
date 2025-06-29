@@ -440,7 +440,7 @@ environments:
 
 | Component                                      | Integration | Purpose               |
 | ---------------------------------------------- | ----------- | --------------------- |
-| [flx-http-oracle-oic](../flx-http-oracle-oic/) | Shared auth | OAuth2 implementation |
+| [flext-http-oracle-oic](../flext-http-oracle-oic/) | Shared auth | OAuth2 implementation |
 | [target-oracle-oic](../target-oracle-oic/)     | Round-trip  | Bidirectional sync    |
 | [oracle-oic-ext](../oracle-oic-ext/)           | Extensions  | Advanced features     |
 
