@@ -20,8 +20,8 @@ Architecture:
 """
 
 from collections.abc import Iterator, Mapping
-from datetime import datetime, timezone
-from typing import Any, Optional, Union
+from datetime import UTC, datetime
+from typing import Any
 
 import requests
 from singer_sdk import RESTStream
@@ -54,7 +54,7 @@ class OICPaginator(BaseOffsetPaginator):
         self._adaptive_sizing = True
         self._response_times: list[float] = []
 
-    def get_next(self, response: requests.Response) -> Optional[int]:
+    def get_next(self, response: requests.Response) -> int | None:
         """Get next page offset with intelligent pagination detection."""
         try:
             data = response.json()
@@ -70,8 +70,8 @@ class OICPaginator(BaseOffsetPaginator):
 
     def _calculate_next_offset(
         self,
-        data: Union[dict[str, Any], list[Any]],
-    ) -> Optional[int]:
+        data: dict[str, Any] | list[Any],
+    ) -> int | None:
         """Calculate next offset based on response data format."""
         # Handle different OIC response formats
         items = self._extract_items_from_response(data)
@@ -85,8 +85,8 @@ class OICPaginator(BaseOffsetPaginator):
 
     def _extract_items_from_response(
         self,
-        data: Union[dict[str, Any], list[Any]],
-    ) -> Optional[list[Any]]:
+        data: dict[str, Any] | list[Any],
+    ) -> list[Any] | None:
         """Extract items array from various OIC response formats."""
         if isinstance(data, list):
             return data
@@ -232,8 +232,8 @@ class OICBaseStream(RESTStream[Any]):
 
     def get_url_params(
         self,
-        context: Optional[Mapping[str, Any]],
-        next_page_token: Optional[Any],
+        context: Mapping[str, Any] | None,
+        next_page_token: Any | None,
     ) -> dict[str, Any]:
         """Intelligent URL parameter construction for OIC API calls.
 
@@ -333,7 +333,7 @@ class OICBaseStream(RESTStream[Any]):
 
     def _extract_and_yield_records(
         self,
-        data: Union[dict[str, Any], list[Any]],
+        data: dict[str, Any] | list[Any],
         url: str,
     ) -> Iterator[dict[str, Any]]:
         """Extract records from response data and yield valid ones."""
@@ -355,7 +355,7 @@ class OICBaseStream(RESTStream[Any]):
 
     def _extract_items_for_processing(
         self,
-        data: Union[dict[str, Any], list[Any]],
+        data: dict[str, Any] | list[Any],
     ) -> Iterator[dict[str, Any]]:
         """Extract individual items from response data for processing."""
         if isinstance(data, list):
@@ -368,7 +368,7 @@ class OICBaseStream(RESTStream[Any]):
             elif self._is_single_record(data):
                 yield data
 
-    def _is_empty_result_expected(self, data: Union[dict[str, Any], list[Any]]) -> bool:
+    def _is_empty_result_expected(self, data: dict[str, Any] | list[Any]) -> bool:
         """Check if empty result is expected based on response structure."""
         if isinstance(data, list):
             return len(data) == 0
@@ -429,7 +429,7 @@ class OICBaseStream(RESTStream[Any]):
         enriched = record.copy()
 
         # Add extraction metadata
-        enriched["_tap_extracted_at"] = datetime.now(timezone.utc).isoformat()
+        enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
         enriched["_tap_stream_name"] = self.name
 
         # Standardize timestamp fields

@@ -464,8 +464,7 @@ class TestFileManager:
         """Create a temporary JSONL records file."""
         records_path = self.temp_dir / filename
         with open(records_path, "w", encoding="utf-8") as f:
-            for record in records:
-                f.write(json.dumps(record) + "\n")
+            f.writelines(json.dumps(record) + "\n" for record in records)
         self.created_files.append(records_path)
         return records_path
 

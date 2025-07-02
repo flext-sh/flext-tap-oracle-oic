@@ -4,7 +4,7 @@ This module provides health checking capabilities for OIC connections,
 integrations, and the overall OIC instance health.
 """
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 import requests
@@ -54,14 +54,14 @@ class OICHealthChecker:
             if response.status_code == 200:
                 return {
                     "status": "healthy",
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "timestamp": datetime.now(UTC).isoformat(),
                     "instance_url": self.base_url,
                     "api_accessible": True,
                     "response_time_ms": int(response.elapsed.total_seconds() * 1000),
                 }
             return {
                 "status": "unhealthy",
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "instance_url": self.base_url,
                 "api_accessible": False,
                 "error": f"API returned status {response.status_code}",
@@ -70,7 +70,7 @@ class OICHealthChecker:
         except Exception as e:
             return {
                 "status": "error",
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "instance_url": self.base_url,
                 "api_accessible": False,
                 "error": str(e),
@@ -98,7 +98,7 @@ class OICHealthChecker:
                 return {
                     "connectionId": connection_id,
                     "status": result.get("status", "success"),
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "timestamp": datetime.now(UTC).isoformat(),
                     "testResult": result.get(
                         "testResult",
                         "Connection test successful",
@@ -109,16 +109,16 @@ class OICHealthChecker:
             return {
                 "connectionId": connection_id,
                 "status": "failed",
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "error": f"Test failed with status {response.status_code}",
-                "details": response.text if response.text else {},
+                "details": response.text or {},
                 "response_time_ms": int(response.elapsed.total_seconds() * 1000),
             }
         except Exception as e:
             return {
                 "connectionId": connection_id,
                 "status": "error",
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "error": str(e),
             }
 
@@ -158,7 +158,7 @@ class OICHealthChecker:
                     "name": integration.get("name"),
                     "status": status,
                     "health": health_status,
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "timestamp": datetime.now(UTC).isoformat(),
                     "version": integration.get("version"),
                     "lastUpdated": integration.get("timeUpdated"),
                     "errorDetails": integration.get("errorDetails"),
@@ -166,14 +166,14 @@ class OICHealthChecker:
             return {
                 "integrationId": integration_id,
                 "health": "error",
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "error": f"Failed to get integration status: {response.status_code}",
             }
         except Exception as e:
             return {
                 "integrationId": integration_id,
                 "health": "error",
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "error": str(e),
             }
 
@@ -194,14 +194,14 @@ class OICHealthChecker:
                 return {
                     "service": "monitoring",
                     "status": "healthy",
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "timestamp": datetime.now(UTC).isoformat(),
                     "accessible": True,
                     "response_time_ms": int(response.elapsed.total_seconds() * 1000),
                 }
             return {
                 "service": "monitoring",
                 "status": "unhealthy",
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "accessible": False,
                 "error": f"API returned status {response.status_code}",
             }
@@ -209,7 +209,7 @@ class OICHealthChecker:
             return {
                 "service": "monitoring",
                 "status": "error",
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
                 "accessible": False,
                 "error": str(e),
             }
