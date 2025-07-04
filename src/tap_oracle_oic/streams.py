@@ -18,22 +18,26 @@ Architecture:
     - Automatic endpoint discovery
     - Rate limiting and performance optimization
 """
+from __future__ import annotations
 
-from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-import requests
 from singer_sdk import RESTStream
 from singer_sdk.pagination import BaseOffsetPaginator
 
-from .auth import OICOAuth2Authenticator
-from .constants import (
+from tap_oracle_oic.auth import OICOAuth2Authenticator
+from tap_oracle_oic.constants import (
     OIC_API_BASE_PATH,
     OIC_B2B_API_PATH,
     OIC_MONITORING_API_PATH,
     OIC_PROCESS_API_PATH,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator, Mapping
+
+    import requests
 
 
 class OICPaginator(BaseOffsetPaginator):

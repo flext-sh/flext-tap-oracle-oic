@@ -41,7 +41,7 @@ class OICHealthChecker:
     def check_instance_health(self) -> dict[str, Any]:
         """Check overall OIC instance health.
 
-        Returns
+        Returns:
         -------
             Dictionary with health status information
 
@@ -180,7 +180,7 @@ class OICHealthChecker:
     def check_monitoring_health(self) -> dict[str, Any]:
         """Check monitoring service health.
 
-        Returns
+        Returns:
         -------
             Dictionary with monitoring service health status
 

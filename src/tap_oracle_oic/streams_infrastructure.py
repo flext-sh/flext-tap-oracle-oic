@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from singer_sdk import typing as th
 
-from .streams import OICBaseStream
+from tap_oracle_oic.streams import OICBaseStream
 
 
 class AdaptersStream(OICBaseStream):
