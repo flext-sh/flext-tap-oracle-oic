@@ -53,7 +53,7 @@ class OICOAuth2Authenticator(OAuthAuthenticator):
     - No user interaction is required for data extraction
     - Provides secure, automated authentication for data pipelines
 
-    Attributes
+    Attributes:
     ----------
         _stream: Reference to the stream instance for configuration access
         auth_endpoint: IDCS OAuth2 token endpoint URL
@@ -178,7 +178,7 @@ class OICOAuth2Authenticator(OAuthAuthenticator):
         The access token is cached and reused until it expires. IDCS typically
         issues tokens with 1-hour expiration.
 
-        Raises
+        Raises:
         ------
             ValueError: If OAuth2 token URL is not configured
             HTTPError: If token request fails (401, 403, 500, etc.)

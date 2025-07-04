@@ -16,7 +16,7 @@ from typing import Any
 
 from singer_sdk import typing as th
 
-from .streams import OICBaseStream
+from tap_oracle_oic.streams import OICBaseStream
 
 # ✅ CORE INTEGRATION STREAMS - WORKING
 

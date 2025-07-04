@@ -13,8 +13,8 @@ from typing import Any
 from singer_sdk import Tap
 from singer_sdk.helpers import capabilities
 
-from .config import get_config_schema
-from .streams_core import (
+from tap_oracle_oic.config import get_config_schema
+from tap_oracle_oic.streams_core import (
     CertificatesStream,
     ConnectionsStream,
     IntegrationsStream,
@@ -22,14 +22,14 @@ from .streams_core import (
     LookupsStream,
     PackagesStream,
 )
-from .streams_extended import (
+from tap_oracle_oic.streams_extended import (
     BusinessEventsStream,
     ImportExportJobsStream,
     ProjectsStream,
     SchedulesStream,
 )
-from .streams_infrastructure import AdaptersStream, AgentGroupsStream
-from .streams_monitoring import (
+from tap_oracle_oic.streams_infrastructure import AdaptersStream, AgentGroupsStream
+from tap_oracle_oic.streams_monitoring import (
     AuditEventsStream,
     ErrorsStream,
     ExecutionsStream,
