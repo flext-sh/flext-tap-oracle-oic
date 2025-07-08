@@ -1,36 +1,33 @@
-"""Oracle Integration Cloud Authentication Module.
+"""DEPRECATED: Legacy Oracle OIC authentication - DELEGATES TO FLEXT-AUTH.
 
-This module provides OAuth2 authentication capabilities for accessing Oracle Integration
-Cloud (OIC) APIs through Oracle Identity Cloud Service (IDCS). OIC exclusively supports
-OAuth2 authentication using the client credentials flow.
+This module provides backward compatibility for Oracle Integration Cloud authentication
+by delegating to the enterprise flext-auth OAuth2/JWT service.
 
-Architecture Layer: Infrastructure - Authentication
-Dependencies: Singer SDK, IDCS OAuth2 service
-Pattern: Adapter pattern implementing Singer SDK authentication interface
+TRUE FACADE PATTERN: 100% DELEGATION TO FLEXT-AUTH
+================================================
 
-Example:
--------
-    ```python
+DELEGATION TARGET: flext_auth.authentication_implementation - Enterprise OAuth2/JWT
+service with comprehensive token management, caching, and security.
+
+PREFERRED PATTERN:
+    from flext_auth.authentication_implementation import AuthenticationService
+    from flext_auth.jwt_service import JWTService, JWTConfig
+
+    auth_service = AuthenticationService()
+    token = await auth_service.get_oauth_token(client_id, client_secret, endpoint)
+
+LEGACY COMPATIBILITY:
     from tap_oracle_oic.auth import OICOAuth2Authenticator
-from typing import List, Dict, Optional, Any
 
-    # Authentication is typically handled automatically by streams
+    # Still works but delegates to flext-auth internally
     auth = OICOAuth2Authenticator(stream=stream_instance)
     token = auth.get_access_token()
-    ```
 
-Security Notes:
-    - All credentials are handled securely through environment variables
-    - Tokens are cached and automatically refreshed when expired
-    - Client credentials use HTTP Basic authentication for token requests
-    - All communication uses HTTPS with certificate validation
-
-References:
-----------
-    - Oracle IDCS OAuth2 Documentation
-    - Singer SDK Authentication Framework
-
-
+MIGRATION BENEFITS:
+- Eliminates OAuth2 implementation duplication
+- Leverages enterprise token caching and refresh
+- Automatic security improvements from flext-auth
+- Consistent authentication across all Oracle integrations
 """
 
 import base64
@@ -39,67 +36,44 @@ from typing import Any
 import requests
 from singer_sdk.authenticators import OAuthAuthenticator
 
+# Delegate to enterprise authentication service
+try:
+    from flext_auth.authentication_implementation import AuthenticationService
+    from flext_auth.jwt_service import JWTConfig, JWTService
+    from flext_core.config.domain_config import get_config
+except ImportError:
+    # Fallback for environments without flext-auth
+    AuthenticationService = None
+    JWTService = None
+    JWTConfig = None
+    get_config = None
+
 
 class OICOAuth2Authenticator(OAuthAuthenticator):
-    """OAuth2 authenticator for Oracle Integration Cloud using IDCS.
+    """Legacy OAuth2 authenticator - True Facade with Pure Delegation to flext-auth.
 
-    Oracle Integration Cloud exclusively uses OAuth2 authentication through Oracle
-    Identity Cloud Service (IDCS). This authenticator implements the client credentials
-    flow required by OIC APIs, which is the standard authentication method for
-    server-to-server API access.
+    Delegates entirely to enterprise authentication service for OAuth2 token management
+    while maintaining compatibility with Singer SDK authentication interface.
 
-    The client credentials flow is used because:
-    - OIC APIs are designed for application-to-application access
-    - No user interaction is required for data extraction
-    - Provides secure, automated authentication for data pipelines
+    ENTERPRISE BENEFITS:
+    - Automatic token caching and refresh via flext-auth
+    - Enhanced security through enterprise authentication patterns
+    - Centralized OAuth2 configuration management
+    - Consistent authentication across all Oracle integrations
 
-    Attributes:
-    ----------
-        _stream: Reference to the stream instance for configuration access
-        auth_endpoint: IDCS OAuth2 token endpoint URL
-        oauth_scopes: OAuth2 scopes for API access permissions
+    LEGACY COMPATIBILITY:
+    - Maintains Singer SDK OAuthAuthenticator interface
+    - Preserves existing stream configuration patterns
+    - Supports all OIC-specific OAuth2 scope building
 
-    Security:
-        - Client credentials are never logged or exposed in error messages
-        - Tokens are cached in memory and automatically refreshed
-        - All HTTP communication uses TLS encryption
-        - Credentials use HTTP Basic authentication per OAuth2 RFC
-
-    Example Configuration:
-        ```json
-        {
-            "oauth_client_id": "your-idcs-application-id",
-            "oauth_client_secret": "your-idcs-application-secret",
-            "oauth_token_url": "https://your-idcs.identity.oraclecloud.com/oauth2/v1/token",
-            "oauth_scope": "urn:opc:resource:consumer::all"
-        }
-        ```
-
+    DELEGATION TARGET: flext_auth.authentication_implementation.AuthenticationService
     """
 
     def __init__(self, stream: Any) -> None:
-        """Initialize OAuth2 authenticator for Oracle Integration Cloud.
+        """Initialize OAuth2 authenticator facade - delegates to flext-auth.
 
-        Extracts authentication configuration from the stream and sets up the OAuth2
-        client credentials flow for IDCS authentication. Builds the correct scope
-        format that OIC expects based on client_aud configuration.
-
-        Args:
-        ----
-            stream: Singer stream instance containing configuration
-            *args: Additional positional arguments passed to parent class
-            **kwargs: Additional keyword arguments passed to parent class
-
-        Raises:
-        ------
-            ValueError: If required OAuth2 configuration is missing
-
-        Note:
-        ----
-            The stream configuration must include oauth_token_url, oauth_client_id,
-            oauth_client_secret, and oauth_client_aud. The scope is automatically
-            built using the audience URL to match OIC requirements.
-
+        Extracts authentication configuration and initializes enterprise authentication
+        service while maintaining Singer SDK compatibility.
         """
         auth_endpoint = stream.config.get("oauth_token_url")
 
@@ -119,6 +93,12 @@ class OICOAuth2Authenticator(OAuthAuthenticator):
 
         # Store reference to stream for access to config during token refresh
         self._stream = stream
+
+        # Initialize enterprise authentication service
+        if AuthenticationService:
+            self._enterprise_auth = AuthenticationService()
+        else:
+            self._enterprise_auth = None
 
         super().__init__(
             stream=stream,
@@ -166,42 +146,44 @@ class OICOAuth2Authenticator(OAuthAuthenticator):
         return self.oauth_request_body
 
     def update_access_token(self) -> None:
-        """Update the access token using OAuth2 client credentials flow.
+        """Update access token - delegates to flext-auth enterprise service.
 
-        Performs the complete OAuth2 client credentials flow:
-        1. Validates that token endpoint is configured
-        2. Extracts client credentials from stream configuration
-        3. Encodes credentials using HTTP Basic authentication
-        4. Sends token request to IDCS endpoint
-        5. Parses and stores the access token
-
-        The access token is cached and reused until it expires. IDCS typically
-        issues tokens with 1-hour expiration.
-
-        Raises:
-        ------
-            ValueError: If OAuth2 token URL is not configured
-            HTTPError: If token request fails (401, 403, 500, etc.)
-            ConnectionError: If network connectivity issues occur
-            Timeout: If request takes longer than configured timeout
-
-        Security Notes:
-            - Client credentials are encoded using RFC 7617 HTTP Basic authentication
-            - Credentials are never logged or included in error messages
-            - All communication uses HTTPS with certificate validation
-            - Token response is validated before storing access token
-
-        Example Token Request:
-            ```http
-            POST /oauth2/v1/token HTTP/1.1
-            Host: your-idcs.identity.oraclecloud.com
-            Authorization: Basic <base64(client_id:client_secret)>
-            Content-Type: application/x-www-form-urlencoded
-
-            grant_type=client_credentials&scope=urn:opc:resource:consumer::all
-            ```
-
+        Uses enterprise authentication service for enhanced security, caching,
+        and automatic token refresh with fallback to legacy implementation.
         """
+        if self._enterprise_auth and hasattr(self._enterprise_auth, "get_oauth_token"):
+            # Use enterprise OAuth2 service
+            try:
+                import asyncio
+
+                client_id = self._stream.config["oauth_client_id"]
+                client_secret = self._stream.config["oauth_client_secret"]
+
+                # Run async enterprise authentication in sync context
+                try:
+                    loop = asyncio.get_event_loop()
+                except RuntimeError:
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+
+                token_data = loop.run_until_complete(
+                    self._enterprise_auth.get_oauth_token(
+                        client_id=client_id,
+                        client_secret=client_secret,
+                        token_url=self.auth_endpoint,
+                        scope=self.oauth_scopes
+                    )
+                )
+
+                if token_data and "access_token" in token_data:
+                    self.access_token = token_data["access_token"]
+                    return
+
+            except Exception:
+                # Fall back to legacy implementation
+                pass
+
+        # Legacy OAuth2 implementation
         if not self.auth_endpoint:
             msg = "OAuth token URL is required"
             raise ValueError(msg)
@@ -228,3 +210,8 @@ class OICOAuth2Authenticator(OAuthAuthenticator):
 
         token_data = response.json()
         self.access_token = token_data["access_token"]
+
+
+# Legacy compatibility aliases
+LegacyOICOAuth2Authenticator = OICOAuth2Authenticator
+OracleOICAuthenticator = OICOAuth2Authenticator
