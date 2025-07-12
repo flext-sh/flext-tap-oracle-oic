@@ -1,10 +1,10 @@
-"""Module test_e2e."""
+"""Module test_e2e.
 
 from typing import Any
 
 """End-to-End tests for TAP-OIC.
 
-These tests run against a real OIC instance if config.json is available
+These tests run against a real OIC instance if config.json is available:
 in the project root. If not available, tests are skipped.
 """
 
@@ -16,7 +16,7 @@ from click.testing import CliRunner
 from tap_oic.cli import cli
 from tap_oic.tap import TapOIC
 
-# Check if config.json exists in project root
+# Check if config.json exists in project root:
 CONFIG_PATH = Path(__file__).parent.parent / "config.json"
 CONFIG_AVAILABLE = CONFIG_PATH.exists()
 
@@ -29,8 +29,7 @@ requires_config = pytest.mark.skipif(
 
 @pytest.fixture
 def real_config() -> Any:
-    """Load real configuration if available."""
-    if not CONFIG_AVAILABLE:
+            if not CONFIG_AVAILABLE:
         pytest.skip("config.json not available")
 
     with open(CONFIG_PATH, encoding="utf-8") as f:
@@ -38,11 +37,10 @@ def real_config() -> Any:
 
 
 class TestE2EWithRealConfig:
-    """End-to-end tests with real OIC configuration."""
+         """End-to-end tests with real OIC configuration."""
 
     @requires_config
     def test_tap_discovery_real(self, real_config) -> None:
-        """Test TAP discovery with real configuration."""
         tap = TapOIC(config=real_config)
         streams = tap.discover_streams()
 
@@ -64,7 +62,6 @@ class TestE2EWithRealConfig:
 
     @requires_config
     def test_tap_catalog_generation_real(self, real_config) -> None:
-        """Test catalog generation with real configuration."""
         tap = TapOIC(config=real_config)
         catalog = tap.catalog_dict
 
@@ -79,7 +76,6 @@ class TestE2EWithRealConfig:
 
     @requires_config
     def test_cli_discovery_real(self, real_config) -> None:
-        """Test CLI discovery with real configuration."""
         with open("temp_config.json", "w", encoding="utf-8") as f:
             json.dump(real_config, f)
 
@@ -99,7 +95,6 @@ class TestE2EWithRealConfig:
 
     @requires_config
     def test_cli_about_command_real(self, real_config) -> None:
-        """Test CLI about command with real config available."""
         runner = CliRunner()
         result = runner.invoke(cli, ["--about", "--format", "json"])
 
@@ -112,7 +107,6 @@ class TestE2EWithRealConfig:
 
     @requires_config
     def test_admin_test_connection_real(self, real_config) -> None:
-        """Test admin test-connection with real configuration."""
         with open("temp_config.json", "w", encoding="utf-8") as f:
             json.dump(real_config, f)
 
@@ -139,7 +133,6 @@ class TestE2EWithRealConfig:
 
     @requires_config
     def test_admin_validate_config_real(self, real_config) -> None:
-        """Test admin validate-config with real configuration."""
         with open("temp_config.json", "w", encoding="utf-8") as f:
             json.dump(real_config, f)
 
@@ -158,16 +151,15 @@ class TestE2EWithRealConfig:
 
 
 class TestE2EStreamValidation:
-    """Test individual stream validation with real config."""
+         """Test individual stream validation with real config."""
 
     @requires_config
     def test_integrations_stream_real(self, real_config) -> None:
-        """Test integrations stream with real data."""
         tap = TapOIC(config=real_config)
         streams = tap.discover_streams()
 
         integrations_stream = next(
-            (s for s in streams if s.name == "integrations"),
+            (s for s in streams if s.name == "integrations"),:
             None,
         )
         assert integrations_stream is not None
@@ -178,11 +170,10 @@ class TestE2EStreamValidation:
 
     @requires_config
     def test_connections_stream_real(self, real_config) -> None:
-        """Test connections stream with real data."""
-        tap = TapOIC(config=real_config)
+            tap = TapOIC(config=real_config)
         streams = tap.discover_streams()
 
-        connections_stream = next((s for s in streams if s.name == "connections"), None)
+        connections_stream = next((s for s in streams if s.name == "connections"), None):
         assert connections_stream is not None
 
         # Test stream properties
@@ -191,11 +182,10 @@ class TestE2EStreamValidation:
 
     @requires_config
     def test_packages_stream_real(self, real_config) -> None:
-        """Test packages stream with real data."""
-        tap = TapOIC(config=real_config)
+            tap = TapOIC(config=real_config)
         streams = tap.discover_streams()
 
-        packages_stream = next((s for s in streams if s.name == "packages"), None)
+        packages_stream = next((s for s in streams if s.name == "packages"), None):
         assert packages_stream is not None
 
         # Test stream properties
@@ -204,12 +194,11 @@ class TestE2EStreamValidation:
 
 
 class TestE2EExtractCommands:
-    """Test extract commands with real configuration."""
+             """Test extract commands with real configuration."""
 
     @requires_config
     @pytest.mark.slow
     def test_extract_core_real(self, real_config) -> None:
-        """Test core data extraction with real configuration."""
         with open("temp_config.json", "w", encoding="utf-8") as f:
             json.dump(real_config, f)
 
@@ -235,8 +224,8 @@ class TestE2EExtractCommands:
             # Check that output directory was created
             output_dir = Path("test_extract_real")
             if output_dir.exists():
-                # Clean up
-                import shutil
+            # Clean up
+                import shutil  # TODO: Move import to module level
 
                 shutil.rmtree(output_dir)
 
@@ -245,16 +234,14 @@ class TestE2EExtractCommands:
 
 
 class TestE2EConfigValidation:
-    """Test configuration validation scenarios."""
+         """Test configuration validation scenarios."""
 
     def test_missing_config_detection(self) -> None:
-        """Test that missing config is properly detected."""
         # This test always runs regardless of config availability
         assert CONFIG_PATH.exists() == CONFIG_AVAILABLE
 
     @requires_config
     def test_config_has_required_fields(self, real_config) -> None:
-        """Test that real config has all required fields."""
         required_fields = [
             "base_url",
             "oauth_client_id",
@@ -268,24 +255,22 @@ class TestE2EConfigValidation:
 
     @requires_config
     def test_config_urls_use_https(self, real_config) -> None:
-        """Test that URLs in config use HTTPS."""
         url_fields = ["base_url", "oauth_token_url"]
 
         for field in url_fields:
             if field in real_config:
-                assert real_config[field].startswith("https://"), (
-                    f"{field} should use HTTPS: {real_config[field]}"
-                )
+            assert real_config[field].startswith(
+                    "https://"
+                ), f"{field} should use HTTPS: {real_config[field]}"
 
 
 class TestE2EPerformance:
-    """Performance tests with real configuration."""
+         """Performance tests with real configuration."""
 
     @requires_config
     @pytest.mark.slow
     def test_discovery_performance(self, real_config) -> None:
-        """Test that discovery completes in reasonable time."""
-        import time
+        import time  # TODO: Move import to module level
 
         start_time = time.time()
         tap = TapOIC(config=real_config)
@@ -301,11 +286,10 @@ class TestE2EPerformance:
 
 # Mock tests for when config is not available
 class TestE2EMockWhenNoConfig:
-    """Mock E2E tests when real config is not available."""
+             """Mock E2E tests when real config is not available."""
 
     @pytest.mark.skipif(CONFIG_AVAILABLE, reason="Real config is available")
     def test_mock_discovery_when_no_config(self) -> None:
-        """Mock discovery test when real config is not available."""
         # This provides test coverage even without real config
         mock_config = {
             "base_url": "https://mock.integration.ocp.oraclecloud.com",
@@ -322,7 +306,6 @@ class TestE2EMockWhenNoConfig:
 
     @pytest.mark.skipif(CONFIG_AVAILABLE, reason="Real config is available")
     def test_mock_cli_commands_when_no_config(self) -> None:
-        """Mock CLI tests when real config is not available."""
         runner = CliRunner()
 
         # Test commands that don't require actual connectivity
@@ -337,6 +320,5 @@ class TestE2EMockWhenNoConfig:
 
 
 def test_config_availability_reporting() -> None:
-    """Report on config availability for test runs."""
-    if CONFIG_AVAILABLE:
-        pass
+        if CONFIG_AVAILABLE:
+            pass

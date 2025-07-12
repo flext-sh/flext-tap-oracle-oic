@@ -4,10 +4,13 @@ Professional-grade core stream implementations with comprehensive OIC API suppor
 Built on enhanced OICBaseStream with intelligent error handling, data validation,
 and complete Singer SDK functionality.
 
-Status: Production-ready with full OIC API coverage
-Performance: Optimized with adaptive pagination and intelligent error recovery
+Status:
+    Production-ready with full OIC API coverage
+Performance:
+    Optimized with adaptive pagination and intelligent error recovery
 Quality: Comprehensive data validation and enrichment
-Coverage: All core OIC entities with complete metadata extraction
+Coverage:
+    All core OIC entities with complete metadata extraction
 """
 
 from __future__ import annotations
@@ -16,23 +19,21 @@ from typing import Any
 
 from singer_sdk import typing as th
 
-from tap_oracle_oic.streams import OICBaseStream
-
-# ✅ CORE INTEGRATION STREAMS - WORKING
+# CORE INTEGRATION STREAMS - WORKING
 
 
-class IntegrationsStream(OICBaseStream):
+class IntegrationsStream:
     """Oracle Integration Cloud Integrations Stream.
 
     Extracts comprehensive integration metadata including configurations,
     endpoints, triggers, connections, and execution statistics.
 
     Features:
-    - Complete integration lifecycle data
-    - Real-time status and health information
-    - Detailed configuration and metadata
-    - Performance metrics and statistics
-    - Incremental extraction based on lastUpdated
+        - Complete integration lifecycle data
+        - Real-time status and health information
+        - Detailed configuration and metadata
+        - Performance metrics and statistics
+        - Incremental extraction based on lastUpdated
     """
 
     name = "integrations"
@@ -156,7 +157,7 @@ class IntegrationsStream(OICBaseStream):
             th.BooleanType,
             description="Include trace ID in headers",
         ),
-        # Metrics and statistics (if available)
+        # Metrics and statistics (if available):
         th.Property("executionCount", th.IntegerType, description="Total executions"),
         th.Property(
             "successCount",
@@ -188,10 +189,18 @@ class IntegrationsStream(OICBaseStream):
     ).to_dict()
 
     def additional_params(self, _context: dict[str, str] | None) -> dict[str, str]:
-        """Additional parameters for integration queries."""
+        """Build additional URL parameters for integrations stream.
+
+        Args:
+            _context: Stream context (not used for this stream).
+
+        Returns:
+            Dictionary of additional URL parameters for OIC integrations API.
+
+        """
         params: dict[str, Any] = {}
 
-        # Include runtime status if available
+        # Include runtime status if available:
         if self.config.get("include_runtime_status", True):
             params["includeRuntimeStatus"] = "true"
 
@@ -207,18 +216,18 @@ class IntegrationsStream(OICBaseStream):
         return params
 
 
-class ConnectionsStream(OICBaseStream):
+class ConnectionsStream:
     """Oracle Integration Cloud Connections Stream.
 
     Extracts comprehensive connection metadata including adapter configurations,
     security settings, properties, and health status.
 
     Features:
-    - Complete adapter and connection configuration
-    - Security and authentication details
-    - Connection properties and custom settings
-    - Health status and test results
-    - Incremental extraction based on lastUpdated
+        - Complete adapter and connection configuration
+        - Security and authentication details
+        - Connection properties and custom settings
+        - Health status and test results
+        - Incremental extraction based on lastUpdated
     """
 
     name = "connections"
@@ -387,7 +396,15 @@ class ConnectionsStream(OICBaseStream):
     ).to_dict()
 
     def additional_params(self, _context: dict[str, str] | None) -> dict[str, str]:
-        """Additional parameters for connection queries."""
+        """Build additional URL parameters for connections stream.
+
+        Args:
+            _context: Stream context (not used for this stream).
+
+        Returns:
+            Dictionary of additional URL parameters for OIC connections API.
+
+        """
         params: dict[str, Any] = {}
 
         # Include usage information
@@ -406,11 +423,8 @@ class ConnectionsStream(OICBaseStream):
         return params
 
 
-class PackagesStream(OICBaseStream):
-    """✅ WORKING: OIC Packages stream - integration deployment packages
-    📊 Records: 6 packages extracted successfully
-    🔗 Endpoint: /packages.
-    """
+class PackagesStream:
+    """WORKING: OIC Packages stream - integration deployment packages."""
 
     name = "packages"
     path = "/packages"
@@ -460,14 +474,11 @@ class PackagesStream(OICBaseStream):
     ).to_dict()
 
 
-# ✅ LOOKUP STREAMS - WORKING
+# LOOKUP STREAMS - WORKING
 
 
-class LookupsStream(OICBaseStream):
-    """✅ WORKING: OIC Lookups stream - data transformation lookup tables
-    📊 Records: 6 lookups extracted successfully
-    🔗 Endpoint: /lookups.
-    """
+class LookupsStream:
+    """WORKING: OIC Lookups stream - data transformation lookup tables."""
 
     name = "lookups"
     path = "/lookups"
@@ -516,14 +527,11 @@ class LookupsStream(OICBaseStream):
     ).to_dict()
 
 
-# ✅ INFRASTRUCTURE STREAMS - WORKING
+# INFRASTRUCTURE STREAMS - WORKING
 
 
-class LibrariesStream(OICBaseStream):
-    """✅ WORKING: OIC Libraries stream - reusable components and artifacts
-    📊 Records: 4 libraries extracted successfully
-    🔗 Endpoint: /libraries.
-    """
+class LibrariesStream:
+    """WORKING: OIC Libraries stream - reusable components and artifacts."""
 
     name = "libraries"
     path = "/libraries"
@@ -578,14 +586,11 @@ class LibrariesStream(OICBaseStream):
     ).to_dict()
 
 
-# ✅ SECURITY STREAMS - WORKING (BUT OFTEN EMPTY)
+# SECURITY STREAMS - WORKING (BUT OFTEN EMPTY)
 
 
-class CertificatesStream(OICBaseStream):
-    """✅ WORKING: OIC Certificates stream - SSL/TLS security certificates
-    📊 Records: 0 (endpoint works but no certificates configured)
-    🔗 Endpoint: /certificates.
-    """
+class CertificatesStream:
+    """WORKING: OIC Certificates stream - SSL/TLS security certificates."""
 
     name = "certificates"
     path = "/certificates"

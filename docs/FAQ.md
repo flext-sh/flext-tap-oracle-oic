@@ -16,18 +16,18 @@
 
 ## General Questions
 
-### Q: What is tap-oic?
+### Q: What is tap-oic
 
 **A:** tap-oic is a Singer tap for Oracle Integration Cloud (OIC) Generation 3. It provides two main capabilities:
 
 1. **Data Extraction** - Extract integration metadata, monitoring data, and execution history from OIC
 2. **Integration Generation** - Create integrations programmatically using OIC's REST APIs
 
-### Q: What version of OIC is required?
+### Q: What version of OIC is required
 
 **A:** tap-oic requires Oracle Integration Cloud Generation 3, which provides the REST API endpoints necessary for both extracting data and creating integrations programmatically.
 
-### Q: Can OIC really create integrations via API?
+### Q: Can OIC really create integrations via API
 
 **A:** Yes! Oracle Integration Cloud Generation 3 provides full REST API support for creating, updating, and managing integrations programmatically. You can:
 
@@ -35,7 +35,7 @@
 - Create connections using `POST /ic/api/integration/v1/connections`
 - Manage the complete integration lifecycle via API
 
-### Q: What are the main use cases for tap-oic?
+### Q: What are the main use cases for tap-oic
 
 **A:** Common use cases include:
 
@@ -47,7 +47,7 @@
 
 ## Installation and Setup
 
-### Q: How do I install tap-oic?
+### Q: How do I install tap-oic
 
 **A:** You can install tap-oic using pip:
 
@@ -61,7 +61,7 @@ Or with Meltano:
 meltano add extractor tap-oic
 ```
 
-### Q: What authentication methods are supported?
+### Q: What authentication methods are supported
 
 **A:** tap-oic supports:
 
@@ -70,7 +70,7 @@ meltano add extractor tap-oic
 - API Key authentication
 - Certificate-based authentication
 
-### Q: How do I handle credentials securely?
+### Q: How do I handle credentials securely
 
 **A:** Best practices for credential management:
 
@@ -79,13 +79,13 @@ meltano add extractor tap-oic
 3. Never commit credentials to version control
 4. Rotate credentials regularly
 
-### Q: What Python version is required?
+### Q: What Python version is required
 
 **A:** tap-oic requires Python 3.8 or higher. We recommend using Python 3.11+ for best performance.
 
 ## Integration Generation
 
-### Q: Can I create integrations from Singer configurations?
+### Q: Can I create integrations from Singer configurations
 
 **A:** Yes! tap-oic can automatically generate OIC integrations from Singer tap and target configurations:
 
@@ -100,7 +100,7 @@ integration = generator.create_from_configs(
 )
 ```
 
-### Q: What integration patterns are supported?
+### Q: What integration patterns are supported
 
 **A:** OIC supports these patterns:
 
@@ -110,7 +110,7 @@ integration = generator.create_from_configs(
 - `PUBLISH_TO_OIC` - Event streaming
 - `SUBSCRIBE_TO_OIC` - Event consumption
 
-### Q: Can I create connections programmatically?
+### Q: Can I create connections programmatically
 
 **A:** Yes, you can create connections for any supported adapter:
 
@@ -126,7 +126,7 @@ connection = client.create_connection({
 })
 ```
 
-### Q: How do I deploy integrations across environments?
+### Q: How do I deploy integrations across environments
 
 **A:** Use the multi-environment deployment pattern:
 
@@ -141,7 +141,7 @@ for env in environments:
 
 ## Data Extraction
 
-### Q: What data can I extract from OIC?
+### Q: What data can I extract from OIC
 
 **A:** tap-oic can extract:
 
@@ -154,7 +154,7 @@ for env in environments:
 - Lookup tables
 - Schedule information
 
-### Q: How do I filter the data being extracted?
+### Q: How do I filter the data being extracted
 
 **A:** You can filter data using:
 
@@ -163,7 +163,7 @@ for env in environments:
 3. Query parameters for specific endpoints
 4. Custom filters in your configuration
 
-### Q: Can I extract real-time data?
+### Q: Can I extract real-time data
 
 **A:** While tap-oic operates in batch mode, you can:
 
@@ -171,7 +171,7 @@ for env in environments:
 - Use the monitoring APIs for near real-time metrics
 - Implement webhook receivers for real-time events
 
-### Q: How is incremental replication handled?
+### Q: How is incremental replication handled
 
 **A:** tap-oic uses bookmark fields (typically `modifiedTime`) to track progress:
 
@@ -187,7 +187,7 @@ for env in environments:
 
 ## Performance and Optimization
 
-### Q: How can I improve extraction performance?
+### Q: How can I improve extraction performance
 
 **A:** Performance optimization strategies:
 
@@ -197,7 +197,7 @@ for env in environments:
 4. Select only needed streams
 5. Use parallel processing for multiple streams
 
-### Q: What are the API rate limits?
+### Q: What are the API rate limits
 
 **A:** Default OIC rate limits:
 
@@ -213,7 +213,7 @@ X-RateLimit-Remaining: 750
 X-RateLimit-Reset: 1623456789
 ```
 
-### Q: How do I handle large datasets?
+### Q: How do I handle large datasets
 
 **A:** For large datasets:
 
@@ -222,7 +222,7 @@ X-RateLimit-Reset: 1623456789
 3. Use date-based partitioning
 4. Consider parallel extraction for independent streams
 
-### Q: Can I cache API responses?
+### Q: Can I cache API responses
 
 **A:** Yes, implement caching for:
 
@@ -238,7 +238,7 @@ Don't cache:
 
 ## Troubleshooting
 
-### Q: Why am I getting authentication errors?
+### Q: Why am I getting authentication errors
 
 **A:** Common causes:
 
@@ -248,7 +248,7 @@ Don't cache:
 4. User lacks API access permissions
 5. OAuth token expired
 
-### Q: Why are my integrations not being created?
+### Q: Why are my integrations not being created
 
 **A:** Check:
 
@@ -258,7 +258,7 @@ Don't cache:
 4. Integration identifier is unique
 5. All required fields are provided
 
-### Q: How do I debug API errors?
+### Q: How do I debug API errors
 
 **A:** Enable debug logging:
 
@@ -274,7 +274,7 @@ Check for:
 - Rate limit headers
 - Network connectivity
 
-### Q: Why is extraction slow?
+### Q: Why is extraction slow
 
 **A:** Common performance issues:
 
@@ -286,7 +286,7 @@ Check for:
 
 ## Singer Ecosystem
 
-### Q: How does tap-oic integrate with Meltano?
+### Q: How does tap-oic integrate with Meltano
 
 **A:** tap-oic is fully compatible with Meltano:
 
@@ -300,7 +300,7 @@ extractors:
       password: ${OIC_PASSWORD}
 ```
 
-### Q: Can I use tap-oic with any Singer target?
+### Q: Can I use tap-oic with any Singer target
 
 **A:** Yes, tap-oic outputs standard Singer messages compatible with any target:
 
@@ -310,7 +310,7 @@ tap-oic | target-snowflake
 tap-oic | target-s3
 ```
 
-### Q: Can OIC act as a Singer target?
+### Q: Can OIC act as a Singer target
 
 **A:** Yes, you can create an OIC integration that receives Singer messages:
 
@@ -321,7 +321,7 @@ integration = create_singer_target_integration(
 )
 ```
 
-### Q: How do I handle Singer state management?
+### Q: How do I handle Singer state management
 
 **A:** tap-oic supports multiple state backends:
 
@@ -332,7 +332,7 @@ integration = create_singer_target_integration(
 
 ## Security
 
-### Q: Is data encrypted in transit?
+### Q: Is data encrypted in transit
 
 **A:** Yes, all communication uses HTTPS/TLS. You can also:
 
@@ -340,7 +340,7 @@ integration = create_singer_target_integration(
 - Use certificate pinning
 - Implement mutual TLS
 
-### Q: How are credentials stored?
+### Q: How are credentials stored
 
 **A:** Best practices:
 
@@ -350,7 +350,7 @@ integration = create_singer_target_integration(
 4. Use OAuth when possible
 5. Leverage secrets management tools
 
-### Q: What about data privacy?
+### Q: What about data privacy
 
 **A:** tap-oic:
 
@@ -359,7 +359,7 @@ integration = create_singer_target_integration(
 - Supports data masking/filtering
 - Complies with OIC's security model
 
-### Q: Can I audit API usage?
+### Q: Can I audit API usage
 
 **A:** Yes, you can:
 
@@ -370,7 +370,7 @@ integration = create_singer_target_integration(
 
 ## Advanced Questions
 
-### Q: Can I extend tap-oic functionality?
+### Q: Can I extend tap-oic functionality
 
 **A:** Yes, tap-oic is designed to be extensible:
 
@@ -386,7 +386,7 @@ class CustomStream(BaseStream):
         return record
 ```
 
-### Q: How do I contribute to tap-oic?
+### Q: How do I contribute to tap-oic
 
 **A:** Contributions are welcome! Please:
 
@@ -396,7 +396,7 @@ class CustomStream(BaseStream):
 4. Submit a pull request
 5. Ensure all tests pass
 
-### Q: Where can I get help?
+### Q: Where can I get help
 
 **A:** Resources for help:
 
@@ -408,18 +408,18 @@ class CustomStream(BaseStream):
 
 ## Common Misconceptions Corrected
 
-### Q: I heard OIC can't create integrations via API. Is this true?
+### Q: I heard OIC can't create integrations via API. Is this true
 
 **A:** This is **FALSE**. OIC Generation 3 has full REST API support for creating integrations, connections, and projects programmatically.
 
-### Q: Can tap-oic only read data from OIC?
+### Q: Can tap-oic only read data from OIC
 
 **A:** No! tap-oic v2.0 can both:
 
 - Extract data from OIC (traditional Singer tap functionality)
 - Generate integrations in OIC (new capability)
 
-### Q: Is OIC just a monitoring platform?
+### Q: Is OIC just a monitoring platform
 
 **A:** No, OIC is a full integration platform that can:
 

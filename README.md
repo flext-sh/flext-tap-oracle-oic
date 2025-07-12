@@ -438,11 +438,11 @@ environments:
 
 ### **PyAuto Integration**
 
-| Component                                      | Integration | Purpose               |
-| ---------------------------------------------- | ----------- | --------------------- |
+| Component                                          | Integration | Purpose               |
+| -------------------------------------------------- | ----------- | --------------------- |
 | [flext-http-oracle-oic](../flext-http-oracle-oic/) | Shared auth | OAuth2 implementation |
-| [target-oracle-oic](../target-oracle-oic/)     | Round-trip  | Bidirectional sync    |
-| [oracle-oic-ext](../oracle-oic-ext/)           | Extensions  | Advanced features     |
+| [target-oracle-oic](../target-oracle-oic/)         | Round-trip  | Bidirectional sync    |
+| [oracle-oic-ext](../oracle-oic-ext/)               | Extensions  | Advanced features     |
 
 ---
 

@@ -1,13 +1,12 @@
-"""Tests for tap-oracle-oic."""
+"""Tests for tap-oracle-oic.
 
 from tap_oracle_oic.tap import TapOIC
 
 
 class TestTapOIC:
-    """Test cases for TapOIC."""
+             """Test cases for TapOIC."""
 
     def test_tap_initialization(self) -> None:
-        """Test tap can be initialized with config."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client",
@@ -19,7 +18,6 @@ class TestTapOIC:
         assert tap.config == config
 
     def test_discover_streams(self) -> None:
-        """Test stream discovery."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client",
@@ -38,19 +36,21 @@ class TestTapOIC:
         assert "lookups" in stream_names
 
     def test_config_validation(self) -> None:
-        """Test configuration validation."""
-        import pytest
-        from singer_sdk.exceptions import ConfigValidationError
+            import pytest  # TODO: Move import to module level
+        from singer_sdk.exceptions import (  # TODO:
+            Move import to module level
+            ConfigValidationError,
+        )
 
         # Missing required fields should raise exception when validation is enabled
         config = {
-            "base_url": "https://test.integration.ocp.oraclecloud.com",
+            "base_url":
+             "https://test.integration.ocp.oraclecloud.com",
         }
         with pytest.raises(ConfigValidationError):
             TapOIC(config=config, validate_config=True)
 
     def test_include_extended_streams(self) -> None:
-        """Test extended streams inclusion."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client",

@@ -1,5 +1,7 @@
 """Oracle Integration Cloud Stream Definitions.
 
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+
 Professional-grade stream implementations with comprehensive OIC API support.
 Incorporates best practices from extractors and provides complete Singer SDK
 functionality with intelligent error handling, automatic discovery, and
@@ -18,6 +20,7 @@ Architecture:
     - Automatic endpoint discovery
     - Rate limiting and performance optimization
 """
+
 from __future__ import annotations
 
 from datetime import UTC, datetime
@@ -26,8 +29,8 @@ from typing import TYPE_CHECKING, Any
 from singer_sdk import RESTStream
 from singer_sdk.pagination import BaseOffsetPaginator
 
-from tap_oracle_oic.auth import OICOAuth2Authenticator
-from tap_oracle_oic.constants import (
+from flext_tap_oracle_oic.auth import OICOAuth2Authenticator
+from flext_tap_oracle_oic.constants import (
     OIC_API_BASE_PATH,
     OIC_B2B_API_PATH,
     OIC_MONITORING_API_PATH,
@@ -44,14 +47,13 @@ class OICPaginator(BaseOffsetPaginator):
     """Intelligent Oracle OIC API paginator with error recovery and optimization.
 
     Features:
-    - Automatic detection of pagination patterns
-    - Dynamic page size adjustment based on response time
-    - Error recovery with exponential backoff
-    - Memory-efficient streaming for large datasets
+        - Automatic detection of pagination patterns
+        - Dynamic page size adjustment based on response time
+        - Error recovery with exponential backoff
+        - Memory-efficient streaming for large datasets
     """
 
     def __init__(self, start_value: int = 0, page_size: int = 100) -> None:
-        """Initialize paginator with intelligent defaults."""
         super().__init__(start_value, page_size)
         self._max_page_size = 1000
         self._min_page_size = 10
@@ -59,7 +61,15 @@ class OICPaginator(BaseOffsetPaginator):
         self._response_times: list[float] = []
 
     def get_next(self, response: requests.Response) -> int | None:
-        """Get next page offset with intelligent pagination detection."""
+        """Calculate next offset for pagination.
+
+        Args:
+            response: HTTP response from OIC API.
+
+        Returns:
+            Next offset value or None if no more pages.
+
+        """
         try:
             data = response.json()
 
@@ -72,11 +82,7 @@ class OICPaginator(BaseOffsetPaginator):
         except Exception:
             return None
 
-    def _calculate_next_offset(
-        self,
-        data: dict[str, Any] | list[Any],
-    ) -> int | None:
-        """Calculate next offset based on response data format."""
+    def _calculate_next_offset(self, data: dict[str, Any] | list[Any]) -> int | None:
         # Handle different OIC response formats
         items = self._extract_items_from_response(data)
         if items is None:
@@ -87,11 +93,7 @@ class OICPaginator(BaseOffsetPaginator):
 
         return self.current_value + len(items)
 
-    def _extract_items_from_response(
-        self,
-        data: dict[str, Any] | list[Any],
-    ) -> list[Any] | None:
-        """Extract items array from various OIC response formats."""
+    def _extract_items_from_response(self, data: dict[str, Any] | list[Any]) -> list[Any] | None:
         if isinstance(data, list):
             return data
         if isinstance(data, dict):
@@ -102,7 +104,6 @@ class OICPaginator(BaseOffsetPaginator):
         return None
 
     def _track_response_time(self, response_time: float) -> None:
-        """Track response times for adaptive page sizing."""
         self._response_times.append(response_time)
 
         # Keep only last 10 response times
@@ -129,25 +130,23 @@ class OICBaseStream(RESTStream[Any]):
     and performance optimization.
 
     Features:
-    - Intelligent endpoint discovery and URL construction
-    - OAuth2/IDCS authentication with automatic token refresh
-    - Adaptive pagination with performance optimization
-    - Comprehensive error handling with exponential backoff
-    - Data quality validation and metrics collection
-    - Rate limiting and request optimization
-    - Incremental extraction with state management
-    - Support for all OIC API patterns and response formats
+        - Intelligent endpoint discovery and URL construction
+        - OAuth2/IDCS authentication with automatic token refresh
+        - Adaptive pagination with performance optimization
+        - Comprehensive error handling with exponential backoff
+        - Data quality validation and metrics collection
+        - Rate limiting and request optimization
+        - Incremental extraction with state management
+        - Support for all OIC API patterns and response formats
     """
 
     @property
     def url_base(self) -> str:
-        """Intelligent base URL construction for OIC APIs.
+        """Build base URL for OIC API requests.
 
-        Automatically detects the correct API endpoint based on:
-        - Stream type and category
-        - Instance configuration
-        - Regional settings
-        - API version requirements
+        Returns:
+            Base URL with appropriate OIC API endpoint.
+
         """
         base_url = str(self.config.get("base_url", "")).rstrip("/")
 
@@ -187,66 +186,30 @@ class OICBaseStream(RESTStream[Any]):
 
     @property
     def authenticator(self) -> OICOAuth2Authenticator:
-        """Get OAuth2 authenticator for OIC/IDCS authentication.
-
-        Oracle Integration Cloud exclusively uses OAuth2 authentication
-        through Oracle Identity Cloud Service (IDCS).
-        """
-        auth_method = self.config.get("auth_method", "oauth2")
-
-        if auth_method != "oauth2":
-            msg = (
-                f"Unsupported auth_method '{auth_method}'. "
-                "Oracle Integration Cloud only supports 'oauth2' authentication."
-            )
-            raise ValueError(msg)
-
-        return OICOAuth2Authenticator(self)
-
-    @property
-    def http_headers(self) -> dict[str, str]:
-        """Comprehensive headers for OIC API calls.
-
-        Includes proper content negotiation, caching controls,
-        and request identification for debugging and monitoring.
-        """
-        headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "User-Agent": "singer-tap-oic/1.0.0",
-            "X-Requested-With": "singer-sdk",
-            "Cache-Control": "no-cache",
-            "Pragma": "no-cache",
-        }
-
-        # Add custom headers from configuration
-        custom_headers = self.config.get("custom_headers", {})
-        if isinstance(custom_headers, dict):
-            headers.update(custom_headers)
-
-        # Add stream-specific headers
-        if hasattr(self, "additional_headers"):
-            headers.update(self.additional_headers)
-
-        return headers
+        """Get or create OAuth2 authenticator."""
+        if not hasattr(self, "_authenticator"):
+            self._authenticator = OICOAuth2Authenticator(stream=self)
+        return self._authenticator
 
     def get_new_paginator(self) -> OICPaginator:
-        """Create new paginator instance."""
+        """Create new paginator for OIC API requests.
+
+        Returns:
+            OICPaginator instance configured with page size from config.
+
+        """
         return OICPaginator(start_value=0, page_size=self.config.get("page_size", 100))
 
-    def get_url_params(
-        self,
-        context: Mapping[str, Any] | None,
-        next_page_token: Any | None,
-    ) -> dict[str, Any]:
-        """Intelligent URL parameter construction for OIC API calls.
+    def get_url_params(self, context: Mapping[str, Any] | None, next_page_token: Any | None) -> dict[str, Any]:
+        """Build URL parameters for OIC API requests.
 
-        Builds parameters based on:
-        - Pagination requirements
-        - Filtering and sorting preferences
-        - Instance and tenant configuration
-        - Stream-specific query options
-        - State management for incremental extraction
+        Args:
+            context: Stream context with replication values.
+            next_page_token: Token for pagination (offset value).
+
+        Returns:
+            Dictionary of URL parameters for the API request.
+
         """
         params: dict[str, Any] = {}
 
@@ -268,7 +231,7 @@ class OICBaseStream(RESTStream[Any]):
         elif hasattr(self, "default_sort"):
             params["orderBy"] = self.default_sort
 
-        # Filtering parameters
+        # Custom query filter
         custom_filter = self.config.get("custom_filter")
         if custom_filter:
             params["q"] = custom_filter
@@ -284,15 +247,11 @@ class OICBaseStream(RESTStream[Any]):
 
         # Field selection for reduced payload
         select_fields = self.config.get("select_fields")
-        if select_fields and isinstance(select_fields, list):
-            params["fields"] = ",".join(select_fields)
-
-        # Expansion parameters for related data
-        expand_relations = self.config.get("expand")
-        if expand_relations and isinstance(expand_relations, list):
-            params["expand"] = ",".join(expand_relations)
-        elif hasattr(self, "default_expand"):
-            params["expand"] = self.default_expand
+        if select_fields:
+            if isinstance(select_fields, list):
+                params["fields"] = ",".join(select_fields)
+            else:
+                params["fields"] = select_fields
 
         # Stream-specific parameters
         if hasattr(self, "additional_params"):
@@ -305,23 +264,29 @@ class OICBaseStream(RESTStream[Any]):
         return {k: v for k, v in params.items() if v is not None}
 
     def parse_response(self, response: requests.Response) -> Iterator[dict[str, Any]]:
-        """Professional response parsing with comprehensive error handling.
+        """Parse OIC API response and yield records.
 
-        Handles all OIC API response patterns and formats with intelligent
-        fallback mechanisms and data quality validation.
+        Args:
+            response: HTTP response from OIC API.
+
+        Yields:
+            Individual records from the API response.
+
         """
         try:
             # Validate response status
             if not response.ok:
-                self._handle_error_response(response)
+                self._handle_response_error(response)
                 return
 
-            # Handle empty responses
-            if not response.content:
-                self.logger.warning("Empty response from %s", response.url)
+            # Parse JSON response
+            try:
+                data = response.json()
+            except Exception as e:
+                self.logger.exception(f"Failed to parse JSON from {response.url}: {e}")
+                if self.config.get("fail_on_parsing_errors", True):
+                    raise
                 return
-
-            data = response.json()
 
             # Track response metrics
             self._track_response_metrics(response, data)
@@ -335,12 +300,7 @@ class OICBaseStream(RESTStream[Any]):
                 raise
             # Continue processing if configured to ignore parsing errors
 
-    def _extract_and_yield_records(
-        self,
-        data: dict[str, Any] | list[Any],
-        url: str,
-    ) -> Iterator[dict[str, Any]]:
-        """Extract records from response data and yield valid ones."""
+    def _extract_and_yield_records(self, data: dict[str, Any] | list[Any], url: str) -> Iterator[dict[str, Any]]:
         records_yielded = 0
 
         for item in self._extract_items_for_processing(data):
@@ -353,15 +313,9 @@ class OICBaseStream(RESTStream[Any]):
                 f"Unknown response format from {url}: {list(data.keys()) if isinstance(data, dict) else type(data)}",
             )
         elif records_yielded > 0:
-            self.logger.debug(
-                f"Successfully parsed {records_yielded} records from {url}",
-            )
+            self.logger.debug(f"Successfully parsed {records_yielded} records from {url}")
 
-    def _extract_items_for_processing(
-        self,
-        data: dict[str, Any] | list[Any],
-    ) -> Iterator[dict[str, Any]]:
-        """Extract individual items from response data for processing."""
+    def _extract_items_for_processing(self, data: dict[str, Any] | list[Any]) -> Iterator[dict[str, Any]]:
         if isinstance(data, list):
             yield from data
         elif isinstance(data, dict):
@@ -373,109 +327,68 @@ class OICBaseStream(RESTStream[Any]):
                 yield data
 
     def _is_empty_result_expected(self, data: dict[str, Any] | list[Any]) -> bool:
-        """Check if empty result is expected based on response structure."""
         if isinstance(data, list):
             return len(data) == 0
         if isinstance(data, dict):
             return (
-                (data.get("items") == [])
-                or (data.get("data") == [])
-                or (data.get("count", 0) == 0)
+                data.get("totalSize", 0) == 0
+                or data.get("count", 0) == 0
+                or len(data.get("items", [])) == 0
+                or len(data.get("data", [])) == 0
             )
         return False
 
-    def _handle_error_response(self, response: requests.Response) -> None:
-        """Handle HTTP error responses with intelligent retry logic."""
-        try:
-            error_data = response.json()
-            error_message = error_data.get("message", "Unknown error")
-            error_code = error_data.get("errorCode", response.status_code)
-        except Exception:
-            error_message = response.text or f"HTTP {response.status_code}"
-            error_code = response.status_code
-
-        self.logger.error(
-            f"API Error {error_code}: {error_message} (URL: {response.url})",
-        )
-
-        # Handle specific error conditions
-        if response.status_code == 404:
-            self.logger.warning("Endpoint not available: %s", response.url)
-            if self.config.get("skip_unavailable_endpoints", True):
-                return
-        elif response.status_code == 429:
-            self.logger.warning("Rate limit exceeded - will retry with backoff")
-        elif response.status_code >= 500:
-            self.logger.error("Server error %s - will retry", response.status_code)
-
-        response.raise_for_status()
+    def _is_single_record(self, data: dict[str, Any]) -> bool:
+        """Check if dict represents a single record vs metadata container."""
+        metadata_keys = {"totalSize", "count", "hasMore", "offset", "limit", "items", "data"}
+        return not any(key in data for key in metadata_keys)
 
     def _validate_record(self, record: dict[str, Any]) -> bool:
-        """Validate individual record quality and completeness."""
+        """Validate record meets basic requirements."""
         if not isinstance(record, dict):
             return False
-
-        # Check for required fields based on primary keys
-        if hasattr(self, "primary_keys") and self.primary_keys:
-            for key in self.primary_keys:
-                if key not in record or record[key] is None:
-                    self.logger.warning(
-                        "Record missing primary key '%s': %s",
-                        key,
-                        record,
-                    )
-                    return False
-
+        # Basic validation - can be overridden by subclasses
         return True
 
     def _enrich_record(self, record: dict[str, Any]) -> dict[str, Any]:
-        """Enrich record with metadata and standardized fields."""
-        enriched = record.copy()
-
-        # Add extraction metadata
+        """Enrich record with tap metadata."""
+        enriched = dict(record)
         enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
         enriched["_tap_stream_name"] = self.name
-
-        # Standardize timestamp fields
-        for field_name, field_value in enriched.items():
-            if field_name.endswith(
-                ("_time", "_date", "Updated", "Created"),
-            ) and isinstance(field_value, str):
-                try:
-                    # Attempt to parse and standardize timestamp
-                    from dateutil import parser
-
-                    parsed_date = parser.parse(field_value)
-                    enriched[field_name] = parsed_date.isoformat()
-                except Exception:
-                    # Keep original value if date parsing fails
-                    enriched[field_name] = field_value
-
         return enriched
 
-    def _is_single_record(self, data: dict[str, Any]) -> bool:
-        """Determine if a dict represents a single record."""
-        # Common patterns for single records in OIC APIs
-        record_indicators = ["id", "name", "identifier", "code", "uuid"]
-        return any(key in data for key in record_indicators)
+    def _handle_response_error(self, response: requests.Response) -> None:
+        """Handle HTTP error responses."""
+        try:
+            error_data = response.json()
+            error_message = error_data.get("message") or error_data.get("error")
+        except Exception:
+            error_message = response.text or f"HTTP {response.status_code}"
 
-    def _track_response_metrics(self, response: requests.Response, data: Any) -> None:
-        """Track response metrics for monitoring and optimization."""
+        self.logger.error(f"OIC API error from {response.url}: {error_message}")
+
+        if response.status_code == 401:
+            msg = "Authentication failed - check OAuth2 credentials"
+            raise RuntimeError(msg)
+        if response.status_code == 403:
+            msg = "Access forbidden - check permissions"
+            raise RuntimeError(msg)
+        if response.status_code == 429:
+            msg = "Rate limit exceeded - reduce request rate"
+            raise RuntimeError(msg)
+        response.raise_for_status()
+
+    def _track_response_metrics(self, response: requests.Response, data: dict[str, Any] | list[Any]) -> None:
+        """Track response metrics for monitoring."""
+        # Log response time and size for monitoring
         if hasattr(response, "elapsed"):
-            response_time = response.elapsed.total_seconds()
-            self.logger.debug(f"Response time: {response_time:.2f}s for {response.url}")
+            self.logger.debug(f"Response time: {response.elapsed.total_seconds():.2f}s")
 
-        # Track data volume
-        if isinstance(data, dict):
+        # Log record count for monitoring
+        if isinstance(data, list):
+            self.logger.debug(f"Received {len(data)} records")
+        elif isinstance(data, dict):
             if "items" in data:
-                record_count = len(data["items"])
+                self.logger.debug(f"Received {len(data['items'])} records")
             elif "data" in data:
-                record_count = len(data["data"])
-            else:
-                record_count = 1
-        elif isinstance(data, list):
-            record_count = len(data)
-        else:
-            record_count = 1
-
-        self.logger.debug(f"Retrieved {record_count} records from {response.url}")
+                self.logger.debug(f"Received {len(data['data'])} records")
