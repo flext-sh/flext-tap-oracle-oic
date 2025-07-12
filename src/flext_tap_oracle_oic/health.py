@@ -4,8 +4,7 @@ This module provides health checking capabilities for OIC connections,
 integrations, and the overall OIC instance health.
 """
 
-from datetime import UTC
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 import requests
@@ -13,7 +12,7 @@ from singer_sdk.authenticators import OAuthAuthenticator
 
 
 class OICHealthChecker:
-             Health check utilities for Oracle Integration Cloud."""
+    """Health check utilities for Oracle Integration Cloud."""
 
     def __init__(self, base_url: str, authenticator: OAuthAuthenticator) -> None:
         self.base_url = base_url.rstrip("/")
@@ -37,7 +36,7 @@ class OICHealthChecker:
             response = requests.get(url, headers=self._get_headers(), timeout=30)
 
             if response.status_code == 200:
-            return {
+                return {
                     "status": "healthy",
                     "timestamp": datetime.now(UTC).isoformat(),
                     "instance_url": self.base_url,
@@ -53,7 +52,7 @@ class OICHealthChecker:
                 "response_time_ms": int(response.elapsed.total_seconds() * 1000),
             }
         except Exception as e:
-        return {
+            return {
                 "status": "error",
                 "timestamp": datetime.now(UTC).isoformat(),
                 "instance_url": self.base_url,
@@ -68,7 +67,7 @@ class OICHealthChecker:
             response = requests.post(url, headers=self._get_headers(), timeout=60)
 
             if response.status_code in {200, 202}:
-            result = response.json() if response.text else {}:
+                result = response.json() if response.text else {}
                 return {
                     "connectionId": connection_id,
                     "status": result.get("status", "success"),
@@ -84,13 +83,12 @@ class OICHealthChecker:
                 "connectionId": connection_id,
                 "status": "failed",
                 "timestamp": datetime.now(UTC).isoformat(),
-                "error":
-                    f"Test failed with status {response.status_code}",
+                "error": f"Test failed with status {response.status_code}",
                 "details": response.text or {},
                 "response_time_ms": int(response.elapsed.total_seconds() * 1000),
             }
         except Exception as e:
-        return {
+            return {
                 "connectionId": connection_id,
                 "status": "error",
                 "timestamp": datetime.now(UTC).isoformat(),
@@ -104,18 +102,18 @@ class OICHealthChecker:
             response = requests.get(url, headers=self._get_headers(), timeout=30)
 
             if response.status_code == 200:
-            integration = response.json()
+                integration = response.json()
                 status = integration.get("status", "UNKNOWN")
 
                 # Determine health based on status
                 if status == "ACTIVATED":
-            health_status = "healthy"
+                    health_status = "healthy"
                 elif status in {"CONFIGURED", "DRAFT"}:
-            health_status = "inactive"
+                    health_status = "inactive"
                 elif status in {"ERROR", "FAILED"}:
-            health_status = "unhealthy"
+                    health_status = "unhealthy"
                 else:
-            health_status = "unknown"
+                    health_status = "unknown"
 
                 return {
                     "integrationId": integration_id,
@@ -134,7 +132,7 @@ class OICHealthChecker:
                 "error": f"Failed to get integration status: {response.status_code}",
             }
         except Exception as e:
-        return {
+            return {
                 "integrationId": integration_id,
                 "health": "error",
                 "timestamp": datetime.now(UTC).isoformat(),
@@ -148,7 +146,7 @@ class OICHealthChecker:
             response = requests.get(url, headers=self._get_headers(), timeout=30)
 
             if response.status_code == 200:
-            return {
+                return {
                     "service": "monitoring",
                     "status": "healthy",
                     "timestamp": datetime.now(UTC).isoformat(),
@@ -163,7 +161,7 @@ class OICHealthChecker:
                 "error": f"API returned status {response.status_code}",
             }
         except Exception as e:
-        return {
+            return {
                 "service": "monitoring",
                 "status": "error",
                 "timestamp": datetime.now(UTC).isoformat(),

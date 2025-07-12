@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from singer_sdk import typing as th
+from singer_sdk import singer_typing as th
 
 # CORE INTEGRATION STREAMS - WORKING
 
