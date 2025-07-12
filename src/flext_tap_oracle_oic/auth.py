@@ -3,7 +3,8 @@
 This module provides backward compatibility for Oracle Integration Cloud authentication
 by delegating to the enterprise flext-auth OAuth2/JWT service.
 
-TRUE FACADE PATTERN: 100% DELEGATION TO FLEXT-AUTH
+TRUE FACADE PATTERN:
+            100% DELEGATION TO FLEXT-AUTH
 ================================================
 
 DELEGATION TARGET: flext_auth.authentication_implementation - Enterprise OAuth2/JWT
@@ -24,10 +25,10 @@ LEGACY COMPATIBILITY:
     token = auth.get_access_token()
 
 MIGRATION BENEFITS:
-- Eliminates OAuth2 implementation duplication
-- Leverages enterprise token caching and refresh
-- Automatic security improvements from flext-auth
-- Consistent authentication across all Oracle integrations
+    - Eliminates OAuth2 implementation duplication
+    - Leverages enterprise token caching and refresh
+    - Automatic security improvements from flext-auth
+    - Consistent authentication across all Oracle integrations
 """
 
 import base64
@@ -40,6 +41,7 @@ from singer_sdk.authenticators import OAuthAuthenticator
 try:
     from flext_auth.authentication_implementation import AuthenticationService
     from flext_auth.jwt_service import JWTConfig, JWTService
+
     from flext_core.config.domain_config import get_config
 except ImportError:
     # Fallback for environments without flext-auth
@@ -56,39 +58,34 @@ class OICOAuth2Authenticator(OAuthAuthenticator):
     while maintaining compatibility with Singer SDK authentication interface.
 
     ENTERPRISE BENEFITS:
-    - Automatic token caching and refresh via flext-auth
-    - Enhanced security through enterprise authentication patterns
-    - Centralized OAuth2 configuration management
-    - Consistent authentication across all Oracle integrations
+        - Automatic token caching and refresh via flext-auth
+        - Enhanced security through enterprise authentication patterns
+        - Centralized OAuth2 configuration management
+        - Consistent authentication across all Oracle integrations
 
     LEGACY COMPATIBILITY:
-    - Maintains Singer SDK OAuthAuthenticator interface
-    - Preserves existing stream configuration patterns
-    - Supports all OIC-specific OAuth2 scope building
+        - Maintains Singer SDK OAuthAuthenticator interface
+        - Preserves existing stream configuration patterns
+        - Supports all OIC-specific OAuth2 scope building
 
     DELEGATION TARGET: flext_auth.authentication_implementation.AuthenticationService
     """
 
     def __init__(self, stream: Any) -> None:
-        """Initialize OAuth2 authenticator facade - delegates to flext-auth.
-
-        Extracts authentication configuration and initializes enterprise authentication
-        service while maintaining Singer SDK compatibility.
-        """
         auth_endpoint = stream.config.get("oauth_token_url")
 
         # Build OAuth2 scope exactly like flext-http-oracle-oic (working implementation)
         client_aud = stream.config.get("oauth_client_aud", "")
         if client_aud:
-            # Build scope like: "audience:443urn:opc:resource:consumer::all audience:443/ic/api/"
-            resource_aud = f"{client_aud}:443urn:opc:resource:consumer::all"
+            # Build scope like: "audience:443urn:opc:resource:consumer:all audience:443/ic/api/"
+            resource_aud = f"{client_aud}:443urn:opc:resource:consumer:all"
             api_aud = f"{client_aud}:443/ic/api/"
             oauth_scopes = f"{resource_aud} {api_aud}"
         else:
-            # Fallback to simple scope if no audience configured
+            # Fallback to simple scope if no audience configured:
             oauth_scopes = stream.config.get(
                 "oauth_scope",
-                "urn:opc:resource:consumer::all",
+                "urn:opc:resource:consumer:all",
             )
 
         # Store reference to stream for access to config during token refresh
@@ -126,35 +123,29 @@ class OICOAuth2Authenticator(OAuthAuthenticator):
         """
         return {
             "grant_type": "client_credentials",
-            "scope": self.oauth_scopes or "urn:opc:resource:consumer::all",
+            "scope": self.oauth_scopes or "urn:opc:resource:consumer:all",
         }
 
     @property
     def oauth_request_payload(self) -> dict[str, Any]:
-        """Get OAuth2 request payload for token requests.
+        """Get OAuth2 request payload for token endpoint.
 
         Returns:
-        -------
-            Dict containing the complete request payload for OAuth2 token requests
-
-        Note:
-        ----
-            This is an alias for oauth_request_body to maintain compatibility with
-            different Singer SDK versions and authentication patterns.
+            Dictionary containing OAuth2 request body parameters.
 
         """
         return self.oauth_request_body
 
     def update_access_token(self) -> None:
-        """Update access token - delegates to flext-auth enterprise service.
+        """Update access token using enterprise authentication service.
 
-        Uses enterprise authentication service for enhanced security, caching,
-        and automatic token refresh with fallback to legacy implementation.
+        Delegates to flext-auth enterprise OAuth2 service for token management
+        with automatic caching and refresh capabilities.
         """
         if self._enterprise_auth and hasattr(self._enterprise_auth, "get_oauth_token"):
             # Use enterprise OAuth2 service
             try:
-                import asyncio
+                import asyncio  # TODO: Move import to module level
 
                 client_id = self._stream.config["oauth_client_id"]
                 client_secret = self._stream.config["oauth_client_secret"]
@@ -171,8 +162,8 @@ class OICOAuth2Authenticator(OAuthAuthenticator):
                         client_id=client_id,
                         client_secret=client_secret,
                         token_url=self.auth_endpoint,
-                        scope=self.oauth_scopes
-                    )
+                        scope=self.oauth_scopes,
+                    ),
                 )
 
                 if token_data and "access_token" in token_data:
@@ -192,7 +183,7 @@ class OICOAuth2Authenticator(OAuthAuthenticator):
         client_secret = self._stream.config["oauth_client_secret"]
 
         # Encode client credentials for HTTP Basic authentication per RFC 7617
-        credentials = f"{client_id}:{client_secret}"
+        credentials = str(client_id) + ":" + str(client_secret)
         encoded_credentials = base64.b64encode(credentials.encode()).decode()
 
         headers = {

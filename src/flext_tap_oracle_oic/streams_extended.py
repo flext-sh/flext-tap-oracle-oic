@@ -1,14 +1,16 @@
 """Oracle Integration Cloud - Extended Streams.
 
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+
 Professional extended streams providing comprehensive coverage of
 additional OIC entities including projects, schedules, and business objects.
 
 Features:
-- Project and folder organization
-- Schedule management and monitoring
-- Business event tracking
-- Import/export operations
-- Advanced configuration management
+    - Project and folder organization
+    - Schedule management and monitoring
+    - Business event tracking
+    - Import/export operations
+    - Advanced configuration management
 """
 
 from __future__ import annotations
@@ -17,7 +19,7 @@ from typing import Any
 
 from singer_sdk import typing as th
 
-from tap_oracle_oic.streams import OICBaseStream
+from flext_tap_oracle_oic.streams import OICBaseStream
 
 
 class ProjectsStream(OICBaseStream):
@@ -27,10 +29,10 @@ class ProjectsStream(OICBaseStream):
     permissions, and resource organization.
 
     Features:
-    - Project hierarchy and organization
-    - Folder structure and navigation
-    - Access control and permissions
-    - Resource grouping and tagging
+        - Project hierarchy and organization
+        - Folder structure and navigation
+        - Access control and permissions
+        - Resource grouping and tagging
     """
 
     name = "projects"
@@ -125,7 +127,15 @@ class ProjectsStream(OICBaseStream):
     ).to_dict()
 
     def additional_params(self, context: dict[str, Any] | None) -> dict[str, Any]:
-        """Additional parameters for project queries."""
+        """Build additional URL parameters for projects stream.
+
+        Args:
+            context: Stream context (not used for this stream).
+
+        Returns:
+            Dictionary of additional URL parameters for OIC projects API.
+
+        """
         params: dict[str, Any] = {}
 
         # Include folder details
@@ -146,11 +156,11 @@ class SchedulesStream(OICBaseStream):
     including execution windows, frequencies, and calendar configurations.
 
     Features:
-    - Schedule configurations and patterns
-    - Execution windows and blackouts
-    - Calendar and timezone management
-    - Next run calculations
-    - Schedule monitoring and health
+        - Schedule configurations and patterns
+        - Execution windows and blackouts
+        - Calendar and timezone management
+        - Next run calculations
+        - Schedule monitoring and health
     """
 
     name = "schedules"
@@ -309,7 +319,15 @@ class SchedulesStream(OICBaseStream):
     ).to_dict()
 
     def additional_params(self, context: dict[str, Any] | None) -> dict[str, Any]:
-        """Additional parameters for schedule queries."""
+        """Build additional URL parameters for schedules stream.
+
+        Args:
+            context: Stream context (not used for this stream).
+
+        Returns:
+            Dictionary of additional URL parameters for OIC schedules API.
+
+        """
         params: dict[str, Any] = {}
 
         # Include execution statistics
@@ -335,11 +353,11 @@ class BusinessEventsStream(OICBaseStream):
     and event-driven integration triggers.
 
     Features:
-    - Business event definitions
-    - Event subscriptions and routing
-    - Event payload schemas
-    - Event processing statistics
-    - Event correlation and tracking
+        - Business event definitions
+        - Event subscriptions and routing
+        - Event payload schemas
+        - Event processing statistics
+        - Event correlation and tracking
     """
 
     name = "business_events"
@@ -434,7 +452,15 @@ class BusinessEventsStream(OICBaseStream):
     ).to_dict()
 
     def additional_params(self, context: dict[str, Any] | None) -> dict[str, Any]:
-        """Additional parameters for business event queries."""
+        """Build additional URL parameters for business events stream.
+
+        Args:
+            context: Stream context (not used for this stream).
+
+        Returns:
+            Dictionary of additional URL parameters for OIC business events API.
+
+        """
         params: dict[str, Any] = {}
 
         # Time range
@@ -463,11 +489,11 @@ class ImportExportJobsStream(OICBaseStream):
     visibility into deployment and migration activities.
 
     Features:
-    - Import/export job tracking
-    - Job status and progress
-    - Archive details and contents
-    - Validation results
-    - Deployment history
+        - Import/export job tracking
+        - Job status and progress
+        - Archive details and contents
+        - Validation results
+        - Deployment history
     """
 
     name = "import_export_jobs"
@@ -617,7 +643,15 @@ class ImportExportJobsStream(OICBaseStream):
     ).to_dict()
 
     def additional_params(self, context: dict[str, Any] | None) -> dict[str, Any]:
-        """Additional parameters for job queries."""
+        """Build additional URL parameters for import/export jobs stream.
+
+        Args:
+            context: Stream context (not used for this stream).
+
+        Returns:
+            Dictionary of additional URL parameters for OIC import/export jobs API.
+
+        """
         params: dict[str, Any] = {}
 
         # Time range

@@ -30,10 +30,9 @@ from tap_oic.utils.metadata_discovery import (
 
 
 class TestOICMetadataDiscovery:
-    """Test metadata discovery functionality."""
+             Test metadata discovery functionality."""
 
     def test_init(self) -> None:
-        """Test metadata discovery initialization."""
         discovery = OICMetadataDiscovery("https://test.com", "test_instance")
         assert discovery.base_url == "https://test.com"
         assert discovery.instance_id == "test_instance"
@@ -41,7 +40,6 @@ class TestOICMetadataDiscovery:
 
     @patch("tap_oic.utils.metadata_discovery.requests.get")
     def test_discover_from_metadata_endpoints(self, mock_get) -> None:
-        """Test discovery from metadata endpoints."""
         # Mock successful metadata response
         mock_response = Mock()
         mock_response.status_code = 200
@@ -66,7 +64,6 @@ class TestOICMetadataDiscovery:
         assert mock_get.called
 
     def test_build_integration_archive_url(self) -> None:
-        """Test building integration archive URLs."""
         OICMetadataDiscovery("https://test.com", "test_instance")
 
         # Test URL building (this would be done by the API client)
@@ -83,7 +80,6 @@ class TestOICMetadataDiscovery:
         assert actual_url == expected_url
 
     def test_detect_service_type(self) -> None:
-        """Test service type detection from paths."""
         discovery = OICMetadataDiscovery("https://test.com", "test_instance")
 
         assert (
@@ -101,7 +97,6 @@ class TestOICMetadataDiscovery:
         )
 
     def test_generate_dynamic_constants(self) -> None:
-        """Test dynamic constants generation."""
         discovery = OICMetadataDiscovery("https://test.com", "test_instance")
 
         # Add some discovered endpoints
@@ -124,10 +119,9 @@ class TestOICMetadataDiscovery:
 
 
 class TestAdvancedExtractionEngine:
-    """Test advanced extraction engine functionality."""
+         """Test advanced extraction engine functionality."""
 
     def test_init(self) -> None:
-        """Test extraction engine initialization."""
         config = {"base_url": "https://test.com", "instance_id": "test"}
         output_dir = Path("/tmp/test")
 
@@ -144,7 +138,6 @@ class TestAdvancedExtractionEngine:
         assert engine.rate_limit_requests_per_second == 2.0
 
     def test_create_extraction_task(self) -> None:
-        """Test extraction task creation."""
         task = ExtractionTask(
             id="test_001",
             stream_name="integrations",
@@ -159,7 +152,6 @@ class TestAdvancedExtractionEngine:
         assert task.status == ExtractionStatus.PENDING
 
     def test_determine_priority(self) -> None:
-        """Test priority determination logic."""
         config = {"base_url": "https://test.com"}
         output_dir = Path("/tmp/test")
 
@@ -172,7 +164,6 @@ class TestAdvancedExtractionEngine:
         assert engine._determine_priority("logs") == ExtractionPriority.LOW
 
     def test_estimate_record_count(self) -> None:
-        """Test record count estimation."""
         config = {"base_url": "https://test.com"}
         output_dir = Path("/tmp/test")
 
@@ -184,17 +175,15 @@ class TestAdvancedExtractionEngine:
 
 
 class TestOICDataValidator:
-    """Test data quality validation functionality."""
+         """Test data quality validation functionality."""
 
     def test_init(self) -> None:
-        """Test data validator initialization."""
         validator = OICDataValidator()
         assert validator.field_schemas is not None
         assert validator.business_rules is not None
         assert validator.issues == []
 
     def test_validate_empty_records(self) -> None:
-        """Test validation with empty records."""
         validator = OICDataValidator()
 
         metrics, issues = validator.validate_stream_data("test_stream", [])
@@ -204,7 +193,6 @@ class TestOICDataValidator:
         assert len(issues) == 0
 
     def test_validate_integration_records(self) -> None:
-        """Test validation of integration records."""
         validator = OICDataValidator()
 
         records = [
@@ -228,8 +216,7 @@ class TestOICDataValidator:
         assert len(issues) >= 0  # May have issues for missing fields
 
     def test_validate_schema_violations(self) -> None:
-        """Test schema validation violations."""
-        validator = OICDataValidator()
+            validator = OICDataValidator()
 
         records = [
             {
@@ -241,12 +228,11 @@ class TestOICDataValidator:
         _metrics, issues = validator.validate_stream_data("integrations", records)
 
         # Should detect missing required field
-        schema_issues = [i for i in issues if i.category == ValidationCategory.SCHEMA]
+        schema_issues = [i for i in issues if i.category == ValidationCategory.SCHEMA]:
         assert len(schema_issues) > 0
 
     def test_validate_uniqueness(self) -> None:
-        """Test uniqueness validation."""
-        validator = OICDataValidator()
+            validator = OICDataValidator()
 
         records = [
             {"id": "DUPLICATE", "name": "First"},
@@ -257,13 +243,12 @@ class TestOICDataValidator:
 
         # Should detect duplicate IDs
         uniqueness_issues = [
-            i for i in issues if i.category == ValidationCategory.UNIQUENESS
+            i for i in issues if i.category == ValidationCategory.UNIQUENESS:
         ]
         assert len(uniqueness_issues) > 0
 
     def test_business_rules_validation(self) -> None:
-        """Test business rules validation."""
-        validator = OICDataValidator()
+            validator = OICDataValidator()
 
         records = [
             {
@@ -276,11 +261,11 @@ class TestOICDataValidator:
         _metrics, issues = validator.validate_stream_data("integrations", records)
 
         # Should have business rule violations
-        [i for i in issues if i.category == ValidationCategory.BUSINESS]
-        # Note: Some business rules might not trigger depending on implementation
+        [i for i in issues if i.category == ValidationCategory.BUSINESS]:
+        # Note:
+            Some business rules might not trigger depending on implementation
 
     def test_quality_score_calculation(self) -> None:
-        """Test quality score calculation."""
         validator = OICDataValidator()
 
         # Good quality records
@@ -296,19 +281,17 @@ class TestOICDataValidator:
 
 
 class TestAdvancedCoreDataExtractor:
-    """Test advanced core data extractor."""
+         """Test advanced core data extractor."""
 
     @patch("tap_oic.extractors.advanced_core_data.TapOIC")
     def test_init(self, mock_tap_class) -> None:
-        """Test advanced core data extractor initialization."""
         config = {"base_url": "https://test.com", "instance_id": "test"}
 
         # Mock TAP instance
         mock_tap = Mock()
         mock_tap_class.return_value = mock_tap
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            output_dir = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir: output_dir = Path(temp_dir)
 
             extractor = AdvancedCoreDataExtractor(
                 config=config,
@@ -328,7 +311,6 @@ class TestAdvancedCoreDataExtractor:
 
     @patch("tap_oic.extractors.advanced_core_data.TapOIC")
     def test_extract_with_mocked_tap(self, mock_tap_class) -> None:
-        """Test extraction with mocked TAP."""
         config = {"base_url": "https://test.com", "instance_id": "test"}
 
         # Mock TAP instance
@@ -343,8 +325,7 @@ class TestAdvancedCoreDataExtractor:
         ]
         mock_tap.discover_streams.return_value = [mock_stream]
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            output_dir = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir: output_dir = Path(temp_dir)
 
             extractor = AdvancedCoreDataExtractor(
                 config=config,
@@ -372,14 +353,12 @@ class TestAdvancedCoreDataExtractor:
 
 
 class TestExtractionOrchestrator:
-    """Test extraction orchestrator functionality."""
+             """Test extraction orchestrator functionality."""
 
     def test_init(self) -> None:
-        """Test orchestrator initialization."""
         config = {"base_url": "https://test.com", "instance_id": "test"}
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            output_dir = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir: output_dir = Path(temp_dir)
 
             orchestrator = ExtractionOrchestrator(config=config, output_dir=output_dir)
 
@@ -388,11 +367,9 @@ class TestExtractionOrchestrator:
             assert output_dir.exists()
 
     def test_extraction_scopes(self) -> None:
-        """Test different extraction scopes."""
         config = {"base_url": "https://test.com", "instance_id": "test"}
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            output_dir = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir: output_dir = Path(temp_dir)
 
             orchestrator = ExtractionOrchestrator(config=config, output_dir=output_dir)
 
@@ -414,8 +391,9 @@ class TestExtractionOrchestrator:
                 assert call_args.include_artifacts is False
 
     def test_extraction_plan_creation(self) -> None:
-        """Test extraction plan creation."""
-        from tap_oic.extractors.extraction_orchestrator import ExtractionPlan
+        from tap_oic.extractors.extraction_orchestrator import (  # TODO: Move import to module level
+            ExtractionPlan,
+        )
 
         plan = ExtractionPlan(
             scope=ExtractionScope.STANDARD,
@@ -433,7 +411,6 @@ class TestExtractionOrchestrator:
 
     @patch("tap_oic.extractors.extraction_orchestrator.AdvancedCoreDataExtractor")
     def test_core_data_extraction(self, mock_extractor_class) -> None:
-        """Test core data extraction orchestration."""
         config = {"base_url": "https://test.com", "instance_id": "test"}
 
         # Mock the extractor
@@ -443,12 +420,13 @@ class TestExtractionOrchestrator:
         }
         mock_extractor_class.return_value = mock_extractor
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            output_dir = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir: output_dir = Path(temp_dir)
 
             orchestrator = ExtractionOrchestrator(config=config, output_dir=output_dir)
 
-            from tap_oic.extractors.extraction_orchestrator import ExtractionPlan
+            from tap_oic.extractors.extraction_orchestrator import (  # TODO: Move import to module level
+                ExtractionPlan,
+            )
 
             plan = ExtractionPlan(
                 scope=ExtractionScope.MINIMAL,
@@ -459,7 +437,7 @@ class TestExtractionOrchestrator:
             )
 
             # Mock other methods to isolate core data extraction
-            with (
+            with (:
                 patch.object(orchestrator, "_perform_discovery"),
                 patch.object(orchestrator, "_generate_comprehensive_report"),
                 patch.object(orchestrator, "_calculate_summary_metrics"),
@@ -471,17 +449,15 @@ class TestExtractionOrchestrator:
 
 
 class TestIntegrationScenarios:
-    """Test integration scenarios combining multiple components."""
+         """Test integration scenarios combining multiple components."""
 
     def test_metadata_discovery_integration(self) -> None:
-        """Test metadata discovery integration with other components."""
         config = {"base_url": "https://test.com", "instance_id": "test"}
 
         # Test that components can work together
         OICMetadataDiscovery(config["base_url"], config["instance_id"])
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            output_dir = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir: output_dir = Path(temp_dir)
 
             engine = AdvancedExtractionEngine(
                 config=config,
@@ -494,7 +470,6 @@ class TestIntegrationScenarios:
             assert engine.metadata_discovery.base_url == config["base_url"]
 
     def test_quality_validation_integration(self) -> None:
-        """Test quality validation integration."""
         validator = OICDataValidator()
 
         # Test with realistic OIC data structure
@@ -526,17 +501,15 @@ class TestIntegrationScenarios:
         assert metrics.quality_score > 0
 
     def test_end_to_end_extraction_flow(self) -> None:
-        """Test end-to-end extraction flow with mocked components."""
         config = {"base_url": "https://test.com", "instance_id": "test"}
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            output_dir = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir: output_dir = Path(temp_dir)
 
             # Test that orchestrator can coordinate multiple extractors
             orchestrator = ExtractionOrchestrator(config=config, output_dir=output_dir)
 
             # Mock all the heavy components
-            with (
+            with (:
                 patch(
                     "tap_oic.extractors.extraction_orchestrator.AdvancedCoreDataExtractor",
                 ) as mock_core,

@@ -1,23 +1,21 @@
-"""Module generate_config."""
-
-# !/usr/bin/env python3
-from typing import Any
+"""Module generate_config.
 
 """Generate config.json from .env file for tap-oracle-oic."""
 
-import json
-import os
 from pathlib import Path
+from typing import Any
 
 from dotenv import load_dotenv
+
+# !/usr/bin/env python3
+
 
 # Load environment variables
 load_dotenv()
 
 
 def generate_config() -> Any:
-    """Generate config.json from environment variables."""
-    # OAuth2 configuration
+            # OAuth2 configuration
     oauth_config = {
         "base_url": os.getenv("OIC_IDCS_CLIENT_AUD", "").rstrip("/"),
         "oauth_client_id": os.getenv("OIC_IDCS_CLIENT_ID"),
@@ -38,8 +36,10 @@ def generate_config() -> Any:
     entities = os.getenv("OIC_ENTITIES", "connections,integrations,packages,lookups")
     extraction_config = {
         "start_date": os.getenv("OIC_START_DATE", "2024-01-01T00:00:00Z"),
-        "entities": entities.split(",") if entities else [],
-        "enable_incremental": os.getenv("OIC_ENABLE_INCREMENTAL", "true").lower()
+        "entities":
+            entities.split(",") if entities else [],:
+        "enable_incremental":
+            os.getenv("OIC_ENABLE_INCREMENTAL", "true").lower()
         == "true",
     }
 
@@ -65,17 +65,17 @@ def generate_config() -> Any:
     }
 
     # Remove None values
-    return {k: v for k, v in config.items() if v is not None}
+    return {k:
+        v for k, v in config.items() if v is not None}:
 
 
 def main() -> None:
-    """Main function."""
-    config = generate_config()
+            config = generate_config()
 
-    # Check if config.json already exists
+    # Check if config.json already exists:
     config_path = Path("config.json")
     if config_path.exists():
-        response = input().strip().lower()
+            response = input().strip().lower()
         if response != "y":
             return
 
@@ -85,4 +85,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+            main()

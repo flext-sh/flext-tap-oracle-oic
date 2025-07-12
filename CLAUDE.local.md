@@ -247,7 +247,7 @@ class OICSingerPatterns:
 - **target-oracle-oic**: Round-trip integration for OIC metadata management
 - **flext-oracle-oic**: Unified FLX adapter with Singer tap integration
 - **oracle-oic-ext**: Meltano extension for lifecycle management
-- **client-b-poc-oic-wms**: POC reference implementation
+- **client-b-meltane-native**: POC reference implementation
 
 ### **Oracle Cloud Integration**
 

@@ -1,4 +1,4 @@
-"""Module test_tap_core."""
+"""Module test_tap_core.
 
 from typing import Any
 
@@ -13,10 +13,9 @@ from tap_oracle_oic.tap import TapOIC
 
 
 class TestTapOIC:
-    """Test the main TapOIC class."""
+         Test the main TapOIC class."""
 
     def test_tap_initialization(self) -> None:
-        """Test basic TAP initialization."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
@@ -30,14 +29,12 @@ class TestTapOIC:
         assert tap.config == config
 
     def test_tap_initialization_without_config(self) -> None:
-        """Test TAP initialization without config."""
         tap = TapOIC(validate_config=False)
 
         assert tap.name == "tap-oic"
         assert hasattr(tap, "config")
 
     def test_core_streams_discovery(self) -> None:
-        """Test that core streams are discovered correctly."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
@@ -63,7 +60,6 @@ class TestTapOIC:
             assert expected in stream_names
 
     def test_extended_streams_discovery(self) -> None:
-        """Test extended streams discovery based on configuration."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
@@ -81,8 +77,7 @@ class TestTapOIC:
         assert "agent_groups" in stream_names
 
     def test_extended_streams_disabled(self) -> None:
-        """Test extended streams are not included when disabled."""
-        config = {
+            config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
             "oauth_client_secret": "test_client_secret",
@@ -96,7 +91,6 @@ class TestTapOIC:
         assert len(streams) == 0
 
     def test_discover_streams(self) -> None:
-        """Test full stream discovery."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
@@ -112,7 +106,6 @@ class TestTapOIC:
         assert len(streams) == 8
 
     def test_config_validation_warnings(self, caplog) -> None:
-        """Test configuration validation warnings."""
         config = {
             "base_url": "http://test.integration.ocp.oraclecloud.com",  # HTTP instead of HTTPS
             "auth_method": "basic",  # Wrong auth method
@@ -128,7 +121,6 @@ class TestTapOIC:
         assert "should use HTTPS" in caplog.text
 
     def test_missing_required_fields_warning(self, caplog) -> None:
-        """Test warning for missing required configuration fields."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             # Missing oauth_client_id, oauth_client_secret, oauth_token_url
@@ -141,7 +133,6 @@ class TestTapOIC:
         assert "Missing required fields" in caplog.text
 
     def test_capabilities(self) -> None:
-        """Test that TAP has correct capabilities."""
         tap = TapOIC(validate_config=False)
 
         expected_capabilities = ["catalog", "state", "discover"]
@@ -151,11 +142,10 @@ class TestTapOIC:
 
 
 class TestTapOICIntegration:
-    """Integration tests for TapOIC."""
+         """Integration tests for TapOIC."""
 
     def test_streams_have_correct_tap_reference(self) -> None:
-        """Test that streams are initialized with correct TAP instance."""
-        config = {
+            config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
             "oauth_client_secret": "test_client_secret",
@@ -173,8 +163,7 @@ class TestTapOICIntegration:
 
 @pytest.fixture
 def sample_config() -> Any:
-    """Sample configuration for testing."""
-    return {
+        return {
         "base_url": "https://test.integration.ocp.oraclecloud.com",
         "oauth_client_id": "test_client_id",
         "oauth_client_secret": "test_client_secret",
@@ -184,8 +173,7 @@ def sample_config() -> Any:
 
 @pytest.fixture
 def sample_config_with_extended() -> Any:
-    """Sample configuration with extended features enabled."""
-    return {
+        return {
         "base_url": "https://test.integration.ocp.oraclecloud.com",
         "oauth_client_id": "test_client_id",
         "oauth_client_secret": "test_client_secret",
@@ -198,20 +186,17 @@ def sample_config_with_extended() -> Any:
 
 
 class TestTapOICWithFixtures:
-    """Tests using fixtures."""
+         """Tests using fixtures."""
 
     def test_tap_with_sample_config(self, sample_config) -> None:
-        """Test TAP initialization with sample config."""
         tap = TapOIC(config=sample_config, validate_config=False)
 
         assert tap.config["base_url"] == sample_config["base_url"]
         assert tap.config["oauth_client_id"] == sample_config["oauth_client_id"]
 
-    def test_streams_count_with_extended_config(
-        self,
+    def test_streams_count_with_extended_config(self,
         sample_config_with_extended,
     ) -> None:
-        """Test stream count with extended configuration."""
         tap = TapOIC(config=sample_config_with_extended, validate_config=False)
 
         core_streams = tap._get_core_streams()
