@@ -1,13 +1,9 @@
-"""Module generate_config.
-
 """Generate config.json from .env file for tap-oracle-oic."""
 
 from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
-
-# !/usr/bin/env python3
 
 
 # Load environment variables
