@@ -8,20 +8,20 @@ import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from tap_oic.extractors.advanced_core_data import AdvancedCoreDataExtractor
-from tap_oic.extractors.extraction_orchestrator import (
+from flext_tap_oracle_oic.extractors.advanced_core_data import AdvancedCoreDataExtractor
+from flext_tap_oracle_oic.extractors.extraction_orchestrator import (
     ExtractionMode,
     ExtractionOrchestrator,
     ExtractionScope,
 )
-from tap_oic.utils.data_quality import OICDataValidator, ValidationCategory
-from tap_oic.utils.extraction_engine import (
+from flext_tap_oracle_oic.utils.data_quality import OICDataValidator, ValidationCategory
+from flext_tap_oracle_oic.utils.extraction_engine import (
     AdvancedExtractionEngine,
     ExtractionPriority,
     ExtractionStatus,
     ExtractionTask,
 )
-from tap_oic.utils.metadata_discovery import (
+from flext_tap_oracle_oic.utils.metadata_discovery import (
     OICAPIVersion,
     OICEndpointMetadata,
     OICMetadataDiscovery,
@@ -30,7 +30,7 @@ from tap_oic.utils.metadata_discovery import (
 
 
 class TestOICMetadataDiscovery:
-             Test metadata discovery functionality."""
+    """Test metadata discovery functionality."""
 
     def test_init(self) -> None:
         discovery = OICMetadataDiscovery("https://test.com", "test_instance")
@@ -38,7 +38,7 @@ class TestOICMetadataDiscovery:
         assert discovery.instance_id == "test_instance"
         assert discovery.discovered_endpoints == {}
 
-    @patch("tap_oic.utils.metadata_discovery.requests.get")
+    @patch("flext_tap_oracle_oic.utils.metadata_discovery.requests.get")
     def test_discover_from_metadata_endpoints(self, mock_get) -> None:
         # Mock successful metadata response
         mock_response = Mock()
@@ -119,7 +119,7 @@ class TestOICMetadataDiscovery:
 
 
 class TestAdvancedExtractionEngine:
-         """Test advanced extraction engine functionality."""
+    """Test advanced extraction engine functionality."""
 
     def test_init(self) -> None:
         config = {"base_url": "https://test.com", "instance_id": "test"}
@@ -175,7 +175,7 @@ class TestAdvancedExtractionEngine:
 
 
 class TestOICDataValidator:
-         """Test data quality validation functionality."""
+    """Test data quality validation functionality."""
 
     def test_init(self) -> None:
         validator = OICDataValidator()
@@ -216,7 +216,7 @@ class TestOICDataValidator:
         assert len(issues) >= 0  # May have issues for missing fields
 
     def test_validate_schema_violations(self) -> None:
-            validator = OICDataValidator()
+        validator = OICDataValidator()
 
         records = [
             {
@@ -228,11 +228,11 @@ class TestOICDataValidator:
         _metrics, issues = validator.validate_stream_data("integrations", records)
 
         # Should detect missing required field
-        schema_issues = [i for i in issues if i.category == ValidationCategory.SCHEMA]:
+        schema_issues = [i for i in issues if i.category == ValidationCategory.SCHEMA]
         assert len(schema_issues) > 0
 
     def test_validate_uniqueness(self) -> None:
-            validator = OICDataValidator()
+        validator = OICDataValidator()
 
         records = [
             {"id": "DUPLICATE", "name": "First"},
@@ -243,12 +243,12 @@ class TestOICDataValidator:
 
         # Should detect duplicate IDs
         uniqueness_issues = [
-            i for i in issues if i.category == ValidationCategory.UNIQUENESS:
+            i for i in issues if i.category == ValidationCategory.UNIQUENESS
         ]
         assert len(uniqueness_issues) > 0
 
     def test_business_rules_validation(self) -> None:
-            validator = OICDataValidator()
+        validator = OICDataValidator()
 
         records = [
             {
@@ -261,9 +261,9 @@ class TestOICDataValidator:
         _metrics, issues = validator.validate_stream_data("integrations", records)
 
         # Should have business rule violations
-        [i for i in issues if i.category == ValidationCategory.BUSINESS]:
-        # Note:
-            Some business rules might not trigger depending on implementation
+        business_issues = [i for i in issues if i.category == ValidationCategory.BUSINESS]
+        assert len(business_issues) > 0
+        # Note: Some business rules might not trigger depending on implementation
 
     def test_quality_score_calculation(self) -> None:
         validator = OICDataValidator()
@@ -281,9 +281,9 @@ class TestOICDataValidator:
 
 
 class TestAdvancedCoreDataExtractor:
-         """Test advanced core data extractor."""
+    """Test advanced core data extractor."""
 
-    @patch("tap_oic.extractors.advanced_core_data.TapOIC")
+    @patch("flext_tap_oracle_oic.extractors.advanced_core_data.TapOIC")
     def test_init(self, mock_tap_class) -> None:
         config = {"base_url": "https://test.com", "instance_id": "test"}
 
@@ -291,25 +291,26 @@ class TestAdvancedCoreDataExtractor:
         mock_tap = Mock()
         mock_tap_class.return_value = mock_tap
 
-        with tempfile.TemporaryDirectory() as temp_dir: output_dir = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_dir = Path(temp_dir)
 
-            extractor = AdvancedCoreDataExtractor(
-                config=config,
-                output_dir=output_dir,
-                enable_discovery=True,
-                enable_quality_validation=True,
-            )
+        extractor = AdvancedCoreDataExtractor(
+            config=config,
+            output_dir=output_dir,
+            enable_discovery=True,
+            enable_quality_validation=True,
+        )
 
-            assert extractor.config == config
-            assert extractor.output_dir == output_dir
-            assert extractor.enable_discovery is True
-            assert extractor.enable_quality_validation is True
-            assert output_dir.exists()
+        assert extractor.config == config
+        assert extractor.output_dir == output_dir
+        assert extractor.enable_discovery is True
+        assert extractor.enable_quality_validation is True
+        assert output_dir.exists()
 
-            # Verify TAP was initialized
-            mock_tap_class.assert_called_once_with(config=config)
+        # Verify TAP was initialized
+        mock_tap_class.assert_called_once_with(config=config)
 
-    @patch("tap_oic.extractors.advanced_core_data.TapOIC")
+    @patch("flext_tap_oracle_oic.extractors.advanced_core_data.TapOIC")
     def test_extract_with_mocked_tap(self, mock_tap_class) -> None:
         config = {"base_url": "https://test.com", "instance_id": "test"}
 
@@ -325,7 +326,9 @@ class TestAdvancedCoreDataExtractor:
         ]
         mock_tap.discover_streams.return_value = [mock_stream]
 
-        with tempfile.TemporaryDirectory() as temp_dir: output_dir = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir:
+
+            output_dir = Path(temp_dir)
 
             extractor = AdvancedCoreDataExtractor(
                 config=config,
@@ -353,12 +356,14 @@ class TestAdvancedCoreDataExtractor:
 
 
 class TestExtractionOrchestrator:
-             """Test extraction orchestrator functionality."""
+    """Test extraction orchestrator functionality."""
 
     def test_init(self) -> None:
         config = {"base_url": "https://test.com", "instance_id": "test"}
 
-        with tempfile.TemporaryDirectory() as temp_dir: output_dir = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir:
+
+            output_dir = Path(temp_dir)
 
             orchestrator = ExtractionOrchestrator(config=config, output_dir=output_dir)
 
@@ -369,7 +374,9 @@ class TestExtractionOrchestrator:
     def test_extraction_scopes(self) -> None:
         config = {"base_url": "https://test.com", "instance_id": "test"}
 
-        with tempfile.TemporaryDirectory() as temp_dir: output_dir = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir:
+
+            output_dir = Path(temp_dir)
 
             orchestrator = ExtractionOrchestrator(config=config, output_dir=output_dir)
 
@@ -391,7 +398,7 @@ class TestExtractionOrchestrator:
                 assert call_args.include_artifacts is False
 
     def test_extraction_plan_creation(self) -> None:
-        from tap_oic.extractors.extraction_orchestrator import (  # TODO: Move import to module level
+        from flext_tap_oracle_oic.extractors.extraction_orchestrator import (  # TODO: Move import to module level
             ExtractionPlan,
         )
 
@@ -409,7 +416,7 @@ class TestExtractionOrchestrator:
         assert plan.include_execution_logs is True
         assert plan.enable_discovery is True
 
-    @patch("tap_oic.extractors.extraction_orchestrator.AdvancedCoreDataExtractor")
+    @patch("flext_tap_oracle_oic.extractors.extraction_orchestrator.AdvancedCoreDataExtractor")
     def test_core_data_extraction(self, mock_extractor_class) -> None:
         config = {"base_url": "https://test.com", "instance_id": "test"}
 
@@ -420,11 +427,14 @@ class TestExtractionOrchestrator:
         }
         mock_extractor_class.return_value = mock_extractor
 
-        with tempfile.TemporaryDirectory() as temp_dir: output_dir = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir:
+
+            output_dir = Path(temp_dir)
 
             orchestrator = ExtractionOrchestrator(config=config, output_dir=output_dir)
 
-            from tap_oic.extractors.extraction_orchestrator import (  # TODO: Move import to module level
+            # TODO: Move import to module level
+            from flext_tap_oracle_oic.extractors.extraction_orchestrator import (
                 ExtractionPlan,
             )
 
@@ -437,7 +447,7 @@ class TestExtractionOrchestrator:
             )
 
             # Mock other methods to isolate core data extraction
-            with (:
+            with (
                 patch.object(orchestrator, "_perform_discovery"),
                 patch.object(orchestrator, "_generate_comprehensive_report"),
                 patch.object(orchestrator, "_calculate_summary_metrics"),
@@ -449,7 +459,7 @@ class TestExtractionOrchestrator:
 
 
 class TestIntegrationScenarios:
-         """Test integration scenarios combining multiple components."""
+    """Test integration scenarios combining multiple components."""
 
     def test_metadata_discovery_integration(self) -> None:
         config = {"base_url": "https://test.com", "instance_id": "test"}
@@ -457,7 +467,9 @@ class TestIntegrationScenarios:
         # Test that components can work together
         OICMetadataDiscovery(config["base_url"], config["instance_id"])
 
-        with tempfile.TemporaryDirectory() as temp_dir: output_dir = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir:
+
+            output_dir = Path(temp_dir)
 
             engine = AdvancedExtractionEngine(
                 config=config,
@@ -503,21 +515,23 @@ class TestIntegrationScenarios:
     def test_end_to_end_extraction_flow(self) -> None:
         config = {"base_url": "https://test.com", "instance_id": "test"}
 
-        with tempfile.TemporaryDirectory() as temp_dir: output_dir = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir:
+
+            output_dir = Path(temp_dir)
 
             # Test that orchestrator can coordinate multiple extractors
             orchestrator = ExtractionOrchestrator(config=config, output_dir=output_dir)
 
             # Mock all the heavy components
-            with (:
+            with (
                 patch(
-                    "tap_oic.extractors.extraction_orchestrator.AdvancedCoreDataExtractor",
+                    "flext_tap_oracle_oic.extractors.extraction_orchestrator.AdvancedCoreDataExtractor",
                 ) as mock_core,
                 patch(
-                    "tap_oic.extractors.extraction_orchestrator.AdvancedExecutionLogsExtractor",
+                    "flext_tap_oracle_oic.extractors.extraction_orchestrator.AdvancedExecutionLogsExtractor",
                 ) as mock_logs,
                 patch(
-                    "tap_oic.extractors.extraction_orchestrator.AdvancedArtifactsExtractor",
+                    "flext_tap_oracle_oic.extractors.extraction_orchestrator.AdvancedArtifactsExtractor",
                 ) as mock_artifacts,
             ):
                 # Setup mocks

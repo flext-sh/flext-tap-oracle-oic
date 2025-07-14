@@ -150,6 +150,8 @@ def create_development_oic_config(**overrides: Any) -> ServiceResult[TapOracleOI
             oauth_client_id="dev-client-id",
             oauth_client_secret="dev-client-secret",
             oauth_token_url="https://identity.oraclecloud.com/oauth2/v1/token",
+            oauth_client_aud=None,
+            oauth_scope=None,
         )
 
         connection_config = OICConnectionConfig(
@@ -172,12 +174,23 @@ def create_development_oic_config(**overrides: Any) -> ServiceResult[TapOracleOI
             extract_integration_metadata=True,
             extract_connection_properties=True,
             extract_lookup_data=False,
+            created_after=None,
+            modified_after=None,
         )
 
         config = TapOracleOICConfig(
             auth=auth_config,
             connection=connection_config,
-            stream_selection=StreamSelectionConfig(),
+            stream_selection=StreamSelectionConfig(
+                stream_maps=None,
+                stream_map_config=None,
+                include_integrations=None,
+                exclude_integrations=None,
+                include_lookups=None,
+                exclude_lookups=None,
+                include_patterns=None,
+                exclude_patterns=None,
+            ),
             discovery=discovery_config,
             data_extraction=data_extraction_config,
             project_name="flext-tap-oracle-oic",
@@ -211,6 +224,8 @@ def create_production_oic_config(**overrides: Any) -> ServiceResult[TapOracleOIC
             oauth_client_id="prod-client-id",
             oauth_client_secret="prod-client-secret",
             oauth_token_url="https://identity.oraclecloud.com/oauth2/v1/token",
+            oauth_client_aud=None,
+            oauth_scope=None,
         )
 
         connection_config = OICConnectionConfig(
@@ -235,14 +250,23 @@ def create_production_oic_config(**overrides: Any) -> ServiceResult[TapOracleOIC
             extract_integration_metadata=True,
             extract_connection_properties=True,
             extract_lookup_data=True,
-            extract_monitoring_data=True,
-            extract_audit_logs=False,
+            created_after=None,
+            modified_after=None,
         )
 
         config = TapOracleOICConfig(
             auth=auth_config,
             connection=connection_config,
-            stream_selection=StreamSelectionConfig(),
+            stream_selection=StreamSelectionConfig(
+                stream_maps=None,
+                stream_map_config=None,
+                include_integrations=None,
+                exclude_integrations=None,
+                include_lookups=None,
+                exclude_lookups=None,
+                include_patterns=None,
+                exclude_patterns=None,
+            ),
             discovery=discovery_config,
             data_extraction=data_extraction_config,
             project_name="flext-tap-oracle-oic",
@@ -276,6 +300,8 @@ def create_discovery_only_config(**overrides: Any) -> ServiceResult[TapOracleOIC
             oauth_client_id="discovery-client-id",
             oauth_client_secret="discovery-client-secret",
             oauth_token_url="https://identity.oraclecloud.com/oauth2/v1/token",
+            oauth_client_aud=None,
+            oauth_scope=None,
         )
 
         connection_config = OICConnectionConfig(
@@ -303,12 +329,23 @@ def create_discovery_only_config(**overrides: Any) -> ServiceResult[TapOracleOIC
             extract_lookup_data=False,
             extract_monitoring_data=False,
             extract_audit_logs=False,
+            created_after=None,
+            modified_after=None,
         )
 
         config = TapOracleOICConfig(
             auth=auth_config,
             connection=connection_config,
-            stream_selection=StreamSelectionConfig(),
+            stream_selection=StreamSelectionConfig(
+                stream_maps=None,
+                stream_map_config=None,
+                include_integrations=None,
+                exclude_integrations=None,
+                include_lookups=None,
+                exclude_lookups=None,
+                include_patterns=None,
+                exclude_patterns=None,
+            ),
             discovery=discovery_config,
             data_extraction=data_extraction_config,
             project_name="flext-tap-oracle-oic",
@@ -342,6 +379,8 @@ def create_monitoring_config(**overrides: Any) -> ServiceResult[TapOracleOICConf
             oauth_client_id="monitoring-client-id",
             oauth_client_secret="monitoring-client-secret",
             oauth_token_url="https://identity.oraclecloud.com/oauth2/v1/token",
+            oauth_client_aud=None,
+            oauth_scope=None,
         )
 
         connection_config = OICConnectionConfig(
@@ -364,12 +403,23 @@ def create_monitoring_config(**overrides: Any) -> ServiceResult[TapOracleOICConf
             extract_lookup_data=False,
             extract_monitoring_data=True,
             extract_audit_logs=True,
+            created_after=None,
+            modified_after=None,
         )
 
         config = TapOracleOICConfig(
             auth=auth_config,
             connection=connection_config,
-            stream_selection=StreamSelectionConfig(),
+            stream_selection=StreamSelectionConfig(
+                stream_maps=None,
+                stream_map_config=None,
+                include_integrations=None,
+                exclude_integrations=None,
+                include_lookups=None,
+                exclude_lookups=None,
+                include_patterns=None,
+                exclude_patterns=None,
+            ),
             discovery=discovery_config,
             data_extraction=data_extraction_config,
             project_name="flext-tap-oracle-oic",

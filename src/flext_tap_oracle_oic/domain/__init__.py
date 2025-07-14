@@ -3,3 +3,23 @@
 REFACTORED:
             Domain entities and value objects.
 """
+
+from flext_tap_oracle_oic.domain.entities import (
+    OICConnection,
+    OICIntegration,
+    OICLookup,
+    OICMonitoringRecord,
+    OICProject,
+    OICResourceMetadata,
+    OICResourceType,
+)
+
+__all__ = [
+    "OICConnection",
+    "OICIntegration",
+    "OICLookup",
+    "OICMonitoringRecord",
+    "OICProject",
+    "OICResourceMetadata",
+    "OICResourceType",
+]

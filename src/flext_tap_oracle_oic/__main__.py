@@ -14,7 +14,7 @@ from __future__ import annotations
 
 
 def main() -> None:
-    from tap_oracle_oic.tap import TapOIC  # TODO: Move import to module level
+    from flext_tap_oracle_oic.tap import TapOIC
 
     TapOIC.cli()
 

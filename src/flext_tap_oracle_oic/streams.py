@@ -327,8 +327,7 @@ class OICBaseStream(RESTStream[Any]):
                 yield data
 
     def _is_empty_result_expected(self, data: dict[str, Any] | list[Any]) -> bool:
-        if isinstance(data, list):
-            return len(data) == 0
+        """Check if empty result is expected/normal."""
         if isinstance(data, dict):
             return (
                 data.get("totalSize", 0) == 0
@@ -336,7 +335,8 @@ class OICBaseStream(RESTStream[Any]):
                 or len(data.get("items", [])) == 0
                 or len(data.get("data", [])) == 0
             )
-        return False
+        # For list data, empty is expected when the list is empty
+        return len(data) == 0
 
     def _is_single_record(self, data: dict[str, Any]) -> bool:
         """Check if dict represents a single record vs metadata container."""
@@ -346,7 +346,7 @@ class OICBaseStream(RESTStream[Any]):
     def _validate_record(self, record: dict[str, Any]) -> bool:
         """Validate record meets basic requirements."""
         if not isinstance(record, dict):
-            return False
+            return False  # type: ignore[unreachable]
         # Basic validation - can be overridden by subclasses
         return True
 

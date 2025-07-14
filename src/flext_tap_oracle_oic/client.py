@@ -7,7 +7,7 @@ Zero tolerance for mock implementations - real OAuth2 and REST API integration.
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 from urllib.parse import urljoin
 
@@ -64,10 +64,13 @@ class OracleOICClient:
         self._access_token: str | None = None
         self._token_expires_at: datetime | None = None
 
-        logger.info("Oracle OIC client initialized", extra={
-            "base_url": self.base_url,
-            "oauth_scope": self.oauth_scope,
-        })
+        logger.info(
+            "Oracle OIC client initialized",
+            extra={
+                "base_url": self.base_url,
+                "oauth_scope": self.oauth_scope,
+            },
+        )
 
     def _get_access_token(self) -> ServiceResult[str]:
         """Get OAuth2 access token from Oracle IDCS.
@@ -78,9 +81,11 @@ class OracleOICClient:
         """
         try:
             # Check if current token is still valid
-            if (self._access_token
+            if (
+                self._access_token
                 and self._token_expires_at
-                and datetime.now() < self._token_expires_at):
+                and datetime.now() < self._token_expires_at
+            ):
                 return ServiceResult.success(self._access_token)
 
             # Request new token
@@ -108,12 +113,16 @@ class OracleOICClient:
             # Calculate token expiration (with 5 minute buffer)
             expires_in = token_data.get("expires_in", 3600)
             self._token_expires_at = datetime.now().replace(
-                second=0, microsecond=0,
-            ) + datetime.timedelta(seconds=expires_in - 300)
+                second=0,
+                microsecond=0,
+            ) + timedelta(seconds=expires_in - 300)
 
-            logger.info("OAuth2 token obtained successfully", extra={
-                "expires_at": self._token_expires_at.isoformat(),
-            })
+            logger.info(
+                "OAuth2 token obtained successfully",
+                extra={
+                    "expires_at": self._token_expires_at.isoformat(),
+                },
+            )
 
             return ServiceResult.success(self._access_token)
 
@@ -143,8 +152,10 @@ class OracleOICClient:
         try:
             # Get valid access token
             token_result = self._get_access_token()
-            if not token_result.success:
-                return ServiceResult.fail(f"Authentication failed: {token_result.error}")
+            if not token_result.is_success:
+                return ServiceResult.fail(
+                    f"Authentication failed: {token_result.error}",
+                )
 
             # Prepare request
             url = urljoin(self.base_url, endpoint)
@@ -183,11 +194,14 @@ class OracleOICClient:
             except json.JSONDecodeError:
                 data = {"content": response.text}
 
-            logger.debug("API request successful", extra={
-                "method": method,
-                "endpoint": endpoint,
-                "status_code": response.status_code,
-            })
+            logger.debug(
+                "API request successful",
+                extra={
+                    "method": method,
+                    "endpoint": endpoint,
+                    "status_code": response.status_code,
+                },
+            )
 
             return ServiceResult.success(data)
 
@@ -217,7 +231,9 @@ class OracleOICClient:
 
         return self._make_request("GET", "/ic/api/integration/v1/integrations", params)
 
-    def get_integration_details(self, integration_id: str) -> ServiceResult[dict[str, Any]]:
+    def get_integration_details(
+        self, integration_id: str,
+    ) -> ServiceResult[dict[str, Any]]:
         """Get detailed information about a specific integration.
 
         Args:
@@ -252,7 +268,9 @@ class OracleOICClient:
 
         return self._make_request("GET", "/ic/api/integration/v1/connections", params)
 
-    def get_connection_details(self, connection_id: str) -> ServiceResult[dict[str, Any]]:
+    def get_connection_details(
+        self, connection_id: str,
+    ) -> ServiceResult[dict[str, Any]]:
         """Get detailed information about a specific connection.
 
         Args:
@@ -342,21 +360,29 @@ class OracleOICClient:
 
         # Test authentication first
         token_result = self._get_access_token()
-        if not token_result.success:
-            return ServiceResult.fail(f"Authentication test failed: {token_result.error}")
+        if not token_result.is_success:
+            return ServiceResult.fail(
+                f"Authentication test failed: {token_result.error}",
+            )
 
         # Test API connectivity with a simple endpoint
-        health_result = self._make_request("GET", "/ic/api/integration/v1/integrations", {"limit": 1})
-        if not health_result.success:
-            return ServiceResult.fail(f"API connectivity test failed: {health_result.error}")
+        health_result = self._make_request(
+            "GET", "/ic/api/integration/v1/integrations", {"limit": 1},
+        )
+        if not health_result.is_success:
+            return ServiceResult.fail(
+                f"API connectivity test failed: {health_result.error}",
+            )
 
         logger.info("Oracle OIC connection test successful")
-        return ServiceResult.success({
-            "status": "connected",
-            "authentication": "success",
-            "api_connectivity": "success",
-            "timestamp": datetime.now().isoformat(),
-        })
+        return ServiceResult.success(
+            {
+                "status": "connected",
+                "authentication": "success",
+                "api_connectivity": "success",
+                "timestamp": datetime.now().isoformat(),
+            },
+        )
 
     def close(self) -> None:
         """Close the client session."""

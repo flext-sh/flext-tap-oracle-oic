@@ -29,7 +29,7 @@ class TapOracleOIC(Tap):
         Property("oauth_scope", str, default="urn:opc:resource:consumer:all", description="OAuth2 scope"),
     ).to_dict()
 
-    def __init__(self, config: dict[str, Any] | None = None, **kwargs) -> None:
+    def __init__(self, config: dict[str, Any] | None = None, **kwargs: Any) -> None:
         """Initialize Oracle OIC tap."""
         super().__init__(config=config, **kwargs)
         self.logger = logger

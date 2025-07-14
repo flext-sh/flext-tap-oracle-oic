@@ -1,10 +1,10 @@
-"""Tests for tap-oracle-oic.
+"""Tests for tap-oracle-oic."""
 
-from tap_oracle_oic.tap import TapOIC
+from flext_tap_oracle_oic.tap import TapOIC
 
 
 class TestTapOIC:
-             """Test cases for TapOIC."""
+    """Test cases for TapOIC."""
 
     def test_tap_initialization(self) -> None:
         config = {
@@ -36,16 +36,13 @@ class TestTapOIC:
         assert "lookups" in stream_names
 
     def test_config_validation(self) -> None:
-            import pytest  # TODO: Move import to module level
-        from singer_sdk.exceptions import (  # TODO:
-            Move import to module level
-            ConfigValidationError,
-        )
+        import pytest
+        from singer_sdk.exceptions import ConfigValidationError
 
         # Missing required fields should raise exception when validation is enabled
         config = {
-            "base_url":
-             "https://test.integration.ocp.oraclecloud.com",
+            "base_url",
+            "https://test.integration.ocp.oraclecloud.com",
         }
         with pytest.raises(ConfigValidationError):
             TapOIC(config=config, validate_config=True)
