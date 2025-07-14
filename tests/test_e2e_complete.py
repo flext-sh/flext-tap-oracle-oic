@@ -1,12 +1,11 @@
-"""Module test_e2e_complete.
-
 # !/usr/bin/env python3
-from typing import Any
 
 """Comprehensive End-to-End tests for tap-oracle-oic.
 
+Module test_e2e_complete.
+
 Tests all functionalities including:
-            - Discovery
+- Discovery
 - Catalog generation
 - Data extraction
 - State management
@@ -17,39 +16,40 @@ Tests all functionalities including:
 import json
 import os
 from pathlib import Path
+from typing import Any
 from unittest.mock import Mock, patch
 
 import pytest
 from singer_sdk.testing import get_tap_test_class
-from tap_oracle_oic.tap import TapOIC
+
+from flext_tap_oracle_oic.tap import TapOIC
 
 
 class TestTapOracleOICE2E:
-         End-to-end tests for tap-oracle-oic."""
+    """End-to-end tests for tap-oracle-oic."""
 
     @pytest.fixture
-    def config_path(self) -> Any:
-            config_file = Path(__file__).parent.parent / "config.json"
-        if not config_file.exists():
-            # Generate config if it doesn't exist:
-            os.system("cd .. && python generate_config.py")
-        return str(config_file)
+    def config(self) -> dict[str, Any]:
+        """Mock configuration that matches the required schema."""
+        return {
+            "oauth_client_id": "test_client_id",
+            "oauth_client_secret": "test_client_secret", 
+            "oauth_endpoint": "https://test.identity.oraclecloud.com/oauth2/v1/token",
+            "oic_url": "https://test.integration.ocp.oraclecloud.com",
+            "oauth_scope": "urn:opc:resource:consumer:all",
+            "start_date": "2024-01-01T00:00:00Z"
+        }
 
     @pytest.fixture
-    def config(self, config_path) -> Any:
-        with open(config_path, encoding="utf-8") as f:
-            return json.load(f)
-
-    @pytest.fixture
-    def tap(self, config) -> Any:
+    def tap(self, config: dict[str, Any]) -> Any:
         return TapOIC(config=config)
 
-    def test_tap_initialization(self, tap, config) -> None:
-        assert tap.name == "tap-oic"
+    def test_tap_initialization(self, tap: TapOIC, config: dict[str, Any]) -> None:
+        assert tap.name == "tap-oracle-oic"
         assert tap.config == config
-        assert tap.config["base_url"] == config["base_url"]
+        assert tap.config["oic_url"] == config["oic_url"]
 
-    def test_discover_streams(self, tap) -> None:
+    def test_discover_streams(self, tap: TapOIC) -> None:
         catalog = tap.discover_streams()
 
         # Check that we discovered streams
@@ -62,8 +62,8 @@ class TestTapOracleOICE2E:
         assert "packages" in stream_names
         assert "lookups" in stream_names
 
-    def test_catalog_generation(self, tap) -> None:
-            catalog_dict = tap.catalog_dict
+    def test_catalog_generation(self, tap: TapOIC) -> None:
+        catalog_dict = tap.catalog_dict
 
         assert "streams" in catalog_dict
         assert len(catalog_dict["streams"]) > 0
@@ -74,7 +74,7 @@ class TestTapOracleOICE2E:
             assert "schema" in stream
             assert "metadata" in stream
 
-    def test_stream_schema_validation(self, tap) -> None:
+    def test_stream_schema_validation(self, tap: TapOIC) -> None:
         catalog = tap.discover_streams()
 
         for stream in catalog:
@@ -91,7 +91,7 @@ class TestTapOracleOICE2E:
         os.getenv("SKIP_LIVE_TESTS", "true").lower() == "true",
         reason="Skipping live API tests",
     )
-    def test_live_connection(self, tap) -> None:
+    def test_live_connection(self, tap: TapOIC) -> None:
             # Test authentication
         streams = tap.discover_streams()
         if streams:
@@ -99,16 +99,16 @@ class TestTapOracleOICE2E:
 
             # Try to get records from the first stream
             try:
-            list(stream.get_records(context= {}
+                list(stream.get_records(context={}))
                 # If we get here without error, authentication worked
                 assert True
             except Exception as e:
-            # Check if it's an authentication error:
+                # Check if it's an authentication error:
                 if "401" in str(e) or "403" in str(e):
-            pytest.fail(f"Authentication failed: {e}")
+                    pytest.fail(f"Authentication failed: {e}")
                 # Other errors might be OK (e.g., no data)
 
-    def test_state_management(self, tap) -> None:
+    def test_state_management(self, tap: TapOIC) -> None:
         # Create a test state
         test_state = {
             "bookmarks": {
@@ -125,7 +125,7 @@ class TestTapOracleOICE2E:
         # Check state was loaded
         assert tap.state == test_state
 
-    def test_cli_discovery(self, config_path) -> None:
+    def test_cli_discovery(self, config_path: str) -> None:
         import subprocess  # TODO: Move import to module level
 
         result = subprocess.run(
@@ -146,13 +146,13 @@ class TestTapOracleOICE2E:
     def test_config_validation(self) -> None:
         # Test missing required fields
         with pytest.raises(Exception):
-            TapOIC(config= {}
+            TapOIC(config={})
 
         # Test invalid config
         with pytest.raises(Exception):
             TapOIC(config={"base_url": "not-a-url"})
 
-    def test_stream_selection(self, tap) -> None:
+    def test_stream_selection(self, tap: TapOIC) -> None:
         catalog = tap.discover_streams()
 
         # Create a catalog with only selected streams
@@ -170,7 +170,7 @@ class TestTapOracleOICE2E:
                         },
                     ],
                 }
-                for stream in catalog:
+                for stream in catalog
             ],
         }
 
@@ -178,18 +178,18 @@ class TestTapOracleOICE2E:
         tap.catalog = selected_catalog
 
         # Check only selected stream is active
-        active_streams = [s for s in tap.streams.values() if s.selected]:
+        active_streams = [s for s in tap.streams.values() if s.selected]
         assert len(active_streams) == 1
         assert active_streams[0].name == "connections"
 
-    def test_error_handling(self, tap) -> None:
+    def test_error_handling(self, tap: TapOIC) -> None:
             # Test with invalid endpoint
         with patch.object(tap, "config", {"base_url": "https://invalid.example.com"}):
             streams = tap.discover_streams()
             # Should handle gracefully without crashing
             assert isinstance(streams, list)
 
-    def test_pagination_handling(self, tap) -> None:
+    def test_pagination_handling(self, tap: TapOIC) -> None:
         # Mock a paginated response
         mock_response = Mock()
         mock_response.json.return_value = {
@@ -202,7 +202,7 @@ class TestTapOracleOICE2E:
         # This test verifies the tap can handle paginated responses
         # Implementation depends on actual pagination logic
 
-    def test_data_transformation(self, tap) -> None:
+    def test_data_transformation(self, tap: TapOIC) -> None:
         catalog = tap.discover_streams()
 
         for stream in catalog:
@@ -211,10 +211,11 @@ class TestTapOracleOICE2E:
 
             # Verify schema has proper type definitions
             if "properties" in schema:
-            for prop_schema in schema["properties"].values():
+                for prop_schema in schema["properties"].values():
+                    assert "type" in prop_schema or "anyOf" in prop_schema
             assert "type" in prop_schema or "anyOf" in prop_schema
 
-    def test_full_extraction_flow(self, config_path, tmp_path) -> None:
+    def test_full_extraction_flow(self, config_path: str, tmp_path: Path) -> None:
         import subprocess  # TODO: Move import to module level
 
         # 1. Run discovery
@@ -257,12 +258,13 @@ class TestTapOracleOICE2E:
         # Check output contains Singer messages
         output_lines = extract_result.stdout.strip().split("\n")
         for line in output_lines:
-            if line = json.loads(line):
+            msg = json.loads(line)
+            if msg:
                 assert "type" in msg
                 assert msg["type"] in {"SCHEMA", "RECORD", "STATE", "ACTIVATE_VERSION"}
 
     def test_conditional_config_generation(self) -> None:
-            config_path = Path(__file__).parent.parent / "config.json"
+        config_path = Path(__file__).parent.parent / "config.json"
 
         # If config doesn't exist, it should be generated
         if not config_path.exists():
@@ -280,7 +282,8 @@ class TestTapOracleOICE2E:
             assert config_path.exists()
 
         # Load and validate config
-        with open(config_path, encoding="utf-8") as f: config = json.load(f)
+        with open(config_path, encoding="utf-8") as f:
+            config = json.load(f)
 
         # Check required fields
         assert "base_url" in config
@@ -293,14 +296,14 @@ class TestTapOracleOICE2E:
 TapOICTestClass = get_tap_test_class(
     tap_class=TapOIC,
     config={
-        "base_url":
-         "https://test.integration.ocp.oraclecloud.com",
         "oauth_client_id": "test_client",
         "oauth_client_secret": "test_secret",
-        "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
+        "oauth_endpoint": "https://test.identity.oraclecloud.com/oauth2/v1/token",
+        "oic_url": "https://test.integration.ocp.oraclecloud.com",
+        "oauth_scope": "urn:opc:resource:consumer:all",
     },
 )
 
 
 class TestTapOICSingerSDK(TapOICTestClass):
-         """Singer SDK standard tests for tap-oracle-oic."""
+    """Singer SDK standard tests for tap-oracle-oic."""

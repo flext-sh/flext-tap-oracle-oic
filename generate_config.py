@@ -1,10 +1,11 @@
 """Generate config.json from .env file for tap-oracle-oic."""
 
+import json
+import os
 from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
-
 
 # Load environment variables
 load_dotenv()
@@ -33,7 +34,7 @@ def generate_config() -> Any:
     extraction_config = {
         "start_date": os.getenv("OIC_START_DATE", "2024-01-01T00:00:00Z"),
         "entities":
-            entities.split(",") if entities else [],:
+            entities.split(",") if entities else [],
         "enable_incremental":
             os.getenv("OIC_ENABLE_INCREMENTAL", "true").lower()
         == "true",
@@ -61,17 +62,16 @@ def generate_config() -> Any:
     }
 
     # Remove None values
-    return {k:
-        v for k, v in config.items() if v is not None}:
+    return {k: v for k, v in config.items() if v is not None}
 
 
 def main() -> None:
-            config = generate_config()
+    config = generate_config()
 
     # Check if config.json already exists:
     config_path = Path("config.json")
     if config_path.exists():
-            response = input().strip().lower()
+        response = input().strip().lower()
         if response != "y":
             return
 
@@ -81,4 +81,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-            main()
+    main()

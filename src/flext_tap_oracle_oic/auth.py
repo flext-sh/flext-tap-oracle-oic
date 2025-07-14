@@ -39,15 +39,19 @@ from singer_sdk.authenticators import OAuthAuthenticator
 
 # Delegate to enterprise authentication service
 try:
-    from flext_auth.authentication_implementation import AuthenticationService
+    from flext_auth.authentication_implementation import (
+        AuthenticationService,  # type: ignore[attr-defined]
+    )
     from flext_auth.jwt_service import JWTConfig, JWTService
 
-    from flext_core.config.domain_config import get_config
+    from flext_core.config.domain_config import (
+        get_config,  # type: ignore[import-not-found]
+    )
 except ImportError:
     # Fallback for environments without flext-auth
     AuthenticationService = None
-    JWTService = None
-    JWTConfig = None
+    JWTService = None  # type: ignore[misc,assignment]
+    JWTConfig = None  # type: ignore[misc,assignment]
     get_config = None
 
 

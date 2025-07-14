@@ -47,6 +47,10 @@ class IntegrationsStream:
     default_sort = "lastUpdated:desc"
     default_expand = "connections,endpoints"
 
+    def __init__(self, config: dict[str, Any] | None = None) -> None:
+        """Initialize stream with optional configuration."""
+        self.config = config or {}
+
     schema = th.PropertiesList(
         # Core identification
         th.Property("id", th.StringType, description="Unique integration identifier"),
@@ -240,6 +244,10 @@ class ConnectionsStream:
     requires_design_api = True
     default_sort = "lastUpdated:desc"
     default_expand = "adapter,properties"
+
+    def __init__(self, config: dict[str, Any] | None = None) -> None:
+        """Initialize stream with optional configuration."""
+        self.config = config or {}
 
     schema = th.PropertiesList(
         # Core identification

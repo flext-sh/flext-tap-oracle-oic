@@ -28,7 +28,7 @@ from tap_oic.utils.stream_categorizer import StreamCategorizer
 
 
 class TestStreamCategorizer:
-             Test stream categorization utility functions."""
+    """Test stream categorization utility functions."""
 
     def test_categorize_streams_core_streams(self) -> None:
         # Mock stream objects
@@ -99,7 +99,7 @@ class TestStreamCategorizer:
 
 
 class TestAuthUtils:
-         """Test authentication utility functions."""
+    """Test authentication utility functions."""
 
     def test_validate_token_valid(self) -> None:
         valid_token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9"
@@ -180,7 +180,7 @@ class TestAuthUtils:
 
 
 class TestFileUtils:
-         """Test file utility functions."""
+    """Test file utility functions."""
 
     def test_clean_filename(self) -> None:
         assert clean_filename("test|name") == "test_name"
@@ -189,7 +189,9 @@ class TestFileUtils:
         assert clean_filename("normal_name") == "normal_name"
 
     def test_create_directory_structure(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir: base_path = Path(temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir:
+
+            base_path = Path(temp_dir)
             category_path = create_directory_structure(base_path, "test_category")
 
             assert category_path.exists()
@@ -197,13 +199,15 @@ class TestFileUtils:
             assert category_path.name == "test_category"
 
     def test_save_json_data(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir: file_path = Path(temp_dir) / "test.json"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            file_path = Path(temp_dir) / "test.json"
             records = [{"id": 1, "name": "test"}]
 
             save_json_data(file_path, "test_stream", "test_category", records)
 
             assert file_path.exists()
-            with open(file_path, encoding="utf-8") as f: data = json.load(f)
+            with open(file_path, encoding="utf-8") as f:
+                data = json.load(f)
 
             assert data["stream_name"] == "test_stream"
             assert data["category"] == "test_category"
@@ -211,7 +215,9 @@ class TestFileUtils:
             assert data["records"] == records
 
     def test_save_binary_file(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir: file_path = Path(temp_dir) / "test.bin"
+        with tempfile.TemporaryDirectory() as temp_dir:
+
+            file_path = Path(temp_dir) / "test.bin"
             content = b"test binary content"
 
             size_mb = save_binary_file(file_path, content)
@@ -221,14 +227,17 @@ class TestFileUtils:
             assert size_mb == len(content) / (1024 * 1024)
 
     def test_save_artifact_summary(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir: file_path = Path(temp_dir) / "summary.json"
+        with tempfile.TemporaryDirectory() as temp_dir:
+
+            file_path = Path(temp_dir) / "summary.json"
             config = {"base_url": "https://test.com", "instance_id": "test"}
             artifacts = [{"id": "test1", "status": "downloaded"}]
 
             save_artifact_summary(file_path, config, 10, 8, 2, artifacts)
 
             assert file_path.exists()
-            with open(file_path, encoding="utf-8") as f: data = json.load(f)
+            with open(file_path, encoding="utf-8") as f:
+                data = json.load(f)
 
             assert data["total_integrations"] == 10
             assert data["downloaded"] == 8
@@ -238,7 +247,7 @@ class TestFileUtils:
 
 
 class TestOICAPIClient:
-         """Test OIC API client utility functions."""
+    """Test OIC API client utility functions."""
 
     def test_init(self) -> None:
         client = OICAPIClient("https://test.com", "test_instance")

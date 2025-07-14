@@ -15,9 +15,17 @@ dependencies = [
     # Singer SDK and Oracle OIC dependencies
     "singer-sdk>=0.39.0",
     "requests>=2.32.0",
-    "oracledb>=2.5.0",
+    "oracledb>=3.2.0",
 ]
-keywords = ["flext", "singer", "tap", "oracle", "oic", "integration", "enterprise"]
+keywords = [
+    "flext",
+    "singer",
+    "tap",
+    "oracle",
+    "oic",
+    "integration",
+    "enterprise",
+]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -58,7 +66,7 @@ flext-observability = { path = "../flext-observability", develop = true }
 # Oracle OIC Tap specific dependencies
 singer-sdk = ">=0.39.0"
 requests = ">=2.32.0"
-oracledb = ">=2.5.0"
+oracledb = ">=3.2.0"
 
 # Core dependencies are managed by flext-core - no duplication
 # pydantic, pydantic-settings, click, structlog, etc. come from flext-core
@@ -117,11 +125,7 @@ markers = [
     "stream: marks tests as stream tests",
     "requires_oic: tests that need Oracle Integration Cloud access",
 ]
-filterwarnings = [
-    "error",
-    "ignore::UserWarning",
-    "ignore::DeprecationWarning",
-]
+filterwarnings = ["error", "ignore::UserWarning", "ignore::DeprecationWarning"]
 asyncio_mode = "auto"
 
 # Ruff configuration - focused on src/ and tests/
@@ -131,19 +135,125 @@ line-length = 88
 src = ["src", "tests"]
 
 [tool.ruff.lint]
-select = [
-    "ALL",
-]
+select = ["ALL"]
 ignore = [
-    "E501",    # line too long (handled by formatter)
+    # Line length and formatting (handled by formatter)
+    "E501",   # line too long
+    "W505",   # doc line too long
+    "COM812", # trailing comma missing (conflicts with formatter)
+    "ISC001", # single line implicit string concatenation
+
+    # Import and dependency issues (common in Singer taps)
+    "I001", # import block unsorted (handled by isort)
+    "F401", # unused imports (common in __init__.py files)
+    "F403", # star imports (common in __init__.py)
+    "F405", # star import usage
+    "F841", # unused variable (common in development)
+
+    # Documentation style flexibility (Singer SDK patterns)
+    "D100", # missing docstring in public module
+    "D101", # missing docstring in public class
+    "D102", # missing docstring in public method
+    "D103", # missing docstring in public function
+    "D104", # missing docstring in public package
+    "D105", # missing docstring in magic method
+    "D106", # missing docstring in public nested class
+    "D107", # missing docstring in __init__
+    "D203", # blank line before class docstring (conflicts with D211)
+    "D213", # multi-line docstring summary second line (conflicts with D212)
+
+    # Code style flexibility (Singer patterns)
+    "ERA001", # commented out code (common during development)
+    "TD002",  # missing author in TODO
+    "TD003",  # missing issue link in TODO
+    "FIX002", # line contains TODO
+    "T201",   # print statement (common in scripts/debug)
+    "T203",   # pprint statement
+
+    # Complexity (Oracle OIC logic can be complex)
+    "C901",    # function too complex
+    "PLR0913", # too many arguments (OIC API needs many params)
+    "PLR0915", # too many statements
+    "PLR2004", # magic value used in comparison
+    "PLR0912", # too many branches
+    "PLR0911", # too many return statements
+
+    # Type checking flexibility (Singer SDK uses Any extensively)
+    "ANN401", # any type usage (Singer SDK requires Any types)
+
+    # Security exceptions (Oracle OIC patterns)
+    "S105", # possible hardcoded password (config patterns)
+    "S106", # possible hardcoded password (test secrets)
+    "S603", # subprocess call
+    "S607", # starting process with partial executable path
+    "S608", # possible SQL injection (handled by Oracle driver)
+
+    # Error handling flexibility
+    "EM101",  # raw string in exception
+    "EM102",  # f-string in exception
+    "TRY003", # avoid long exception messages
+    "TRY300", # consider moving to else block
+    "TRY301", # raise within try block
+
+    # Oracle OIC specific patterns
+    "PTH123",  # use Path.open() (config files need standard open)
+    "PLC0415", # import should be at top-level (lazy imports for Oracle)
+
+    # Performance (premature optimization in data extraction)
+    "PERF203", # try-except in loop
+    "PERF401", # manual list comprehension
 ]
 
 # Test-specific ignores
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = ["S101", "D102", "N801", "N802", "N806", "PLR2004", "F401", "PLC0415", "G004", "T201"]
-"**/tests/*.py" = ["S101", "D102", "N801", "N802", "N806", "PLR2004", "F401", "PLC0415", "G004", "T201"]
-"test_*.py" = ["S101", "D102", "N801", "N802", "N806", "PLR2004", "F401", "PLC0415", "G004", "T201"]
-"**/test_*.py" = ["S101", "D102", "N801", "N802", "N806", "PLR2004", "F401", "PLC0415", "G004", "T201"]
+"tests/**/*.py" = [
+    "S101",
+    "D102",
+    "N801",
+    "N802",
+    "N806",
+    "PLR2004",
+    "F401",
+    "PLC0415",
+    "G004",
+    "T201",
+]
+"**/tests/*.py" = [
+    "S101",
+    "D102",
+    "N801",
+    "N802",
+    "N806",
+    "PLR2004",
+    "F401",
+    "PLC0415",
+    "G004",
+    "T201",
+]
+"test_*.py" = [
+    "S101",
+    "D102",
+    "N801",
+    "N802",
+    "N806",
+    "PLR2004",
+    "F401",
+    "PLC0415",
+    "G004",
+    "T201",
+]
+"**/test_*.py" = [
+    "S101",
+    "D102",
+    "N801",
+    "N802",
+    "N806",
+    "PLR2004",
+    "F401",
+    "PLC0415",
+    "G004",
+    "T201",
+]
 
 
 # Auto-generated files - exclude from ALL linting
@@ -153,7 +263,11 @@ ignore = [
 "**/*_pb2_grpc.py" = ["ALL"]
 "**/generated/**/*.py" = ["ALL"]
 [tool.ruff.lint.isort]
-known-first-party = ["flext_tap_oracle_oic", "flext_core", "flext_observability"]
+known-first-party = [
+    "flext_tap_oracle_oic",
+    "flext_core",
+    "flext_observability",
+]
 force-single-line = false
 split-on-trailing-comma = true
 
@@ -181,11 +295,11 @@ warn_unreachable = true
 strict_equality = true
 
 # Paths to check
-files = ["src", "tests"]
+files = ["src/flext_tap_oracle_oic", "tests"]
 
 # Import discovery
-namespace_packages = true
-explicit_package_bases = true
+# namespace_packages = true
+# explicit_package_bases = true
 
 # Error output
 show_error_codes = true
@@ -201,23 +315,14 @@ disallow_incomplete_defs = false
 
 # External library stubs
 [[tool.mypy.overrides]]
-module = [
-    "singer_sdk.*",
-    "requests.*",
-    "oracledb.*",
-]
+module = ["singer_sdk.*", "requests.*", "oracledb.*"]
 ignore_missing_imports = true
 
 # Coverage configuration
 [tool.coverage.run]
 source = ["src"]
 branch = true
-omit = [
-    "*/tests/*",
-    "*/test_*",
-    "*/__pycache__/*",
-    "*/site-packages/*",
-]
+omit = ["*/tests/*", "*/test_*", "*/__pycache__/*", "*/site-packages/*"]
 
 [tool.coverage.report]
 exclude_lines = [

@@ -17,14 +17,20 @@ from flext_core.domain.pydantic_base import DomainValueObject
 class OICAuthConfig(DomainValueObject):
     """OAuth2 authentication configuration for Oracle IDCS using flext-core patterns."""
 
-    oauth_client_id: str = Field(..., description="OAuth2 client ID from IDCS application")
+    oauth_client_id: str = Field(
+        ...,
+        description="OAuth2 client ID from IDCS application",
+    )
     oauth_client_secret: str = Field(
         ...,
         description="OAuth2 client secret from IDCS application",
         json_schema_extra={"secret": True},
     )
     oauth_token_url: str = Field(..., description="IDCS token endpoint URL")
-    oauth_client_aud: str | None = Field(None, description="IDCS client audience URL for scope building")
+    oauth_client_aud: str | None = Field(
+        None,
+        description="IDCS client audience URL for scope building",
+    )
     oauth_scope: str | None = Field(None, description="OAuth2 scope for authentication")
 
 
@@ -42,9 +48,22 @@ class OICConnectionConfig(DomainValueObject):
 
     # Performance settings
     timeout: int = Field(default=300, description="Request timeout in seconds", gt=0)
-    retry_count: int = Field(default=3, description="Number of retry attempts for failed requests", ge=0)
-    retry_delay: float = Field(default=1.0, description="Delay between retry attempts in seconds", gt=0)
-    page_size: int = Field(default=100, description="Page size for paginated results", gt=0, le=500)
+    retry_count: int = Field(
+        default=3,
+        description="Number of retry attempts for failed requests",
+        ge=0,
+    )
+    retry_delay: float = Field(
+        default=1.0,
+        description="Delay between retry attempts in seconds",
+        gt=0,
+    )
+    page_size: int = Field(
+        default=100,
+        description="Page size for paginated results",
+        gt=0,
+        le=500,
+    )
     max_concurrent_requests: int = Field(
         default=5,
         description="Maximum concurrent API requests",
@@ -56,8 +75,14 @@ class OICConnectionConfig(DomainValueObject):
 class StreamSelectionConfig(DomainValueObject):
     """Configuration for stream selection and filtering using flext-core patterns."""
 
-    stream_maps: dict[str, Any] | None = Field(None, description="Stream maps for transforming data")
-    stream_map_config: dict[str, Any] | None = Field(None, description="Configuration for stream maps")
+    stream_maps: dict[str, Any] | None = Field(
+        None,
+        description="Stream maps for transforming data",
+    )
+    stream_map_config: dict[str, Any] | None = Field(
+        None,
+        description="Configuration for stream maps",
+    )
     include_integrations: list[str] | None = Field(
         None,
         description="List of integration identifiers to include",
@@ -66,8 +91,14 @@ class StreamSelectionConfig(DomainValueObject):
         None,
         description="List of integration identifiers to exclude",
     )
-    include_lookups: list[str] | None = Field(None, description="List of lookup identifiers to include")
-    exclude_lookups: list[str] | None = Field(None, description="List of lookup identifiers to exclude")
+    include_lookups: list[str] | None = Field(
+        None,
+        description="List of lookup identifiers to include",
+    )
+    exclude_lookups: list[str] | None = Field(
+        None,
+        description="List of lookup identifiers to exclude",
+    )
     include_patterns: list[str] | None = Field(
         None,
         description="Regex patterns for including integrations/lookups",
@@ -81,15 +112,34 @@ class StreamSelectionConfig(DomainValueObject):
 class DiscoveryConfig(DomainValueObject):
     """Configuration for catalog discovery using flext-core patterns."""
 
-    discover_integrations: bool = Field(default=True, description="Discover integration flows")
-    discover_connections: bool = Field(default=True, description="Discover connection configurations")
+    discover_integrations: bool = Field(
+        default=True,
+        description="Discover integration flows",
+    )
+    discover_connections: bool = Field(
+        default=True,
+        description="Discover connection configurations",
+    )
     discover_lookups: bool = Field(default=True, description="Discover lookup tables")
-    discover_libraries: bool = Field(default=False, description="Discover JavaScript libraries")
-    discover_agents: bool = Field(default=False, description="Discover connectivity agents")
-    discover_certificates: bool = Field(default=False, description="Discover certificates")
+    discover_libraries: bool = Field(
+        default=False,
+        description="Discover JavaScript libraries",
+    )
+    discover_agents: bool = Field(
+        default=False,
+        description="Discover connectivity agents",
+    )
+    discover_certificates: bool = Field(
+        default=False,
+        description="Discover certificates",
+    )
 
     # Discovery optimization
-    discovery_batch_size: int = Field(default=50, description="Batch size for discovery operations", gt=0)
+    discovery_batch_size: int = Field(
+        default=50,
+        description="Batch size for discovery operations",
+        gt=0,
+    )
     discovery_timeout: int = Field(
         default=600,
         description="Timeout for discovery operations in seconds",
@@ -100,14 +150,26 @@ class DiscoveryConfig(DomainValueObject):
 class DataExtractionConfig(DomainValueObject):
     """Configuration for data extraction behavior using flext-core patterns."""
 
-    extract_integration_metadata: bool = Field(default=True, description="Extract detailed integration metadata")
-    extract_connection_properties: bool = Field(default=True, description="Extract connection property details")
+    extract_integration_metadata: bool = Field(
+        default=True,
+        description="Extract detailed integration metadata",
+    )
+    extract_connection_properties: bool = Field(
+        default=True,
+        description="Extract connection property details",
+    )
     extract_lookup_data: bool = Field(
         default=False,
         description="Extract actual lookup table data (can be large)",
     )
-    extract_monitoring_data: bool = Field(default=False, description="Extract monitoring and metrics data")
-    extract_audit_logs: bool = Field(default=False, description="Extract audit log entries")
+    extract_monitoring_data: bool = Field(
+        default=False,
+        description="Extract monitoring and metrics data",
+    )
+    extract_audit_logs: bool = Field(
+        default=False,
+        description="Extract audit log entries",
+    )
 
     # Data filtering
     created_after: str | None = Field(
@@ -140,9 +202,21 @@ class TapOracleOICConfig(BaseSettings):
 
     # Core configurations as embedded value objects
     auth: OICAuthConfig = Field(..., description="OAuth2 authentication configuration")
-    connection: OICConnectionConfig = Field(..., description="OIC connection configuration")
+    connection: OICConnectionConfig = Field(
+        ...,
+        description="OIC connection configuration",
+    )
     stream_selection: StreamSelectionConfig = Field(
-        default_factory=StreamSelectionConfig,
+        default_factory=lambda: StreamSelectionConfig(
+            stream_maps=None,
+            stream_map_config=None,
+            include_integrations=None,
+            exclude_integrations=None,
+            include_lookups=None,
+            exclude_lookups=None,
+            include_patterns=None,
+            exclude_patterns=None,
+        ),
         description="Stream selection and filtering configuration",
     )
     discovery: DiscoveryConfig = Field(
@@ -150,12 +224,18 @@ class TapOracleOICConfig(BaseSettings):
         description="Catalog discovery configuration",
     )
     data_extraction: DataExtractionConfig = Field(
-        default_factory=DataExtractionConfig,
+        default_factory=lambda: DataExtractionConfig(
+            created_after=None,
+            modified_after=None,
+        ),
         description="Data extraction behavior configuration",
     )
 
     # Project identification
-    project_name: str = Field(default="flext-tap-oracle-oic", description="Project name")
+    project_name: str = Field(
+        default="flext-tap-oracle-oic",
+        description="Project name",
+    )
     project_version: str = Field(default="0.7.0", description="Project version")
 
     @field_validator("auth")
@@ -184,7 +264,9 @@ class TapOracleOICConfig(BaseSettings):
         selection = self.stream_selection
 
         if selection.include_integrations and selection.exclude_integrations:
-            overlap = set(selection.include_integrations) & set(selection.exclude_integrations)
+            overlap = set(selection.include_integrations) & set(
+                selection.exclude_integrations,
+            )
             if overlap:
                 msg = f"Integrations cannot be both included and excluded: {overlap}"
                 raise ValueError(msg)
@@ -229,18 +311,32 @@ class TapOracleOICConfig(BaseSettings):
                 oauth_client_id="your-client-id",
                 oauth_client_secret="your-client-secret",
                 oauth_token_url="https://idcs-url/oauth2/v1/token",
+                oauth_client_aud=None,
+                oauth_scope=None,
             ),
             "connection": OICConnectionConfig(
                 base_url="https://your-instance.integration.ocp.oraclecloud.com",
             ),
-            "stream_selection": StreamSelectionConfig(),
+            "stream_selection": StreamSelectionConfig(
+                stream_maps=None,
+                stream_map_config=None,
+                include_integrations=None,
+                exclude_integrations=None,
+                include_lookups=None,
+                exclude_lookups=None,
+                include_patterns=None,
+                exclude_patterns=None,
+            ),
             "discovery": DiscoveryConfig(),
-            "data_extraction": DataExtractionConfig(),
+            "data_extraction": DataExtractionConfig(
+                created_after=None,
+                modified_after=None,
+            ),
             "project_name": "flext-tap-oracle-oic",
             "project_version": "0.7.0",
         }
         defaults.update(overrides)
-        return cls(**defaults)
+        return cls.model_validate(defaults)
 
 
 # Export main configuration classes
