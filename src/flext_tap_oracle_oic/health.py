@@ -4,11 +4,15 @@ This module provides health checking capabilities for OIC connections,
 integrations, and the overall OIC instance health.
 """
 
+from __future__ import annotations
+
 from datetime import UTC, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import requests
-from singer_sdk.authenticators import OAuthAuthenticator
+
+if TYPE_CHECKING:
+    from singer_sdk.authenticators import OAuthAuthenticator
 
 
 class OICHealthChecker:
@@ -29,7 +33,8 @@ class OICHealthChecker:
             headers.update(auth_headers)
         return headers
 
-    def check_instance_health(self) -> dict[str, Any]:
+    def check_health(self) -> bool:
+        """Check OIC instance health."""
         try:
             # Try to access the integrations endpoint as a health check
             url = f"{self.base_url}/ic/api/integration/v1/integrations?limit=1"
@@ -51,7 +56,7 @@ class OICHealthChecker:
                 "error": f"API returned status {response.status_code}",
                 "response_time_ms": int(response.elapsed.total_seconds() * 1000),
             }
-        except Exception as e:
+        except (requests.RequestException, ValueError, KeyError) as e:
             return {
                 "status": "error",
                 "timestamp": datetime.now(UTC).isoformat(),
@@ -61,6 +66,7 @@ class OICHealthChecker:
             }
 
     def test_connection(self, connection_id: str) -> dict[str, Any]:
+        """Test specific OIC connection."""
         try:
             # Call the connection test endpoint
             url = f"{self.base_url}/ic/api/integration/v1/connections/{connection_id}/test"
@@ -87,7 +93,7 @@ class OICHealthChecker:
                 "details": response.text or {},
                 "response_time_ms": int(response.elapsed.total_seconds() * 1000),
             }
-        except Exception as e:
+        except (requests.RequestException, ValueError, KeyError) as e:
             return {
                 "connectionId": connection_id,
                 "status": "error",
@@ -95,7 +101,8 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def check_integration_health(self, integration_id: str) -> dict[str, Any]:
+    def test_integration(self, integration_id: str) -> dict[str, Any]:
+        """Test specific OIC integration."""
         try:
             # Get integration details
             url = f"{self.base_url}/ic/api/integration/v1/integrations/{integration_id}"
@@ -131,7 +138,7 @@ class OICHealthChecker:
                 "timestamp": datetime.now(UTC).isoformat(),
                 "error": f"Failed to get integration status: {response.status_code}",
             }
-        except Exception as e:
+        except (requests.RequestException, ValueError, KeyError) as e:
             return {
                 "integrationId": integration_id,
                 "health": "error",
@@ -140,6 +147,7 @@ class OICHealthChecker:
             }
 
     def check_monitoring_health(self) -> dict[str, Any]:
+        """Check OIC monitoring service health."""
         try:
             # Try to access monitoring endpoint
             url = f"{self.base_url}/ic/api/monitoring/v1/instances?limit=1"
@@ -160,7 +168,7 @@ class OICHealthChecker:
                 "accessible": False,
                 "error": f"API returned status {response.status_code}",
             }
-        except Exception as e:
+        except (requests.RequestException, ValueError, KeyError) as e:
             return {
                 "service": "monitoring",
                 "status": "error",

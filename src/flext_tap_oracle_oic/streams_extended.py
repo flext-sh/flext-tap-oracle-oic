@@ -15,9 +15,9 @@ Features:
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, ClassVar
 
-from singer_sdk import singer_typing as th
+from singer_sdk import typing as th
 
 from flext_tap_oracle_oic.streams import OICBaseStream
 
@@ -37,7 +37,7 @@ class ProjectsStream(OICBaseStream):
 
     name = "projects"
     path = "/projects"
-    primary_keys = ["id"]
+    primary_keys: ClassVar = ["id"]
     replication_key = "lastUpdated"
 
     # Stream configuration
@@ -126,7 +126,7 @@ class ProjectsStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
         """Build additional URL parameters for projects stream.
 
         Args:
@@ -165,7 +165,7 @@ class SchedulesStream(OICBaseStream):
 
     name = "schedules"
     path = "/schedules"
-    primary_keys = ["id"]
+    primary_keys: ClassVar = ["id"]
     replication_key = "lastUpdated"
 
     # Stream configuration
@@ -318,7 +318,7 @@ class SchedulesStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
         """Build additional URL parameters for schedules stream.
 
         Args:
@@ -362,7 +362,7 @@ class BusinessEventsStream(OICBaseStream):
 
     name = "business_events"
     path = "/events/business"
-    primary_keys = ["eventId"]
+    primary_keys: ClassVar = ["eventId"]
     replication_key = "timestamp"
 
     # Stream configuration
@@ -451,7 +451,7 @@ class BusinessEventsStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
         """Build additional URL parameters for business events stream.
 
         Args:
@@ -498,7 +498,7 @@ class ImportExportJobsStream(OICBaseStream):
 
     name = "import_export_jobs"
     path = "/jobs/importexport"
-    primary_keys = ["jobId"]
+    primary_keys: ClassVar = ["jobId"]
     replication_key = "startTime"
 
     # Stream configuration
@@ -642,7 +642,7 @@ class ImportExportJobsStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
         """Build additional URL parameters for import/export jobs stream.
 
         Args:

@@ -1,0 +1,20 @@
+{
+  "base_url": "",
+  "oauth_token_url": "None/oauth2/v1/token",
+  "api_version": "v1",
+  "page_size": 100,
+  "request_timeout": 60,
+  "max_retries": 3,
+  "start_date": "2024-01-01T00:00:00Z",
+  "entities": [
+    "connections",
+    "integrations",
+    "packages",
+    "lookups"
+  ],
+  "enable_incremental": true,
+  "max_concurrent_requests": 5,
+  "batch_size": 1000,
+  "debug": false,
+  "log_level": "INFO"
+}

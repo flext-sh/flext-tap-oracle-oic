@@ -1,5 +1,7 @@
 """Constants for Oracle Integration Cloud TAP."""
 
+from __future__ import annotations
+
 # Oracle OIC API Constants (from official documentation)
 OIC_API_BASE_PATH = "/ic/api/integration/v1"
 OIC_MONITORING_API_PATH = "/ic/api/monitoring/v1"

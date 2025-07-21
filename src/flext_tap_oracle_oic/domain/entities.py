@@ -6,13 +6,12 @@ Uses flext-core DomainBaseModel and value object patterns. Zero tolerance for co
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Any
 
-from pydantic import Field
-
 from flext_core.domain.pydantic_base import DomainBaseModel, DomainValueObject
+from pydantic import Field
 
 
 class OICResourceType(StrEnum):
@@ -49,8 +48,16 @@ class ConnectionStatus(StrEnum):
 class OICConnection(DomainBaseModel):
     """OIC connection domain entity using flext-core patterns."""
 
-    connection_id: str = Field(..., min_length=1, description="OIC connection identifier")
-    adapter_type: str = Field(..., min_length=1, description="Adapter type (e.g., REST, SOAP, DB)")
+    connection_id: str = Field(
+        ...,
+        min_length=1,
+        description="OIC connection identifier",
+    )
+    adapter_type: str = Field(
+        ...,
+        min_length=1,
+        description="Adapter type (e.g., REST, SOAP, DB)",
+    )
     name: str = Field(..., min_length=1, description="Connection name")
 
     # Connection properties
@@ -78,19 +85,23 @@ class OICConnection(DomainBaseModel):
 
     def test_connection(self) -> None:
         """Mark connection as tested."""
-        self.last_tested = datetime.now()
+        self.last_tested = datetime.now(UTC)
         self.connection_status = ConnectionStatus.TESTED
 
     def mark_failed(self, error: str) -> None:
         """Mark connection as failed with error details."""
         self.connection_status = ConnectionStatus.FAILED
-        self.test_result = {"error": error, "timestamp": datetime.now().isoformat()}
+        self.test_result = {"error": error, "timestamp": datetime.now(UTC).isoformat()}
 
 
 class OICIntegration(DomainBaseModel):
     """OIC integration domain entity using flext-core patterns."""
 
-    integration_id: str = Field(..., min_length=1, description="OIC integration identifier")
+    integration_id: str = Field(
+        ...,
+        min_length=1,
+        description="OIC integration identifier",
+    )
     integration_code: str = Field(..., min_length=1, description="Integration code")
     name: str = Field(..., min_length=1, description="Integration name")
     package_name: str | None = Field(None, description="Package name")
@@ -135,17 +146,17 @@ class OICIntegration(DomainBaseModel):
     def activate(self) -> None:
         """Activate the integration."""
         self.integration_status = IntegrationStatus.ACTIVATED
-        self.activated_at = datetime.now()
+        self.activated_at = datetime.now(UTC)
 
     def deactivate(self) -> None:
         """Deactivate the integration."""
         self.integration_status = IntegrationStatus.DEACTIVATED
-        self.deactivated_at = datetime.now()
+        self.deactivated_at = datetime.now(UTC)
 
     def lock(self, user: str) -> None:
         """Lock the integration for a specific user."""
         self.locked_by = user
-        self.locked_at = datetime.now()
+        self.locked_at = datetime.now(UTC)
         self.integration_status = IntegrationStatus.LOCKED
 
     def unlock(self) -> None:
@@ -197,7 +208,7 @@ class OICLookup(DomainBaseModel):
 
     def record_import(self) -> None:
         """Record successful import."""
-        self.last_imported = datetime.now()
+        self.last_imported = datetime.now(UTC)
 
     @property
     def is_empty(self) -> bool:
@@ -298,13 +309,15 @@ class OICProject(DomainBaseModel):
     def deploy(self, user: str) -> None:
         """Deploy the project."""
         self.deployment_status = "deployed"
-        self.deployed_at = datetime.now()
+        self.deployed_at = datetime.now(UTC)
         self.deployed_by = user
 
     @property
     def total_resources(self) -> int:
         """Get total number of resources in project."""
-        return len(self.integration_ids) + len(self.connection_ids) + len(self.lookup_ids)
+        return (
+            len(self.integration_ids) + len(self.connection_ids) + len(self.lookup_ids)
+        )
 
 
 # Value Objects for configuration and metadata
@@ -323,11 +336,26 @@ class OICExecutionSummary(DomainValueObject):
     """OIC execution summary value object."""
 
     integration_id: str = Field(..., description="Integration ID")
-    total_executions: int = Field(default=0, ge=0, description="Total number of executions")
-    successful_executions: int = Field(default=0, ge=0, description="Successful executions")
+    total_executions: int = Field(
+        default=0,
+        ge=0,
+        description="Total number of executions",
+    )
+    successful_executions: int = Field(
+        default=0,
+        ge=0,
+        description="Successful executions",
+    )
     failed_executions: int = Field(default=0, ge=0, description="Failed executions")
-    average_duration_ms: float | None = Field(None, ge=0, description="Average execution duration")
-    last_execution_at: datetime | None = Field(None, description="Last execution timestamp")
+    average_duration_ms: float | None = Field(
+        None,
+        ge=0,
+        description="Average execution duration",
+    )
+    last_execution_at: datetime | None = Field(
+        None,
+        description="Last execution timestamp",
+    )
 
     @property
     def success_rate(self) -> float:

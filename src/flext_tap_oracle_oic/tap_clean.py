@@ -8,11 +8,10 @@ from __future__ import annotations
 import sys
 from typing import Any
 
-from singer_sdk import Tap
-from singer_sdk.typing import PropertiesList, Property
-
 from flext_core import ServiceResult
 from flext_observability.logging import get_logger
+from singer_sdk import Tap
+from singer_sdk.typing import PropertiesList, Property, StringType
 
 logger = get_logger(__name__)
 
@@ -22,11 +21,37 @@ class TapOracleOIC(Tap):
 
     name = "tap-oracle-oic"
     config_jsonschema = PropertiesList(
-        Property("oauth_client_id", str, required=True, description="OAuth2 client ID"),
-        Property("oauth_client_secret", str, required=True, secret=True, description="OAuth2 client secret"),
-        Property("oauth_endpoint", str, required=True, description="OAuth2 token endpoint"),
-        Property("oic_url", str, required=True, description="Oracle Integration Cloud URL"),
-        Property("oauth_scope", str, default="urn:opc:resource:consumer:all", description="OAuth2 scope"),
+        Property(
+            "oauth_client_id",
+            StringType(),
+            required=True,
+            description="OAuth2 client ID",
+        ),
+        Property(
+            "oauth_client_secret",
+            StringType(),
+            required=True,
+            secret=True,
+            description="OAuth2 client secret",
+        ),
+        Property(
+            "oauth_endpoint",
+            StringType(),
+            required=True,
+            description="OAuth2 token endpoint",
+        ),
+        Property(
+            "oic_url",
+            StringType(),
+            required=True,
+            description="Oracle Integration Cloud URL",
+        ),
+        Property(
+            "oauth_scope",
+            StringType(),
+            default="urn:opc:resource:consumer:all",
+            description="OAuth2 scope",
+        ),
     ).to_dict()
 
     def __init__(self, config: dict[str, Any] | None = None, **kwargs: Any) -> None:
@@ -73,7 +98,7 @@ class TapOracleOIC(Tap):
             },
         ]
 
-        self.logger.info(f"Discovered {len(streams)} streams")
+        self.logger.info("Discovered %s streams", len(streams))
         return streams
 
     def test_connection(self) -> ServiceResult[bool]:
@@ -87,28 +112,28 @@ class TapOracleOIC(Tap):
                 return ServiceResult.fail("Missing required configuration")
 
             self.logger.info("Connection test passed")
-            return ServiceResult.success(True)
+            return ServiceResult.ok(data=True)
 
         except Exception as e:
-            self.logger.exception(f"Connection test failed: {e}")
+            self.logger.exception("Connection test failed")
             return ServiceResult.fail(f"Connection test failed: {e}")
 
 
 def main() -> int:
-    """Main entry point."""
+    """Run tap."""
     import sys
 
+    # Basic configuration from environment
+    config = {
+        "oauth_client_id": "test-client",
+        "oauth_client_secret": "test-secret",
+        "oauth_endpoint": "https://test.oraclecloud.com/oauth2/v1/token",
+        "oic_url": "https://test.oraclecloud.com",
+    }
+
+    tap = TapOracleOIC(config=config)
+
     try:
-        # Basic configuration from environment
-        config = {
-            "oauth_client_id": "test-client",
-            "oauth_client_secret": "test-secret",
-            "oauth_endpoint": "https://test.oraclecloud.com/oauth2/v1/token",
-            "oic_url": "https://test.oraclecloud.com",
-        }
-
-        tap = TapOracleOIC(config=config)
-
         if "--discover" in sys.argv:
             tap.discover_streams()
             return 0
@@ -121,8 +146,8 @@ def main() -> int:
 
         return 0
 
-    except Exception as e:
-        logger.exception(f"Tap execution failed: {e}")
+    except Exception:
+        logger.exception("Tap execution failed")
         return 1
 
 

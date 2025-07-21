@@ -79,7 +79,7 @@ class OICPaginator(BaseOffsetPaginator):
 
             return self._calculate_next_offset(data)
 
-        except Exception:
+        except (ValueError, KeyError, TypeError, AttributeError):
             return None
 
     def _calculate_next_offset(self, data: dict[str, Any] | list[Any]) -> int | None:
@@ -93,7 +93,10 @@ class OICPaginator(BaseOffsetPaginator):
 
         return self.current_value + len(items)
 
-    def _extract_items_from_response(self, data: dict[str, Any] | list[Any]) -> list[Any] | None:
+    def _extract_items_from_response(
+        self,
+        data: dict[str, Any] | list[Any],
+    ) -> list[Any] | None:
         if isinstance(data, list):
             return data
         if isinstance(data, dict):
@@ -123,7 +126,7 @@ class OICPaginator(BaseOffsetPaginator):
 
 
 class OICBaseStream(RESTStream[Any]):
-    """Professional base stream for Oracle Integration Cloud APIs.
+    """Base stream class for Oracle Integration Cloud APIs.
 
     Incorporates best practices from extractors and provides comprehensive
     OIC API support with intelligent error handling, data quality validation,
@@ -148,10 +151,12 @@ class OICBaseStream(RESTStream[Any]):
             Base URL with appropriate OIC API endpoint.
 
         """
-        base_url = str(self.config.get("base_url", "")).rstrip("/")
+        base_url = str(
+            self.config.get("base_url") or self.config.get("oic_url", ""),
+        ).rstrip("/")
 
         if not base_url:
-            msg = "base_url is required in configuration"
+            msg = "Base URL is required but not configured"
             raise ValueError(msg)
 
         # Auto-detect region from URL if not explicitly configured
@@ -200,7 +205,11 @@ class OICBaseStream(RESTStream[Any]):
         """
         return OICPaginator(start_value=0, page_size=self.config.get("page_size", 100))
 
-    def get_url_params(self, context: Mapping[str, Any] | None, next_page_token: Any | None) -> dict[str, Any]:
+    def get_url_params(
+        self,
+        context: Mapping[str, Any] | None,
+        next_page_token: Any | None,
+    ) -> dict[str, Any]:
         """Build URL parameters for OIC API requests.
 
         Args:
@@ -279,11 +288,10 @@ class OICBaseStream(RESTStream[Any]):
                 self._handle_response_error(response)
                 return
 
-            # Parse JSON response
             try:
                 data = response.json()
-            except Exception as e:
-                self.logger.exception(f"Failed to parse JSON from {response.url}: {e}")
+            except (ValueError, TypeError, KeyError):
+                self.logger.exception("Failed to parse JSON from %s", response.url)
                 if self.config.get("fail_on_parsing_errors", True):
                     raise
                 return
@@ -294,13 +302,17 @@ class OICBaseStream(RESTStream[Any]):
             # Extract records from response and yield valid ones
             yield from self._extract_and_yield_records(data, response.url)
 
-        except Exception as e:
-            self.logger.exception("Error parsing response from %s: %s", response.url, e)
+        except (ValueError, TypeError, KeyError, AttributeError):
+            self.logger.exception("Error parsing response from %s", response.url)
             if self.config.get("fail_on_parsing_errors", True):
                 raise
             # Continue processing if configured to ignore parsing errors
 
-    def _extract_and_yield_records(self, data: dict[str, Any] | list[Any], url: str) -> Iterator[dict[str, Any]]:
+    def _extract_and_yield_records(
+        self,
+        data: dict[str, Any] | list[Any],
+        url: str,
+    ) -> Iterator[dict[str, Any]]:
         records_yielded = 0
 
         for item in self._extract_items_for_processing(data):
@@ -310,12 +322,21 @@ class OICBaseStream(RESTStream[Any]):
 
         if records_yielded == 0 and not self._is_empty_result_expected(data):
             self.logger.warning(
-                f"Unknown response format from {url}: {list(data.keys()) if isinstance(data, dict) else type(data)}",
+                "Unknown response format from %s: %s",
+                url,
+                list(data.keys()) if isinstance(data, dict) else type(data),
             )
         elif records_yielded > 0:
-            self.logger.debug(f"Successfully parsed {records_yielded} records from {url}")
+            self.logger.debug(
+                "Successfully parsed %s records from %s",
+                records_yielded,
+                url,
+            )
 
-    def _extract_items_for_processing(self, data: dict[str, Any] | list[Any]) -> Iterator[dict[str, Any]]:
+    def _extract_items_for_processing(
+        self,
+        data: dict[str, Any] | list[Any],
+    ) -> Iterator[dict[str, Any]]:
         if isinstance(data, list):
             yield from data
         elif isinstance(data, dict):
@@ -340,15 +361,20 @@ class OICBaseStream(RESTStream[Any]):
 
     def _is_single_record(self, data: dict[str, Any]) -> bool:
         """Check if dict represents a single record vs metadata container."""
-        metadata_keys = {"totalSize", "count", "hasMore", "offset", "limit", "items", "data"}
+        metadata_keys = {
+            "totalSize",
+            "count",
+            "hasMore",
+            "offset",
+            "limit",
+            "items",
+            "data",
+        }
         return not any(key in data for key in metadata_keys)
 
     def _validate_record(self, record: dict[str, Any]) -> bool:
         """Validate record meets basic requirements."""
-        if not isinstance(record, dict):
-            return False  # type: ignore[unreachable]
-        # Basic validation - can be overridden by subclasses
-        return True
+        return isinstance(record, dict)
 
     def _enrich_record(self, record: dict[str, Any]) -> dict[str, Any]:
         """Enrich record with tap metadata."""
@@ -358,37 +384,41 @@ class OICBaseStream(RESTStream[Any]):
         return enriched
 
     def _handle_response_error(self, response: requests.Response) -> None:
-        """Handle HTTP error responses."""
+        """Handle OIC API response errors."""
         try:
             error_data = response.json()
             error_message = error_data.get("message") or error_data.get("error")
-        except Exception:
+        except (ValueError, TypeError, KeyError):
             error_message = response.text or f"HTTP {response.status_code}"
 
-        self.logger.error(f"OIC API error from {response.url}: {error_message}")
+        self.logger.error("OIC API error from %s: %s", response.url, error_message)
 
         if response.status_code == 401:
-            msg = "Authentication failed - check OAuth2 credentials"
+            msg = "Unauthorized: Authentication failed or token expired"
             raise RuntimeError(msg)
         if response.status_code == 403:
-            msg = "Access forbidden - check permissions"
+            msg = "Forbidden: Insufficient permissions to access resource"
             raise RuntimeError(msg)
         if response.status_code == 429:
-            msg = "Rate limit exceeded - reduce request rate"
+            msg = "Rate limit exceeded: Too many requests"
             raise RuntimeError(msg)
         response.raise_for_status()
 
-    def _track_response_metrics(self, response: requests.Response, data: dict[str, Any] | list[Any]) -> None:
+    def _track_response_metrics(
+        self,
+        response: requests.Response,
+        data: dict[str, Any] | list[Any],
+    ) -> None:
         """Track response metrics for monitoring."""
         # Log response time and size for monitoring
         if hasattr(response, "elapsed"):
-            self.logger.debug(f"Response time: {response.elapsed.total_seconds():.2f}s")
+            self.logger.debug("Response time: %.2fs", response.elapsed.total_seconds())
 
         # Log record count for monitoring
         if isinstance(data, list):
-            self.logger.debug(f"Received {len(data)} records")
+            self.logger.debug("Received %s records", len(data))
         elif isinstance(data, dict):
             if "items" in data:
-                self.logger.debug(f"Received {len(data['items'])} records")
+                self.logger.debug("Received %s records", len(data["items"]))
             elif "data" in data:
-                self.logger.debug(f"Received {len(data['data'])} records")
+                self.logger.debug("Received %s records", len(data["data"]))

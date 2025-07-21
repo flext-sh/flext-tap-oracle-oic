@@ -8,10 +8,9 @@ from __future__ import annotations
 
 from typing import Any
 
+from flext_core.domain.pydantic_base import DomainValueObject
 from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-from flext_core.domain.pydantic_base import DomainValueObject
 
 
 class OICAuthConfig(DomainValueObject):
@@ -233,7 +232,7 @@ class TapOracleOICConfig(BaseSettings):
 
     # Project identification
     project_name: str = Field(
-        default="flext-tap-oracle-oic",
+        default="flext-data.taps.flext-data.taps.flext-tap-oracle-oic",
         description="Project name",
     )
     project_version: str = Field(default="0.7.0", description="Project version")
@@ -243,7 +242,7 @@ class TapOracleOICConfig(BaseSettings):
     def validate_auth_config(cls, v: OICAuthConfig) -> OICAuthConfig:
         """Validate authentication configuration."""
         if not v.oauth_token_url.startswith(("http://", "https://")):
-            msg = "oauth_token_url must start with http:// or https://"
+            msg = "OAuth token URL must start with http:// or https://"
             raise ValueError(msg)
         return v
 
@@ -252,11 +251,10 @@ class TapOracleOICConfig(BaseSettings):
     def validate_connection_config(cls, v: OICConnectionConfig) -> OICConnectionConfig:
         """Validate connection configuration."""
         if not v.base_url.startswith(("http://", "https://")):
-            msg = "base_url must start with http:// or https://"
+            msg = "Base URL must start with http:// or https://"
             raise ValueError(msg)
-        # Remove trailing slash for consistency
-        v.base_url = v.base_url.rstrip("/")
-        return v
+        # Remove trailing slash for consistency - create new object with corrected value
+        return v.model_copy(update={"base_url": v.base_url.rstrip("/")})
 
     @model_validator(mode="after")
     def validate_stream_filters(self) -> TapOracleOICConfig:
@@ -268,19 +266,19 @@ class TapOracleOICConfig(BaseSettings):
                 selection.exclude_integrations,
             )
             if overlap:
-                msg = f"Integrations cannot be both included and excluded: {overlap}"
+                msg = f"Include and exclude integrations overlap: {overlap}"
                 raise ValueError(msg)
 
         if selection.include_lookups and selection.exclude_lookups:
             overlap = set(selection.include_lookups) & set(selection.exclude_lookups)
             if overlap:
-                msg = f"Lookups cannot be both included and excluded: {overlap}"
+                msg = f"Include and exclude lookups overlap: {overlap}"
                 raise ValueError(msg)
 
         return self
 
     def get_oauth_headers(self) -> dict[str, str]:
-        """Get OAuth headers (implemented by client using flext-auth)."""
+        """Get OAuth headers (implemented by client using flext-api.auth.flext-auth)."""
         return {}
 
     def should_include_integration(self, integration_id: str) -> bool:
@@ -332,7 +330,7 @@ class TapOracleOICConfig(BaseSettings):
                 created_after=None,
                 modified_after=None,
             ),
-            "project_name": "flext-tap-oracle-oic",
+            "project_name": "flext-data.taps.flext-data.taps.flext-tap-oracle-oic",
             "project_version": "0.7.0",
         }
         defaults.update(overrides)
