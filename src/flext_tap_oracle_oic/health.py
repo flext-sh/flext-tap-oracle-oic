@@ -33,7 +33,7 @@ class OICHealthChecker:
             headers.update(auth_headers)
         return headers
 
-    def check_health(self) -> bool:
+    def check_health(self) -> dict[str, Any]:
         """Check OIC instance health."""
         try:
             # Try to access the integrations endpoint as a health check
