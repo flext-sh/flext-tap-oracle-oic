@@ -15,6 +15,7 @@ from flext_core.config.oracle_oic import (
 )
 from flext_core.domain.types import ServiceResult
 from flext_observability.logging import get_logger
+from pydantic import SecretStr
 
 logger = get_logger(__name__)
 
@@ -47,7 +48,7 @@ class OracleOICClient:
         # Create centralized auth config
         auth_config = OICAuthConfig(
             oauth_client_id=oauth_client_id,
-            oauth_client_secret=oauth_client_secret,
+            oauth_client_secret=SecretStr(oauth_client_secret),
             oauth_token_url=oauth_endpoint,
             oauth_scope=oauth_scope,
         )
@@ -98,7 +99,7 @@ class OracleOICClient:
     def session(self) -> Any:
         """Get HTTP session for test compatibility."""
         return (
-            self._central_client._session  # noqa: SLF001
+            self._central_client._session  # noqa: SLF001 - Test compatibility access
             if hasattr(self._central_client, "_session")
             else None
         )
@@ -158,7 +159,7 @@ class OracleOICClient:
         limit: int = 100,
         offset: int = 0,
         status_filter: list[str] | None = None,
-    ) -> ServiceResult[dict[str, Any]]:
+    ) -> ServiceResult[list[dict[str, Any]]]:
         """Get list of integrations using centralized client.
 
         Args:
@@ -196,7 +197,7 @@ class OracleOICClient:
         limit: int = 100,
         offset: int = 0,
         type_filter: list[str] | None = None,
-    ) -> ServiceResult[dict[str, Any]]:
+    ) -> ServiceResult[list[dict[str, Any]]]:
         """Get list of connections using centralized client.
 
         Args:
@@ -233,7 +234,7 @@ class OracleOICClient:
         self,
         limit: int = 100,
         offset: int = 0,
-    ) -> ServiceResult[dict[str, Any]]:
+    ) -> ServiceResult[list[dict[str, Any]]]:
         """Get list of lookups using centralized client.
 
         Args:
