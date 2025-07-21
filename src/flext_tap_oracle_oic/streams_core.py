@@ -15,9 +15,9 @@ Coverage:
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, ClassVar
 
-from singer_sdk import singer_typing as th
+from singer_sdk import typing as th
 
 # CORE INTEGRATION STREAMS - WORKING
 
@@ -38,7 +38,7 @@ class IntegrationsStream:
 
     name = "integrations"
     path = "/integrations"
-    primary_keys = ["id"]
+    primary_keys: ClassVar = ["id"]
     replication_key = "lastUpdated"
 
     # Stream configuration
@@ -236,7 +236,7 @@ class ConnectionsStream:
 
     name = "connections"
     path = "/connections"
-    primary_keys = ["id"]
+    primary_keys: ClassVar = ["id"]
     replication_key = "lastUpdated"
 
     # Stream configuration
@@ -436,7 +436,7 @@ class PackagesStream:
 
     name = "packages"
     path = "/packages"
-    primary_keys = ["id"]
+    primary_keys: ClassVar = ["id"]
     replication_key = "lastUpdated"
 
     # Stream configuration
@@ -490,7 +490,7 @@ class LookupsStream:
 
     name = "lookups"
     path = "/lookups"
-    primary_keys = ["name"]
+    primary_keys: ClassVar = ["name"]
     replication_key = "lastUpdated"
 
     # Stream configuration
@@ -543,7 +543,7 @@ class LibrariesStream:
 
     name = "libraries"
     path = "/libraries"
-    primary_keys = ["id"]
+    primary_keys: ClassVar = ["id"]
     replication_key = "lastUpdated"
 
     # Stream configuration
@@ -602,7 +602,7 @@ class CertificatesStream:
 
     name = "certificates"
     path = "/certificates"
-    primary_keys = ["alias"]
+    primary_keys: ClassVar = ["alias"]
     replication_key = "lastUpdated"
 
     # Stream configuration

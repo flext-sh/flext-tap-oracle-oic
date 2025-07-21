@@ -8,9 +8,9 @@ adapters, libraries, agents, and system components.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, ClassVar
 
-from singer_sdk import singer_typing as th
+from singer_sdk import typing as th
 
 from flext_tap_oracle_oic.streams import OICBaseStream
 
@@ -30,7 +30,7 @@ class AdaptersStream(OICBaseStream):
 
     name = "adapters"
     path = "/adapters"
-    primary_keys = ["id"]
+    primary_keys: ClassVar = ["id"]
     replication_key = "lastUpdated"
 
     schema = th.PropertiesList(
@@ -39,12 +39,24 @@ class AdaptersStream(OICBaseStream):
         th.Property("version", th.StringType, description="Adapter version"),
         th.Property("type", th.StringType, description="Adapter type"),
         th.Property("description", th.StringType, description="Adapter description"),
-        th.Property("lastUpdated", th.DateTimeType, description="Last update timestamp"),
-        th.Property("_tap_extracted_at", th.DateTimeType, description="Extraction timestamp"),
-        th.Property("_tap_stream_name", th.StringType, description="Source stream name"),
+        th.Property(
+            "lastUpdated",
+            th.DateTimeType,
+            description="Last update timestamp",
+        ),
+        th.Property(
+            "_tap_extracted_at",
+            th.DateTimeType,
+            description="Extraction timestamp",
+        ),
+        th.Property(
+            "_tap_stream_name",
+            th.StringType,
+            description="Source stream name",
+        ),
     ).to_dict()
 
-    def additional_params(self, context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
         """Additional parameters for the request."""
         params: dict[str, Any] = {}
 
@@ -75,7 +87,7 @@ class LibrariesStream(OICBaseStream):
 
     name = "libraries"
     path = "/libraries"
-    primary_keys = ["id"]
+    primary_keys: ClassVar = ["id"]
     replication_key = "lastUpdated"
 
     schema = th.PropertiesList(
@@ -84,12 +96,24 @@ class LibrariesStream(OICBaseStream):
         th.Property("version", th.StringType, description="Library version"),
         th.Property("type", th.StringType, description="Library type"),
         th.Property("description", th.StringType, description="Library description"),
-        th.Property("lastUpdated", th.DateTimeType, description="Last update timestamp"),
-        th.Property("_tap_extracted_at", th.DateTimeType, description="Extraction timestamp"),
-        th.Property("_tap_stream_name", th.StringType, description="Source stream name"),
+        th.Property(
+            "lastUpdated",
+            th.DateTimeType,
+            description="Last update timestamp",
+        ),
+        th.Property(
+            "_tap_extracted_at",
+            th.DateTimeType,
+            description="Extraction timestamp",
+        ),
+        th.Property(
+            "_tap_stream_name",
+            th.StringType,
+            description="Source stream name",
+        ),
     ).to_dict()
 
-    def additional_params(self, context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
         """Additional parameters for the request."""
         params: dict[str, Any] = {}
         return params
@@ -110,7 +134,7 @@ class AgentsStream(OICBaseStream):
 
     name = "agents"
     path = "/agents"
-    primary_keys = ["id"]
+    primary_keys: ClassVar = ["id"]
     replication_key = "lastUpdated"
 
     schema = th.PropertiesList(
@@ -119,12 +143,24 @@ class AgentsStream(OICBaseStream):
         th.Property("status", th.StringType, description="Agent status"),
         th.Property("type", th.StringType, description="Agent type"),
         th.Property("lastHeartbeat", th.DateTimeType, description="Last heartbeat"),
-        th.Property("lastUpdated", th.DateTimeType, description="Last update timestamp"),
-        th.Property("_tap_extracted_at", th.DateTimeType, description="Extraction timestamp"),
-        th.Property("_tap_stream_name", th.StringType, description="Source stream name"),
+        th.Property(
+            "lastUpdated",
+            th.DateTimeType,
+            description="Last update timestamp",
+        ),
+        th.Property(
+            "_tap_extracted_at",
+            th.DateTimeType,
+            description="Extraction timestamp",
+        ),
+        th.Property(
+            "_tap_stream_name",
+            th.StringType,
+            description="Source stream name",
+        ),
     ).to_dict()
 
-    def additional_params(self, context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
         """Additional parameters for the request."""
         params: dict[str, Any] = {}
         return params

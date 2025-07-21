@@ -24,78 +24,74 @@ class TestDataBuilder:
 
     @staticmethod
     def integration_record(
-        id:
-            str = "TEST_INTEGRATION_001",
+        integration_id: str = "TEST_INTEGRATION_001",
         name: str = "Test Integration",
         status: str = "ACTIVE",
         time_updated: str = "2024-01-15T10:30:00Z",
-        **kwargs,
+        **kwargs: Any,
     ) -> dict[str, Any]:
         record = {
-            "id": id,
+            "id": integration_id,
             "name": name,
             "status": status,
             "timeUpdated": time_updated,
             "description": f"Test integration: {name}",
             "version": "1.0.0",
-            "identifier": id.lower(),
+            "identifier": integration_id.lower(),
         }
         record.update(kwargs)
         return record
 
     @staticmethod
     def connection_record(
-        id:
-        str = "TEST_CONNECTION_001",
+        connection_id: str = "TEST_CONNECTION_001",
         name: str = "Test Connection",
         status: str = "ACTIVE",
         time_updated: str = "2024-01-15T10:30:00Z",
         connection_type: str = "REST",
-        **kwargs,
+        **kwargs: Any,
     ) -> dict[str, Any]:
         record = {
-            "id": id,
+            "id": connection_id,
             "name": name,
             "status": status,
             "timeUpdated": time_updated,
             "connectionType": connection_type,
             "description": f"Test connection: {name}",
-            "identifier": id.lower(),
+            "identifier": connection_id.lower(),
         }
         record.update(kwargs)
         return record
 
     @staticmethod
     def package_record(
-        id:
-        str = "TEST_PACKAGE_001",
+        package_id: str = "TEST_PACKAGE_001",
         name: str = "Test Package",
         status: str = "ACTIVE",
         time_updated: str = "2024-01-15T10:30:00Z",
         version: str = "1.0.0",
-        **kwargs,
+        **kwargs: Any,
     ) -> dict[str, Any]:
         record = {
-            "id": id,
+            "id": package_id,
             "name": name,
             "status": status,
             "timeUpdated": time_updated,
             "version": version,
             "description": f"Test package: {name}",
-            "identifier": id.lower(),
+            "identifier": package_id.lower(),
         }
         record.update(kwargs)
         return record
 
     @staticmethod
     def monitoring_record(
-        instance_id:
-        str = "TEST_INSTANCE_001",
+        instance_id: str = "TEST_INSTANCE_001",
         integration_id: str = "TEST_INTEGRATION_001",
         status: str = "SUCCEEDED",
         start_time: str = "2024-01-15T10:30:00Z",
         end_time: str = "2024-01-15T10:35:00Z",
-        **kwargs,
+        **kwargs: Any,
     ) -> dict[str, Any]:
         record = {
             "instanceId": instance_id,
@@ -111,8 +107,7 @@ class TestDataBuilder:
 
     @staticmethod
     def singer_record(
-        stream:
-        str,
+        stream: str,
         record_data: dict[str, Any],
         time_extracted: str | None = None,
     ) -> dict[str, Any]:
@@ -128,8 +123,7 @@ class TestDataBuilder:
 
     @staticmethod
     def singer_schema(
-        stream:
-        str,
+        stream: str,
         properties: dict[str, Any],
         key_properties: list[str] | None = None,
     ) -> dict[str, Any]:
@@ -151,15 +145,15 @@ class TestValidator:
     """Validator utilities for test assertions."""
 
     @staticmethod
-    def validate_tap_instance(tap_instance) -> None:
+    def validate_tap_instance(tap_instance: Any) -> None:
         assert hasattr(tap_instance, "name")
         assert hasattr(tap_instance, "config")
         assert hasattr(tap_instance, "catalog")
         assert hasattr(tap_instance, "discover_streams")
-        assert tap_instance.name == "tap-oic"
+        assert tap_instance.name == "tap-oracle-oic"
 
     @staticmethod
-    def validate_stream_schema(stream) -> None:
+    def validate_stream_schema(stream: Any) -> None:
         assert hasattr(stream, "schema")
         assert stream.schema is not None
         assert isinstance(stream.schema, dict)
@@ -169,7 +163,7 @@ class TestValidator:
         assert len(stream.schema["properties"]) > 0
 
     @staticmethod
-    def validate_stream_metadata(stream) -> None:
+    def validate_stream_metadata(stream: Any) -> None:
         assert hasattr(stream, "primary_keys")
         assert stream.primary_keys is not None
         assert len(stream.primary_keys) > 0
@@ -180,8 +174,7 @@ class TestValidator:
             assert key in properties, f"Primary key {key} missing from schema"
 
     @staticmethod
-    def validate_singer_record(record:
-        dict[str, Any]) -> None:
+    def validate_singer_record(record: dict[str, Any]) -> None:
         assert "type" in record
         assert record["type"] == "RECORD"
         assert "stream" in record
@@ -190,8 +183,7 @@ class TestValidator:
         assert isinstance(record["record"], dict)
 
     @staticmethod
-    def validate_config_schema(config_schema:
-        dict[str, Any]) -> None:
+    def validate_config_schema(config_schema: dict[str, Any]) -> None:
         assert "properties" in config_schema
         properties = config_schema["properties"]
 
@@ -207,20 +199,19 @@ class TestValidator:
 
     @staticmethod
     def validate_performance_metrics(
-        metrics:
-        dict[str, Any],
+        metrics: dict[str, Any],
         max_duration: float = 5.0,
         max_memory_growth: int = 100 * 1024 * 1024,  # 100MB
     ) -> None:
         if "duration" in metrics:
-            assert (
-                metrics["duration"] < max_duration
-            ), f"Duration {metrics['duration']} exceeds {max_duration}s"
+            assert metrics["duration"] < max_duration, (
+                f"Duration {metrics['duration']} exceeds {max_duration}s"
+            )
 
         if "memory_growth" in metrics:
-            assert (
-                metrics["memory_growth"] < max_memory_growth
-            ), f"Memory growth {metrics['memory_growth']} exceeds {max_memory_growth} bytes"
+            assert metrics["memory_growth"] < max_memory_growth, (
+                f"Memory growth {metrics['memory_growth']} exceeds {max_memory_growth} bytes"
+            )
 
 
 class MockAPIServer:
@@ -231,8 +222,7 @@ class MockAPIServer:
         self.base_url = "https://test-oic.integration.ocp.oraclecloud.com"
         self.token_url = "https://test-idcs.identity.oraclecloud.com/oauth2/v1/token"
 
-    def setup_oauth2_mock(self, token:
-        str = "mock-token-12345") -> None:
+    def setup_oauth2_mock(self, token: str = "mock-token-12345") -> None:
         if self.requests_mock:
             self.requests_mock.post(
                 self.token_url,
@@ -245,9 +235,9 @@ class MockAPIServer:
                 status_code=200,
             )
 
-    def setup_integrations_mock(self,
-        records:
-        list[dict[str, Any]] | None = None,
+    def setup_integrations_mock(
+        self,
+        records: list[dict[str, Any]] | None = None,
     ) -> None:
         if records is None:
             records = [TestDataBuilder.integration_record()]
@@ -259,9 +249,9 @@ class MockAPIServer:
                 status_code=200,
             )
 
-    def setup_connections_mock(self,
-        records:
-        list[dict[str, Any]] | None = None,
+    def setup_connections_mock(
+        self,
+        records: list[dict[str, Any]] | None = None,
     ) -> None:
         if records is None:
             records = [TestDataBuilder.connection_record()]
@@ -273,9 +263,9 @@ class MockAPIServer:
                 status_code=200,
             )
 
-    def setup_error_response(self,
-        endpoint:
-        str,
+    def setup_error_response(
+        self,
+        endpoint: str,
         status_code: int = 500,
         error_message: str = "Internal Server Error",
     ) -> None:
@@ -287,7 +277,7 @@ class MockAPIServer:
             )
 
     @contextmanager
-    def mock_context(self, requests_mock_instance) -> Any:
+    def mock_context(self, requests_mock_instance: Any) -> Any:
         self.requests_mock = requests_mock_instance
         try:
             yield self
@@ -414,14 +404,13 @@ class TestConfigGenerator:
 class TestFileManager:
     """Manage test files and temporary data."""
 
-    def __init__(self, temp_dir:
-        Path) -> None:
+    def __init__(self, temp_dir: Path) -> None:
         self.temp_dir = temp_dir
         self.created_files = []
 
-    def create_config_file(self,
-        config:
-        dict[str, Any],
+    def create_config_file(
+        self,
+        config: dict[str, Any],
         filename: str = "test_config.json",
     ) -> Path:
         config_path = self.temp_dir / filename
@@ -430,9 +419,9 @@ class TestFileManager:
         self.created_files.append(config_path)
         return config_path
 
-    def create_catalog_file(self,
-        catalog:
-        dict[str, Any],
+    def create_catalog_file(
+        self,
+        catalog: dict[str, Any],
         filename: str = "test_catalog.json",
     ) -> Path:
         catalog_path = self.temp_dir / filename
@@ -441,9 +430,9 @@ class TestFileManager:
         self.created_files.append(catalog_path)
         return catalog_path
 
-    def create_records_file(self,
-        records:
-        list[dict[str, Any]],
+    def create_records_file(
+        self,
+        records: list[dict[str, Any]],
         filename: str = "test_records.jsonl",
     ) -> Path:
         records_path = self.temp_dir / filename
@@ -463,7 +452,9 @@ def skip_if_no_internet() -> None:
     try:
         requests.get("https://www.google.com", timeout=5)
     except requests.RequestException:
-        pytest.skip("No internet connection available")
+        pytest.fail(
+            "No internet connection available - Internet connectivity required for testing",
+        )
 
 
 def skip_if_no_production_config() -> None:
@@ -471,28 +462,32 @@ def skip_if_no_production_config() -> None:
 
     required_vars = ["OIC_BASE_URL", "OIC_CLIENT_ID", "OIC_CLIENT_SECRET"]
     if not all(os.getenv(var) for var in required_vars):
-        pytest.skip("Production configuration not available")
+        pytest.fail(
+            "Production configuration not available - Required environment variables must be set for testing",
+        )
 
 
-def requires_python_version(min_version:
-        str) -> Any:
+def requires_python_version(min_version: str) -> Any:
     import sys
 
     from packaging import version
 
-    def decorator(func) -> Any:
+    def decorator(func: Any) -> Any:
         if version.parse(
             f"{sys.version_info.major}.{sys.version_info.minor}",
         ) < version.parse(min_version):
-            return pytest.mark.skip(f"Requires Python {min_version} or higher")(func)
+
+            def test_fail(*args: Any, **kwargs: Any) -> None:
+                pytest.fail(f"Requires Python {min_version} or higher")
+
+            return test_fail
         return func
 
     return decorator
 
 
 @contextmanager
-def timeout_test(seconds:
-        float) -> Any:
+def timeout_test(seconds: float) -> Any:
     import signal
 
     def timeout_handler(signum: int, frame: Any) -> NoReturn:
@@ -503,28 +498,27 @@ def timeout_test(seconds:
     signal.alarm(int(seconds))
 
     try:
-            yield
+        yield
     finally:
-            signal.alarm(0)
+        signal.alarm(0)
 
 
 class ConcurrentTestRunner:
     """Utility for running tests concurrently."""
 
-    def __init__(self, max_workers:
-            int = 4) -> None:
+    def __init__(self, max_workers: int = 4) -> None:
         self.max_workers = max_workers
         self.results = []
 
-    def run_tests_parallel(self, test_functions:
-        list[callable]) -> list[Any]:
-        from concurrent.futures import (  # TODO: Move import to module level
+    def run_tests_parallel(self, test_functions: list[callable]) -> list[Any]:
+        from concurrent.futures import (
             ThreadPoolExecutor,
-            as_completed,  # TODO: Move import to module level
+            as_completed,
         )
 
         self.results.clear()
-        with ThreadPoolExecutor(max_workers=self.max_workers) as executor: future_to_test = {
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            future_to_test = {
                 executor.submit(test_func): test_func for test_func in test_functions
             }
 
@@ -533,12 +527,12 @@ class ConcurrentTestRunner:
             try:
                 result = future.result()
                 self.results.append(
-                        {"test": test_func.__name__, "result": result, "success": True},
-                    )
+                    {"test": test_func.__name__, "result": result, "success": True},
+                )
             except Exception as e:
                 self.results.append(
-                        {"test": test_func.__name__, "error": str(e), "success": False},
-                    )
+                    {"test": test_func.__name__, "error": str(e), "success": False},
+                )
 
         return self.results
 
@@ -558,13 +552,14 @@ def assert_config_valid(config: dict[str, Any]) -> None:
         oauth2_required = ["oauth_client_id", "oauth_client_secret", "oauth_token_url"]
         for field in oauth2_required:
             assert field in config, f"OAuth2 field {field} is required"
+    else:
         msg = (
             f"Invalid auth_method: {config['auth_method']}. OIC only supports 'oauth2'"
         )
         raise ValueError(msg)
 
 
-def assert_stream_quality(stream) -> None:
+def assert_stream_quality(stream: Any) -> None:
     TestValidator.validate_stream_schema(stream)
     TestValidator.validate_stream_metadata(stream)
 

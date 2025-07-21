@@ -8,9 +8,9 @@ integration execution, performance metrics, errors, and operational health.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, ClassVar
 
-from singer_sdk import singer_typing as th
+from singer_sdk import typing as th
 
 from flext_tap_oracle_oic.streams import OICBaseStream
 
@@ -31,7 +31,7 @@ class ExecutionsStream(OICBaseStream):
 
     name = "executions"
     path = "/monitoring/executions"
-    primary_keys = ["executionId"]
+    primary_keys: ClassVar = ["executionId"]
     replication_key = "timestamp"
 
     schema = th.PropertiesList(
@@ -40,12 +40,24 @@ class ExecutionsStream(OICBaseStream):
         th.Property("timestamp", th.DateTimeType, description="Execution timestamp"),
         th.Property("status", th.StringType, description="Execution status"),
         th.Property("duration", th.IntegerType, description="Duration in milliseconds"),
-        th.Property("errorMessage", th.StringType, description="Error message if failed"),
-        th.Property("_tap_extracted_at", th.DateTimeType, description="Extraction timestamp"),
-        th.Property("_tap_stream_name", th.StringType, description="Source stream name"),
+        th.Property(
+            "errorMessage",
+            th.StringType,
+            description="Error message if failed",
+        ),
+        th.Property(
+            "_tap_extracted_at",
+            th.DateTimeType,
+            description="Extraction timestamp",
+        ),
+        th.Property(
+            "_tap_stream_name",
+            th.StringType,
+            description="Source stream name",
+        ),
     ).to_dict()
 
-    def additional_params(self, context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
         """Additional parameters for the request."""
         params: dict[str, Any] = {}
 
@@ -81,7 +93,7 @@ class MetricsStream(OICBaseStream):
 
     name = "metrics"
     path = "/monitoring/metrics"
-    primary_keys = ["metricId", "timestamp"]
+    primary_keys: ClassVar = ["metricId", "timestamp"]
     replication_key = "timestamp"
 
     schema = th.PropertiesList(
@@ -90,11 +102,19 @@ class MetricsStream(OICBaseStream):
         th.Property("metricType", th.StringType, description="Type of metric"),
         th.Property("value", th.NumberType, description="Metric value"),
         th.Property("unit", th.StringType, description="Metric unit"),
-        th.Property("_tap_extracted_at", th.DateTimeType, description="Extraction timestamp"),
-        th.Property("_tap_stream_name", th.StringType, description="Source stream name"),
+        th.Property(
+            "_tap_extracted_at",
+            th.DateTimeType,
+            description="Extraction timestamp",
+        ),
+        th.Property(
+            "_tap_stream_name",
+            th.StringType,
+            description="Source stream name",
+        ),
     ).to_dict()
 
-    def additional_params(self, context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
         """Additional parameters for the request."""
         params: dict[str, Any] = {}
 
@@ -121,7 +141,7 @@ class ErrorsStream(OICBaseStream):
 
     name = "errors"
     path = "/monitoring/errors"
-    primary_keys = ["errorId"]
+    primary_keys: ClassVar = ["errorId"]
     replication_key = "timestamp"
 
     schema = th.PropertiesList(
@@ -130,12 +150,24 @@ class ErrorsStream(OICBaseStream):
         th.Property("errorCode", th.StringType, description="Error code"),
         th.Property("errorMessage", th.StringType, description="Error message"),
         th.Property("severity", th.StringType, description="Error severity"),
-        th.Property("integrationId", th.StringType, description="Related integration ID"),
-        th.Property("_tap_extracted_at", th.DateTimeType, description="Extraction timestamp"),
-        th.Property("_tap_stream_name", th.StringType, description="Source stream name"),
+        th.Property(
+            "integrationId",
+            th.StringType,
+            description="Related integration ID",
+        ),
+        th.Property(
+            "_tap_extracted_at",
+            th.DateTimeType,
+            description="Extraction timestamp",
+        ),
+        th.Property(
+            "_tap_stream_name",
+            th.StringType,
+            description="Source stream name",
+        ),
     ).to_dict()
 
-    def additional_params(self, context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
         """Additional parameters for the request."""
         params: dict[str, Any] = {}
 

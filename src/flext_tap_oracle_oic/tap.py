@@ -7,12 +7,12 @@ Zero tolerance implementation using flext-core patterns.
 from __future__ import annotations
 
 import sys
-from typing import Any
-
-from singer_sdk import Tap
+from typing import Any, ClassVar
 
 from flext_core.domain.types import ServiceResult
 from flext_observability.logging import get_logger
+from singer_sdk import Tap
+
 from flext_tap_oracle_oic.client import OracleOICClient
 
 logger = get_logger(__name__)
@@ -22,7 +22,7 @@ class TapOracleOIC(Tap):
     """Real Oracle Integration Cloud tap implementation."""
 
     name = "tap-oracle-oic"
-    config_jsonschema = {
+    config_jsonschema: ClassVar = {
         "type": "object",
         "properties": {
             "oauth_client_id": {"type": "string", "description": "OAuth2 client ID"},
@@ -69,7 +69,8 @@ class TapOracleOIC(Tap):
                 oauth_client_secret=self.config["oauth_client_secret"],
                 oauth_endpoint=self.config["oauth_endpoint"],
                 oauth_scope=self.config.get(
-                    "oauth_scope", "urn:opc:resource:consumer:all",
+                    "oauth_scope",
+                    "urn:opc:resource:consumer:all",
                 ),
             )
         return self._client
@@ -95,11 +96,13 @@ class TapOracleOIC(Tap):
             self._create_stream_instance("LibrariesStream", LibrariesStream),
         ]
 
-        logger.info(f"Discovered {len(streams)} streams from Oracle OIC")
+        logger.info("Discovered %s streams from Oracle OIC", len(streams))
         return streams
 
     def _create_stream_instance(
-        self, class_name: str, stream_config: type[Any],
+        self,
+        class_name: str,
+        stream_config: type[Any],
     ) -> Any:
         """Create real stream instance using OICBaseStream."""
         from flext_tap_oracle_oic.streams import OICBaseStream
@@ -116,10 +119,14 @@ class TapOracleOIC(Tap):
                 "schema": stream_config.schema,
                 "api_category": getattr(stream_config, "api_category", "core"),
                 "requires_design_api": getattr(
-                    stream_config, "requires_design_api", False,
+                    stream_config,
+                    "requires_design_api",
+                    False,
                 ),
                 "requires_runtime_api": getattr(
-                    stream_config, "requires_runtime_api", False,
+                    stream_config,
+                    "requires_runtime_api",
+                    False,
                 ),
                 "default_sort": getattr(stream_config, "default_sort", None),
                 "additional_params": getattr(stream_config, "additional_params", None),
@@ -138,7 +145,7 @@ class TapOracleOIC(Tap):
 
             if test_result.is_success:
                 logger.info("Oracle OIC connection test successful")
-                return ServiceResult.success(True)
+                return ServiceResult.ok(data=True)
             error_msg = f"Oracle OIC connection test failed: {test_result.error}"
             logger.error(error_msg)
             return ServiceResult.fail(error_msg)
@@ -154,44 +161,46 @@ TapOIC = TapOracleOIC
 
 
 def main() -> int:
-    """Main entry point for Oracle OIC tap."""
+    """Run Oracle OIC tap."""
     import os
     import sys
 
+    # Real configuration from environment variables
+    config = {
+        "oauth_client_id": os.getenv("TAP_ORACLE_OIC_OAUTH_CLIENT_ID"),
+        "oauth_client_secret": os.getenv("TAP_ORACLE_OIC_OAUTH_CLIENT_SECRET"),
+        "oauth_endpoint": os.getenv("TAP_ORACLE_OIC_OAUTH_ENDPOINT"),
+        "oic_url": os.getenv("TAP_ORACLE_OIC_OIC_URL"),
+        "oauth_scope": os.getenv(
+            "TAP_ORACLE_OIC_OAUTH_SCOPE",
+            "urn:opc:resource:consumer:all",
+        ),
+    }
+
+    # Validate required configuration
+    required_config = [
+        "oauth_client_id",
+        "oauth_client_secret",
+        "oauth_endpoint",
+        "oic_url",
+    ]
+    missing_config = [key for key in required_config if not config.get(key)]
+
+    if missing_config:
+        logger.error("Missing required configuration:")
+        for key in missing_config:
+            logger.error("  - %s (env var: TAP_ORACLE_OIC_%s)", key, key.upper())
+        return 1
+
+    tap = TapOracleOIC(config=config)
+
     try:
-        # Real configuration from environment variables
-        config = {
-            "oauth_client_id": os.getenv("TAP_ORACLE_OIC_OAUTH_CLIENT_ID"),
-            "oauth_client_secret": os.getenv("TAP_ORACLE_OIC_OAUTH_CLIENT_SECRET"),
-            "oauth_endpoint": os.getenv("TAP_ORACLE_OIC_OAUTH_ENDPOINT"),
-            "oic_url": os.getenv("TAP_ORACLE_OIC_OIC_URL"),
-            "oauth_scope": os.getenv(
-                "TAP_ORACLE_OIC_OAUTH_SCOPE", "urn:opc:resource:consumer:all",
-            ),
-        }
-
-        # Validate required configuration
-        required_config = [
-            "oauth_client_id",
-            "oauth_client_secret",
-            "oauth_endpoint",
-            "oic_url",
-        ]
-        missing_config = [key for key in required_config if not config.get(key)]
-
-        if missing_config:
-            for key in missing_config:
-                f"TAP_ORACLE_OIC_{key.upper()}"
-            return 1
-
-        tap = TapOracleOIC(config=config)
-
         if "--discover" in sys.argv:
             logger.info("Discovering Oracle OIC streams")
             streams = tap.discover_streams()
 
             # Convert stream objects to Singer catalog format
-            {
+            catalog = {
                 "streams": [
                     {
                         "tap_stream_id": stream.name,
@@ -208,6 +217,7 @@ def main() -> int:
                     for stream in streams
                 ],
             }
+            logger.info("Generated catalog with %s streams", len(catalog["streams"]))
             return 0
 
         if "--test" in sys.argv:
@@ -224,8 +234,8 @@ def main() -> int:
 
         return 0
 
-    except Exception as e:
-        logger.exception(f"Oracle OIC tap execution failed: {e}")
+    except Exception:
+        logger.exception("Oracle OIC tap execution failed")
         return 1
 
 
