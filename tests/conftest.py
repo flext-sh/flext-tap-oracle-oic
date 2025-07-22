@@ -550,7 +550,7 @@ def mock_oic_client() -> type[Any]:
         def __init__(self, config: dict[str, Any]) -> None:
             self.config = config
             self.authenticated = False
-            self.call_count = {}
+            self.call_count: dict[str, int] = {}
 
         async def authenticate(self) -> bool:
             self.authenticated = True

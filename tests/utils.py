@@ -15,7 +15,7 @@ import pytest
 import requests
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Callable, Generator
     from pathlib import Path
 
 
@@ -218,12 +218,12 @@ class MockAPIServer:
     """Mock API server for testing HTTP interactions."""
 
     def __init__(self) -> None:
-        self.requests_mock = None
+        self.requests_mock: Any = None
         self.base_url = "https://test-oic.integration.ocp.oraclecloud.com"
         self.token_url = "https://test-idcs.identity.oraclecloud.com/oauth2/v1/token"
 
     def setup_oauth2_mock(self, token: str = "mock-token-12345") -> None:
-        if self.requests_mock:
+        if self.requests_mock is not None:
             self.requests_mock.post(
                 self.token_url,
                 json={
@@ -242,7 +242,7 @@ class MockAPIServer:
         if records is None:
             records = [TestDataBuilder.integration_record()]
 
-        if self.requests_mock:
+        if self.requests_mock is not None:
             self.requests_mock.get(
                 f"{self.base_url}/ic/api/integration/v1/integrations",
                 json={"items": records},
@@ -256,7 +256,7 @@ class MockAPIServer:
         if records is None:
             records = [TestDataBuilder.connection_record()]
 
-        if self.requests_mock:
+        if self.requests_mock is not None:
             self.requests_mock.get(
                 f"{self.base_url}/ic/api/integration/v1/connections",
                 json={"items": records},
@@ -269,7 +269,7 @@ class MockAPIServer:
         status_code: int = 500,
         error_message: str = "Internal Server Error",
     ) -> None:
-        if self.requests_mock:
+        if self.requests_mock is not None:
             self.requests_mock.get(
                 f"{self.base_url}{endpoint}",
                 json={"error": error_message},
@@ -289,9 +289,9 @@ class PerformanceMeasurer:
     """Utility for measuring performance metrics."""
 
     def __init__(self) -> None:
-        self.start_time = None
-        self.end_time = None
-        self.measurements = []
+        self.start_time: float | None = None
+        self.end_time: float | None = None
+        self.measurements: list[dict[str, Any]] = []
 
     @contextmanager
     def measure_duration(self) -> Generator[dict[str, Any]]:
@@ -303,18 +303,19 @@ class PerformanceMeasurer:
         finally:
             self.end_time = time.time()
             metrics["end_time"] = self.end_time
-            metrics["duration"] = self.end_time - self.start_time
+            if self.start_time is not None:
+                metrics["duration"] = self.end_time - self.start_time
             self.measurements.append(metrics)
 
     def get_average_duration(self) -> float:
         if not self.measurements:
             return 0.0
-        return sum(m["duration"] for m in self.measurements) / len(self.measurements)
+        return float(sum(m["duration"] for m in self.measurements) / len(self.measurements))
 
     def get_max_duration(self) -> float:
         if not self.measurements:
             return 0.0
-        return max(m["duration"] for m in self.measurements)
+        return float(max(m["duration"] for m in self.measurements))
 
 
 class TestConfigGenerator:
@@ -406,7 +407,7 @@ class TestFileManager:
 
     def __init__(self, temp_dir: Path) -> None:
         self.temp_dir = temp_dir
-        self.created_files = []
+        self.created_files: list[Path] = []
 
     def create_config_file(
         self,
@@ -508,9 +509,9 @@ class ConcurrentTestRunner:
 
     def __init__(self, max_workers: int = 4) -> None:
         self.max_workers = max_workers
-        self.results = []
+        self.results: list[dict[str, Any]] = []
 
-    def run_tests_parallel(self, test_functions: list[callable]) -> list[Any]:
+    def run_tests_parallel(self, test_functions: list[Callable[[], Any]]) -> list[Any]:
         from concurrent.futures import (
             ThreadPoolExecutor,
             as_completed,
@@ -518,7 +519,7 @@ class ConcurrentTestRunner:
 
         self.results.clear()
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-            future_to_test = {
+            future_to_test: dict[Any, Callable[[], Any]] = {
                 executor.submit(test_func): test_func for test_func in test_functions
             }
 

@@ -9,7 +9,7 @@ from __future__ import annotations
 import sys
 from typing import Any, ClassVar
 
-from flext_core.domain.types import ServiceResult
+from flext_core.domain.shared_types import ServiceResult
 from flext_observability.logging import get_logger
 from singer_sdk import Tap
 
@@ -77,24 +77,30 @@ class TapOracleOIC(Tap):
 
     def discover_streams(self) -> list[Any]:
         """Discover available streams using real Oracle OIC client."""
-        from flext_tap_oracle_oic.streams_core import (
-            ConnectionsStream,
-            IntegrationsStream,
-            LibrariesStream,
-            LookupsStream,
-            PackagesStream,
+        from flext_tap_oracle_oic.streams_consolidated import (
+            ALL_STREAMS,
+            CORE_STREAMS,
+            INFRASTRUCTURE_STREAMS,
         )
 
-        logger.info("Discovering Oracle OIC streams using real client")
+        logger.info("Discovering Oracle OIC streams using consolidated streams")
 
-        # Create real stream instances that inherit from OICBaseStream
-        streams = [
-            self._create_stream_instance("IntegrationsStream", IntegrationsStream),
-            self._create_stream_instance("ConnectionsStream", ConnectionsStream),
-            self._create_stream_instance("LookupsStream", LookupsStream),
-            self._create_stream_instance("PackagesStream", PackagesStream),
-            self._create_stream_instance("LibrariesStream", LibrariesStream),
-        ]
+        # Use core streams by default, with optional infrastructure streams
+        stream_names = CORE_STREAMS.copy()
+
+        # Add infrastructure streams if configured
+        if self.config.get("include_infrastructure", False):
+            stream_names.extend(INFRASTRUCTURE_STREAMS)
+
+        # Create real stream instances from consolidated registry
+        streams = []
+        for stream_name in stream_names:
+            if stream_name in ALL_STREAMS:
+                stream_class = ALL_STREAMS[stream_name]
+                stream_instance = self._create_stream_instance(
+                    stream_class.__name__, stream_class
+                )
+                streams.append(stream_instance)
 
         logger.info("Discovered %s streams from Oracle OIC", len(streams))
         return streams
@@ -135,7 +141,7 @@ class TapOracleOIC(Tap):
 
         return stream_class(tap=self)
 
-    def test_connection(self) -> ServiceResult[bool]:
+    def test_connection(self) -> ServiceResult[Any]:
         """Test connection to Oracle OIC using real client."""
         try:
             logger.info("Testing Oracle OIC connection with real client")
@@ -143,9 +149,9 @@ class TapOracleOIC(Tap):
             # Use real Oracle OIC client to test connection
             test_result = self.client.test_connection()
 
-            if test_result.is_success:
+            if test_result.success:
                 logger.info("Oracle OIC connection test successful")
-                return ServiceResult.ok(data=True)
+                return ServiceResult.ok(True)
             error_msg = f"Oracle OIC connection test failed: {test_result.error}"
             logger.error(error_msg)
             return ServiceResult.fail(error_msg)
@@ -223,7 +229,7 @@ def main() -> int:
         if "--test" in sys.argv:
             logger.info("Testing Oracle OIC connection")
             result = tap.test_connection()
-            if result.is_success:
+            if result.success:
                 return 0
             return 1
 
