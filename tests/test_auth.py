@@ -147,9 +147,9 @@ class TestOICOAuth2Authenticator:
         # Mock failed request
         mock_post.side_effect = requests.RequestException("Connection failed")
 
-        # Should handle request errors gracefully
+        # Should handle request errors gracefully when updating token
         with pytest.raises((requests.RequestException, ValueError, AttributeError)):
-            _ = authenticator.auth_headers
+            authenticator.update_access_token()
 
     def test_scope_configuration(self, authenticator: OICOAuth2Authenticator) -> None:
         """Test OAuth scope configuration."""

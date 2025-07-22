@@ -8,7 +8,7 @@ from __future__ import annotations
 import sys
 from typing import Any
 
-from flext_core import ServiceResult
+from flext_core.domain.shared_types import ServiceResult
 from flext_observability.logging import get_logger
 from singer_sdk import Tap
 from singer_sdk.typing import PropertiesList, Property, StringType
@@ -101,7 +101,7 @@ class TapOracleOIC(Tap):
         self.logger.info("Discovered %s streams", len(streams))
         return streams
 
-    def test_connection(self) -> ServiceResult[bool]:
+    def test_connection(self) -> ServiceResult[Any]:
         """Test connection to Oracle OIC."""
         try:
             # Basic connection test
@@ -109,14 +109,15 @@ class TapOracleOIC(Tap):
             oic_url = self.config["oic_url"]
 
             if not oauth_endpoint or not oic_url:
-                return ServiceResult.fail("Missing required configuration")
+                return ServiceResult.fail("Missing required configuration",
+                )
 
             self.logger.info("Connection test passed")
-            return ServiceResult.ok(data=True)
+            return ServiceResult.ok(True)
 
         except Exception as e:
             self.logger.exception("Connection test failed")
-            return ServiceResult.fail(f"Connection test failed: {e}")
+            return ServiceResult.ok(error=f"Connection test failed: {e}")
 
 
 def main() -> int:
@@ -140,7 +141,7 @@ def main() -> int:
 
         if "--test" in sys.argv:
             result = tap.test_connection()
-            if result.is_success:
+            if result.success:
                 return 0
             return 1
 

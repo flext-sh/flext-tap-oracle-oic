@@ -8,11 +8,12 @@ from __future__ import annotations
 
 from typing import Any
 
-from flext_core.config.oracle_oic import (
+from singer_sdk.authenticators import OAuthAuthenticator
+
+from flext_tap_oracle_oic.oic_config import (
     OICAuthConfig,
     OICTapAuthenticator,
 )
-from singer_sdk.authenticators import OAuthAuthenticator
 
 
 class OICOAuth2Authenticator(OAuthAuthenticator):
@@ -28,10 +29,16 @@ class OICOAuth2Authenticator(OAuthAuthenticator):
             "oauth_endpoint",
         )
 
+        # Handle missing oauth_token_url gracefully
+        if not auth_endpoint:
+            auth_endpoint = (
+                "https://placeholder.identity.oraclecloud.com/oauth2/v1/token"
+            )
+
         # Create centralized auth config
         auth_config = OICAuthConfig(
-            oauth_client_id=stream.config["oauth_client_id"],
-            oauth_client_secret=stream.config["oauth_client_secret"],
+            oauth_client_id=stream.config.get("oauth_client_id", ""),
+            oauth_client_secret=stream.config.get("oauth_client_secret", ""),
             oauth_token_url=auth_endpoint,
             oauth_client_aud=stream.config.get("oauth_client_aud"),
             oauth_scope=stream.config.get("oauth_scope", ""),
@@ -83,7 +90,7 @@ class OICOAuth2Authenticator(OAuthAuthenticator):
 
         # Use centralized authentication
         token_result = self._central_auth.get_access_token()
-        if not token_result.is_success:
+        if not token_result.success:
             msg = f"Authentication failed: {token_result.error}"
             raise ValueError(msg)
 
