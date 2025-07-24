@@ -5,15 +5,26 @@ Zero tolerance implementation using flext-core patterns.
 
 from __future__ import annotations
 
+# Removed circular dependency - use DI pattern
+# # FIXME: Removed circular dependency - use DI pattern
+import logging
 import sys
 from typing import Any
 
-from flext_core.domain.shared_types import ServiceResult
-from flext_observability.logging import get_logger
+# 🚨 ARCHITECTURAL COMPLIANCE
+from flext_tap_oracle_oic.infrastructure.di_container import (
+    get_domain_entity,
+    get_field,
+    get_service_result,
+)
+
+ServiceResult = get_service_result()
+DomainEntity = get_domain_entity()
+Field = get_field()
 from singer_sdk import Tap
 from singer_sdk.typing import PropertiesList, Property, StringType
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class TapOracleOIC(Tap):
@@ -109,7 +120,8 @@ class TapOracleOIC(Tap):
             oic_url = self.config["oic_url"]
 
             if not oauth_endpoint or not oic_url:
-                return ServiceResult.fail("Missing required configuration",
+                return ServiceResult.fail(
+                    "Missing required configuration",
                 )
 
             self.logger.info("Connection test passed")

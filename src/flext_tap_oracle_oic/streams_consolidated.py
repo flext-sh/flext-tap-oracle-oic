@@ -37,18 +37,32 @@ class IntegrationsStream(OICBaseStream):
         th.Property("id", th.StringType, description="Integration ID"),
         th.Property("name", th.StringType, description="Integration name"),
         th.Property("version", th.StringType, description="Integration version"),
-        th.Property("description", th.StringType, description="Integration description"),
+        th.Property(
+            "description", th.StringType, description="Integration description"
+        ),
         th.Property("status", th.StringType, description="Integration status"),
         th.Property("pattern", th.StringType, description="Integration pattern"),
         th.Property("style", th.StringType, description="Integration style"),
         th.Property("created", th.DateTimeType, description="Creation timestamp"),
-        th.Property("lastUpdated", th.DateTimeType, description="Last update timestamp"),
+        th.Property(
+            "lastUpdated", th.DateTimeType, description="Last update timestamp"
+        ),
         th.Property("createdBy", th.StringType, description="Created by user"),
         th.Property("lastUpdatedBy", th.StringType, description="Last updated by user"),
-        th.Property("connections", th.ArrayType(th.ObjectType()), description="Used connections"),
-        th.Property("endpoints", th.ArrayType(th.ObjectType()), description="Integration endpoints"),
-        th.Property("trackingFields", th.ArrayType(th.StringType), description="Tracking fields"),
-        th.Property("payloadTracking", th.BooleanType, description="Payload tracking enabled"),
+        th.Property(
+            "connections", th.ArrayType(th.ObjectType()), description="Used connections"
+        ),
+        th.Property(
+            "endpoints",
+            th.ArrayType(th.ObjectType()),
+            description="Integration endpoints",
+        ),
+        th.Property(
+            "trackingFields", th.ArrayType(th.StringType), description="Tracking fields"
+        ),
+        th.Property(
+            "payloadTracking", th.BooleanType, description="Payload tracking enabled"
+        ),
         th.Property("tracing", th.BooleanType, description="Tracing enabled"),
         th.Property("lockedBy", th.StringType, description="Locked by user"),
         th.Property("lockedFlag", th.BooleanType, description="Is locked"),
@@ -77,16 +91,22 @@ class ConnectionsStream(OICBaseStream):
         th.Property("name", th.StringType, description="Connection name"),
         th.Property("description", th.StringType, description="Connection description"),
         th.Property("adapterType", th.StringType, description="Adapter type"),
-        th.Property("adapterDisplayName", th.StringType, description="Adapter display name"),
+        th.Property(
+            "adapterDisplayName", th.StringType, description="Adapter display name"
+        ),
         th.Property("adapterVersion", th.StringType, description="Adapter version"),
         th.Property("status", th.StringType, description="Connection status"),
         th.Property("created", th.DateTimeType, description="Creation timestamp"),
-        th.Property("lastUpdated", th.DateTimeType, description="Last update timestamp"),
+        th.Property(
+            "lastUpdated", th.DateTimeType, description="Last update timestamp"
+        ),
         th.Property("createdBy", th.StringType, description="Created by user"),
         th.Property("lastUpdatedBy", th.StringType, description="Last updated by user"),
         th.Property("connectionUrl", th.StringType, description="Connection URL"),
         th.Property("securityPolicy", th.StringType, description="Security policy"),
-        th.Property("connectionProperties", th.ObjectType(), description="Connection properties"),
+        th.Property(
+            "connectionProperties", th.ObjectType(), description="Connection properties"
+        ),
         th.Property("isValid", th.BooleanType, description="Connection validity"),
         th.Property("usageCount", th.IntegerType, description="Usage count"),
         th.Property("lockedBy", th.StringType, description="Locked by user"),
@@ -115,11 +135,21 @@ class PackagesStream(OICBaseStream):
         th.Property("version", th.StringType, description="Package version"),
         th.Property("status", th.StringType, description="Package status"),
         th.Property("created", th.DateTimeType, description="Creation timestamp"),
-        th.Property("lastUpdated", th.DateTimeType, description="Last update timestamp"),
+        th.Property(
+            "lastUpdated", th.DateTimeType, description="Last update timestamp"
+        ),
         th.Property("createdBy", th.StringType, description="Created by user"),
         th.Property("lastUpdatedBy", th.StringType, description="Last updated by user"),
-        th.Property("integrations", th.ArrayType(th.ObjectType()), description="Included integrations"),
-        th.Property("connections", th.ArrayType(th.ObjectType()), description="Included connections"),
+        th.Property(
+            "integrations",
+            th.ArrayType(th.ObjectType()),
+            description="Included integrations",
+        ),
+        th.Property(
+            "connections",
+            th.ArrayType(th.ObjectType()),
+            description="Included connections",
+        ),
         th.Property("size", th.IntegerType, description="Package size"),
         th.Property("projectId", th.StringType, description="Project ID"),
     ).to_dict()
@@ -144,10 +174,14 @@ class LookupsStream(OICBaseStream):
         th.Property("type", th.StringType, description="Lookup type"),
         th.Property("status", th.StringType, description="Lookup status"),
         th.Property("created", th.DateTimeType, description="Creation timestamp"),
-        th.Property("lastUpdated", th.DateTimeType, description="Last update timestamp"),
+        th.Property(
+            "lastUpdated", th.DateTimeType, description="Last update timestamp"
+        ),
         th.Property("createdBy", th.StringType, description="Created by user"),
         th.Property("lastUpdatedBy", th.StringType, description="Last updated by user"),
-        th.Property("valueCount", th.IntegerType, description="Number of lookup values"),
+        th.Property(
+            "valueCount", th.IntegerType, description="Number of lookup values"
+        ),
         th.Property("defaultValue", th.StringType, description="Default lookup value"),
         th.Property("isReadOnly", th.BooleanType, description="Is read-only"),
         th.Property("usageCount", th.IntegerType, description="Usage count"),
@@ -155,6 +189,7 @@ class LookupsStream(OICBaseStream):
 
 
 # INFRASTRUCTURE STREAMS
+
 
 class LibrariesStream(OICBaseStream):
     """Oracle Integration Cloud Libraries Stream.
@@ -176,13 +211,17 @@ class LibrariesStream(OICBaseStream):
         th.Property("type", th.StringType, description="Library type"),
         th.Property("status", th.StringType, description="Library status"),
         th.Property("created", th.DateTimeType, description="Creation timestamp"),
-        th.Property("lastUpdated", th.DateTimeType, description="Last update timestamp"),
+        th.Property(
+            "lastUpdated", th.DateTimeType, description="Last update timestamp"
+        ),
         th.Property("createdBy", th.StringType, description="Created by user"),
         th.Property("lastUpdatedBy", th.StringType, description="Last updated by user"),
         th.Property("version", th.StringType, description="Library version"),
         th.Property("size", th.IntegerType, description="Library size"),
         th.Property("usageCount", th.IntegerType, description="Usage count"),
-        th.Property("functions", th.ArrayType(th.StringType), description="Available functions"),
+        th.Property(
+            "functions", th.ArrayType(th.StringType), description="Available functions"
+        ),
     ).to_dict()
 
 
@@ -201,17 +240,23 @@ class CertificatesStream(OICBaseStream):
 
     schema = th.PropertiesList(
         th.Property("name", th.StringType, description="Certificate name"),
-        th.Property("description", th.StringType, description="Certificate description"),
+        th.Property(
+            "description", th.StringType, description="Certificate description"
+        ),
         th.Property("type", th.StringType, description="Certificate type"),
         th.Property("status", th.StringType, description="Certificate status"),
         th.Property("created", th.DateTimeType, description="Creation timestamp"),
-        th.Property("lastUpdated", th.DateTimeType, description="Last update timestamp"),
+        th.Property(
+            "lastUpdated", th.DateTimeType, description="Last update timestamp"
+        ),
         th.Property("createdBy", th.StringType, description="Created by user"),
         th.Property("expirationDate", th.DateTimeType, description="Expiration date"),
         th.Property("issuer", th.StringType, description="Certificate issuer"),
         th.Property("subject", th.StringType, description="Certificate subject"),
         th.Property("serialNumber", th.StringType, description="Serial number"),
-        th.Property("fingerprint", th.StringType, description="Certificate fingerprint"),
+        th.Property(
+            "fingerprint", th.StringType, description="Certificate fingerprint"
+        ),
         th.Property("usageCount", th.IntegerType, description="Usage count"),
     ).to_dict()
 
@@ -237,8 +282,16 @@ class AdaptersStream(OICBaseStream):
         th.Property("version", th.StringType, description="Adapter version"),
         th.Property("vendor", th.StringType, description="Adapter vendor"),
         th.Property("category", th.StringType, description="Adapter category"),
-        th.Property("capabilities", th.ArrayType(th.StringType), description="Adapter capabilities"),
-        th.Property("connectionTypes", th.ArrayType(th.StringType), description="Connection types"),
+        th.Property(
+            "capabilities",
+            th.ArrayType(th.StringType),
+            description="Adapter capabilities",
+        ),
+        th.Property(
+            "connectionTypes",
+            th.ArrayType(th.StringType),
+            description="Connection types",
+        ),
         th.Property("isCustom", th.BooleanType, description="Is custom adapter"),
         th.Property("isDeprecated", th.BooleanType, description="Is deprecated"),
         th.Property("documentationUrl", th.StringType, description="Documentation URL"),
@@ -246,6 +299,7 @@ class AdaptersStream(OICBaseStream):
 
 
 # EXTENDED BUSINESS STREAMS
+
 
 class ProjectsStream(OICBaseStream):
     """Oracle Integration Cloud Projects Stream.
@@ -267,17 +321,30 @@ class ProjectsStream(OICBaseStream):
         th.Property("description", th.StringType, description="Project description"),
         th.Property("status", th.StringType, description="Project status"),
         th.Property("created", th.DateTimeType, description="Creation timestamp"),
-        th.Property("lastUpdated", th.DateTimeType, description="Last update timestamp"),
+        th.Property(
+            "lastUpdated", th.DateTimeType, description="Last update timestamp"
+        ),
         th.Property("createdBy", th.StringType, description="Created by user"),
         th.Property("lastUpdatedBy", th.StringType, description="Last updated by user"),
-        th.Property("folders", th.ArrayType(th.ObjectType()), description="Project folders"),
-        th.Property("integrationCount", th.IntegerType, description="Number of integrations"),
-        th.Property("connectionCount", th.IntegerType, description="Number of connections"),
-        th.Property("permissions", th.ArrayType(th.ObjectType()), description="Project permissions"),
+        th.Property(
+            "folders", th.ArrayType(th.ObjectType()), description="Project folders"
+        ),
+        th.Property(
+            "integrationCount", th.IntegerType, description="Number of integrations"
+        ),
+        th.Property(
+            "connectionCount", th.IntegerType, description="Number of connections"
+        ),
+        th.Property(
+            "permissions",
+            th.ArrayType(th.ObjectType()),
+            description="Project permissions",
+        ),
     ).to_dict()
 
 
 # MONITORING STREAMS
+
 
 class ExecutionsStream(OICBaseStream):
     """Oracle Integration Cloud Executions Stream.
@@ -296,7 +363,9 @@ class ExecutionsStream(OICBaseStream):
     schema = th.PropertiesList(
         th.Property("instanceId", th.StringType, description="Execution instance ID"),
         th.Property("integrationName", th.StringType, description="Integration name"),
-        th.Property("integrationVersion", th.StringType, description="Integration version"),
+        th.Property(
+            "integrationVersion", th.StringType, description="Integration version"
+        ),
         th.Property("status", th.StringType, description="Execution status"),
         th.Property("startTime", th.DateTimeType, description="Execution start time"),
         th.Property("endTime", th.DateTimeType, description="Execution end time"),
@@ -304,7 +373,9 @@ class ExecutionsStream(OICBaseStream):
         th.Property("errorCode", th.StringType, description="Error code"),
         th.Property("errorMessage", th.StringType, description="Error message"),
         th.Property("payloadSize", th.IntegerType, description="Payload size"),
-        th.Property("processedRecords", th.IntegerType, description="Processed record count"),
+        th.Property(
+            "processedRecords", th.IntegerType, description="Processed record count"
+        ),
     ).to_dict()
 
 
@@ -329,7 +400,9 @@ class MetricsStream(OICBaseStream):
         th.Property("value", th.NumberType, description="Metric value"),
         th.Property("unit", th.StringType, description="Metric unit"),
         th.Property("tags", th.ObjectType(), description="Metric tags"),
-        th.Property("integrationName", th.StringType, description="Related integration"),
+        th.Property(
+            "integrationName", th.StringType, description="Related integration"
+        ),
         th.Property("connectionName", th.StringType, description="Related connection"),
     ).to_dict()
 
@@ -342,15 +415,12 @@ ALL_STREAMS = {
     "connections": ConnectionsStream,
     "packages": PackagesStream,
     "lookups": LookupsStream,
-
     # Infrastructure streams
     "libraries": LibrariesStream,
     "certificates": CertificatesStream,
     "adapters": AdaptersStream,
-
     # Extended business streams
     "projects": ProjectsStream,
-
     # Monitoring streams
     "executions": ExecutionsStream,
     "metrics": MetricsStream,

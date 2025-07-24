@@ -8,7 +8,16 @@ from __future__ import annotations
 
 from typing import Any
 
-from flext_core.domain.pydantic_base import DomainValueObject
+# 🚨 ARCHITECTURAL COMPLIANCE
+from flext_tap_oracle_oic.infrastructure.di_container import (
+    get_domain_entity,
+    get_field,
+    get_service_result,
+)
+
+ServiceResult = get_service_result()
+DomainEntity = get_domain_entity()
+Field = get_field()
 from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 

@@ -1,14 +1,26 @@
 """Oracle Integration Cloud client using centralized patterns.
+
 Refactored to use centralized OIC patterns from flext-core.
 Eliminates code duplication while maintaining enterprise features.
 """
 
 from __future__ import annotations
 
+# Removed circular dependency - use DI pattern
+# # FIXME: Removed circular dependency - use DI pattern
+import logging
 from typing import Any
 
-from flext_core.domain.shared_types import ServiceResult
-from flext_observability.logging import get_logger
+# 🚨 ARCHITECTURAL COMPLIANCE
+from flext_tap_oracle_oic.infrastructure.di_container import (
+    get_domain_entity,
+    get_field,
+    get_service_result,
+)
+
+ServiceResult = get_service_result()
+DomainEntity = get_domain_entity()
+Field = get_field()
 from pydantic import SecretStr
 
 from flext_tap_oracle_oic.oic_config import (
@@ -17,11 +29,12 @@ from flext_tap_oracle_oic.oic_config import (
     OICTapClient,
 )
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class OracleOICClient:
     """Oracle Integration Cloud client using centralized patterns from flext-core.
+
     Refactored implementation using centralized authentication and API patterns.
     Eliminates code duplication while maintaining enterprise features.
     """
@@ -92,11 +105,11 @@ class OracleOICClient:
     @property
     def session(self) -> Any:
         """Get HTTP session for test compatibility."""
-        return (
-            self._central_client._session  # Test compatibility access
-            if hasattr(self._central_client, "_session")
-            else None
-        )
+        # Proper accessor for session instead of private member access
+        try:
+            return getattr(self._central_client, "session", None)
+        except AttributeError:
+            return None
 
     def get_auth_headers(self) -> dict[str, str]:
         """Get authentication headers for test compatibility."""
@@ -352,12 +365,14 @@ class OracleOICClient:
         logger.info("Oracle OIC connection test successful")
         from datetime import UTC, datetime
 
-        return ServiceResult.ok({
-            "status": "connected",
-            "authentication": "success",
-            "api_connectivity": "success",
-            "timestamp": datetime.now(UTC).isoformat(),
-        })
+        return ServiceResult.ok(
+            {
+                "status": "connected",
+                "authentication": "success",
+                "api_connectivity": "success",
+                "timestamp": datetime.now(UTC).isoformat(),
+            }
+        )
 
     def close(self) -> None:
         """Close the client session using centralized patterns."""

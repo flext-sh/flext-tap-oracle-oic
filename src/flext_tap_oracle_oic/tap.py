@@ -6,16 +6,27 @@ Zero tolerance implementation using flext-core patterns.
 
 from __future__ import annotations
 
+# Removed circular dependency - use DI pattern
+# # FIXME: Removed circular dependency - use DI pattern
+import logging
 import sys
 from typing import Any, ClassVar
 
-from flext_core.domain.shared_types import ServiceResult
-from flext_observability.logging import get_logger
+# 🚨 ARCHITECTURAL COMPLIANCE
+from flext_tap_oracle_oic.infrastructure.di_container import (
+    get_domain_entity,
+    get_field,
+    get_service_result,
+)
+
+ServiceResult = get_service_result()
+DomainEntity = get_domain_entity()
+Field = get_field()
 from singer_sdk import Tap
 
 from flext_tap_oracle_oic.client import OracleOICClient
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class TapOracleOIC(Tap):
