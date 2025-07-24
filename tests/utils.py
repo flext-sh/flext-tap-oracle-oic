@@ -204,14 +204,14 @@ class TestValidator:
         max_memory_growth: int = 100 * 1024 * 1024,  # 100MB
     ) -> None:
         if "duration" in metrics:
-            assert metrics["duration"] < max_duration, (
-                f"Duration {metrics['duration']} exceeds {max_duration}s"
-            )
+            assert (
+                metrics["duration"] < max_duration
+            ), f"Duration {metrics['duration']} exceeds {max_duration}s"
 
         if "memory_growth" in metrics:
-            assert metrics["memory_growth"] < max_memory_growth, (
-                f"Memory growth {metrics['memory_growth']} exceeds {max_memory_growth} bytes"
-            )
+            assert (
+                metrics["memory_growth"] < max_memory_growth
+            ), f"Memory growth {metrics['memory_growth']} exceeds {max_memory_growth} bytes"
 
 
 class MockAPIServer:
@@ -310,7 +310,9 @@ class PerformanceMeasurer:
     def get_average_duration(self) -> float:
         if not self.measurements:
             return 0.0
-        return float(sum(m["duration"] for m in self.measurements) / len(self.measurements))
+        return float(
+            sum(m["duration"] for m in self.measurements) / len(self.measurements)
+        )
 
     def get_max_duration(self) -> float:
         if not self.measurements:
@@ -576,6 +578,7 @@ def assert_stream_quality(stream: Any) -> None:
     # Validate primary keys are meaningful
     for key in stream.primary_keys:
         assert key in properties, f"Primary key {key} must exist in schema"
-        assert properties[key].get("type") in {"string", "integer"}, (
-            f"Primary key {key} must be string or integer"
-        )
+        assert properties[key].get("type") in {
+            "string",
+            "integer",
+        }, f"Primary key {key} must be string or integer"

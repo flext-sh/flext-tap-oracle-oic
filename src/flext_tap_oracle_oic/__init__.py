@@ -16,7 +16,11 @@ import importlib.metadata
 import warnings
 
 # Foundation patterns - ALWAYS from flext-core
-from flext_core import (
+# 🚨 ARCHITECTURAL COMPLIANCE
+from flext_tap_oracle_oic.infrastructure.di_container import get_service_result, get_domain_entity, get_field
+ServiceResult = get_service_result()
+DomainEntity = get_domain_entity()
+Field = get_field()
     BaseConfig as OICBaseConfig,  # Configuration base
     DomainBaseModel as BaseModel,  # Base for OIC models
     DomainError as OICError,  # OIC-specific errors

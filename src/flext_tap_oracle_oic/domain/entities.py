@@ -10,7 +10,16 @@ from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Any
 
-from flext_core.domain.pydantic_base import DomainBaseModel, DomainValueObject
+# 🚨 ARCHITECTURAL COMPLIANCE
+from flext_tap_oracle_oic.infrastructure.di_container import (
+    get_domain_entity,
+    get_field,
+    get_service_result,
+)
+
+ServiceResult = get_service_result()
+DomainEntity = get_domain_entity()
+Field = get_field()
 from pydantic import Field
 
 

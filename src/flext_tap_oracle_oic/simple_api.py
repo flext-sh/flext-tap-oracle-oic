@@ -11,7 +11,16 @@ from typing import Any
 import requests
 
 # Use centralized ServiceResult from flext-core - ELIMINATE DUPLICATION
-from flext_core import ServiceResult
+# 🚨 ARCHITECTURAL COMPLIANCE
+from flext_tap_oracle_oic.infrastructure.di_container import (
+    get_domain_entity,
+    get_field,
+    get_service_result,
+)
+
+ServiceResult = get_service_result()
+DomainEntity = get_domain_entity()
+Field = get_field()
 from pydantic import ValidationError
 
 from flext_tap_oracle_oic.config import (
