@@ -38,7 +38,8 @@ class TestTapOIC:
     def test_config_validation(self) -> None:
         """Test config validation."""
         import pytest
-        from singer_sdk.exceptions import ConfigValidationError
+        # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
+        from flext_meltano import ConfigValidationError
 
         # Missing required fields should raise exception when validation is enabled
         config = {

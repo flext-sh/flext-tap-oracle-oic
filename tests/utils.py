@@ -28,7 +28,7 @@ class TestDataBuilder:
         name: str = "Test Integration",
         status: str = "ACTIVE",
         time_updated: str = "2024-01-15T10:30:00Z",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> dict[str, Any]:
         record = {
             "id": integration_id,
@@ -49,7 +49,7 @@ class TestDataBuilder:
         status: str = "ACTIVE",
         time_updated: str = "2024-01-15T10:30:00Z",
         connection_type: str = "REST",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> dict[str, Any]:
         record = {
             "id": connection_id,
@@ -70,7 +70,7 @@ class TestDataBuilder:
         status: str = "ACTIVE",
         time_updated: str = "2024-01-15T10:30:00Z",
         version: str = "1.0.0",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> dict[str, Any]:
         record = {
             "id": package_id,
@@ -91,7 +91,7 @@ class TestDataBuilder:
         status: str = "SUCCEEDED",
         start_time: str = "2024-01-15T10:30:00Z",
         end_time: str = "2024-01-15T10:35:00Z",
-        **kwargs: Any,
+        **kwargs: object,
     ) -> dict[str, Any]:
         record = {
             "instanceId": instance_id,
@@ -204,14 +204,14 @@ class TestValidator:
         max_memory_growth: int = 100 * 1024 * 1024,  # 100MB
     ) -> None:
         if "duration" in metrics:
-            assert (
-                metrics["duration"] < max_duration
-            ), f"Duration {metrics['duration']} exceeds {max_duration}s"
+            assert metrics["duration"] < max_duration, (
+                f"Duration {metrics['duration']} exceeds {max_duration}s"
+            )
 
         if "memory_growth" in metrics:
-            assert (
-                metrics["memory_growth"] < max_memory_growth
-            ), f"Memory growth {metrics['memory_growth']} exceeds {max_memory_growth} bytes"
+            assert metrics["memory_growth"] < max_memory_growth, (
+                f"Memory growth {metrics['memory_growth']} exceeds {max_memory_growth} bytes"
+            )
 
 
 class MockAPIServer:
@@ -311,7 +311,7 @@ class PerformanceMeasurer:
         if not self.measurements:
             return 0.0
         return float(
-            sum(m["duration"] for m in self.measurements) / len(self.measurements)
+            sum(m["duration"] for m in self.measurements) / len(self.measurements),
         )
 
     def get_max_duration(self) -> float:
@@ -480,7 +480,7 @@ def requires_python_version(min_version: str) -> Any:
             f"{sys.version_info.major}.{sys.version_info.minor}",
         ) < version.parse(min_version):
 
-            def test_fail(*args: Any, **kwargs: Any) -> None:
+            def test_fail(*args: Any, **kwargs: object) -> None:
                 pytest.fail(f"Requires Python {min_version} or higher")
 
             return test_fail

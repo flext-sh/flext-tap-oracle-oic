@@ -140,7 +140,8 @@ class TestTapOIC:
 
     def test_missing_required_fields_warning(self) -> None:
         """Test that the missing required fields validation works correctly."""
-        from singer_sdk.exceptions import ConfigValidationError
+        # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
+        from flext_meltano import ConfigValidationError
 
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",

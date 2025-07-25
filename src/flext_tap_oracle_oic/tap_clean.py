@@ -5,26 +5,16 @@ Zero tolerance implementation using flext-core patterns.
 
 from __future__ import annotations
 
-# Removed circular dependency - use DI pattern
-# # FIXME: Removed circular dependency - use DI pattern
-import logging
 import sys
 from typing import Any
 
-# 🚨 ARCHITECTURAL COMPLIANCE
-from flext_tap_oracle_oic.infrastructure.di_container import (
-    get_domain_entity,
-    get_field,
-    get_service_result,
-)
+# Import from flext-core for foundational patterns (standardized)
+from flext_core import FlextResult
+from flext_meltano import PropertiesList, Property, StringType
 
-ServiceResult = get_service_result()
-DomainEntity = get_domain_entity()
-Field = get_field()
-from singer_sdk import Tap
-from singer_sdk.typing import PropertiesList, Property, StringType
-
-logger = logging.getLogger(__name__)
+# MIGRATED: Singer SDK imports centralized via flext-meltano
+from flext_meltano.singer import FlextMeltanoTap as Tap
+from loguru import logger
 
 
 class TapOracleOIC(Tap):
@@ -65,7 +55,7 @@ class TapOracleOIC(Tap):
         ),
     ).to_dict()
 
-    def __init__(self, config: dict[str, Any] | None = None, **kwargs: Any) -> None:
+    def __init__(self, config: dict[str, Any] | None = None, **kwargs: object) -> None:
         """Initialize Oracle OIC tap."""
         super().__init__(config=config, **kwargs)
         self.logger = logger
@@ -112,7 +102,7 @@ class TapOracleOIC(Tap):
         self.logger.info("Discovered %s streams", len(streams))
         return streams
 
-    def test_connection(self) -> ServiceResult[Any]:
+    def test_connection(self) -> FlextResult[Any]:
         """Test connection to Oracle OIC."""
         try:
             # Basic connection test
@@ -120,16 +110,16 @@ class TapOracleOIC(Tap):
             oic_url = self.config["oic_url"]
 
             if not oauth_endpoint or not oic_url:
-                return ServiceResult.fail(
+                return FlextResult.fail(
                     "Missing required configuration",
                 )
 
             self.logger.info("Connection test passed")
-            return ServiceResult.ok(True)
+            return FlextResult.ok(True)
 
         except Exception as e:
             self.logger.exception("Connection test failed")
-            return ServiceResult.ok(error=f"Connection test failed: {e}")
+            return FlextResult.fail(f"Connection test failed: {e}")
 
 
 def main() -> int:

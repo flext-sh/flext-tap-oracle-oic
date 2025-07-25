@@ -1,25 +1,20 @@
 """Domain entities for FLEXT-TAP-ORACLE-OIC v0.7.0 using flext-core patterns.
 
 MIGRATED TO FLEXT-CORE:
-Uses flext-core DomainBaseModel and value object patterns. Zero tolerance for code duplication.
+Uses flext-core FlextDomainBaseModel and value object patterns.
 """
 
 from __future__ import annotations
 
 from datetime import UTC, datetime
 from enum import StrEnum
-from typing import Any
+from typing import Any, ClassVar
 
-# 🚨 ARCHITECTURAL COMPLIANCE
-from flext_tap_oracle_oic.infrastructure.di_container import (
-    get_domain_entity,
-    get_field,
-    get_service_result,
+# Import from flext-core for foundational patterns (standardized)
+from flext_core import (
+    FlextValueObject,
+    FlextValueObject as FlextDomainBaseModel,
 )
-
-ServiceResult = get_service_result()
-DomainEntity = get_domain_entity()
-Field = get_field()
 from pydantic import Field
 
 
@@ -54,8 +49,10 @@ class ConnectionStatus(StrEnum):
     FAILED = "failed"
 
 
-class OICConnection(DomainBaseModel):
+class OICConnection(FlextDomainBaseModel):
     """OIC connection domain entity using flext-core patterns."""
+
+    model_config: ClassVar[dict[str, Any]] = {"frozen": False}
 
     connection_id: str = Field(
         ...,
@@ -103,8 +100,10 @@ class OICConnection(DomainBaseModel):
         self.test_result = {"error": error, "timestamp": datetime.now(UTC).isoformat()}
 
 
-class OICIntegration(DomainBaseModel):
+class OICIntegration(FlextDomainBaseModel):
     """OIC integration domain entity using flext-core patterns."""
+
+    model_config: ClassVar[dict[str, Any]] = {"frozen": False}
 
     integration_id: str = Field(
         ...,
@@ -179,8 +178,10 @@ class OICIntegration(DomainBaseModel):
         return self.integration_status == IntegrationStatus.ACTIVATED
 
 
-class OICLookup(DomainBaseModel):
+class OICLookup(FlextDomainBaseModel):
     """OIC lookup table domain entity using flext-core patterns."""
+
+    model_config: ClassVar[dict[str, Any]] = {"frozen": False}
 
     lookup_id: str = Field(..., min_length=1, description="OIC lookup identifier")
     lookup_name: str = Field(..., min_length=1, description="Lookup table name")
@@ -225,7 +226,7 @@ class OICLookup(DomainBaseModel):
         return self.row_count == 0
 
 
-class OICMonitoringRecord(DomainBaseModel):
+class OICMonitoringRecord(FlextDomainBaseModel):
     """OIC monitoring record domain entity using flext-core patterns."""
 
     instance_id: str = Field(..., min_length=1, description="Flow instance ID")
@@ -275,8 +276,10 @@ class OICMonitoringRecord(DomainBaseModel):
         return self.duration_ms / 1000.0 if self.duration_ms is not None else None
 
 
-class OICProject(DomainBaseModel):
+class OICProject(FlextDomainBaseModel):
     """OIC project domain entity using flext-core patterns."""
+
+    model_config: ClassVar[dict[str, Any]] = {"frozen": False}
 
     project_id: str = Field(..., min_length=1, description="OIC project identifier")
     project_code: str = Field(..., min_length=1, description="Project code")
@@ -330,7 +333,7 @@ class OICProject(DomainBaseModel):
 
 
 # Value Objects for configuration and metadata
-class OICResourceMetadata(DomainValueObject):
+class OICResourceMetadata(FlextValueObject):
     """OIC resource metadata value object."""
 
     resource_type: OICResourceType = Field(..., description="Resource type")
@@ -341,7 +344,7 @@ class OICResourceMetadata(DomainValueObject):
     updated_at: datetime | None = Field(None, description="Last update timestamp")
 
 
-class OICExecutionSummary(DomainValueObject):
+class OICExecutionSummary(FlextValueObject):
     """OIC execution summary value object."""
 
     integration_id: str = Field(..., description="Integration ID")

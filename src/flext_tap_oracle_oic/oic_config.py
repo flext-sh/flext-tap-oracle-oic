@@ -10,27 +10,19 @@ concrete projects implement specific functionality.
 
 from __future__ import annotations
 
-# Removed circular dependency - use DI pattern
-# # FIXME: Removed circular dependency - use DI pattern
-import logging
 from datetime import UTC, datetime
 from typing import Any
 
 import httpx
 
-# 🚨 ARCHITECTURAL COMPLIANCE
-from flext_tap_oracle_oic.infrastructure.di_container import (
-    get_domain_entity,
-    get_field,
-    get_service_result,
+# Import from flext-core for foundational patterns (standardized)
+from flext_core import (
+    FlextResult,
+    get_logger,
 )
-
-ServiceResult = get_service_result()
-DomainEntity = get_domain_entity()
-Field = get_field()
 from pydantic import BaseModel, Field, SecretStr
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class OICAuthConfig(BaseModel):
@@ -79,12 +71,12 @@ class OICTapAuthenticator:
             "scope": " ".join(self.get_oauth_scopes()),
         }
 
-    async def get_access_token(self) -> ServiceResult[str]:
+    async def get_access_token(self) -> FlextResult[str]:
         """Get OAuth2 access token from Oracle IDCS."""
         try:
             # Check if we have a valid cached token
             if self._access_token and self._is_token_valid():
-                return ServiceResult.ok(self._access_token)
+                return FlextResult.ok(self._access_token)
 
             # Request new token
             token_result = await self._request_new_token()
@@ -102,7 +94,7 @@ class OICTapAuthenticator:
 
         except Exception as e:
             logger.exception("Failed to get OIC access token")
-            return ServiceResult.fail(f"Token request failed: {e}")
+            return FlextResult.fail(f"Token request failed: {e}")
 
     def _is_token_valid(self) -> bool:
         """Check if cached token is still valid."""
@@ -118,7 +110,7 @@ class OICTapAuthenticator:
 
         return self._token_expires_at > buffer_time
 
-    async def _request_new_token(self) -> ServiceResult[str]:
+    async def _request_new_token(self) -> FlextResult[str]:
         """Request new OAuth2 token from Oracle IDCS."""
         try:
             # Prepare request
@@ -153,17 +145,17 @@ class OICTapAuthenticator:
 
             access_token = token_data.get("access_token")
             if not access_token:
-                return ServiceResult.fail("No access token in response")
+                return FlextResult.fail("No access token in response")
 
             logger.info("Successfully obtained OIC access token")
-            return ServiceResult.ok(access_token)
+            return FlextResult.ok(access_token)
 
         except httpx.RequestError as e:
-            logger.exception("OIC token request failed", error=str(e))
-            return ServiceResult.fail(f"Token request failed: {e}")
+            logger.exception("OIC token request failed: %s", str(e))
+            return FlextResult.fail(f"Token request failed: {e}")
         except Exception as e:
             logger.exception("Unexpected error during token request")
-            return ServiceResult.fail(f"Unexpected token error: {e}")
+            return FlextResult.fail(f"Unexpected token error: {e}")
 
 
 class OICTapClient:
@@ -189,14 +181,14 @@ class OICTapClient:
         """Get OIC API version."""
         return self.connection_config.api_version
 
-    async def _get_authenticated_session(self) -> ServiceResult[httpx.AsyncClient]:
+    async def _get_authenticated_session(self) -> FlextResult[httpx.AsyncClient]:
         """Get authenticated HTTP session."""
         try:
             if not self._session:
                 # Get access token
                 token_result = await self.authenticator.get_access_token()
                 if not token_result.is_success:
-                    return ServiceResult.fail(
+                    return FlextResult.fail(
                         f"Authentication failed: {token_result.error}",
                     )
 
@@ -212,26 +204,28 @@ class OICTapClient:
                     timeout=self.connection_config.timeout,
                 )
 
-            return ServiceResult.ok(self._session)
+            return FlextResult.ok(self._session)
 
         except Exception as e:
             logger.exception("Failed to create authenticated session")
-            return ServiceResult.fail(f"Session creation failed: {e}")
+            return FlextResult.fail(f"Session creation failed: {e}")
 
     async def make_request(
         self,
         method: str,
         endpoint: str,
         params: dict[str, Any] | None = None,
-        **kwargs: Any,
-    ) -> ServiceResult[dict[str, Any]]:
+        **kwargs: object,
+    ) -> FlextResult[dict[str, Any]]:
         """Make authenticated request to OIC API."""
         try:
             session_result = await self._get_authenticated_session()
             if not session_result.is_success:
-                return ServiceResult.fail(session_result.error)
+                return FlextResult.fail(session_result.error or "Authentication failed")
 
             session = session_result.data
+            if session is None:
+                return FlextResult.fail("No authenticated session available")
 
             # Build full URL
             endpoint = endpoint.lstrip("/")
@@ -249,29 +243,29 @@ class OICTapClient:
 
             # Parse JSON response
             data = response.json()
-            return ServiceResult.ok(data)
+            return FlextResult.ok(data)
 
         except httpx.HTTPStatusError as e:
             logger.exception(
-                "OIC API HTTP error",
-                status_code=e.response.status_code,
-                url=str(e.response.url),
+                "OIC API HTTP error: status %d, url %s",
+                e.response.status_code,
+                str(e.response.url),
             )
-            return ServiceResult.fail(f"OIC API error: {e}")
+            return FlextResult.fail(f"OIC API error: {e}")
         except httpx.RequestError as e:
-            logger.exception("OIC API request failed", error=str(e))
-            return ServiceResult.fail(f"Request failed: {e}")
+            logger.exception("OIC API request failed: %s", str(e))
+            return FlextResult.fail(f"Request failed: {e}")
         except Exception as e:
             logger.exception("Unexpected error in OIC API request")
-            return ServiceResult.fail(f"Unexpected error: {e}")
+            return FlextResult.fail(f"Unexpected error: {e}")
 
     async def get_integrations(
         self,
         status_filter: list[str] | None = None,
         page_size: int = 100,
-    ) -> ServiceResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, Any]]:
         """Get integration flows from OIC."""
-        params = {"limit": page_size}
+        params: dict[str, Any] = {"limit": page_size}
 
         if status_filter:
             params["q"] = f"status in ({','.join(status_filter)})"
@@ -282,9 +276,9 @@ class OICTapClient:
         self,
         type_filter: list[str] | None = None,
         page_size: int = 100,
-    ) -> ServiceResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, Any]]:
         """Get adapter connections from OIC."""
-        params = {"limit": page_size}
+        params: dict[str, Any] = {"limit": page_size}
 
         if type_filter:
             params["q"] = f"adapterType in ({','.join(type_filter)})"
@@ -294,7 +288,7 @@ class OICTapClient:
     async def get_packages(
         self,
         page_size: int = 100,
-    ) -> ServiceResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, Any]]:
         """Get integration packages from OIC."""
         params = {"limit": page_size}
         return await self.make_request("GET", "packages", params=params)
@@ -302,7 +296,7 @@ class OICTapClient:
     async def get_lookups(
         self,
         page_size: int = 100,
-    ) -> ServiceResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, Any]]:
         """Get lookup tables from OIC."""
         params = {"limit": page_size}
         return await self.make_request("GET", "lookups", params=params)

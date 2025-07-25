@@ -14,6 +14,7 @@ from typing import Any
 from unittest.mock import Mock
 
 import pytest
+from flext_core import get_logger
 
 from flext_tap_oracle_oic.tap import TapOIC
 
@@ -143,9 +144,8 @@ class TestTapOracleOICE2E:
                     pytest.fail(f"Network connection failed: {e}")
                 # Other errors might be acceptable (no data, API changes, etc.)
                 # Log warning but don't fail test
-                import logging
 
-                logger = logging.getLogger(__name__)
+                logger = get_logger(__name__)
                 logger.warning(f"Non-critical error in live connection test: {e}")
 
     def test_state_management(self, tap: TapOIC) -> None:
@@ -204,7 +204,8 @@ class TestTapOracleOICE2E:
 
     def test_config_validation(self) -> None:
         """Test config validation."""
-        from singer_sdk.exceptions import ConfigValidationError
+        # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
+        from flext_meltano import ConfigValidationError
 
         # Test missing required fields
         with pytest.raises(ConfigValidationError):

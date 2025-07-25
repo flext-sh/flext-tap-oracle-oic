@@ -1,7 +1,7 @@
-"""Simple API for Oracle Integration Cloud tap setup and operations using flext-core patterns.
+"""Simple API for Oracle Integration Cloud tap setup and operations.
 
 MIGRATED TO FLEXT-CORE:
-Provides enterprise-ready setup utilities with ServiceResult pattern support.
+Provides enterprise-ready setup utilities with FlextResult pattern support.
 """
 
 from __future__ import annotations
@@ -10,17 +10,10 @@ from typing import Any
 
 import requests
 
-# Use centralized ServiceResult from flext-core - ELIMINATE DUPLICATION
-# 🚨 ARCHITECTURAL COMPLIANCE
-from flext_tap_oracle_oic.infrastructure.di_container import (
-    get_domain_entity,
-    get_field,
-    get_service_result,
+# Import from flext-core for foundational patterns (standardized)
+from flext_core import (
+    FlextResult,
 )
-
-ServiceResult = get_service_result()
-DomainEntity = get_domain_entity()
-Field = get_field()
 from pydantic import ValidationError
 
 from flext_tap_oracle_oic.config import (
@@ -35,14 +28,14 @@ from flext_tap_oracle_oic.config import (
 
 def setup_oic_tap(
     config: TapOracleOICConfig | None = None,
-) -> ServiceResult[Any]:
+) -> FlextResult[Any]:
     """Set up Oracle Integration Cloud tap with configuration.
 
     Args:
         config: Optional configuration. If None, creates defaults.
 
     Returns:
-        ServiceResult with TapOracleOICConfig or error message.
+        FlextResult with TapOracleOICConfig or error message.
 
     """
     try:
@@ -53,18 +46,18 @@ def setup_oic_tap(
         # Validate configuration
         config.model_validate(config.model_dump())
 
-        return ServiceResult.ok(config)
+        return FlextResult.ok(config)
 
     except (ValueError, ValidationError, TypeError) as e:
-        return ServiceResult.ok(error=f"Failed to setup OIC tap: {e}")
+        return FlextResult.fail(f"Failed to setup OIC tap: {e}")
 
 
 def create_oic_auth_config(
     client_id: str,
     client_secret: str,
     token_url: str,
-    **kwargs: Any,
-) -> ServiceResult[Any]:
+    **kwargs: object,
+) -> FlextResult[Any]:
     """Create OIC authentication configuration.
 
     Args:
@@ -74,7 +67,7 @@ def create_oic_auth_config(
         **kwargs: Additional configuration parameters
 
     Returns:
-        ServiceResult with OICAuthConfig or error message.
+        FlextResult with OICAuthConfig or error message.
 
     """
     try:
@@ -85,16 +78,16 @@ def create_oic_auth_config(
             **kwargs,
         )
 
-        return ServiceResult.ok(config)
+        return FlextResult.ok(config)
 
     except (ValueError, ValidationError, TypeError) as e:
-        return ServiceResult.ok(error=f"Failed to create OIC auth config: {e}")
+        return FlextResult.fail(f"Failed to create OIC auth config: {e}")
 
 
 def create_oic_connection_config(
     base_url: str,
-    **kwargs: Any,
-) -> ServiceResult[Any]:
+    **kwargs: object,
+) -> FlextResult[Any]:
     """Create OIC connection configuration.
 
     Args:
@@ -102,7 +95,7 @@ def create_oic_connection_config(
         **kwargs: Additional configuration parameters
 
     Returns:
-        ServiceResult with OICConnectionConfig or error message.
+        FlextResult with OICConnectionConfig or error message.
 
     """
     try:
@@ -111,20 +104,20 @@ def create_oic_connection_config(
             **kwargs,
         )
 
-        return ServiceResult.ok(config)
+        return FlextResult.ok(config)
 
     except (ValueError, ValidationError, TypeError) as e:
-        return ServiceResult.ok(error=f"Failed to create OIC connection config: {e}")
+        return FlextResult.fail(f"Failed to create OIC connection config: {e}")
 
 
-def validate_oic_config(config: TapOracleOICConfig) -> ServiceResult[Any]:
+def validate_oic_config(config: TapOracleOICConfig) -> FlextResult[Any]:
     """Validate OIC tap configuration.
 
     Args:
         config: Configuration to validate
 
     Returns:
-        ServiceResult with validation success or error message.
+        FlextResult with validation success or error message.
 
     """
     try:
@@ -133,33 +126,33 @@ def validate_oic_config(config: TapOracleOICConfig) -> ServiceResult[Any]:
 
         # Additional business rule validations
         if not config.connection.base_url:
-            return ServiceResult.fail("Base URL is required")
+            return FlextResult.fail("Base URL is required")
 
         if not config.auth.oauth_client_id:
-            return ServiceResult.fail("OAuth client ID is required")
+            return FlextResult.fail("OAuth client ID is required")
 
         if not config.auth.oauth_client_secret:
-            return ServiceResult.fail("OAuth client secret is required")
+            return FlextResult.fail("OAuth client secret is required")
 
         if not config.auth.oauth_token_url:
-            return ServiceResult.fail("OAuth token URL is required")
+            return FlextResult.fail("OAuth token URL is required")
 
-        return ServiceResult.ok(True)
+        return FlextResult.ok(True)
 
     except (ValueError, ValidationError, AttributeError) as e:
-        return ServiceResult.ok(error=f"Configuration validation failed: {e}")
+        return FlextResult.fail(f"Configuration validation failed: {e}")
 
 
 def create_development_oic_config(
     **overrides: Any,
-) -> ServiceResult[Any]:
+) -> FlextResult[Any]:
     """Create development OIC configuration with defaults.
 
     Args:
         **overrides: Configuration overrides
 
     Returns:
-        ServiceResult with TapOracleOICConfig for development use.
+        FlextResult with TapOracleOICConfig for development use.
 
     """
     try:
@@ -220,20 +213,20 @@ def create_development_oic_config(
             config_dict.update(overrides)
             config = TapOracleOICConfig(**config_dict)
 
-        return ServiceResult.ok(config)
+        return FlextResult.ok(config)
 
     except (ValueError, ValidationError, TypeError, requests.RequestException) as e:
-        return ServiceResult.ok(error=f"Failed to create development config: {e}")
+        return FlextResult.fail(f"Failed to create development config: {e}")
 
 
-def create_production_oic_config(**overrides: Any) -> ServiceResult[Any]:
+def create_production_oic_config(**overrides: Any) -> FlextResult[Any]:
     """Create production OIC configuration with security defaults.
 
     Args:
         **overrides: Configuration overrides
 
     Returns:
-        ServiceResult with TapOracleOICConfig for production use.
+        FlextResult with TapOracleOICConfig for production use.
 
     """
     try:
@@ -296,20 +289,20 @@ def create_production_oic_config(**overrides: Any) -> ServiceResult[Any]:
             config_dict.update(overrides)
             config = TapOracleOICConfig(**config_dict)
 
-        return ServiceResult.ok(config)
+        return FlextResult.ok(config)
 
     except (ValueError, ValidationError, TypeError, requests.RequestException) as e:
-        return ServiceResult.ok(error=f"Failed to create production config: {e}")
+        return FlextResult.fail(f"Failed to create production config: {e}")
 
 
-def create_discovery_only_config(**overrides: Any) -> ServiceResult[Any]:
+def create_discovery_only_config(**overrides: Any) -> FlextResult[Any]:
     """Create OIC configuration optimized for catalog discovery only.
 
     Args:
         **overrides: Configuration overrides
 
     Returns:
-        ServiceResult with TapOracleOICConfig optimized for discovery.
+        FlextResult with TapOracleOICConfig optimized for discovery.
 
     """
     try:
@@ -375,20 +368,20 @@ def create_discovery_only_config(**overrides: Any) -> ServiceResult[Any]:
             config_dict.update(overrides)
             config = TapOracleOICConfig(**config_dict)
 
-        return ServiceResult.ok(config)
+        return FlextResult.ok(config)
 
     except (ValueError, ValidationError, TypeError, requests.RequestException) as e:
-        return ServiceResult.ok(error=f"Failed to create discovery config: {e}")
+        return FlextResult.fail(f"Failed to create discovery config: {e}")
 
 
-def create_monitoring_config(**overrides: Any) -> ServiceResult[Any]:
+def create_monitoring_config(**overrides: Any) -> FlextResult[Any]:
     """Create OIC configuration optimized for monitoring data extraction.
 
     Args:
         **overrides: Configuration overrides
 
     Returns:
-        ServiceResult with TapOracleOICConfig optimized for monitoring.
+        FlextResult with TapOracleOICConfig optimized for monitoring.
 
     """
     try:
@@ -449,15 +442,15 @@ def create_monitoring_config(**overrides: Any) -> ServiceResult[Any]:
             config_dict.update(overrides)
             config = TapOracleOICConfig(**config_dict)
 
-        return ServiceResult.ok(config)
+        return FlextResult.ok(config)
 
     except (ValueError, ValidationError, TypeError, requests.RequestException) as e:
-        return ServiceResult.ok(error=f"Failed to create monitoring config: {e}")
+        return FlextResult.fail(f"Failed to create monitoring config: {e}")
 
 
 # Export main API functions
 __all__ = [
-    "ServiceResult",
+    "FlextResult",
     "create_development_oic_config",
     "create_discovery_only_config",
     "create_monitoring_config",

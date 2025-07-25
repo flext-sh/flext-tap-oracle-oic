@@ -3,6 +3,7 @@
 Real tests for the actual authentication module without skips.
 """
 
+# MIGRATED: Singer SDK imports centralized via flext-meltano
 from __future__ import annotations
 
 import base64
@@ -164,7 +165,7 @@ class TestOICOAuth2Authenticator:
         authenticator: OICOAuth2Authenticator,
     ) -> None:
         """Test authenticator inherits from Singer SDK properly."""
-        from singer_sdk.authenticators import OAuthAuthenticator
+        from flext_meltano import OAuthAuthenticator
 
         assert isinstance(authenticator, OAuthAuthenticator)
 
