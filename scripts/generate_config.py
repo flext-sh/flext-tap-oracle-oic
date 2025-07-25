@@ -23,10 +23,10 @@ from flext_tap_oracle_oic.infrastructure.di_container import (
     get_service_result,
 )
 
-ServiceResult = get_service_result()
+FlextResult = get_service_result()
 DomainEntity = get_domain_entity()
 Field = get_field()
-DomainValueObject = get_domain_value_object()
+FlextValueObject = get_domain_value_object()
 BaseConfig = get_base_config()
 
 

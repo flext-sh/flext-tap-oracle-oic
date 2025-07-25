@@ -1,28 +1,19 @@
-"""Configuration schema for Oracle Integration Cloud TAP v0.7.0 using flext-core patterns.
+"""Configuration schema for Oracle Integration Cloud TAP v0.7.0.
 
 MIGRATED TO FLEXT-CORE:
-Uses flext-core DomainValueObject and configuration patterns. Zero tolerance for code duplication.
+Uses flext-core FlextValueObject and configuration patterns.
 """
 
 from __future__ import annotations
 
 from typing import Any
 
-# 🚨 ARCHITECTURAL COMPLIANCE
-from flext_tap_oracle_oic.infrastructure.di_container import (
-    get_domain_entity,
-    get_field,
-    get_service_result,
-)
-
-ServiceResult = get_service_result()
-DomainEntity = get_domain_entity()
-Field = get_field()
-from pydantic import Field, field_validator, model_validator
+# Import from flext-core for foundational patterns (standardized)
+from pydantic import BaseModel, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class OICAuthConfig(DomainValueObject):
+class OICAuthConfig(BaseModel):
     """OAuth2 authentication configuration for Oracle IDCS using flext-core patterns."""
 
     oauth_client_id: str = Field(
@@ -42,8 +33,8 @@ class OICAuthConfig(DomainValueObject):
     oauth_scope: str | None = Field(None, description="OAuth2 scope for authentication")
 
 
-class OICConnectionConfig(DomainValueObject):
-    """Connection configuration for Oracle Integration Cloud using flext-core patterns."""
+class OICConnectionConfig(BaseModel):
+    """Connection configuration for Oracle Integration Cloud."""
 
     base_url: str = Field(
         ...,
@@ -80,7 +71,7 @@ class OICConnectionConfig(DomainValueObject):
     )
 
 
-class StreamSelectionConfig(DomainValueObject):
+class StreamSelectionConfig(BaseModel):
     """Configuration for stream selection and filtering using flext-core patterns."""
 
     stream_maps: dict[str, Any] | None = Field(
@@ -117,7 +108,7 @@ class StreamSelectionConfig(DomainValueObject):
     )
 
 
-class DiscoveryConfig(DomainValueObject):
+class DiscoveryConfig(BaseModel):
     """Configuration for catalog discovery using flext-core patterns."""
 
     discover_integrations: bool = Field(
@@ -155,7 +146,7 @@ class DiscoveryConfig(DomainValueObject):
     )
 
 
-class DataExtractionConfig(DomainValueObject):
+class DataExtractionConfig(BaseModel):
     """Configuration for data extraction behavior using flext-core patterns."""
 
     extract_integration_metadata: bool = Field(

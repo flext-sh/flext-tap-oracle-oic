@@ -11,7 +11,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 import requests
-from flext_core import ServiceResult
+from flext_core import FlextResult
 
 from flext_tap_oracle_oic.client import OracleOICClient
 
@@ -93,7 +93,7 @@ class TestOracleOICClient:
         with contextlib.suppress(Exception):
             # May fail due to implementation details, but should not crash
             result = client.get_access_token()
-            if isinstance(result, ServiceResult) and result.success:
+            if isinstance(result, FlextResult) and result.success:
                 assert result.data is not None
 
     @patch("requests.Session.get")
@@ -113,7 +113,7 @@ class TestOracleOICClient:
         with contextlib.suppress(Exception):
             # May fail but should handle gracefully
             result = client.get("/ic/api/integration/v1/integrations")
-            if isinstance(result, ServiceResult):
+            if isinstance(result, FlextResult):
                 assert result is not None
 
     def test_url_construction(self) -> None:
@@ -188,12 +188,12 @@ class TestOracleOICClient:
             client.get("/test")
 
     def test_service_result_pattern(self) -> None:
-        """Test ServiceResult pattern usage."""
-        # Test ServiceResult creation
-        success_result = ServiceResult.ok({"test": "data"})
+        """Test FlextResult pattern usage."""
+        # Test FlextResult creation
+        success_result = FlextResult.ok({"test": "data"})
         assert success_result.success is True
         assert success_result.data == {"test": "data"}
 
-        failure_result: ServiceResult[Any] = ServiceResult.fail("Test error")
+        failure_result: FlextResult[Any] = FlextResult.fail("Test error")
         assert failure_result.success is False
         assert failure_result.error == "Test error"

@@ -556,7 +556,7 @@ def mock_oic_client() -> type[Any]:
             self.authenticated = True
             return True
 
-        async def get_integrations(self, **kwargs: Any) -> dict[str, Any]:
+        async def get_integrations(self, **kwargs: object) -> dict[str, Any]:
             self.call_count["get_integrations"] = (
                 self.call_count.get("get_integrations", 0) + 1
             )
@@ -567,7 +567,7 @@ def mock_oic_client() -> type[Any]:
                 "count": 0,
             }
 
-        async def get_connections(self, **kwargs: Any) -> dict[str, Any]:
+        async def get_connections(self, **kwargs: object) -> dict[str, Any]:
             self.call_count["get_connections"] = (
                 self.call_count.get("get_connections", 0) + 1
             )
@@ -578,7 +578,9 @@ def mock_oic_client() -> type[Any]:
                 "count": 0,
             }
 
-        def paginate_request(self, request_func: Any, **kwargs: Any) -> Iterator[Any]:
+        def paginate_request(
+            self, request_func: Any, **kwargs: object
+        ) -> Iterator[Any]:
             """Mock pagination."""
             yield from []
 

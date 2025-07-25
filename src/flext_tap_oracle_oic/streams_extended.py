@@ -13,11 +13,12 @@ Features:
     - Advanced configuration management
 """
 
+# MIGRATED: Singer SDK imports centralized via flext-meltano
 from __future__ import annotations
 
 from typing import Any, ClassVar
 
-from singer_sdk import typing as th
+from flext_meltano import th
 
 from flext_tap_oracle_oic.streams import OICBaseStream
 

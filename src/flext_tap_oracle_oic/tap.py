@@ -6,27 +6,21 @@ Zero tolerance implementation using flext-core patterns.
 
 from __future__ import annotations
 
-# Removed circular dependency - use DI pattern
-# # FIXME: Removed circular dependency - use DI pattern
-import logging
 import sys
 from typing import Any, ClassVar
 
-# 🚨 ARCHITECTURAL COMPLIANCE
-from flext_tap_oracle_oic.infrastructure.di_container import (
-    get_domain_entity,
-    get_field,
-    get_service_result,
+# Import from flext-core for foundational patterns (standardized)
+from flext_core import (
+    FlextResult,
+    get_logger,
 )
 
-ServiceResult = get_service_result()
-DomainEntity = get_domain_entity()
-Field = get_field()
-from singer_sdk import Tap
+# MIGRATED: Singer SDK imports centralized via flext-meltano
+from flext_meltano.singer import FlextMeltanoTap as Tap
 
 from flext_tap_oracle_oic.client import OracleOICClient
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class TapOracleOIC(Tap):
@@ -63,7 +57,7 @@ class TapOracleOIC(Tap):
         ],
     }
 
-    def __init__(self, config: dict[str, Any] | None = None, **kwargs: Any) -> None:
+    def __init__(self, config: dict[str, Any] | None = None, **kwargs: object) -> None:
         """Initialize Oracle OIC tap with real client."""
         super().__init__(config=config, **kwargs)
 
@@ -109,7 +103,8 @@ class TapOracleOIC(Tap):
             if stream_name in ALL_STREAMS:
                 stream_class = ALL_STREAMS[stream_name]
                 stream_instance = self._create_stream_instance(
-                    stream_class.__name__, stream_class
+                    stream_class.__name__,
+                    stream_class,
                 )
                 streams.append(stream_instance)
 
@@ -152,7 +147,7 @@ class TapOracleOIC(Tap):
 
         return stream_class(tap=self)
 
-    def test_connection(self) -> ServiceResult[Any]:
+    def test_connection(self) -> FlextResult[Any]:
         """Test connection to Oracle OIC using real client."""
         try:
             logger.info("Testing Oracle OIC connection with real client")
@@ -162,15 +157,15 @@ class TapOracleOIC(Tap):
 
             if test_result.success:
                 logger.info("Oracle OIC connection test successful")
-                return ServiceResult.ok(True)
+                return FlextResult.ok(True)
             error_msg = f"Oracle OIC connection test failed: {test_result.error}"
             logger.error(error_msg)
-            return ServiceResult.fail(error_msg)
+            return FlextResult.fail(error_msg)
 
         except Exception as e:
             error_msg = f"Oracle OIC connection test exception: {e}"
             logger.exception(error_msg)
-            return ServiceResult.fail(error_msg)
+            return FlextResult.fail(error_msg)
 
 
 # Alias for backwards compatibility

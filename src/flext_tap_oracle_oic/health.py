@@ -4,6 +4,7 @@ This module provides health checking capabilities for OIC connections,
 integrations, and the overall OIC instance health.
 """
 
+# MIGRATED: Singer SDK imports centralized via flext-meltano
 from __future__ import annotations
 
 from datetime import UTC, datetime

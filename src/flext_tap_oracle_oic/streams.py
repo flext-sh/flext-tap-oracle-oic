@@ -26,8 +26,9 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
-from singer_sdk import RESTStream
+from flext_core.exceptions import FlextError as FlextServiceError
 from singer_sdk.pagination import BaseOffsetPaginator
+from singer_sdk.streams import RESTStream
 
 from flext_tap_oracle_oic.auth import OICOAuth2Authenticator
 from flext_tap_oracle_oic.constants import (
@@ -395,13 +396,13 @@ class OICBaseStream(RESTStream[Any]):
 
         if response.status_code == 401:
             msg = "Unauthorized: Authentication failed or token expired"
-            raise RuntimeError(msg)
+            raise FlextServiceError(msg)
         if response.status_code == 403:
             msg = "Forbidden: Insufficient permissions to access resource"
-            raise RuntimeError(msg)
+            raise FlextServiceError(msg)
         if response.status_code == 429:
             msg = "Rate limit exceeded: Too many requests"
-            raise RuntimeError(msg)
+            raise FlextServiceError(msg)
         response.raise_for_status()
 
     def _track_response_metrics(
