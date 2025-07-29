@@ -27,11 +27,12 @@ import re
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
+import requests
 from flext_core.exceptions import FlextError as FlextServiceError
 from singer_sdk.pagination import BaseOffsetPaginator
 from singer_sdk.streams import RESTStream
 
-from flext_tap_oracle_oic.auth import OICOAuth2Authenticator
+# Removed auth import - authentication is handled by Tap's client
 from flext_tap_oracle_oic.constants import (
     OIC_API_BASE_PATH,
     OIC_B2B_API_PATH,
@@ -41,8 +42,6 @@ from flext_tap_oracle_oic.constants import (
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
-
-    import requests
 
 
 class OICPaginator(BaseOffsetPaginator):
@@ -191,11 +190,19 @@ class OICBaseStream(RESTStream[Any]):
         return base_url + OIC_API_BASE_PATH
 
     @property
-    def authenticator(self) -> OICOAuth2Authenticator:
-        """Get or create OAuth2 authenticator."""
-        if not hasattr(self, "_authenticator"):
-            self._authenticator = OICOAuth2Authenticator(stream=self)
-        return self._authenticator
+    def requests_session(self) -> requests.Session:
+        """Get authenticated requests session from the Tap's client."""
+        # Access the Tap's OIC client to get the authenticated session
+        # RESTStream provides self.tap as the parent tap instance
+        if hasattr(self, "tap") and hasattr(self.tap, "client"):
+            session_result = self.tap.client.get_authenticated_session()
+            if session_result.is_success and session_result.data is not None:
+                session = session_result.data
+                if isinstance(session, requests.Session):
+                    return session
+
+        # Fallback to parent implementation if client not available
+        return super().requests_session
 
     def get_new_paginator(self) -> OICPaginator:
         """Create new paginator for OIC API requests.
