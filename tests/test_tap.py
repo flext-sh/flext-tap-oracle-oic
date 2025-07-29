@@ -1,5 +1,9 @@
 """Tests for tap-oracle-oic."""
 
+import pytest
+from flext_meltano import ConfigValidationError
+
+
 from __future__ import annotations
 
 from flext_tap_oracle_oic.tap import TapOIC
@@ -16,7 +20,8 @@ class TestTapOIC:
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
         tap = TapOIC(config=config, validate_config=False)
-        assert tap.name == "tap-oracle-oic"
+        if tap.name != "tap-oracle-oic":
+            raise AssertionError(f"Expected {"tap-oracle-oic"}, got {tap.name}")
         assert tap.config == config
 
     def test_discover_streams(self) -> None:
@@ -30,16 +35,18 @@ class TestTapOIC:
         streams = tap.discover_streams()
 
         # Should have at least core streams
-        assert len(streams) >= 5
+        if len(streams) < 5:
+            raise AssertionError(f"Expected {len(streams)} >= {5}")
         stream_names = [s.name for s in streams]
-        assert "integrations" in stream_names
+        if "integrations" not in stream_names:
+            raise AssertionError(f"Expected {"integrations"} in {stream_names}")
         assert "connections" in stream_names
 
     def test_config_validation(self) -> None:
         """Test config validation."""
-        import pytest
+
         # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
-        from flext_meltano import ConfigValidationError
+
 
         # Missing required fields should raise exception when validation is enabled
         config = {
@@ -61,8 +68,11 @@ class TestTapOIC:
 
         # Should include core streams
         stream_names = [s.name for s in streams]
-        assert "integrations" in stream_names
+        if "integrations" not in stream_names:
+            raise AssertionError(f"Expected {"integrations"} in {stream_names}")
         assert "connections" in stream_names
-        assert "packages" in stream_names
+        if "packages" not in stream_names:
+            raise AssertionError(f"Expected {"packages"} in {stream_names}")
         assert "libraries" in stream_names
-        assert "lookups" in stream_names
+        if "lookups" not in stream_names:
+            raise AssertionError(f"Expected {"lookups"} in {stream_names}")

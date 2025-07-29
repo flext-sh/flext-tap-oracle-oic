@@ -4,6 +4,11 @@ Real Oracle OIC connectivity with enterprise authentication and data extraction.
 Zero tolerance implementation using flext-core patterns.
 """
 
+from flext_tap_oracle_oic.streams_consolidated import (
+import os
+import sys
+
+
 from __future__ import annotations
 
 import sys
@@ -82,7 +87,7 @@ class TapOracleOIC(Tap):
 
     def discover_streams(self) -> list[Any]:
         """Discover available streams using real Oracle OIC client."""
-        from flext_tap_oracle_oic.streams_consolidated import (
+
             ALL_STREAMS,
             CORE_STREAMS,
             INFRASTRUCTURE_STREAMS,
@@ -115,7 +120,7 @@ class TapOracleOIC(Tap):
         self,
         class_name: str,
         stream_config: type[Any],
-    ) -> Any:
+    ) -> object:
         """Create real stream instance using OICBaseStream."""
         from flext_tap_oracle_oic.streams import OICBaseStream
 
@@ -162,7 +167,7 @@ class TapOracleOIC(Tap):
             logger.error(error_msg)
             return FlextResult.fail(error_msg)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             error_msg = f"Oracle OIC connection test exception: {e}"
             logger.exception(error_msg)
             return FlextResult.fail(error_msg)
@@ -174,8 +179,8 @@ TapOIC = TapOracleOIC
 
 def main() -> int:
     """Run Oracle OIC tap."""
-    import os
-    import sys
+
+
 
     # Real configuration from environment variables
     config = {
@@ -246,7 +251,7 @@ def main() -> int:
 
         return 0
 
-    except Exception:
+    except (RuntimeError, ValueError, TypeError):
         logger.exception("Oracle OIC tap execution failed")
         return 1
 

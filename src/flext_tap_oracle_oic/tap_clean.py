@@ -117,15 +117,13 @@ class TapOracleOIC(Tap):
             self.logger.info("Connection test passed")
             return FlextResult.ok(True)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             self.logger.exception("Connection test failed")
             return FlextResult.fail(f"Connection test failed: {e}")
 
 
 def main() -> int:
     """Run tap."""
-    import sys
-
     # Basic configuration from environment
     config = {
         "oauth_client_id": "test-client",
@@ -149,7 +147,7 @@ def main() -> int:
 
         return 0
 
-    except Exception:
+    except (RuntimeError, ValueError, TypeError):
         logger.exception("Tap execution failed")
         return 1
 

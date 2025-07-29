@@ -10,6 +10,8 @@ concrete projects implement specific functionality.
 
 from __future__ import annotations
 
+import asyncio
+import datetime as dt
 from datetime import UTC, datetime
 from typing import Any
 
@@ -86,13 +88,12 @@ class OICTapAuthenticator:
                 # Set expiration (assume 1 hour if not provided)
                 self._token_expires_at = datetime.now(UTC).replace(microsecond=0)
                 # Add 50 minutes (safe margin)
-                import datetime as dt
 
                 self._token_expires_at += dt.timedelta(minutes=50)
 
             return token_result
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Failed to get OIC access token")
             return FlextResult.fail(f"Token request failed: {e}")
 
@@ -104,7 +105,6 @@ class OICTapAuthenticator:
         now = datetime.now(UTC)
         # Add small buffer (5 minutes)
         buffer_time = now.replace(microsecond=0)
-        import datetime as dt
 
         buffer_time += dt.timedelta(minutes=5)
 
@@ -153,7 +153,7 @@ class OICTapAuthenticator:
         except httpx.RequestError as e:
             logger.exception("OIC token request failed: %s", str(e))
             return FlextResult.fail(f"Token request failed: {e}")
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Unexpected error during token request")
             return FlextResult.fail(f"Unexpected token error: {e}")
 
@@ -206,7 +206,7 @@ class OICTapClient:
 
             return FlextResult.ok(self._session)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Failed to create authenticated session")
             return FlextResult.fail(f"Session creation failed: {e}")
 
@@ -255,7 +255,7 @@ class OICTapClient:
         except httpx.RequestError as e:
             logger.exception("OIC API request failed: %s", str(e))
             return FlextResult.fail(f"Request failed: {e}")
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Unexpected error in OIC API request")
             return FlextResult.fail(f"Unexpected error: {e}")
 
@@ -304,7 +304,6 @@ class OICTapClient:
     def close(self) -> None:
         """Close the HTTP session."""
         if self._session:
-            import asyncio
 
             asyncio.run(self._session.aclose())
             self._session = None

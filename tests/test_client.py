@@ -3,6 +3,9 @@
 Real tests for the Oracle Integration Cloud client module.
 """
 
+from urllib.parse import urljoin
+
+
 from __future__ import annotations
 
 import contextlib
@@ -47,9 +50,11 @@ class TestOracleOICClient:
         client_config: dict[str, Any],
     ) -> None:
         """Test client initialization."""
-        assert client.base_url == client_config["oic_url"]
+        if client.base_url != client_config["oic_url"]:
+            raise AssertionError(f"Expected {client_config["oic_url"]}, got {client.base_url}")
         assert client.oauth_client_id == client_config["oauth_client_id"]
-        assert client.oauth_client_secret == client_config["oauth_client_secret"]
+        if client.oauth_client_secret != client_config["oauth_client_secret"]:
+            raise AssertionError(f"Expected {client_config["oauth_client_secret"]}, got {client.oauth_client_secret}")
 
     def test_client_session_configuration(self, client: OracleOICClient) -> None:
         """Test client session is properly configured."""
@@ -122,12 +127,14 @@ class TestOracleOICClient:
         path = "/ic/api/integration/v1/integrations"
 
         # Test URL joining logic
-        from urllib.parse import urljoin
+
 
         full_url = urljoin(base_url, path)
         expected = f"{base_url}{path}"
 
-        assert full_url == expected
+        if full_url != expected:
+
+            raise AssertionError(f"Expected {expected}, got {full_url}")
 
     def test_error_handling(self) -> None:
         """Test client error handling."""
@@ -151,7 +158,8 @@ class TestOracleOICClient:
             oauth_client_secret="secret",
             oauth_endpoint="https://auth.example.com/oauth/token",
         )
-        assert client.oauth_client_id == "test"
+        if client.oauth_client_id != "test":
+            raise AssertionError(f"Expected {"test"}, got {client.oauth_client_id}")
         assert client.base_url == "https://test.example.com"
 
     def test_session_retry_configuration(self, client: OracleOICClient) -> None:
@@ -191,9 +199,11 @@ class TestOracleOICClient:
         """Test FlextResult pattern usage."""
         # Test FlextResult creation
         success_result = FlextResult.ok({"test": "data"})
-        assert success_result.success is True
-        assert success_result.data == {"test": "data"}
+        if not (success_result.success):
+            raise AssertionError(f"Expected True, got {success_result.success}")
+        if success_result.data != {"test": "data"}:
+            raise AssertionError(f"Expected {{"test": "data"}}, got {success_result.data}")
 
         failure_result: FlextResult[Any] = FlextResult.fail("Test error")
-        assert failure_result.success is False
-        assert failure_result.error == "Test error"
+        if failure_result.success:
+            raise AssertionError(f"Expected False, got {failure_result.success}")\ n        assert failure_result.error == "Test error"

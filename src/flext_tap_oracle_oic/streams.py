@@ -23,6 +23,7 @@ Architecture:
 
 from __future__ import annotations
 
+import re
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
@@ -164,7 +165,6 @@ class OICBaseStream(RESTStream[Any]):
         region = self.config.get("region")
         if not region and "integration.ocp.oraclecloud.com" in base_url:
             # Extract region from URL pattern
-            import re
 
             region_match = re.search(r"(\w+-\w+-\d+)", base_url)
             region = region_match.group(1) if region_match else "us-ashburn-1"
