@@ -6,7 +6,7 @@ Provides enterprise-ready setup utilities with FlextResult pattern support.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 import requests
 
@@ -75,7 +75,8 @@ def create_oic_auth_config(
             oauth_client_id=client_id,
             oauth_client_secret=client_secret,
             oauth_token_url=token_url,
-            **kwargs,
+            oauth_client_aud=cast("str | None", kwargs.get("oauth_client_aud")),
+            oauth_scope=cast("str | None", kwargs.get("oauth_scope")),
         )
 
         return FlextResult.ok(config)
@@ -101,7 +102,9 @@ def create_oic_connection_config(
     try:
         config = OICConnectionConfig(
             base_url=base_url,
-            **kwargs,
+            auth_method=cast("str", kwargs.get("auth_method", "oauth2")),
+            timeout=cast("int", kwargs.get("timeout", 300)),
+            retry_count=cast("int", kwargs.get("retry_count", 3)),
         )
 
         return FlextResult.ok(config)

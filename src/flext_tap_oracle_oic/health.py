@@ -1,8 +1,5 @@
 """Oracle Integration Cloud Health Check Utilities.
 
-# Constants
-HTTP_OK = 200
-
 This module provides health checking capabilities for OIC connections,
 integrations, and the overall OIC instance health.
 """
@@ -14,6 +11,9 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
 import requests
+
+# Constants
+HTTP_OK = 200
 
 if TYPE_CHECKING:
     from singer_sdk.authenticators import OAuthAuthenticator

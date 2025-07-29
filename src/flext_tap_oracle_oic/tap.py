@@ -4,13 +4,9 @@ Real Oracle OIC connectivity with enterprise authentication and data extraction.
 Zero tolerance implementation using flext-core patterns.
 """
 
-from flext_tap_oracle_oic.streams_consolidated import (
-import os
-import sys
-
-
 from __future__ import annotations
 
+import os
 import sys
 from typing import Any, ClassVar
 
@@ -20,10 +16,23 @@ from flext_core import (
     get_logger,
 )
 
-# MIGRATED: Singer SDK imports centralized via flext-meltano
-from flext_meltano.singer import FlextMeltanoTap as Tap
+# Import generic interfaces from flext-meltano
+from flext_meltano import Tap
+from flext_oracle_oic_ext.oic_patterns import (
+    OICAuthConfig,
+    OICConnectionConfig,
+    OICTapAuthenticator,
+    OICTapClient,
+)
 
-from flext_tap_oracle_oic.client import OracleOICClient
+from flext_tap_oracle_oic.streams_consolidated import (
+    ALL_STREAMS,
+    CORE_STREAMS,
+    INFRASTRUCTURE_STREAMS,
+)
+
+# Alias for backward compatibility
+OracleOICClient = OICTapClient
 
 logger = get_logger(__name__)
 
@@ -62,9 +71,23 @@ class TapOracleOIC(Tap):
         ],
     }
 
-    def __init__(self, config: dict[str, Any] | None = None, **kwargs: object) -> None:
+    def __init__(
+        self,
+        *,
+        config: dict[str, Any] | None = None,
+        catalog: dict[str, Any] | None = None,
+        state: dict[str, Any] | None = None,
+        parse_env_config: bool = False,
+        validate_config: bool = True,
+    ) -> None:
         """Initialize Oracle OIC tap with real client."""
-        super().__init__(config=config, **kwargs)
+        super().__init__(
+            config=config,
+            catalog=catalog,
+            state=state,
+            parse_env_config=parse_env_config,
+            validate_config=validate_config,
+        )
 
         # Initialize real Oracle OIC client
         self._client: OracleOICClient | None = None
@@ -73,26 +96,33 @@ class TapOracleOIC(Tap):
     def client(self) -> OracleOICClient:
         """Get Oracle OIC client instance."""
         if self._client is None:
-            self._client = OracleOICClient(
+            # Create connection config using real library types
+            connection_config = OICConnectionConfig(
                 base_url=self.config["oic_url"],
+                api_version=self.config.get("api_version", "v1"),
+                request_timeout=self.config.get("timeout", 30),
+                max_retries=self.config.get("max_retries", 3),
+            )
+
+            # Create auth config using real library types
+            auth_config = OICAuthConfig(
                 oauth_client_id=self.config["oauth_client_id"],
                 oauth_client_secret=self.config["oauth_client_secret"],
-                oauth_endpoint=self.config["oauth_endpoint"],
-                oauth_scope=self.config.get(
-                    "oauth_scope",
-                    "urn:opc:resource:consumer:all",
-                ),
+                oauth_token_url=self.config["oauth_endpoint"],
+                oauth_scope=self.config.get("oauth_scope", "urn:opc:resource:consumer:all"),
+            )
+
+            # Create authenticator using real library types
+            authenticator = OICTapAuthenticator(auth_config=auth_config)
+
+            self._client = OracleOICClient(
+                connection_config=connection_config,
+                authenticator=authenticator,
             )
         return self._client
 
     def discover_streams(self) -> list[Any]:
         """Discover available streams using real Oracle OIC client."""
-
-            ALL_STREAMS,
-            CORE_STREAMS,
-            INFRASTRUCTURE_STREAMS,
-        )
-
         logger.info("Discovering Oracle OIC streams using consolidated streams")
 
         # Use core streams by default, with optional infrastructure streams
@@ -157,13 +187,13 @@ class TapOracleOIC(Tap):
         try:
             logger.info("Testing Oracle OIC connection with real client")
 
-            # Use real Oracle OIC client to test connection
-            test_result = self.client.test_connection()
+            # Use real Oracle OIC client to test authentication
+            auth_result = self.client.get_authenticated_session()
 
-            if test_result.success:
+            if auth_result.is_success:
                 logger.info("Oracle OIC connection test successful")
                 return FlextResult.ok(True)
-            error_msg = f"Oracle OIC connection test failed: {test_result.error}"
+            error_msg = f"Oracle OIC connection test failed: {auth_result.error}"
             logger.error(error_msg)
             return FlextResult.fail(error_msg)
 
@@ -179,9 +209,6 @@ TapOIC = TapOracleOIC
 
 def main() -> int:
     """Run Oracle OIC tap."""
-
-
-
     # Real configuration from environment variables
     config = {
         "oauth_client_id": os.getenv("TAP_ORACLE_OIC_OAUTH_CLIENT_ID"),
@@ -240,7 +267,7 @@ def main() -> int:
         if "--test" in sys.argv:
             logger.info("Testing Oracle OIC connection")
             result = tap.test_connection()
-            if result.success:
+            if result.is_success:
                 return 0
             return 1
 

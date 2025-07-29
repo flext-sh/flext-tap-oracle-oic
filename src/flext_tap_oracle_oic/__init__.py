@@ -16,13 +16,13 @@ import importlib.metadata
 
 # Import from flext-core for foundational patterns (standardized)
 from flext_core import (
-    FlextCoreSettings as BaseConfig,
+    FlextBaseSettings as BaseConfig,
     FlextEntity as DomainEntity,
-    FlextField as Field,
-    FlextResult as FlextResult,
+    FlextFields as Field,
+    FlextResult,
+    FlextValueObject,
     FlextValueObject as BaseModel,
     FlextValueObject as FlextDomainBaseModel,
-    FlextValueObject as FlextValueObject,
 )
 
 try:

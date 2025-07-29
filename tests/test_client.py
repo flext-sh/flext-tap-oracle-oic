@@ -3,10 +3,9 @@
 Real tests for the Oracle Integration Cloud client module.
 """
 
-from urllib.parse import urljoin
-
-
 from __future__ import annotations
+
+from urllib.parse import urljoin
 
 import contextlib
 from typing import Any
@@ -98,7 +97,7 @@ class TestOracleOICClient:
         with contextlib.suppress(Exception):
             # May fail due to implementation details, but should not crash
             result = client.get_access_token()
-            if isinstance(result, FlextResult) and result.success:
+            if isinstance(result, FlextResult) and result.is_success:
                 assert result.data is not None
 
     @patch("requests.Session.get")
@@ -199,11 +198,13 @@ class TestOracleOICClient:
         """Test FlextResult pattern usage."""
         # Test FlextResult creation
         success_result = FlextResult.ok({"test": "data"})
-        if not (success_result.success):
-            raise AssertionError(f"Expected True, got {success_result.success}")
+        if not (success_result.is_success):
+            raise AssertionError(f"Expected True, got {success_result.is_success}")
         if success_result.data != {"test": "data"}:
-            raise AssertionError(f"Expected {{"test": "data"}}, got {success_result.data}")
+            expected_data = {"test": "data"}
+            raise AssertionError(f"Expected {expected_data}, got {success_result.data}")
 
         failure_result: FlextResult[Any] = FlextResult.fail("Test error")
-        if failure_result.success:
-            raise AssertionError(f"Expected False, got {failure_result.success}")\ n        assert failure_result.error == "Test error"
+        if failure_result.is_success:
+            raise AssertionError(f"Expected False, got {failure_result.is_success}")
+        assert failure_result.error == "Test error"

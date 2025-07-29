@@ -1,10 +1,9 @@
 """Tests for tap-oracle-oic."""
 
-import pytest
-from flext_meltano import ConfigValidationError
-
-
 from __future__ import annotations
+
+import pytest
+from pydantic import ValidationError as ConfigValidationError
 
 from flext_tap_oracle_oic.tap import TapOIC
 

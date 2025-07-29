@@ -8,14 +8,14 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from enum import StrEnum
-from typing import Any, ClassVar
+from typing import Any
 
 # Import from flext-core for foundational patterns (standardized)
 from flext_core import (
     FlextValueObject,
     FlextValueObject as FlextDomainBaseModel,
 )
-from pydantic import Field
+from pydantic import ConfigDict, Field
 
 
 class OICResourceType(StrEnum):
@@ -52,7 +52,7 @@ class ConnectionStatus(StrEnum):
 class OICConnection(FlextDomainBaseModel):
     """OIC connection domain entity using flext-core patterns."""
 
-    model_config: ClassVar[dict[str, Any]] = {"frozen": False}
+    model_config = ConfigDict(frozen=False)
 
     connection_id: str = Field(
         ...,
@@ -103,7 +103,7 @@ class OICConnection(FlextDomainBaseModel):
 class OICIntegration(FlextDomainBaseModel):
     """OIC integration domain entity using flext-core patterns."""
 
-    model_config: ClassVar[dict[str, Any]] = {"frozen": False}
+    model_config = ConfigDict(frozen=False)
 
     integration_id: str = Field(
         ...,
@@ -181,7 +181,7 @@ class OICIntegration(FlextDomainBaseModel):
 class OICLookup(FlextDomainBaseModel):
     """OIC lookup table domain entity using flext-core patterns."""
 
-    model_config: ClassVar[dict[str, Any]] = {"frozen": False}
+    model_config = ConfigDict(frozen=False)
 
     lookup_id: str = Field(..., min_length=1, description="OIC lookup identifier")
     lookup_name: str = Field(..., min_length=1, description="Lookup table name")
@@ -279,7 +279,7 @@ class OICMonitoringRecord(FlextDomainBaseModel):
 class OICProject(FlextDomainBaseModel):
     """OIC project domain entity using flext-core patterns."""
 
-    model_config: ClassVar[dict[str, Any]] = {"frozen": False}
+    model_config = ConfigDict(frozen=False)
 
     project_id: str = Field(..., min_length=1, description="OIC project identifier")
     project_code: str = Field(..., min_length=1, description="Project code")

@@ -5,13 +5,12 @@
 Module test_e2e_complete.
 """
 
-import subprocess
-from flext_meltano import ConfigValidationError
-import subprocess
-import subprocess
-
-
 from __future__ import annotations
+
+import subprocess
+
+# Use ValidationError from pydantic instead
+from pydantic import ValidationError as ConfigValidationError
 
 import json
 import os
@@ -128,8 +127,9 @@ class TestTapOracleOICE2E:
             stream = streams[0]
 
             # Verify stream configuration and structure
-            if stream.name not in {"connections", "integrations", "packages", "lookups"}:
-                raise AssertionError(f"Expected {stream.name} in {{"connections", "integrations", "packages", "lookups"}}")
+            expected_streams = {"connections", "integrations", "packages", "lookups"}
+            if stream.name not in expected_streams:
+                raise AssertionError(f"Expected {stream.name} in {expected_streams}")
             assert hasattr(stream, "schema")
             assert stream.schema is not None
 
@@ -389,10 +389,8 @@ class TestTapOracleOICE2E:
                 )
             else:
                 # Real error - should fail the test
-                if extract_result.returncode != 0, (:
-                    raise AssertionError(f"Expected {0, (}, got {extract_result.returncode}")
-                    f"Extraction failed: {extract_result.stderr}"
-                )
+                if extract_result.returncode != 0:
+                    raise AssertionError(f"Expected 0, got {extract_result.returncode}. Extraction failed: {extract_result.stderr}")
 
         # Check output contains Singer messages
         output_lines = extract_result.stdout.strip().split("\n")
