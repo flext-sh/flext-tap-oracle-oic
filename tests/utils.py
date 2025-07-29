@@ -4,6 +4,13 @@ This module provides utility functions and helpers for testing following
 enterprise testing best practices.
 """
 
+import os
+import sys
+from packaging import version
+import signal
+from concurrent.futures import (
+
+
 from __future__ import annotations
 
 import json
@@ -150,16 +157,20 @@ class TestValidator:
         assert hasattr(tap_instance, "config")
         assert hasattr(tap_instance, "catalog")
         assert hasattr(tap_instance, "discover_streams")
-        assert tap_instance.name == "tap-oracle-oic"
+        if tap_instance.name != "tap-oracle-oic":
+            raise AssertionError(f"Expected {"tap-oracle-oic"}, got {tap_instance.name}")
 
     @staticmethod
     def validate_stream_schema(stream: Any) -> None:
         assert hasattr(stream, "schema")
         assert stream.schema is not None
         assert isinstance(stream.schema, dict)
-        assert "type" in stream.schema
-        assert stream.schema["type"] == "object"
-        assert "properties" in stream.schema
+        if "type" not in stream.schema:
+            raise AssertionError(f"Expected {"type"} in {stream.schema}")
+        if stream.schema["type"] != "object":
+            raise AssertionError(f"Expected {"object"}, got {stream.schema["type"]}")
+        if "properties" not in stream.schema:
+            raise AssertionError(f"Expected {"properties"} in {stream.schema}")
         assert len(stream.schema["properties"]) > 0
 
     @staticmethod
@@ -171,31 +182,39 @@ class TestValidator:
         # Ensure primary keys exist in schema
         properties = stream.schema.get("properties", {})
         for key in stream.primary_keys:
-            assert key in properties, f"Primary key {key} missing from schema"
+            if key not in properties, f"Primary key {key} missing from schema":
+                raise AssertionError(f"Expected {key} in {properties, f"Primary key {key} missing from schema"}")
 
     @staticmethod
     def validate_singer_record(record: dict[str, Any]) -> None:
-        assert "type" in record
-        assert record["type"] == "RECORD"
-        assert "stream" in record
+        if "type" not in record:
+            raise AssertionError(f"Expected {"type"} in {record}")
+        if record["type"] != "RECORD":
+            raise AssertionError(f"Expected {"RECORD"}, got {record["type"]}")
+        if "stream" not in record:
+            raise AssertionError(f"Expected {"stream"} in {record}")
         assert "record" in record
-        assert "time_extracted" in record
+        if "time_extracted" not in record:
+            raise AssertionError(f"Expected {"time_extracted"} in {record}")
         assert isinstance(record["record"], dict)
 
     @staticmethod
     def validate_config_schema(config_schema: dict[str, Any]) -> None:
-        assert "properties" in config_schema
+        if "properties" not in config_schema:
+            raise AssertionError(f"Expected {"properties"} in {config_schema}")
         properties = config_schema["properties"]
 
         # Required fields
         required_fields = ["base_url", "auth_method"]
         for field in required_fields:
-            assert field in properties, f"Required field {field} missing"
+            if field not in properties, f"Required field {field} missing":
+                raise AssertionError(f"Expected {field} in {properties, f"Required field {field} missing"}")
 
         # OAuth2 fields
         oauth2_fields = ["oauth_client_id", "oauth_client_secret", "oauth_token_url"]
         for field in oauth2_fields:
-            assert field in properties, f"OAuth2 field {field} missing"
+            if field not in properties, f"OAuth2 field {field} missing":
+                raise AssertionError(f"Expected {field} in {properties, f"OAuth2 field {field} missing"}")
 
     @staticmethod
     def validate_performance_metrics(
@@ -277,7 +296,7 @@ class MockAPIServer:
             )
 
     @contextmanager
-    def mock_context(self, requests_mock_instance: Any) -> Any:
+    def mock_context(self, requests_mock_instance: Any) -> object:
         self.requests_mock = requests_mock_instance
         try:
             yield self
@@ -461,7 +480,7 @@ def skip_if_no_internet() -> None:
 
 
 def skip_if_no_production_config() -> None:
-    import os
+
 
     required_vars = ["OIC_BASE_URL", "OIC_CLIENT_ID", "OIC_CLIENT_SECRET"]
     if not all(os.getenv(var) for var in required_vars):
@@ -470,17 +489,17 @@ def skip_if_no_production_config() -> None:
         )
 
 
-def requires_python_version(min_version: str) -> Any:
-    import sys
+def requires_python_version(min_version: str) -> object:
 
-    from packaging import version
 
-    def decorator(func: Any) -> Any:
+
+
+    def decorator(func: Any) -> object:
         if version.parse(
             f"{sys.version_info.major}.{sys.version_info.minor}",
         ) < version.parse(min_version):
 
-            def test_fail(*args: Any, **kwargs: object) -> None:
+            def test_fail(*args: object, **kwargs: object) -> None:
                 pytest.fail(f"Requires Python {min_version} or higher")
 
             return test_fail
@@ -490,8 +509,8 @@ def requires_python_version(min_version: str) -> Any:
 
 
 @contextmanager
-def timeout_test(seconds: float) -> Any:
-    import signal
+def timeout_test(seconds: float) -> object:
+
 
     def timeout_handler(signum: int, frame: Any) -> NoReturn:
         msg = f"Test timed out after {seconds} seconds"
@@ -514,7 +533,7 @@ class ConcurrentTestRunner:
         self.results: list[dict[str, Any]] = []
 
     def run_tests_parallel(self, test_functions: list[Callable[[], Any]]) -> list[Any]:
-        from concurrent.futures import (
+
             ThreadPoolExecutor,
             as_completed,
         )
@@ -532,7 +551,7 @@ class ConcurrentTestRunner:
                 self.results.append(
                     {"test": test_func.__name__, "result": result, "success": True},
                 )
-            except Exception as e:
+            except (RuntimeError, ValueError, TypeError) as e:
                 self.results.append(
                     {"test": test_func.__name__, "error": str(e), "success": False},
                 )
@@ -547,14 +566,17 @@ class ConcurrentTestRunner:
 
 
 def assert_config_valid(config: dict[str, Any]) -> None:
-    assert "base_url" in config, "base_url is required"
+    if "base_url" not in config, "base_url is required":
+        raise AssertionError(f"Expected {"base_url"} in {config, "base_url is required"}")
     assert "auth_method" in config, "auth_method is required"
-    assert config["auth_method"] == "oauth2", "OIC only supports oauth2 authentication"
+    if config["auth_method"] != "oauth2", "OIC only supports oauth2 authentication":
+        raise AssertionError(f"Expected {"oauth2", "OIC only supports oauth2 authentication"}, got {config["auth_method"]}")
 
     if config["auth_method"] == "oauth2":
         oauth2_required = ["oauth_client_id", "oauth_client_secret", "oauth_token_url"]
         for field in oauth2_required:
-            assert field in config, f"OAuth2 field {field} is required"
+            if field not in config, f"OAuth2 field {field} is required":
+                raise AssertionError(f"Expected {field} in {config, f"OAuth2 field {field} is required"}")
     else:
         msg = (
             f"Invalid auth_method: {config['auth_method']}. OIC only supports 'oauth2'"
@@ -573,11 +595,13 @@ def assert_stream_quality(stream: Any) -> None:
 
     # Check for required schema fields
     properties = stream.schema.get("properties", {})
-    assert "id" in properties, "Stream schema must have 'id' field"
+    if "id" not in properties, "Stream schema must have 'id' field":
+        raise AssertionError(f"Expected {"id"} in {properties, "Stream schema must have 'id' field"}")
 
     # Validate primary keys are meaningful
     for key in stream.primary_keys:
-        assert key in properties, f"Primary key {key} must exist in schema"
+        if key in properties, f"Primary key {key} must exist not in schema":
+            raise AssertionError(f"Expected {key in properties, f"Primary key {key} must exist} in {schema"}")
         assert properties[key].get("type") in {
             "string",
             "integer",

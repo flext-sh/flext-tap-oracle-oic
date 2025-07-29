@@ -579,7 +579,7 @@ def mock_oic_client() -> type[Any]:
             }
 
         def paginate_request(
-            self, request_func: Any, **kwargs: object
+            self, request_func: object, **kwargs: object,
         ) -> Iterator[Any]:
             """Mock pagination."""
             yield from []

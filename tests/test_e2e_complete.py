@@ -5,6 +5,12 @@
 Module test_e2e_complete.
 """
 
+import subprocess
+from flext_meltano import ConfigValidationError
+import subprocess
+import subprocess
+
+
 from __future__ import annotations
 
 import json
@@ -56,9 +62,11 @@ class TestTapOracleOICE2E:
         return str(config_file)
 
     def test_tap_initialization(self, tap: TapOIC, config: dict[str, Any]) -> None:
-        assert tap.name == "tap-oracle-oic"
+        if tap.name != "tap-oracle-oic":
+            raise AssertionError(f"Expected {"tap-oracle-oic"}, got {tap.name}")
         assert tap.config == config
-        assert tap.config["oic_url"] == config["oic_url"]
+        if tap.config["oic_url"] != config["oic_url"]:
+            raise AssertionError(f"Expected {config["oic_url"]}, got {tap.config["oic_url"]}")
 
     def test_discover_streams(self, tap: TapOIC) -> None:
         catalog = tap.discover_streams()
@@ -68,35 +76,45 @@ class TestTapOracleOICE2E:
 
         # Check for expected core streams
         stream_names = [stream.tap_stream_id for stream in catalog]
-        assert "connections" in stream_names
+        if "connections" not in stream_names:
+            raise AssertionError(f"Expected {"connections"} in {stream_names}")
         assert "integrations" in stream_names
-        assert "packages" in stream_names
+        if "packages" not in stream_names:
+            raise AssertionError(f"Expected {"packages"} in {stream_names}")
         assert "lookups" in stream_names
 
     def test_catalog_generation(self, tap: TapOIC) -> None:
         catalog_dict = tap.catalog_dict
 
-        assert "streams" in catalog_dict
+        if "streams" not in catalog_dict:
+
+            raise AssertionError(f"Expected {"streams"} in {catalog_dict}")
         assert len(catalog_dict["streams"]) > 0
 
         # Check stream structure
         for stream in catalog_dict["streams"]:
-            assert "tap_stream_id" in stream
+            if "tap_stream_id" not in stream:
+                raise AssertionError(f"Expected {"tap_stream_id"} in {stream}")
             assert "schema" in stream
-            assert "metadata" in stream
+            if "metadata" not in stream:
+                raise AssertionError(f"Expected {"metadata"} in {stream}")
 
     def test_stream_schema_validation(self, tap: TapOIC) -> None:
         catalog = tap.discover_streams()
 
         for stream in catalog:
             schema = stream.schema
-            assert "type" in schema
-            assert schema["type"] == "object"
-            assert "properties" in schema
+            if "type" not in schema:
+                raise AssertionError(f"Expected {"type"} in {schema}")
+            if schema["type"] != "object":
+                raise AssertionError(f"Expected {"object"}, got {schema["type"]}")
+            if "properties" not in schema:
+                raise AssertionError(f"Expected {"properties"} in {schema}")
 
             # Check for required fields
             properties = schema["properties"]
-            assert "id" in properties or "name" in properties
+            if "id" in properties or "name" not in properties:
+                raise AssertionError(f"Expected {"id" in properties or "name"} in {properties}")
 
     def test_live_connection(self, tap: TapOIC) -> None:
         """Test live connection with proper validation."""
@@ -110,7 +128,8 @@ class TestTapOracleOICE2E:
             stream = streams[0]
 
             # Verify stream configuration and structure
-            assert stream.name in {"connections", "integrations", "packages", "lookups"}
+            if stream.name not in {"connections", "integrations", "packages", "lookups"}:
+                raise AssertionError(f"Expected {stream.name} in {{"connections", "integrations", "packages", "lookups"}}")
             assert hasattr(stream, "schema")
             assert stream.schema is not None
 
@@ -120,8 +139,9 @@ class TestTapOracleOICE2E:
                 mock_record = {"id": "test_id", "name": "test_name"}
                 processed = stream.post_process(mock_record, context={})
                 assert processed is not None
-                assert "id" in processed
-            except Exception as e:
+                if "id" not in processed:
+                    raise AssertionError(f"Expected {"id"} in {processed}")
+            except (RuntimeError, ValueError, TypeError) as e:
                 pytest.fail(f"Mock data processing failed: {e}")
         else:
             # Live mode: test actual OIC connection (only when explicitly enabled)
@@ -163,11 +183,12 @@ class TestTapOracleOICE2E:
         tap.load_state(test_state)
 
         # Check state was loaded
-        assert tap.state == test_state
+        if tap.state != test_state:
+            raise AssertionError(f"Expected {test_state}, got {tap.state}")
 
     def test_cli_discovery(self, config_path: str) -> None:
         """Test CLI discovery."""
-        import subprocess
+
 
         result = subprocess.run(
             [
@@ -184,7 +205,9 @@ class TestTapOracleOICE2E:
             check=False,
         )
 
-        assert result.returncode == 0
+        if result.returncode != 0:
+
+            raise AssertionError(f"Expected {0}, got {result.returncode}")
 
         # Extract JSON from output (skip log lines)
         output_lines = result.stdout.strip().split("\n")
@@ -199,13 +222,14 @@ class TestTapOracleOICE2E:
 
         json_output = "\n".join(json_lines)
         catalog = json.loads(json_output)
-        assert "streams" in catalog
+        if "streams" not in catalog:
+            raise AssertionError(f"Expected {"streams"} in {catalog}")
         assert len(catalog["streams"]) > 0
 
     def test_config_validation(self) -> None:
         """Test config validation."""
         # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
-        from flext_meltano import ConfigValidationError
+
 
         # Test missing required fields
         with pytest.raises(ConfigValidationError):
@@ -289,11 +313,12 @@ class TestTapOracleOICE2E:
             # Verify schema has proper type definitions
             if "properties" in schema:
                 for prop_schema in schema["properties"].values():
-                    assert "type" in prop_schema or "anyOf" in prop_schema
+                    if "type" in prop_schema or "anyOf" not in prop_schema:
+                        raise AssertionError(f"Expected {"type" in prop_schema or "anyOf"} in {prop_schema}")
 
     def test_full_extraction_flow(self, config_path: str, tmp_path: Path) -> None:
         """Test full extraction flow."""
-        import subprocess
+
 
         # 1. Run discovery
         catalog_file = tmp_path / "catalog.json"
@@ -312,7 +337,9 @@ class TestTapOracleOICE2E:
             check=False,
         )
 
-        assert discover_result.returncode == 0
+        if discover_result.returncode != 0:
+
+            raise AssertionError(f"Expected {0}, got {discover_result.returncode}")
 
         # Extract JSON from stdout (skip log lines)
         output_lines = discover_result.stdout.strip().split("\n")
@@ -362,7 +389,8 @@ class TestTapOracleOICE2E:
                 )
             else:
                 # Real error - should fail the test
-                assert extract_result.returncode == 0, (
+                if extract_result.returncode != 0, (:
+                    raise AssertionError(f"Expected {0, (}, got {extract_result.returncode}")
                     f"Extraction failed: {extract_result.stderr}"
                 )
 
@@ -371,7 +399,8 @@ class TestTapOracleOICE2E:
         for line in output_lines:
             msg = json.loads(line)
             if msg:
-                assert "type" in msg
+                if "type" not in msg:
+                    raise AssertionError(f"Expected {"type"} in {msg}")
                 assert msg["type"] in {"SCHEMA", "RECORD", "STATE", "ACTIVATE_VERSION"}
 
     def test_conditional_config_generation(self) -> None:
@@ -380,7 +409,7 @@ class TestTapOracleOICE2E:
 
         # If config doesn't exist, it should be generated
         if not config_path.exists():
-            import subprocess
+
 
             result = subprocess.run(
                 ["python", "generate_config.py"],
@@ -390,7 +419,8 @@ class TestTapOracleOICE2E:
                 input="y\n",
                 check=False,
             )
-            assert result.returncode == 0
+            if result.returncode != 0:
+                raise AssertionError(f"Expected {0}, got {result.returncode}")
             assert config_path.exists()
 
         # Load and validate config
@@ -399,7 +429,8 @@ class TestTapOracleOICE2E:
 
         # Check that config file is valid JSON and has expected structure
         assert isinstance(config, dict)
-        assert "base_url" in config
+        if "base_url" not in config:
+            raise AssertionError(f"Expected {"base_url"} in {config}")
         assert "oauth_token_url" in config
 
         # OAuth credentials may not be present if environment variables aren't set

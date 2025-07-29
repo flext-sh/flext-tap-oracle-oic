@@ -44,7 +44,7 @@ def main() -> None:
         print("📄 Configuration saved to: config.json")
         print(f"🔧 Configuration includes: {', '.join(config.keys())}")
 
-    except Exception as e:
+    except (RuntimeError, ValueError, TypeError) as e:
         print(f"❌ Error generating configuration: {e}")
         sys.exit(1)
 

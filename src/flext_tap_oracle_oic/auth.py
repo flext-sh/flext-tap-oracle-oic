@@ -14,10 +14,14 @@ from typing import Any
 from flext_meltano import OAuthAuthenticator
 
 # MIGRATED: Singer SDK imports centralized via flext-meltano
-from flext_meltano.common import FlextMeltanoAuthConfig
+# Note: FlextMeltanoAuthConfig removed to fix import issues
 
 
-# Use consolidated auth config from flext-meltano common
+# Simple replacement for removed FlextMeltanoAuthConfig
+class FlextMeltanoAuthConfig:
+    """Basic auth config base class."""
+
+
 class OICAuthConfig(FlextMeltanoAuthConfig):
     """OIC-specific auth config using consolidated patterns."""
 

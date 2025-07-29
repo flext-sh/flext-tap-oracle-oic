@@ -1,5 +1,8 @@
 """Oracle Integration Cloud Health Check Utilities.
 
+# Constants
+HTTP_OK = 200
+
 This module provides health checking capabilities for OIC connections,
 integrations, and the overall OIC instance health.
 """
@@ -41,7 +44,7 @@ class OICHealthChecker:
             url = f"{self.base_url}/ic/api/integration/v1/integrations?limit=1"
             response = requests.get(url, headers=self._get_headers(), timeout=30)
 
-            if response.status_code == 200:
+            if response.status_code == HTTP_OK:
                 return {
                     "status": "healthy",
                     "timestamp": datetime.now(UTC).isoformat(),
@@ -109,7 +112,7 @@ class OICHealthChecker:
             url = f"{self.base_url}/ic/api/integration/v1/integrations/{integration_id}"
             response = requests.get(url, headers=self._get_headers(), timeout=30)
 
-            if response.status_code == 200:
+            if response.status_code == HTTP_OK:
                 integration = response.json()
                 status = integration.get("status", "UNKNOWN")
 
@@ -154,7 +157,7 @@ class OICHealthChecker:
             url = f"{self.base_url}/ic/api/monitoring/v1/instances?limit=1"
             response = requests.get(url, headers=self._get_headers(), timeout=30)
 
-            if response.status_code == 200:
+            if response.status_code == HTTP_OK:
                 return {
                     "service": "monitoring",
                     "status": "healthy",

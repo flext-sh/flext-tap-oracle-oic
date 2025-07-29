@@ -144,7 +144,7 @@ def validate_oic_config(config: TapOracleOICConfig) -> FlextResult[Any]:
 
 
 def create_development_oic_config(
-    **overrides: Any,
+    **overrides: object,
 ) -> FlextResult[Any]:
     """Create development OIC configuration with defaults.
 
