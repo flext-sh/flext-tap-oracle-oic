@@ -110,7 +110,8 @@ class TapOracleOIC(Tap):
                 oauth_client_secret=self.config["oauth_client_secret"],
                 oauth_token_url=self.config["oauth_endpoint"],
                 oauth_scope=self.config.get(
-                    "oauth_scope", "urn:opc:resource:consumer:all",
+                    "oauth_scope",
+                    "urn:opc:resource:consumer:all",
                 ),
             )
 

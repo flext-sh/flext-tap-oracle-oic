@@ -9,13 +9,10 @@ Oracle OIC projects.
 from __future__ import annotations
 
 import sys
-from pathlib import Path
 
-# Add flext-core to path for configuration generator
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "flext-core" / "src"))
-
-# 🚨 ARCHITECTURAL COMPLIANCE: Using DI container
 from flext_tap_oracle_oic.infrastructure.di_container import (
+    ProjectType,
+    generate_project_config,
     get_base_config,
     get_domain_entity,
     get_domain_value_object,
