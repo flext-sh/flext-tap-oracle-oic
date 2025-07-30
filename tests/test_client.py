@@ -5,11 +5,10 @@ Real tests for the Oracle Integration Cloud client module.
 
 from __future__ import annotations
 
-from urllib.parse import urljoin
-
 import contextlib
 from typing import Any
 from unittest.mock import Mock, patch
+from urllib.parse import urljoin
 
 import pytest
 import requests
@@ -50,10 +49,12 @@ class TestOracleOICClient:
     ) -> None:
         """Test client initialization."""
         if client.base_url != client_config["oic_url"]:
-            raise AssertionError(f"Expected {client_config["oic_url"]}, got {client.base_url}")
+            msg = f"Expected {client_config['oic_url']}, got {client.base_url}"
+            raise AssertionError(msg)
         assert client.oauth_client_id == client_config["oauth_client_id"]
         if client.oauth_client_secret != client_config["oauth_client_secret"]:
-            raise AssertionError(f"Expected {client_config["oauth_client_secret"]}, got {client.oauth_client_secret}")
+            msg = f"Expected {client_config['oauth_client_secret']}, got {client.oauth_client_secret}"
+            raise AssertionError(msg)
 
     def test_client_session_configuration(self, client: OracleOICClient) -> None:
         """Test client session is properly configured."""
@@ -127,13 +128,12 @@ class TestOracleOICClient:
 
         # Test URL joining logic
 
-
         full_url = urljoin(base_url, path)
         expected = f"{base_url}{path}"
 
         if full_url != expected:
-
-            raise AssertionError(f"Expected {expected}, got {full_url}")
+            msg = f"Expected {expected}, got {full_url}"
+            raise AssertionError(msg)
 
     def test_error_handling(self) -> None:
         """Test client error handling."""
@@ -158,7 +158,8 @@ class TestOracleOICClient:
             oauth_endpoint="https://auth.example.com/oauth/token",
         )
         if client.oauth_client_id != "test":
-            raise AssertionError(f"Expected {"test"}, got {client.oauth_client_id}")
+            msg = f"Expected {'test'}, got {client.oauth_client_id}"
+            raise AssertionError(msg)
         assert client.base_url == "https://test.example.com"
 
     def test_session_retry_configuration(self, client: OracleOICClient) -> None:
@@ -199,12 +200,15 @@ class TestOracleOICClient:
         # Test FlextResult creation
         success_result = FlextResult.ok({"test": "data"})
         if not (success_result.is_success):
-            raise AssertionError(f"Expected True, got {success_result.is_success}")
+            msg = f"Expected True, got {success_result.is_success}"
+            raise AssertionError(msg)
         if success_result.data != {"test": "data"}:
             expected_data = {"test": "data"}
-            raise AssertionError(f"Expected {expected_data}, got {success_result.data}")
+            msg = f"Expected {expected_data}, got {success_result.data}"
+            raise AssertionError(msg)
 
         failure_result: FlextResult[Any] = FlextResult.fail("Test error")
         if failure_result.is_success:
-            raise AssertionError(f"Expected False, got {failure_result.is_success}")
+            msg = f"Expected False, got {failure_result.is_success}"
+            raise AssertionError(msg)
         assert failure_result.error == "Test error"
