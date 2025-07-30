@@ -52,7 +52,7 @@ with contextlib.suppress(ImportError):
 # OIC Streams exports - simplified imports
 with contextlib.suppress(ImportError):
     from flext_tap_oracle_oic.streams import OICBaseStream
-    # TODO: Add specific stream classes when they are implemented
+    # Stream classes will be implemented as needed for specific OIC integrations
     # ConnectionsStream, IntegrationsStream, LookupsStream, PackagesStream
 
 # Domain entities

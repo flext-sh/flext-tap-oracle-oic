@@ -41,7 +41,7 @@ class TestDataBuilder:
             "status": status,
             "timeUpdated": time_updated,
             "description": f"Test integration: {name}",
-            "version": "1.0.0",
+            "version": "0.9.0",
             "identifier": integration_id.lower(),
         }
         record.update(kwargs)
@@ -74,7 +74,7 @@ class TestDataBuilder:
         name: str = "Test Package",
         status: str = "ACTIVE",
         time_updated: str = "2024-01-15T10:30:00Z",
-        version: str = "1.0.0",
+        version: str = "0.9.0",
         **kwargs: object,
     ) -> dict[str, Any]:
         record = {
