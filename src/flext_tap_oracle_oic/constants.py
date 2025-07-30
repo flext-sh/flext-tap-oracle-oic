@@ -1,17 +1,29 @@
-"""Constants for Oracle Integration Cloud TAP."""
+"""Oracle Integration Cloud TAP Constants extending flext-core platform constants.
+
+Oracle OIC-specific constants that extend flext-core patterns.
+"""
 
 from __future__ import annotations
 
-# Oracle OIC API Constants (from official documentation)
-OIC_API_BASE_PATH = "/ic/api/integration/v1"
-OIC_MONITORING_API_PATH = "/ic/api/monitoring/v1"
-OIC_DESIGNTIME_API_PATH = "/ic/api/designtime/v1"
-OIC_PROCESS_API_PATH = "/ic/api/process/v1"
-OIC_B2B_API_PATH = "/ic/api/b2b/v1"
-OIC_ENVIRONMENT_API_PATH = "/ic/api/environment/v1"
+from typing import ClassVar
 
-# Official OIC REST API Endpoints
-OIC_ENDPOINTS = {
+# Import flext-core constants for inheritance
+from flext_core.constants import FlextConstants
+
+
+class FlextOracleOicConstants(FlextConstants):
+    """Oracle OIC constants extending flext-core platform constants."""
+
+    # Oracle OIC API Constants (from official documentation)
+    OIC_API_BASE_PATH = "/ic/api/integration/v1"
+    OIC_MONITORING_API_PATH = "/ic/api/monitoring/v1"
+    OIC_DESIGNTIME_API_PATH = "/ic/api/designtime/v1"
+    OIC_PROCESS_API_PATH = "/ic/api/process/v1"
+    OIC_B2B_API_PATH = "/ic/api/b2b/v1"
+    OIC_ENVIRONMENT_API_PATH = "/ic/api/environment/v1"
+
+    # Official OIC REST API Endpoints
+    OIC_ENDPOINTS: ClassVar[dict[str, str]] = {
     # Core Integration APIs
     "integrations": "/integrations",
     "integrations_detail": "/integrations/{id}",
@@ -74,6 +86,28 @@ OIC_ENDPOINTS = {
     # Execution logs
     "execution_logs": "/monitoring/logs",
     "execution_logs_detail": "/monitoring/logs/{id}",
-    # Lookup details
-    "lookup_usage": "/lookups/{name}/usage",
-}
+        # Lookup details
+        "lookup_usage": "/lookups/{name}/usage",
+    }
+
+
+# Legacy constants for backward compatibility
+OIC_API_BASE_PATH = FlextOracleOicConstants.OIC_API_BASE_PATH
+OIC_MONITORING_API_PATH = FlextOracleOicConstants.OIC_MONITORING_API_PATH
+OIC_DESIGNTIME_API_PATH = FlextOracleOicConstants.OIC_DESIGNTIME_API_PATH
+OIC_PROCESS_API_PATH = FlextOracleOicConstants.OIC_PROCESS_API_PATH
+OIC_B2B_API_PATH = FlextOracleOicConstants.OIC_B2B_API_PATH
+OIC_ENVIRONMENT_API_PATH = FlextOracleOicConstants.OIC_ENVIRONMENT_API_PATH
+OIC_ENDPOINTS = FlextOracleOicConstants.OIC_ENDPOINTS
+
+
+__all__ = [
+    "OIC_API_BASE_PATH",
+    "OIC_B2B_API_PATH",
+    "OIC_DESIGNTIME_API_PATH",
+    "OIC_ENDPOINTS",
+    "OIC_ENVIRONMENT_API_PATH",
+    "OIC_MONITORING_API_PATH",
+    "OIC_PROCESS_API_PATH",
+    "FlextOracleOicConstants",
+]
