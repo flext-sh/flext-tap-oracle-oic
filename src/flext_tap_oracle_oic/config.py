@@ -235,7 +235,7 @@ class TapOracleOICConfig(BaseSettings):
         default="flext-data.taps.flext-data.taps.flext-tap-oracle-oic",
         description="Project name",
     )
-    project_version: str = Field(default="0.7.0", description="Project version")
+    project_version: str = Field(default="0.9.0", description="Project version")
 
     @field_validator("auth")
     @classmethod
@@ -331,7 +331,7 @@ class TapOracleOICConfig(BaseSettings):
                 modified_after=None,
             ),
             "project_name": "flext-data.taps.flext-data.taps.flext-tap-oracle-oic",
-            "project_version": "0.7.0",
+            "project_version": "0.9.0",
         }
         defaults.update(overrides)
         return cls.model_validate(defaults)

@@ -3,7 +3,7 @@
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 
-Version 0.7.0 - Tap Oracle OIC with simplified public API:
+Version 0.9.0 - Tap Oracle OIC with simplified public API:
 - All common imports available from root: from flext_tap_oracle_oic import TapOIC
 - Built on flext-core foundation for robust Oracle OIC data extraction
 - Modern namespace imports from flext-core
@@ -28,7 +28,7 @@ from flext_core import (
 try:
     __version__ = importlib.metadata.version("flext-tap-oracle-oic")
 except importlib.metadata.PackageNotFoundError:
-    __version__ = "0.7.0"
+    __version__ = "0.9.0"
 
 __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 

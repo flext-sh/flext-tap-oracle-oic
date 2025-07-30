@@ -207,7 +207,7 @@ def create_development_oic_config(
             discovery=discovery_config,
             data_extraction=data_extraction_config,
             project_name="flext-data.taps.flext-data.taps.flext-tap-oracle-oic",
-            project_version="0.7.0",
+            project_version="0.9.0",
         )
 
         # Apply overrides
@@ -283,7 +283,7 @@ def create_production_oic_config(**overrides: Any) -> FlextResult[Any]:
             discovery=discovery_config,
             data_extraction=data_extraction_config,
             project_name="flext-data.taps.flext-data.taps.flext-tap-oracle-oic",
-            project_version="0.7.0",
+            project_version="0.9.0",
         )
 
         # Apply overrides
@@ -362,7 +362,7 @@ def create_discovery_only_config(**overrides: Any) -> FlextResult[Any]:
             discovery=discovery_config,
             data_extraction=data_extraction_config,
             project_name="flext-data.taps.flext-data.taps.flext-tap-oracle-oic",
-            project_version="0.7.0",
+            project_version="0.9.0",
         )
 
         # Apply overrides
@@ -436,7 +436,7 @@ def create_monitoring_config(**overrides: Any) -> FlextResult[Any]:
             discovery=discovery_config,
             data_extraction=data_extraction_config,
             project_name="flext-data.taps.flext-data.taps.flext-tap-oracle-oic",
-            project_version="0.7.0",
+            project_version="0.9.0",
         )
 
         # Apply overrides

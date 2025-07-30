@@ -16,7 +16,6 @@ from flext_tap_oracle_oic.tap import TapOIC
 
 
 def main() -> None:
-
     TapOIC.cli()
 
 

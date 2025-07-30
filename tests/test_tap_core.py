@@ -5,14 +5,12 @@ Core TAP functionality tests.
 Tests the main TapOIC class and core functionality without external dependencies.
 """
 
-from flext_meltano import ConfigValidationError
-
-
 from __future__ import annotations
 
 from typing import Any
 
 import pytest
+from flext_meltano import ConfigValidationError
 
 from flext_tap_oracle_oic.tap import TapOIC
 
@@ -31,16 +29,16 @@ class TestTapOIC:
         tap = TapOIC(config=config, validate_config=False)
 
         if tap.name != "tap-oracle-oic":
-
-            raise AssertionError(f"Expected {"tap-oracle-oic"}, got {tap.name}")
+            msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
+            raise AssertionError(msg)
         assert tap.config == config
 
     def test_tap_initialization_without_config(self) -> None:
         tap = TapOIC(validate_config=False)
 
         if tap.name != "tap-oracle-oic":
-
-            raise AssertionError(f"Expected {"tap-oracle-oic"}, got {tap.name}")
+            msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
+            raise AssertionError(msg)
         assert hasattr(tap, "config")
 
     def test_core_streams_discovery(self) -> None:
@@ -56,8 +54,8 @@ class TestTapOIC:
         streams = tap.discover_streams()
 
         if len(streams) != 5:
-
-            raise AssertionError(f"Expected {5}, got {len(streams)}")
+            msg = f"Expected {5}, got {len(streams)}"
+            raise AssertionError(msg)
         stream_names = [stream.name for stream in streams]
         expected_streams = [
             "integrations",
@@ -69,7 +67,8 @@ class TestTapOIC:
 
         for expected in expected_streams:
             if expected not in stream_names:
-                raise AssertionError(f"Expected {expected} in {stream_names}")
+                msg = f"Expected {expected} in {stream_names}"
+                raise AssertionError(msg)
 
     def test_extended_streams_discovery(self) -> None:
         config = {
@@ -87,7 +86,8 @@ class TestTapOIC:
         # Current implementation doesn't have extended infrastructure streams
         # Extended config doesn't add additional streams in current version
         if len(all_streams) != 5:
-            raise AssertionError(f"Expected {5}, got {len(all_streams)}")
+            msg = f"Expected {5}, got {len(all_streams)}"
+            raise AssertionError(msg)
 
         # Verify we get the expected core streams
         stream_names = [s.name for s in all_streams]
@@ -100,7 +100,8 @@ class TestTapOIC:
         ]
         for expected in expected_streams:
             if expected not in stream_names:
-                raise AssertionError(f"Expected {expected} in {stream_names}")
+                msg = f"Expected {expected} in {stream_names}"
+                raise AssertionError(msg)
 
     def test_extended_streams_disabled(self) -> None:
         config = {
@@ -118,8 +119,8 @@ class TestTapOIC:
         streams = [s for s in all_streams if "infrastructure" in s.name.lower()]
 
         if len(streams) != 0:
-
-            raise AssertionError(f"Expected {0}, got {len(streams)}")
+            msg = f"Expected {0}, got {len(streams)}"
+            raise AssertionError(msg)
 
     def test_discover_streams(self) -> None:
         config = {
@@ -135,7 +136,8 @@ class TestTapOIC:
 
         # Should have 5 core streams
         if len(streams) != 5:
-            raise AssertionError(f"Expected {5}, got {len(streams)}")
+            msg = f"Expected {5}, got {len(streams)}"
+            raise AssertionError(msg)
 
     def test_config_validation_warnings(self) -> None:
         """Test that the tap works with HTTP endpoints (though HTTPS is recommended)."""
@@ -151,13 +153,13 @@ class TestTapOIC:
 
         # Should work with HTTP config (though HTTPS is recommended in production)
         if tap.name != "tap-oracle-oic":
-            raise AssertionError(f"Expected {"tap-oracle-oic"}, got {tap.name}")
+            msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
+            raise AssertionError(msg)
         assert tap.config["base_url"] == "http://test.integration.ocp.oraclecloud.com"
 
     def test_missing_required_fields_warning(self) -> None:
         """Test that the missing required fields validation works correctly."""
         # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
-
 
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
@@ -172,10 +174,12 @@ class TestTapOIC:
         # Verify the error message mentions the missing required properties
         error_message = str(exc_info.value)
         if "oauth_client_id" not in error_message:
-            raise AssertionError(f"Expected {"oauth_client_id"} in {error_message}")
+            msg = f"Expected {'oauth_client_id'} in {error_message}"
+            raise AssertionError(msg)
         assert "oauth_client_secret" in error_message
         if "oauth_endpoint" not in error_message:
-            raise AssertionError(f"Expected {"oauth_endpoint"} in {error_message}")
+            msg = f"Expected {'oauth_endpoint'} in {error_message}"
+            raise AssertionError(msg)
         assert "oic_url" in error_message
 
     def test_capabilities(self) -> None:
@@ -184,8 +188,9 @@ class TestTapOIC:
         expected_capabilities = ["catalog", "state", "discover"]
 
         for capability in expected_capabilities:
-            if capability in [cap.value for cap not in tap.capabilities]:
-                raise AssertionError(f"Expected {capability in [cap.value for cap} in {tap.capabilities]}")
+            if capability in [cap.value for cap in tap.capabilities]:
+                msg = f"Expected {capability} in {tap.capabilities}"
+                raise AssertionError(msg)
 
 
 class TestTapOICIntegration:
@@ -245,8 +250,10 @@ class TestTapOICWithFixtures:
         tap = TapOIC(config=sample_config, validate_config=False)
 
         if tap.config["base_url"] != sample_config["base_url"]:
-
-            raise AssertionError(f"Expected {sample_config["base_url"]}, got {tap.config["base_url"]}")
+            msg = f"Expected {sample_config['base_url']}, got {tap.config['base_url']}"
+            raise AssertionError(
+                msg,
+            )
         assert tap.config["oauth_client_id"] == sample_config["oauth_client_id"]
 
     def test_streams_count_with_extended_config(
@@ -262,7 +269,8 @@ class TestTapOICWithFixtures:
         # Current implementation only has 5 core streams regardless of extended config
         # Extended infrastructure streams are not implemented in current version
         if len(all_streams) != 5:
-            raise AssertionError(f"Expected {5}, got {len(all_streams)}")
+            msg = f"Expected {5}, got {len(all_streams)}"
+            raise AssertionError(msg)
 
         # Verify we get the expected core streams
         stream_names = [s.name for s in all_streams]
@@ -275,4 +283,5 @@ class TestTapOICWithFixtures:
         ]
         for expected in expected_core_streams:
             if expected not in stream_names:
-                raise AssertionError(f"Expected {expected} in {stream_names}")
+                msg = f"Expected {expected} in {stream_names}"
+                raise AssertionError(msg)

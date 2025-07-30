@@ -20,7 +20,8 @@ class TestTapOIC:
         }
         tap = TapOIC(config=config, validate_config=False)
         if tap.name != "tap-oracle-oic":
-            raise AssertionError(f"Expected {"tap-oracle-oic"}, got {tap.name}")
+            msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
+            raise AssertionError(msg)
         assert tap.config == config
 
     def test_discover_streams(self) -> None:
@@ -35,17 +36,17 @@ class TestTapOIC:
 
         # Should have at least core streams
         if len(streams) < 5:
-            raise AssertionError(f"Expected {len(streams)} >= {5}")
+            msg = f"Expected {len(streams)} >= {5}"
+            raise AssertionError(msg)
         stream_names = [s.name for s in streams]
         if "integrations" not in stream_names:
-            raise AssertionError(f"Expected {"integrations"} in {stream_names}")
+            msg = f"Expected {'integrations'} in {stream_names}"
+            raise AssertionError(msg)
         assert "connections" in stream_names
 
     def test_config_validation(self) -> None:
         """Test config validation."""
-
         # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
-
 
         # Missing required fields should raise exception when validation is enabled
         config = {
@@ -68,10 +69,13 @@ class TestTapOIC:
         # Should include core streams
         stream_names = [s.name for s in streams]
         if "integrations" not in stream_names:
-            raise AssertionError(f"Expected {"integrations"} in {stream_names}")
+            msg = f"Expected {'integrations'} in {stream_names}"
+            raise AssertionError(msg)
         assert "connections" in stream_names
         if "packages" not in stream_names:
-            raise AssertionError(f"Expected {"packages"} in {stream_names}")
+            msg = f"Expected {'packages'} in {stream_names}"
+            raise AssertionError(msg)
         assert "libraries" in stream_names
         if "lookups" not in stream_names:
-            raise AssertionError(f"Expected {"lookups"} in {stream_names}")
+            msg = f"Expected {'lookups'} in {stream_names}"
+            raise AssertionError(msg)

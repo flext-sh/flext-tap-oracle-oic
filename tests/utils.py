@@ -156,7 +156,7 @@ class TestValidator:
         assert hasattr(tap_instance, "catalog")
         assert hasattr(tap_instance, "discover_streams")
         if tap_instance.name != "tap-oracle-oic":
-            msg = f"Expected {"tap-oracle-oic"}, got {tap_instance.name}"
+            msg = f"Expected {'tap-oracle-oic'}, got {tap_instance.name}"
             raise AssertionError(msg)
 
     @staticmethod
@@ -165,13 +165,13 @@ class TestValidator:
         assert stream.schema is not None
         assert isinstance(stream.schema, dict)
         if "type" not in stream.schema:
-            msg = f"Expected {"type"} in {stream.schema}"
+            msg = f"Expected {'type'} in {stream.schema}"
             raise AssertionError(msg)
         if stream.schema["type"] != "object":
-            msg = f"Expected {"object"}, got {stream.schema["type"]}"
+            msg = f"Expected {'object'}, got {stream.schema['type']}"
             raise AssertionError(msg)
         if "properties" not in stream.schema:
-            msg = f"Expected {"properties"} in {stream.schema}"
+            msg = f"Expected {'properties'} in {stream.schema}"
             raise AssertionError(msg)
         assert len(stream.schema["properties"]) > 0
 
@@ -191,24 +191,24 @@ class TestValidator:
     @staticmethod
     def validate_singer_record(record: dict[str, Any]) -> None:
         if "type" not in record:
-            msg = f"Expected {"type"} in {record}"
+            msg = f"Expected {'type'} in {record}"
             raise AssertionError(msg)
         if record["type"] != "RECORD":
-            msg = f"Expected {"RECORD"}, got {record["type"]}"
+            msg = f"Expected {'RECORD'}, got {record['type']}"
             raise AssertionError(msg)
         if "stream" not in record:
-            msg = f"Expected {"stream"} in {record}"
+            msg = f"Expected {'stream'} in {record}"
             raise AssertionError(msg)
         assert "record" in record
         if "time_extracted" not in record:
-            msg = f"Expected {"time_extracted"} in {record}"
+            msg = f"Expected {'time_extracted'} in {record}"
             raise AssertionError(msg)
         assert isinstance(record["record"], dict)
 
     @staticmethod
     def validate_config_schema(config_schema: dict[str, Any]) -> None:
         if "properties" not in config_schema:
-            msg = f"Expected {"properties"} in {config_schema}"
+            msg = f"Expected {'properties'} in {config_schema}"
             raise AssertionError(msg)
         properties = config_schema["properties"]
 
@@ -490,7 +490,6 @@ def skip_if_no_internet() -> None:
 
 
 def skip_if_no_production_config() -> None:
-
     required_vars = ["OIC_BASE_URL", "OIC_CLIENT_ID", "OIC_CLIENT_SECRET"]
     if not all(os.getenv(var) for var in required_vars):
         pytest.fail(
@@ -499,7 +498,6 @@ def skip_if_no_production_config() -> None:
 
 
 def requires_python_version(min_version: str) -> object:
-
     def decorator(func: Any) -> object:
         if version.parse(
             f"{sys.version_info.major}.{sys.version_info.minor}",
@@ -516,7 +514,6 @@ def requires_python_version(min_version: str) -> object:
 
 @contextmanager
 def timeout_test(seconds: float) -> object:
-
     def timeout_handler(signum: int, frame: Any) -> NoReturn:
         msg = f"Test timed out after {seconds} seconds"
         raise TimeoutError(msg)
@@ -538,7 +535,6 @@ class ConcurrentTestRunner:
         self.results: list[dict[str, Any]] = []
 
     def run_tests_parallel(self, test_functions: list[Callable[[], Any]]) -> list[Any]:
-
         self.results.clear()
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             future_to_test: dict[Any, Callable[[], Any]] = {

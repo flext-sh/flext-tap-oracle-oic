@@ -43,7 +43,8 @@ class TestOICOAuth2Authenticator:
     ) -> None:
         """Test authenticator initialization."""
         if authenticator._stream != mock_stream:
-            raise AssertionError(f"Expected {mock_stream}, got {authenticator._stream}")
+            msg = f"Expected {mock_stream}, got {authenticator._stream}"
+            raise AssertionError(msg)
         assert authenticator.auth_endpoint == mock_stream.config.get("oauth_token_url")
 
     def test_oauth_token_request_payload(
@@ -54,8 +55,8 @@ class TestOICOAuth2Authenticator:
         payload = authenticator.oauth_request_payload
 
         if payload["grant_type"] != "client_credentials":
-
-            raise AssertionError(f"Expected {"client_credentials"}, got {payload["grant_type"]}")
+            msg = f"Expected {'client_credentials'}, got {payload['grant_type']}"
+            raise AssertionError(msg)
         assert payload["scope"] == "urn:opc:resource:consumer:all"
 
     def test_client_credentials_encoding(self) -> None:
@@ -70,7 +71,8 @@ class TestOICOAuth2Authenticator:
         # Verify the encoding matches what would be used
         actual_b64 = base64.b64encode(f"{client_id}:{client_secret}".encode()).decode()
         if actual_b64 != expected_b64:
-            raise AssertionError(f"Expected {expected_b64}, got {actual_b64}")
+            msg = f"Expected {expected_b64}, got {actual_b64}"
+            raise AssertionError(msg)
 
     @patch("requests.post")
     def test_oauth_request_headers(
@@ -111,12 +113,14 @@ class TestOICOAuth2Authenticator:
 
         # Required OAuth2 fields
         if "grant_type" not in payload:
-            raise AssertionError(f"Expected {"grant_type"} in {payload}")
+            msg = f"Expected {'grant_type'} in {payload}"
+            raise AssertionError(msg)
         assert "scope" in payload
 
         # Grant type should be client_credentials
         if payload["grant_type"] != "client_credentials":
-            raise AssertionError(f"Expected {"client_credentials"}, got {payload["grant_type"]}")
+            msg = f"Expected {'client_credentials'}, got {payload['grant_type']}"
+            raise AssertionError(msg)
 
     def test_config_validation(self, mock_stream: Mock) -> None:
         """Test authenticator handles missing config properly."""
@@ -129,7 +133,8 @@ class TestOICOAuth2Authenticator:
         # Should handle missing config gracefully
         authenticator = OICOAuth2Authenticator(stream=mock_stream)
         if authenticator._stream != mock_stream:
-            raise AssertionError(f"Expected {mock_stream}, got {authenticator._stream}")
+            msg = f"Expected {mock_stream}, got {authenticator._stream}"
+            raise AssertionError(msg)
 
     def test_token_validation(self) -> None:
         """Test token validation logic."""
@@ -142,10 +147,12 @@ class TestOICOAuth2Authenticator:
 
         # Verify token structure is as expected
         if "access_token" not in token_data:
-            raise AssertionError(f"Expected {"access_token"} in {token_data}")
+            msg = f"Expected {'access_token'} in {token_data}"
+            raise AssertionError(msg)
         assert "token_type" in token_data
         if token_data["token_type"] != "Bearer":
-            raise AssertionError(f"Expected {"Bearer"}, got {token_data["token_type"]}")
+            msg = f"Expected {'Bearer'}, got {token_data['token_type']}"
+            raise AssertionError(msg)
 
     @patch("requests.post")
     def test_authentication_error_handling(
@@ -168,7 +175,8 @@ class TestOICOAuth2Authenticator:
         # Should have OIC-specific scope
         expected_scope = "urn:opc:resource:consumer:all"
         if payload["scope"] != expected_scope:
-            raise AssertionError(f"Expected {expected_scope}, got {payload["scope"]}")
+            msg = f"Expected {expected_scope}, got {payload['scope']}"
+            raise AssertionError(msg)
 
     def test_authenticator_inheritance(
         self,
