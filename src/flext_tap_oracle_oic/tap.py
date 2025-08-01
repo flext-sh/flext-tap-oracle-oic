@@ -18,6 +18,7 @@ from flext_core import (
 
 # Import generic interfaces from flext-meltano
 from flext_meltano import Tap
+from flext_meltano.common_schemas import create_oracle_oic_tap_schema
 from flext_oracle_oic_ext.oic_patterns import (
     OICAuthConfig,
     OICConnectionConfig,
@@ -41,35 +42,7 @@ class TapOracleOIC(Tap):
     """Real Oracle Integration Cloud tap implementation."""
 
     name = "tap-oracle-oic"
-    config_jsonschema: ClassVar = {
-        "type": "object",
-        "properties": {
-            "oauth_client_id": {"type": "string", "description": "OAuth2 client ID"},
-            "oauth_client_secret": {
-                "type": "string",
-                "description": "OAuth2 client secret",
-            },
-            "oauth_endpoint": {
-                "type": "string",
-                "description": "OAuth2 token endpoint",
-            },
-            "oic_url": {
-                "type": "string",
-                "description": "Oracle Integration Cloud URL",
-            },
-            "oauth_scope": {
-                "type": "string",
-                "default": "urn:opc:resource:consumer:all",
-                "description": "OAuth2 scope",
-            },
-        },
-        "required": [
-            "oauth_client_id",
-            "oauth_client_secret",
-            "oauth_endpoint",
-            "oic_url",
-        ],
-    }
+    config_jsonschema: ClassVar = create_oracle_oic_tap_schema().to_dict()
 
     def __init__(
         self,
@@ -100,7 +73,7 @@ class TapOracleOIC(Tap):
             connection_config = OICConnectionConfig(
                 base_url=self.config["oic_url"],
                 api_version=self.config.get("api_version", "v1"),
-                request_timeout=self.config.get("timeout", 30),
+                request_timeout=self.config.get("request_timeout", 30),
                 max_retries=self.config.get("max_retries", 3),
             )
 
@@ -108,7 +81,7 @@ class TapOracleOIC(Tap):
             auth_config = OICAuthConfig(
                 oauth_client_id=self.config["oauth_client_id"],
                 oauth_client_secret=self.config["oauth_client_secret"],
-                oauth_token_url=self.config["oauth_endpoint"],
+                oauth_token_url=self.config["oauth_token_url"],
                 oauth_scope=self.config.get(
                     "oauth_scope",
                     "urn:opc:resource:consumer:all",
@@ -216,7 +189,7 @@ def main() -> int:
     config = {
         "oauth_client_id": os.getenv("TAP_ORACLE_OIC_OAUTH_CLIENT_ID"),
         "oauth_client_secret": os.getenv("TAP_ORACLE_OIC_OAUTH_CLIENT_SECRET"),
-        "oauth_endpoint": os.getenv("TAP_ORACLE_OIC_OAUTH_ENDPOINT"),
+        "oauth_token_url": os.getenv("TAP_ORACLE_OIC_OAUTH_TOKEN_URL"),
         "oic_url": os.getenv("TAP_ORACLE_OIC_OIC_URL"),
         "oauth_scope": os.getenv(
             "TAP_ORACLE_OIC_OAUTH_SCOPE",
@@ -228,7 +201,7 @@ def main() -> int:
     required_config = [
         "oauth_client_id",
         "oauth_client_secret",
-        "oauth_endpoint",
+        "oauth_token_url",
         "oic_url",
     ]
     missing_config = [key for key in required_config if not config.get(key)]
