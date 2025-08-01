@@ -48,7 +48,7 @@ class IntegrationsStream:
     default_sort = "lastUpdated:desc"
     default_expand = "connections,endpoints"
 
-    def __init__(self, config: dict[str, Any] | None = None) -> None:
+    def __init__(self, config: dict[str, object] | None = None) -> None:
         """Initialize stream with optional configuration."""
         self.config = config or {}
 
@@ -203,7 +203,7 @@ class IntegrationsStream:
             Dictionary of additional URL parameters for OIC integrations API.
 
         """
-        params: dict[str, Any] = {}
+        params: dict[str, object] = {}
 
         # Include runtime status if available:
         if self.config.get("include_runtime_status", True):
@@ -246,7 +246,7 @@ class ConnectionsStream:
     default_sort = "lastUpdated:desc"
     default_expand = "adapter,properties"
 
-    def __init__(self, config: dict[str, Any] | None = None) -> None:
+    def __init__(self, config: dict[str, object] | None = None) -> None:
         """Initialize stream with optional configuration."""
         self.config = config or {}
 
@@ -414,7 +414,7 @@ class ConnectionsStream:
             Dictionary of additional URL parameters for OIC connections API.
 
         """
-        params: dict[str, Any] = {}
+        params: dict[str, object] = {}
 
         # Include usage information
         if self.config.get("include_usage_info", True):

@@ -245,7 +245,7 @@ def sample_config_with_extended() -> Any:
 class TestTapOICWithFixtures:
     """Tests using fixtures."""
 
-    def test_tap_with_sample_config(self, sample_config: dict[str, Any]) -> None:
+    def test_tap_with_sample_config(self, sample_config: dict[str, object]) -> None:
         """Test that the tap is initialized correctly with the sample config."""
         tap = TapOIC(config=sample_config, validate_config=False)
 
@@ -258,7 +258,7 @@ class TestTapOICWithFixtures:
 
     def test_streams_count_with_extended_config(
         self,
-        sample_config_with_extended: dict[str, Any],
+        sample_config_with_extended: dict[str, object],
     ) -> None:
         """Test that the number of streams is correct with the extended config."""
         tap = TapOIC(config=sample_config_with_extended, validate_config=False)

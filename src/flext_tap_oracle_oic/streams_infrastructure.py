@@ -57,9 +57,9 @@ class AdaptersStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
         """Additional parameters for the request."""
-        params: dict[str, Any] = {}
+        params: dict[str, object] = {}
 
         # Adapter type filtering
         adapter_types = self.config.get("adapter_types")
@@ -114,9 +114,9 @@ class LibrariesStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
         """Additional parameters for the request."""
-        params: dict[str, Any] = {}
+        params: dict[str, object] = {}
         return params
 
 
@@ -161,7 +161,7 @@ class AgentsStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
         """Additional parameters for the request."""
-        params: dict[str, Any] = {}
+        params: dict[str, object] = {}
         return params

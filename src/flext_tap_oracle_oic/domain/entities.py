@@ -68,7 +68,7 @@ class OICConnection(FlextDomainBaseModel):
 
     # Connection properties
     connection_url: str | None = Field(None, description="Connection endpoint URL")
-    connection_properties: dict[str, Any] = Field(
+    connection_properties: dict[str, object] = Field(
         default_factory=dict,
         description="Connection properties",
     )
@@ -80,7 +80,7 @@ class OICConnection(FlextDomainBaseModel):
         description="Connection status",
     )
     last_tested: datetime | None = Field(None, description="Last test timestamp")
-    test_result: dict[str, Any] | None = Field(None, description="Last test result")
+    test_result: dict[str, object] | None = Field(None, description="Last test result")
 
     # Metadata
     version: str | None = Field(None, description="Connection version")
@@ -188,7 +188,7 @@ class OICLookup(FlextDomainBaseModel):
     domain_name: str | None = Field(None, description="Domain name")
 
     # Lookup structure
-    columns: list[dict[str, Any]] = Field(
+    columns: list[dict[str, object]] = Field(
         default_factory=list,
         description="Column definitions",
     )
@@ -255,7 +255,7 @@ class OICMonitoringRecord(FlextDomainBaseModel):
     error_count: int = Field(default=0, ge=0, description="Number of errors")
 
     # Tracking
-    business_identifiers: dict[str, Any] = Field(
+    business_identifiers: dict[str, object] = Field(
         default_factory=dict,
         description="Business tracking identifiers",
     )

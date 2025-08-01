@@ -34,7 +34,7 @@ def set_test_environment() -> Generator[None]:
 
 # Oracle OIC configuration fixtures
 @pytest.fixture
-def basic_oic_config() -> dict[str, Any]:
+def basic_oic_config() -> dict[str, object]:
     """Basic Oracle OIC tap configuration."""
     return {
         "base_url": "https://oic-test.integration.ocp.oraclecloud.com",
@@ -53,7 +53,7 @@ def basic_oic_config() -> dict[str, Any]:
 
 
 @pytest.fixture
-def extended_oic_config(basic_oic_config: dict[str, Any]) -> dict[str, Any]:
+def extended_oic_config(basic_oic_config: dict[str, object]) -> dict[str, object]:
     """Extended Oracle OIC tap configuration with all streams."""
     config = basic_oic_config.copy()
     config.update(
@@ -72,7 +72,7 @@ def extended_oic_config(basic_oic_config: dict[str, Any]) -> dict[str, Any]:
 
 
 @pytest.fixture
-def filtered_oic_config(basic_oic_config: dict[str, Any]) -> dict[str, Any]:
+def filtered_oic_config(basic_oic_config: dict[str, object]) -> dict[str, object]:
     """Oracle OIC tap configuration with filters."""
     config = basic_oic_config.copy()
     config.update(
@@ -86,7 +86,7 @@ def filtered_oic_config(basic_oic_config: dict[str, Any]) -> dict[str, Any]:
 
 
 @pytest.fixture
-def performance_oic_config(basic_oic_config: dict[str, Any]) -> dict[str, Any]:
+def performance_oic_config(basic_oic_config: dict[str, object]) -> dict[str, object]:
     """Oracle OIC tap configuration for performance testing."""
     config = basic_oic_config.copy()
     config.update(
@@ -105,7 +105,7 @@ def performance_oic_config(basic_oic_config: dict[str, Any]) -> dict[str, Any]:
 
 # Mock OIC API response fixtures
 @pytest.fixture
-def mock_oauth_token_response() -> dict[str, Any]:
+def mock_oauth_token_response() -> dict[str, object]:
     """Mock OAuth2 token response."""
     return {
         "access_token": "mock_access_token_12345",
@@ -116,7 +116,7 @@ def mock_oauth_token_response() -> dict[str, Any]:
 
 
 @pytest.fixture
-def sample_integration_data() -> list[dict[str, Any]]:
+def sample_integration_data() -> list[dict[str, object]]:
     """Sample integration data for testing."""
     return [
         {
@@ -172,8 +172,8 @@ def sample_integration_data() -> list[dict[str, Any]]:
 
 @pytest.fixture
 def mock_integrations_response(
-    sample_integration_data: list[dict[str, Any]],
-) -> dict[str, Any]:
+    sample_integration_data: list[dict[str, object]],
+) -> dict[str, object]:
     """Mock integrations API response."""
     return {
         "items": sample_integration_data,
@@ -185,7 +185,7 @@ def mock_integrations_response(
 
 
 @pytest.fixture
-def sample_connection_data() -> list[dict[str, Any]]:
+def sample_connection_data() -> list[dict[str, object]]:
     """Sample connection data for testing."""
     return [
         {
@@ -235,8 +235,8 @@ def sample_connection_data() -> list[dict[str, Any]]:
 
 @pytest.fixture
 def mock_connections_response(
-    sample_connection_data: list[dict[str, Any]],
-) -> dict[str, Any]:
+    sample_connection_data: list[dict[str, object]],
+) -> dict[str, object]:
     """Mock connections API response."""
     return {
         "items": sample_connection_data,
@@ -248,7 +248,7 @@ def mock_connections_response(
 
 
 @pytest.fixture
-def sample_package_data() -> list[dict[str, Any]]:
+def sample_package_data() -> list[dict[str, object]]:
     """Sample package data for testing."""
     return [
         {
@@ -283,7 +283,7 @@ def sample_package_data() -> list[dict[str, Any]]:
 
 
 @pytest.fixture
-def mock_packages_response(sample_package_data: list[dict[str, Any]]) -> dict[str, Any]:
+def mock_packages_response(sample_package_data: list[dict[str, object]]) -> dict[str, object]:
     """Mock packages API response."""
     return {
         "items": sample_package_data,
@@ -295,7 +295,7 @@ def mock_packages_response(sample_package_data: list[dict[str, Any]]) -> dict[st
 
 
 @pytest.fixture
-def sample_lookup_data() -> list[dict[str, Any]]:
+def sample_lookup_data() -> list[dict[str, object]]:
     """Sample lookup data for testing."""
     return [
         {
@@ -328,7 +328,7 @@ def sample_lookup_data() -> list[dict[str, Any]]:
 
 
 @pytest.fixture
-def mock_lookups_response(sample_lookup_data: list[dict[str, Any]]) -> dict[str, Any]:
+def mock_lookups_response(sample_lookup_data: list[dict[str, object]]) -> dict[str, object]:
     """Mock lookups API response."""
     return {
         "items": sample_lookup_data,
@@ -341,7 +341,7 @@ def mock_lookups_response(sample_lookup_data: list[dict[str, Any]]) -> dict[str,
 
 # Extended stream fixtures
 @pytest.fixture
-def sample_library_data() -> list[dict[str, Any]]:
+def sample_library_data() -> list[dict[str, object]]:
     """Sample library data for testing."""
     return [
         {
@@ -358,7 +358,7 @@ def sample_library_data() -> list[dict[str, Any]]:
 
 
 @pytest.fixture
-def sample_certificate_data() -> list[dict[str, Any]]:
+def sample_certificate_data() -> list[dict[str, object]]:
     """Sample certificate data for testing."""
     return [
         {
@@ -376,7 +376,7 @@ def sample_certificate_data() -> list[dict[str, Any]]:
 
 
 @pytest.fixture
-def sample_adapter_data() -> list[dict[str, Any]]:
+def sample_adapter_data() -> list[dict[str, object]]:
     """Sample adapter data for testing."""
     return [
         {
@@ -394,7 +394,7 @@ def sample_adapter_data() -> list[dict[str, Any]]:
 
 # Singer protocol fixtures
 @pytest.fixture
-def singer_catalog() -> dict[str, Any]:
+def singer_catalog() -> dict[str, object]:
     """Singer catalog for OIC tap."""
     return {
         "streams": [
@@ -449,7 +449,7 @@ def singer_catalog() -> dict[str, Any]:
 
 
 @pytest.fixture
-def singer_state() -> dict[str, Any]:
+def singer_state() -> dict[str, object]:
     """Singer state for OIC tap."""
     return {
         "currently_syncing": None,
@@ -493,7 +493,7 @@ def mock_rate_limit_response() -> Mock:
 
 # Performance testing fixtures
 @pytest.fixture
-def large_integration_dataset() -> list[dict[str, Any]]:
+def large_integration_dataset() -> list[dict[str, object]]:
     """Large integration dataset for performance testing."""
     integrations = []
 
@@ -516,7 +516,7 @@ def large_integration_dataset() -> list[dict[str, Any]]:
 
 
 @pytest.fixture
-def benchmark_config() -> dict[str, Any]:
+def benchmark_config() -> dict[str, object]:
     """Configuration for performance benchmarking."""
     return {
         "max_records_to_process": 1000,
@@ -547,7 +547,7 @@ def mock_oic_client() -> type[Any]:
     """Mock Oracle OIC client for testing."""
 
     class MockOICClient:
-        def __init__(self, config: dict[str, Any]) -> None:
+        def __init__(self, config: dict[str, object]) -> None:
             self.config = config
             self.authenticated = False
             self.call_count: dict[str, int] = {}
@@ -556,7 +556,7 @@ def mock_oic_client() -> type[Any]:
             self.authenticated = True
             return True
 
-        async def get_integrations(self, **kwargs: object) -> dict[str, Any]:
+        async def get_integrations(self, **kwargs: object) -> dict[str, object]:
             self.call_count["get_integrations"] = (
                 self.call_count.get("get_integrations", 0) + 1
             )
@@ -567,7 +567,7 @@ def mock_oic_client() -> type[Any]:
                 "count": 0,
             }
 
-        async def get_connections(self, **kwargs: object) -> dict[str, Any]:
+        async def get_connections(self, **kwargs: object) -> dict[str, object]:
             self.call_count["get_connections"] = (
                 self.call_count.get("get_connections", 0) + 1
             )
@@ -594,12 +594,12 @@ def mock_oauth_authenticator() -> type[Any]:
     """Mock OAuth2 authenticator for testing."""
 
     class MockOAuthAuthenticator:
-        def __init__(self, config: dict[str, Any]) -> None:
+        def __init__(self, config: dict[str, object]) -> None:
             self.config = config
             self.token = None
             self.token_expires_at = None
 
-        async def get_access_token(self) -> dict[str, Any]:
+        async def get_access_token(self) -> dict[str, object]:
             return {
                 "success": True,
                 "value": "mock_access_token_12345",
@@ -608,7 +608,7 @@ def mock_oauth_authenticator() -> type[Any]:
         def is_token_valid(self) -> bool:
             return True
 
-        async def refresh_token(self) -> dict[str, Any]:
+        async def refresh_token(self) -> dict[str, object]:
             return await self.get_access_token()
 
     return MockOAuthAuthenticator

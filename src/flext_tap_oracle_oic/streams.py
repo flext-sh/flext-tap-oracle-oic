@@ -83,7 +83,7 @@ class OICPaginator(BaseOffsetPaginator):
         except (ValueError, KeyError, TypeError, AttributeError):
             return None
 
-    def _calculate_next_offset(self, data: dict[str, Any] | list[Any]) -> int | None:
+    def _calculate_next_offset(self, data: dict[str, object] | list[Any]) -> int | None:
         # Handle different OIC response formats
         items = self._extract_items_from_response(data)
         if items is None:
@@ -96,7 +96,7 @@ class OICPaginator(BaseOffsetPaginator):
 
     def _extract_items_from_response(
         self,
-        data: dict[str, Any] | list[Any],
+        data: dict[str, object] | list[Any],
     ) -> list[Any] | None:
         if isinstance(data, list):
             return data
@@ -215,9 +215,9 @@ class OICBaseStream(RESTStream[Any]):
 
     def get_url_params(
         self,
-        context: Mapping[str, Any] | None,
+        context: Mapping[str, object] | None,
         next_page_token: Any | None,
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """Build URL parameters for OIC API requests.
 
         Args:
@@ -228,7 +228,7 @@ class OICBaseStream(RESTStream[Any]):
             Dictionary of URL parameters for the API request.
 
         """
-        params: dict[str, Any] = {}
+        params: dict[str, object] = {}
 
         # Pagination parameters
         page_size = self.config.get("page_size", 100)
@@ -280,7 +280,7 @@ class OICBaseStream(RESTStream[Any]):
         # Remove empty values
         return {k: v for k, v in params.items() if v is not None}
 
-    def parse_response(self, response: requests.Response) -> Iterator[dict[str, Any]]:
+    def parse_response(self, response: requests.Response) -> Iterator[dict[str, object]]:
         """Parse OIC API response and yield records.
 
         Args:
@@ -318,9 +318,9 @@ class OICBaseStream(RESTStream[Any]):
 
     def _extract_and_yield_records(
         self,
-        data: dict[str, Any] | list[Any],
+        data: dict[str, object] | list[Any],
         url: str,
-    ) -> Iterator[dict[str, Any]]:
+    ) -> Iterator[dict[str, object]]:
         records_yielded = 0
 
         for item in self._extract_items_for_processing(data):
@@ -343,8 +343,8 @@ class OICBaseStream(RESTStream[Any]):
 
     def _extract_items_for_processing(
         self,
-        data: dict[str, Any] | list[Any],
-    ) -> Iterator[dict[str, Any]]:
+        data: dict[str, object] | list[Any],
+    ) -> Iterator[dict[str, object]]:
         if isinstance(data, list):
             yield from data
         elif isinstance(data, dict):
@@ -355,7 +355,7 @@ class OICBaseStream(RESTStream[Any]):
             elif self._is_single_record(data):
                 yield data
 
-    def _is_empty_result_expected(self, data: dict[str, Any] | list[Any]) -> bool:
+    def _is_empty_result_expected(self, data: dict[str, object] | list[Any]) -> bool:
         """Check if empty result is expected/normal."""
         if isinstance(data, dict):
             return (
@@ -367,7 +367,7 @@ class OICBaseStream(RESTStream[Any]):
         # For list data, empty is expected when the list is empty
         return len(data) == 0
 
-    def _is_single_record(self, data: dict[str, Any]) -> bool:
+    def _is_single_record(self, data: dict[str, object]) -> bool:
         """Check if dict represents a single record vs metadata container."""
         metadata_keys = {
             "totalSize",
@@ -380,11 +380,11 @@ class OICBaseStream(RESTStream[Any]):
         }
         return not any(key in data for key in metadata_keys)
 
-    def _validate_record(self, record: dict[str, Any]) -> bool:
+    def _validate_record(self, record: dict[str, object]) -> bool:
         """Validate record meets basic requirements."""
         return isinstance(record, dict)
 
-    def _enrich_record(self, record: dict[str, Any]) -> dict[str, Any]:
+    def _enrich_record(self, record: dict[str, object]) -> dict[str, object]:
         """Enrich record with tap metadata."""
         enriched = dict(record)
         enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
@@ -415,7 +415,7 @@ class OICBaseStream(RESTStream[Any]):
     def _track_response_metrics(
         self,
         response: requests.Response,
-        data: dict[str, Any] | list[Any],
+        data: dict[str, object] | list[Any],
     ) -> None:
         """Track response metrics for monitoring."""
         # Log response time and size for monitoring

@@ -127,7 +127,7 @@ class ProjectsStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
         """Build additional URL parameters for projects stream.
 
         Args:
@@ -137,7 +137,7 @@ class ProjectsStream(OICBaseStream):
             Dictionary of additional URL parameters for OIC projects API.
 
         """
-        params: dict[str, Any] = {}
+        params: dict[str, object] = {}
 
         # Include folder details
         if self.config.get("include_folder_details", True):
@@ -319,7 +319,7 @@ class SchedulesStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
         """Build additional URL parameters for schedules stream.
 
         Args:
@@ -329,7 +329,7 @@ class SchedulesStream(OICBaseStream):
             Dictionary of additional URL parameters for OIC schedules API.
 
         """
-        params: dict[str, Any] = {}
+        params: dict[str, object] = {}
 
         # Include execution statistics
         if self.config.get("include_execution_stats", True):
@@ -452,7 +452,7 @@ class BusinessEventsStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
         """Build additional URL parameters for business events stream.
 
         Args:
@@ -462,7 +462,7 @@ class BusinessEventsStream(OICBaseStream):
             Dictionary of additional URL parameters for OIC business events API.
 
         """
-        params: dict[str, Any] = {}
+        params: dict[str, object] = {}
 
         # Time range
         time_range = self.config.get("event_time_range", "24h")
@@ -643,7 +643,7 @@ class ImportExportJobsStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
         """Build additional URL parameters for import/export jobs stream.
 
         Args:
@@ -653,7 +653,7 @@ class ImportExportJobsStream(OICBaseStream):
             Dictionary of additional URL parameters for OIC import/export jobs API.
 
         """
-        params: dict[str, Any] = {}
+        params: dict[str, object] = {}
 
         # Time range
         time_range = self.config.get("job_time_range", "7d")
