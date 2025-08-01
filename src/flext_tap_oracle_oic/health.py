@@ -37,7 +37,7 @@ class OICHealthChecker:
             headers.update(auth_headers)
         return headers
 
-    def check_health(self) -> dict[str, Any]:
+    def check_health(self) -> dict[str, object]:
         """Check OIC instance health."""
         try:
             # Try to access the integrations endpoint as a health check
@@ -69,7 +69,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_connection(self, connection_id: str) -> dict[str, Any]:
+    def test_connection(self, connection_id: str) -> dict[str, object]:
         """Test specific OIC connection."""
         try:
             # Call the connection test endpoint
@@ -105,7 +105,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_integration(self, integration_id: str) -> dict[str, Any]:
+    def test_integration(self, integration_id: str) -> dict[str, object]:
         """Test specific OIC integration."""
         try:
             # Get integration details
@@ -150,7 +150,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def check_monitoring_health(self) -> dict[str, Any]:
+    def check_monitoring_health(self) -> dict[str, object]:
         """Check OIC monitoring service health."""
         try:
             # Try to access monitoring endpoint

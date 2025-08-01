@@ -74,11 +74,11 @@ class OICConnectionConfig(BaseModel):
 class StreamSelectionConfig(BaseModel):
     """Configuration for stream selection and filtering using flext-core patterns."""
 
-    stream_maps: dict[str, Any] | None = Field(
+    stream_maps: dict[str, object] | None = Field(
         None,
         description="Stream maps for transforming data",
     )
-    stream_map_config: dict[str, Any] | None = Field(
+    stream_map_config: dict[str, object] | None = Field(
         None,
         description="Configuration for stream maps",
     )

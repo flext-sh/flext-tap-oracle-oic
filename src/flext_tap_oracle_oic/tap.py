@@ -47,9 +47,9 @@ class TapOracleOIC(Tap):
     def __init__(
         self,
         *,
-        config: dict[str, Any] | None = None,
-        catalog: dict[str, Any] | None = None,
-        state: dict[str, Any] | None = None,
+        config: dict[str, object] | None = None,
+        catalog: dict[str, object] | None = None,
+        state: dict[str, object] | None = None,
         parse_env_config: bool = False,
         validate_config: bool = True,
     ) -> None:

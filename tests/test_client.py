@@ -21,7 +21,7 @@ class TestOracleOICClient:
     """Test OIC client with real functionality."""
 
     @pytest.fixture
-    def client_config(self) -> dict[str, Any]:
+    def client_config(self) -> dict[str, object]:
         """Create test client configuration."""
         return {
             "oauth_client_id": "test_client_id",
@@ -32,7 +32,7 @@ class TestOracleOICClient:
         }
 
     @pytest.fixture
-    def client(self, client_config: dict[str, Any]) -> OracleOICClient:
+    def client(self, client_config: dict[str, object]) -> OracleOICClient:
         """Create a client instance."""
         return OracleOICClient(
             base_url=client_config["oic_url"],
@@ -45,7 +45,7 @@ class TestOracleOICClient:
     def test_client_initialization(
         self,
         client: OracleOICClient,
-        client_config: dict[str, Any],
+        client_config: dict[str, object],
     ) -> None:
         """Test client initialization."""
         if client.base_url != client_config["oic_url"]:

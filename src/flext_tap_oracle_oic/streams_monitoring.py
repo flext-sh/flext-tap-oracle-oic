@@ -58,9 +58,9 @@ class ExecutionsStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
         """Additional parameters for the request."""
-        params: dict[str, Any] = {}
+        params: dict[str, object] = {}
 
         # Time range filtering
         time_range = self.config.get("execution_time_range", "24h")
@@ -115,9 +115,9 @@ class MetricsStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
         """Additional parameters for the request."""
-        params: dict[str, Any] = {}
+        params: dict[str, object] = {}
 
         # Time range
         time_range = self.config.get("metrics_time_range", "1h")
@@ -168,9 +168,9 @@ class ErrorsStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, Any] | None) -> dict[str, Any]:
+    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
         """Additional parameters for the request."""
-        params: dict[str, Any] = {}
+        params: dict[str, object] = {}
 
         # Time range
         time_range = self.config.get("error_time_range", "24h")

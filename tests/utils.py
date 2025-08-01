@@ -34,7 +34,7 @@ class TestDataBuilder:
         status: str = "ACTIVE",
         time_updated: str = "2024-01-15T10:30:00Z",
         **kwargs: object,
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         record = {
             "id": integration_id,
             "name": name,
@@ -55,7 +55,7 @@ class TestDataBuilder:
         time_updated: str = "2024-01-15T10:30:00Z",
         connection_type: str = "REST",
         **kwargs: object,
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         record = {
             "id": connection_id,
             "name": name,
@@ -76,7 +76,7 @@ class TestDataBuilder:
         time_updated: str = "2024-01-15T10:30:00Z",
         version: str = "0.9.0",
         **kwargs: object,
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         record = {
             "id": package_id,
             "name": name,
@@ -97,7 +97,7 @@ class TestDataBuilder:
         start_time: str = "2024-01-15T10:30:00Z",
         end_time: str = "2024-01-15T10:35:00Z",
         **kwargs: object,
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         record = {
             "instanceId": instance_id,
             "integrationId": integration_id,
@@ -113,9 +113,9 @@ class TestDataBuilder:
     @staticmethod
     def singer_record(
         stream: str,
-        record_data: dict[str, Any],
+        record_data: dict[str, object],
         time_extracted: str | None = None,
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         if time_extracted is None:
             time_extracted = "2024-01-15T10:35:00Z"
 
@@ -129,9 +129,9 @@ class TestDataBuilder:
     @staticmethod
     def singer_schema(
         stream: str,
-        properties: dict[str, Any],
+        properties: dict[str, object],
         key_properties: list[str] | None = None,
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         if key_properties is None:
             key_properties = ["id"]
 
@@ -189,7 +189,7 @@ class TestValidator:
                 raise AssertionError(msg)
 
     @staticmethod
-    def validate_singer_record(record: dict[str, Any]) -> None:
+    def validate_singer_record(record: dict[str, object]) -> None:
         if "type" not in record:
             msg = f"Expected {'type'} in {record}"
             raise AssertionError(msg)
@@ -206,7 +206,7 @@ class TestValidator:
         assert isinstance(record["record"], dict)
 
     @staticmethod
-    def validate_config_schema(config_schema: dict[str, Any]) -> None:
+    def validate_config_schema(config_schema: dict[str, object]) -> None:
         if "properties" not in config_schema:
             msg = f"Expected {'properties'} in {config_schema}"
             raise AssertionError(msg)
@@ -228,7 +228,7 @@ class TestValidator:
 
     @staticmethod
     def validate_performance_metrics(
-        metrics: dict[str, Any],
+        metrics: dict[str, object],
         max_duration: float = 5.0,
         max_memory_growth: int = 100 * 1024 * 1024,  # 100MB
     ) -> None:
@@ -266,7 +266,7 @@ class MockAPIServer:
 
     def setup_integrations_mock(
         self,
-        records: list[dict[str, Any]] | None = None,
+        records: list[dict[str, object]] | None = None,
     ) -> None:
         if records is None:
             records = [TestDataBuilder.integration_record()]
@@ -280,7 +280,7 @@ class MockAPIServer:
 
     def setup_connections_mock(
         self,
-        records: list[dict[str, Any]] | None = None,
+        records: list[dict[str, object]] | None = None,
     ) -> None:
         if records is None:
             records = [TestDataBuilder.connection_record()]
@@ -320,10 +320,10 @@ class PerformanceMeasurer:
     def __init__(self) -> None:
         self.start_time: float | None = None
         self.end_time: float | None = None
-        self.measurements: list[dict[str, Any]] = []
+        self.measurements: list[dict[str, object]] = []
 
     @contextmanager
-    def measure_duration(self) -> Generator[dict[str, Any]]:
+    def measure_duration(self) -> Generator[dict[str, object]]:
         self.start_time = time.time()
         metrics = {"start_time": self.start_time}
 
@@ -353,7 +353,7 @@ class TestConfigGenerator:
     """Generate test configurations for various scenarios."""
 
     @staticmethod
-    def minimal_oauth2_config() -> dict[str, Any]:
+    def minimal_oauth2_config() -> dict[str, object]:
         return {
             "base_url": "https://test-oic.integration.ocp.oraclecloud.com",
             "auth_method": "oauth2",
@@ -363,7 +363,7 @@ class TestConfigGenerator:
         }
 
     @staticmethod
-    def full_oauth2_config() -> dict[str, Any]:
+    def full_oauth2_config() -> dict[str, object]:
         return {
             "base_url": "https://test-oic.integration.ocp.oraclecloud.com",
             "auth_method": "oauth2",
@@ -381,7 +381,7 @@ class TestConfigGenerator:
         }
 
     @staticmethod
-    def production_oauth2_config() -> dict[str, Any]:
+    def production_oauth2_config() -> dict[str, object]:
         return {
             "base_url": "https://production-oic.integration.ocp.oraclecloud.com",
             "auth_method": "oauth2",
@@ -398,7 +398,7 @@ class TestConfigGenerator:
         }
 
     @staticmethod
-    def invalid_configs() -> list[dict[str, Any]]:
+    def invalid_configs() -> list[dict[str, object]]:
         return [
             # Empty base URL
             {
@@ -442,7 +442,7 @@ class TestFileManager:
 
     def create_config_file(
         self,
-        config: dict[str, Any],
+        config: dict[str, object],
         filename: str = "test_config.json",
     ) -> Path:
         config_path = self.temp_dir / filename
@@ -453,7 +453,7 @@ class TestFileManager:
 
     def create_catalog_file(
         self,
-        catalog: dict[str, Any],
+        catalog: dict[str, object],
         filename: str = "test_catalog.json",
     ) -> Path:
         catalog_path = self.temp_dir / filename
@@ -464,7 +464,7 @@ class TestFileManager:
 
     def create_records_file(
         self,
-        records: list[dict[str, Any]],
+        records: list[dict[str, object]],
         filename: str = "test_records.jsonl",
     ) -> Path:
         records_path = self.temp_dir / filename
@@ -532,7 +532,7 @@ class ConcurrentTestRunner:
 
     def __init__(self, max_workers: int = 4) -> None:
         self.max_workers = max_workers
-        self.results: list[dict[str, Any]] = []
+        self.results: list[dict[str, object]] = []
 
     def run_tests_parallel(self, test_functions: list[Callable[[], Any]]) -> list[Any]:
         self.results.clear()
@@ -562,7 +562,7 @@ class ConcurrentTestRunner:
         return successful / len(self.results)
 
 
-def assert_config_valid(config: dict[str, Any]) -> None:
+def assert_config_valid(config: dict[str, object]) -> None:
     if "base_url" not in config:
         msg = "base_url is required in config"
         raise AssertionError(msg)

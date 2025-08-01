@@ -36,7 +36,7 @@ class TestTapOracleOICE2E:
     """End-to-end tests for tap-oracle-oic."""
 
     @pytest.fixture
-    def config(self) -> dict[str, Any]:
+    def config(self) -> dict[str, object]:
         """Mock configuration that matches the required schema."""
         return {
             "oauth_client_id": "test_client_id",
@@ -48,18 +48,18 @@ class TestTapOracleOICE2E:
         }
 
     @pytest.fixture
-    def tap(self, config: dict[str, Any]) -> Any:
+    def tap(self, config: dict[str, object]) -> Any:
         return TapOIC(config=config)
 
     @pytest.fixture
-    def config_path(self, tmp_path: Path, config: dict[str, Any]) -> str:
+    def config_path(self, tmp_path: Path, config: dict[str, object]) -> str:
         """Create a temporary config file for CLI tests."""
         config_file = tmp_path / "test_config.json"
         with open(config_file, "w", encoding="utf-8") as f:
             json.dump(config, f, indent=2)
         return str(config_file)
 
-    def test_tap_initialization(self, tap: TapOIC, config: dict[str, Any]) -> None:
+    def test_tap_initialization(self, tap: TapOIC, config: dict[str, object]) -> None:
         if tap.name != "tap-oracle-oic":
             msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
