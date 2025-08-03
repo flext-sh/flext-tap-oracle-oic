@@ -18,7 +18,7 @@ import pytest
 from flext_core import get_logger
 
 # Use ValidationError from pydantic instead
-from pydantic import ValidationError as ConfigValidationError
+from singer_sdk.exceptions import ConfigValidationError
 
 from flext_tap_oracle_oic.tap import TapOIC
 

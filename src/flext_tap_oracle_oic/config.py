@@ -302,7 +302,7 @@ class TapOracleOICConfig(BaseSettings):
         return True
 
     @classmethod
-    def create_with_defaults(cls, **overrides: Any) -> TapOracleOICConfig:
+    def create_with_defaults(cls, **overrides: object) -> TapOracleOICConfig:
         """Create configuration with intelligent defaults."""
         defaults = {
             "auth": OICAuthConfig(

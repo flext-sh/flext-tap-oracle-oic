@@ -8,7 +8,14 @@ from __future__ import annotations
 
 import os
 import sys
-from typing import Any, ClassVar
+from typing import TYPE_CHECKING, ClassVar
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+# Type aliases to avoid explicit Any
+StreamType = object  # Represents Singer/Meltano Stream
+StreamConfigType = object  # Represents stream configuration
 
 # Import from flext-core for foundational patterns (standardized)
 from flext_core import (
@@ -97,7 +104,7 @@ class TapOracleOIC(Tap):
             )
         return self._client
 
-    def discover_streams(self) -> list[Any]:
+    def discover_streams(self) -> list[StreamType]:  # type: ignore[override]
         """Discover available streams using real Oracle OIC client."""
         logger.info("Discovering Oracle OIC streams using consolidated streams")
 
@@ -125,7 +132,7 @@ class TapOracleOIC(Tap):
     def _create_stream_instance(
         self,
         class_name: str,
-        stream_config: type[Any],
+        stream_config: StreamConfigType,
     ) -> object:
         """Create real stream instance using OICBaseStream."""
         from flext_tap_oracle_oic.streams import OICBaseStream
@@ -135,11 +142,11 @@ class TapOracleOIC(Tap):
             class_name,
             (OICBaseStream,),
             {
-                "name": stream_config.name,
-                "path": stream_config.path,
-                "primary_keys": stream_config.primary_keys,
+                "name": getattr(stream_config, "name", ""),
+                "path": getattr(stream_config, "path", ""),
+                "primary_keys": getattr(stream_config, "primary_keys", []),
                 "replication_key": getattr(stream_config, "replication_key", None),
-                "schema": stream_config.schema,
+                "schema": getattr(stream_config, "schema", {}),
                 "api_category": getattr(stream_config, "api_category", "core"),
                 "requires_design_api": getattr(
                     stream_config,
@@ -158,7 +165,7 @@ class TapOracleOIC(Tap):
 
         return stream_class(tap=self)
 
-    def test_connection(self) -> FlextResult[Any]:
+    def test_connection(self) -> FlextResult[bool]:
         """Test connection to Oracle OIC using real client."""
         try:
             logger.info("Testing Oracle OIC connection with real client")
@@ -168,7 +175,7 @@ class TapOracleOIC(Tap):
 
             if auth_result.is_success:
                 logger.info("Oracle OIC connection test successful")
-                return FlextResult.ok(data=True)
+                return FlextResult.ok(True)
             error_msg = f"Oracle OIC connection test failed: {auth_result.error}"
             logger.error(error_msg)
             return FlextResult.fail(error_msg)
@@ -212,7 +219,9 @@ def main() -> int:
             logger.error("  - %s (env var: TAP_ORACLE_OIC_%s)", key, key.upper())
         return 1
 
-    tap = TapOracleOIC(config=config)
+    # Convert config to expected type
+    config_typed: dict[str, object] = {k: v for k, v in config.items() if v is not None}
+    tap = TapOracleOIC(config=config_typed)
 
     try:
         if "--discover" in sys.argv:
@@ -223,9 +232,9 @@ def main() -> int:
             catalog = {
                 "streams": [
                     {
-                        "tap_stream_id": stream.name,
-                        "schema": stream.schema,
-                        "key_properties": stream.primary_keys,
+                        "tap_stream_id": getattr(stream, "name", "unknown"),
+                        "schema": getattr(stream, "schema", {}),
+                        "key_properties": getattr(stream, "primary_keys", []),
                         "replication_method": (
                             "INCREMENTAL"
                             if hasattr(stream, "replication_key")

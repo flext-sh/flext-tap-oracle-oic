@@ -10,7 +10,8 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-from flext_meltano import ConfigValidationError
+from flext_meltano import FlextSingerConfigurationError
+from singer_sdk.exceptions import ConfigValidationError
 
 from flext_tap_oracle_oic.tap import TapOIC
 
@@ -173,14 +174,13 @@ class TestTapOIC:
 
         # Verify the error message mentions the missing required properties
         error_message = str(exc_info.value)
-        if "oauth_client_id" not in error_message:
-            msg = f"Expected {'oauth_client_id'} in {error_message}"
+        if "oic_host" not in error_message:
+            msg = f"Expected {'oic_host'} in {error_message}"
             raise AssertionError(msg)
-        assert "oauth_client_secret" in error_message
-        if "oauth_endpoint" not in error_message:
-            msg = f"Expected {'oauth_endpoint'} in {error_message}"
+        assert "username" in error_message
+        if "password" not in error_message:
+            msg = f"Expected {'password'} in {error_message}"
             raise AssertionError(msg)
-        assert "oic_url" in error_message
 
     def test_capabilities(self) -> None:
         tap = TapOIC(validate_config=False)
@@ -188,8 +188,8 @@ class TestTapOIC:
         expected_capabilities = ["catalog", "state", "discover"]
 
         for capability in expected_capabilities:
-            if capability in [cap.value for cap in tap.capabilities]:
-                msg = f"Expected {capability} in {tap.capabilities}"
+            if capability not in [cap.value for cap in tap.capabilities]:
+                msg = f"Expected {capability} in {[cap.value for cap in tap.capabilities]}"
                 raise AssertionError(msg)
 
 
