@@ -6,7 +6,7 @@ Provides enterprise-ready setup utilities with FlextResult pattern support.
 
 from __future__ import annotations
 
-from typing import Any, cast
+from typing import cast
 
 import requests
 
@@ -28,7 +28,7 @@ from flext_tap_oracle_oic.config import (
 
 def setup_oic_tap(
     config: TapOracleOICConfig | None = None,
-) -> FlextResult[Any]:
+) -> FlextResult[TapOracleOICConfig]:
     """Set up Oracle Integration Cloud tap with configuration.
 
     Args:
@@ -57,7 +57,7 @@ def create_oic_auth_config(
     client_secret: str,
     token_url: str,
     **kwargs: object,
-) -> FlextResult[Any]:
+) -> FlextResult[OICAuthConfig]:
     """Create OIC authentication configuration.
 
     Args:
@@ -88,7 +88,7 @@ def create_oic_auth_config(
 def create_oic_connection_config(
     base_url: str,
     **kwargs: object,
-) -> FlextResult[Any]:
+) -> FlextResult[OICConnectionConfig]:
     """Create OIC connection configuration.
 
     Args:
@@ -113,7 +113,7 @@ def create_oic_connection_config(
         return FlextResult.fail(f"Failed to create OIC connection config: {e}")
 
 
-def validate_oic_config(config: TapOracleOICConfig) -> FlextResult[Any]:
+def validate_oic_config(config: TapOracleOICConfig) -> FlextResult[bool]:
     """Validate OIC tap configuration.
 
     Args:
@@ -140,7 +140,7 @@ def validate_oic_config(config: TapOracleOICConfig) -> FlextResult[Any]:
         if not config.auth.oauth_token_url:
             return FlextResult.fail("OAuth token URL is required")
 
-        return FlextResult.ok(data=True)
+        return FlextResult.ok(True)
 
     except (ValueError, ValidationError, AttributeError) as e:
         return FlextResult.fail(f"Configuration validation failed: {e}")
@@ -148,7 +148,7 @@ def validate_oic_config(config: TapOracleOICConfig) -> FlextResult[Any]:
 
 def create_development_oic_config(
     **overrides: object,
-) -> FlextResult[Any]:
+) -> FlextResult[TapOracleOICConfig]:
     """Create development OIC configuration with defaults.
 
     Args:
@@ -222,7 +222,9 @@ def create_development_oic_config(
         return FlextResult.fail(f"Failed to create development config: {e}")
 
 
-def create_production_oic_config(**overrides: Any) -> FlextResult[Any]:
+def create_production_oic_config(
+    **overrides: object,
+) -> FlextResult[TapOracleOICConfig]:
     """Create production OIC configuration with security defaults.
 
     Args:
@@ -298,7 +300,9 @@ def create_production_oic_config(**overrides: Any) -> FlextResult[Any]:
         return FlextResult.fail(f"Failed to create production config: {e}")
 
 
-def create_discovery_only_config(**overrides: Any) -> FlextResult[Any]:
+def create_discovery_only_config(
+    **overrides: object,
+) -> FlextResult[TapOracleOICConfig]:
     """Create OIC configuration optimized for catalog discovery only.
 
     Args:
@@ -377,7 +381,7 @@ def create_discovery_only_config(**overrides: Any) -> FlextResult[Any]:
         return FlextResult.fail(f"Failed to create discovery config: {e}")
 
 
-def create_monitoring_config(**overrides: Any) -> FlextResult[Any]:
+def create_monitoring_config(**overrides: object) -> FlextResult[TapOracleOICConfig]:
     """Create OIC configuration optimized for monitoring data extraction.
 
     Args:

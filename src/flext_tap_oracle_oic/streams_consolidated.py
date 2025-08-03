@@ -473,7 +473,7 @@ ALL_STREAMS = {
     "metrics": MetricsStream,
 }
 
-CORE_STREAMS = ["integrations", "connections", "packages", "lookups"]
-INFRASTRUCTURE_STREAMS = ["libraries", "certificates", "adapters"]
+CORE_STREAMS = ["integrations", "connections", "packages", "lookups", "libraries"]
+INFRASTRUCTURE_STREAMS = ["certificates", "adapters"]
 EXTENDED_STREAMS = ["projects"]
 MONITORING_STREAMS = ["executions", "metrics"]

@@ -25,7 +25,7 @@ from __future__ import annotations
 
 import re
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import requests
 from flext_core.exceptions import FlextError as FlextServiceError
@@ -83,7 +83,9 @@ class OICPaginator(BaseOffsetPaginator):
         except (ValueError, KeyError, TypeError, AttributeError):
             return None
 
-    def _calculate_next_offset(self, data: dict[str, object] | list[Any]) -> int | None:
+    def _calculate_next_offset(
+        self, data: dict[str, object] | list[object]
+    ) -> int | None:
         # Handle different OIC response formats
         items = self._extract_items_from_response(data)
         if items is None:
@@ -96,8 +98,8 @@ class OICPaginator(BaseOffsetPaginator):
 
     def _extract_items_from_response(
         self,
-        data: dict[str, object] | list[Any],
-    ) -> list[Any] | None:
+        data: dict[str, object] | list[object],
+    ) -> list[object] | None:
         if isinstance(data, list):
             return data
         if isinstance(data, dict):
@@ -126,7 +128,7 @@ class OICPaginator(BaseOffsetPaginator):
                 self._page_size = min(self._max_page_size, int(self._page_size * 1.2))
 
 
-class OICBaseStream(RESTStream[Any]):
+class OICBaseStream(RESTStream[dict[str, object]]):
     """Base stream class for Oracle Integration Cloud APIs.
 
     Incorporates best practices from extractors and provides comprehensive
@@ -216,7 +218,7 @@ class OICBaseStream(RESTStream[Any]):
     def get_url_params(
         self,
         context: Mapping[str, object] | None,
-        next_page_token: Any | None,
+        next_page_token: object | None,
     ) -> dict[str, object]:
         """Build URL parameters for OIC API requests.
 
@@ -321,7 +323,7 @@ class OICBaseStream(RESTStream[Any]):
 
     def _extract_and_yield_records(
         self,
-        data: dict[str, object] | list[Any],
+        data: dict[str, object] | list[object],
         url: str,
     ) -> Iterator[dict[str, object]]:
         records_yielded = 0
@@ -346,26 +348,38 @@ class OICBaseStream(RESTStream[Any]):
 
     def _extract_items_for_processing(
         self,
-        data: dict[str, object] | list[Any],
+        data: dict[str, object] | list[object],
     ) -> Iterator[dict[str, object]]:
         if isinstance(data, list):
-            yield from data
+            for item in data:
+                if isinstance(item, dict):
+                    yield item
         elif isinstance(data, dict):
             if "items" in data:
-                yield from data["items"]
+                items = data["items"]
+                if isinstance(items, list):
+                    for item in items:
+                        if isinstance(item, dict):
+                            yield item
             elif "data" in data:
-                yield from data["data"]
+                data_items = data["data"]
+                if isinstance(data_items, list):
+                    for item in data_items:
+                        if isinstance(item, dict):
+                            yield item
             elif self._is_single_record(data):
                 yield data
 
-    def _is_empty_result_expected(self, data: dict[str, object] | list[Any]) -> bool:
+    def _is_empty_result_expected(self, data: dict[str, object] | list[object]) -> bool:
         """Check if empty result is expected/normal."""
         if isinstance(data, dict):
+            items = data.get("items", [])
+            data_items = data.get("data", [])
             return (
                 data.get("totalSize", 0) == 0
                 or data.get("count", 0) == 0
-                or len(data.get("items", [])) == 0
-                or len(data.get("data", [])) == 0
+                or (isinstance(items, list) and len(items) == 0)
+                or (isinstance(data_items, list) and len(data_items) == 0)
             )
         # For list data, empty is expected when the list is empty
         return len(data) == 0
@@ -418,7 +432,7 @@ class OICBaseStream(RESTStream[Any]):
     def _track_response_metrics(
         self,
         response: requests.Response,
-        data: dict[str, object] | list[Any],
+        data: dict[str, object] | list[object],
     ) -> None:
         """Track response metrics for monitoring."""
         # Log response time and size for monitoring
@@ -430,6 +444,10 @@ class OICBaseStream(RESTStream[Any]):
             self.logger.debug("Received %s records", len(data))
         elif isinstance(data, dict):
             if "items" in data:
-                self.logger.debug("Received %s records", len(data["items"]))
+                items = data["items"]
+                if isinstance(items, list):
+                    self.logger.debug("Received %s records", len(items))
             elif "data" in data:
-                self.logger.debug("Received %s records", len(data["data"]))
+                data_items = data["data"]
+                if isinstance(data_items, list):
+                    self.logger.debug("Received %s records", len(data_items))

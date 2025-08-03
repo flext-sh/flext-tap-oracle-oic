@@ -162,7 +162,15 @@ class FlextTapOracleOicAPIError(FlextTapOracleOicError):
         if response_body is not None:
             context["response_body"] = response_body[:300]  # Truncate long responses
 
-        super().__init__(f"Oracle OIC tap API: {message}", **context)
+        integration_name_obj = context.get("integration_name")
+        integration_name_typed = (
+            integration_name_obj if isinstance(integration_name_obj, str) else None
+        )
+        super().__init__(
+            f"Oracle OIC tap API: {message}",
+            integration_name=integration_name_typed,
+            **{k: v for k, v in context.items() if k != "integration_name"},
+        )
 
 
 class FlextTapOracleOicTimeoutError(FlextTimeoutError):
@@ -202,7 +210,15 @@ class FlextTapOracleOicStreamError(FlextTapOracleOicError):
         if integration_name is not None:
             context["integration_name"] = integration_name
 
-        super().__init__(f"Oracle OIC tap stream: {message}", **context)
+        integration_name_obj = context.get("integration_name")
+        integration_name_typed = (
+            integration_name_obj if isinstance(integration_name_obj, str) else None
+        )
+        super().__init__(
+            f"Oracle OIC tap stream: {message}",
+            integration_name=integration_name_typed,
+            **{k: v for k, v in context.items() if k != "integration_name"},
+        )
 
 
 __all__ = [

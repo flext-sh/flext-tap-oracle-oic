@@ -203,7 +203,7 @@ class IntegrationsStream:
             Dictionary of additional URL parameters for OIC integrations API.
 
         """
-        params: dict[str, object] = {}
+        params: dict[str, str] = {}
 
         # Include runtime status if available:
         if self.config.get("include_runtime_status", True):
@@ -215,8 +215,8 @@ class IntegrationsStream:
 
         # Filter by integration types
         integration_types = self.config.get("integration_types")
-        if integration_types:
-            params["type"] = ",".join(integration_types)
+        if integration_types and isinstance(integration_types, list):
+            params["type"] = ",".join(str(t) for t in integration_types)
 
         return params
 
@@ -414,7 +414,7 @@ class ConnectionsStream:
             Dictionary of additional URL parameters for OIC connections API.
 
         """
-        params: dict[str, object] = {}
+        params: dict[str, str] = {}
 
         # Include usage information
         if self.config.get("include_usage_info", True):
@@ -426,8 +426,8 @@ class ConnectionsStream:
 
         # Filter by adapter type
         adapter_types = self.config.get("adapter_types")
-        if adapter_types:
-            params["adapterType"] = ",".join(adapter_types)
+        if adapter_types and isinstance(adapter_types, list):
+            params["adapterType"] = ",".join(str(t) for t in adapter_types)
 
         return params
 
