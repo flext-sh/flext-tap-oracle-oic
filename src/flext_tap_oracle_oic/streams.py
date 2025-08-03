@@ -280,7 +280,10 @@ class OICBaseStream(RESTStream[Any]):
         # Remove empty values
         return {k: v for k, v in params.items() if v is not None}
 
-    def parse_response(self, response: requests.Response) -> Iterator[dict[str, object]]:
+    def parse_response(
+        self,
+        response: requests.Response,
+    ) -> Iterator[dict[str, object]]:
         """Parse OIC API response and yield records.
 
         Args:

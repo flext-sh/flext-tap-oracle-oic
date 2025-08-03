@@ -8,7 +8,7 @@ integration execution, performance metrics, errors, and operational health.
 
 from __future__ import annotations
 
-from typing import Any, ClassVar
+from typing import ClassVar
 
 # MIGRATED: Singer SDK imports centralized via flext-meltano
 from flext_meltano import singer_typing as th
@@ -58,7 +58,10 @@ class ExecutionsStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
+    def additional_params(
+        self,
+        _context: dict[str, object] | None,
+    ) -> dict[str, object]:
         """Additional parameters for the request."""
         params: dict[str, object] = {}
 
@@ -115,7 +118,10 @@ class MetricsStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
+    def additional_params(
+        self,
+        _context: dict[str, object] | None,
+    ) -> dict[str, object]:
         """Additional parameters for the request."""
         params: dict[str, object] = {}
 
@@ -168,7 +174,10 @@ class ErrorsStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
+    def additional_params(
+        self,
+        _context: dict[str, object] | None,
+    ) -> dict[str, object]:
         """Additional parameters for the request."""
         params: dict[str, object] = {}
 

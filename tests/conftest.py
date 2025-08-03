@@ -283,7 +283,9 @@ def sample_package_data() -> list[dict[str, object]]:
 
 
 @pytest.fixture
-def mock_packages_response(sample_package_data: list[dict[str, object]]) -> dict[str, object]:
+def mock_packages_response(
+    sample_package_data: list[dict[str, object]],
+) -> dict[str, object]:
     """Mock packages API response."""
     return {
         "items": sample_package_data,
@@ -328,7 +330,9 @@ def sample_lookup_data() -> list[dict[str, object]]:
 
 
 @pytest.fixture
-def mock_lookups_response(sample_lookup_data: list[dict[str, object]]) -> dict[str, object]:
+def mock_lookups_response(
+    sample_lookup_data: list[dict[str, object]],
+) -> dict[str, object]:
     """Mock lookups API response."""
     return {
         "items": sample_lookup_data,
