@@ -9,7 +9,7 @@ adapters, libraries, agents, and system components.
 # MIGRATED: Singer SDK imports centralized via flext-meltano
 from __future__ import annotations
 
-from typing import Any, ClassVar
+from typing import ClassVar
 
 from flext_meltano import singer_typing as th
 
@@ -57,7 +57,10 @@ class AdaptersStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
+    def additional_params(
+        self,
+        _context: dict[str, object] | None,
+    ) -> dict[str, object]:
         """Additional parameters for the request."""
         params: dict[str, object] = {}
 
@@ -114,7 +117,10 @@ class LibrariesStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
+    def additional_params(
+        self,
+        _context: dict[str, object] | None,
+    ) -> dict[str, object]:
         """Additional parameters for the request."""
         params: dict[str, object] = {}
         return params
@@ -161,7 +167,10 @@ class AgentsStream(OICBaseStream):
         ),
     ).to_dict()
 
-    def additional_params(self, _context: dict[str, object] | None) -> dict[str, object]:
+    def additional_params(
+        self,
+        _context: dict[str, object] | None,
+    ) -> dict[str, object]:
         """Additional parameters for the request."""
         params: dict[str, object] = {}
         return params
