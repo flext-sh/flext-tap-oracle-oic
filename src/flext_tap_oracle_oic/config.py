@@ -6,8 +6,6 @@ Uses flext-core FlextValueObject and configuration patterns.
 
 from __future__ import annotations
 
-from typing import Any
-
 # Import from flext-core for foundational patterns (standardized)
 from pydantic import BaseModel, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
