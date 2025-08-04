@@ -260,7 +260,7 @@ class OICMonitoringRecord(FlextDomainBaseModel):
     )
 
     @property
-    def is_successful(self) -> bool:
+    def successful(self) -> bool:
         """Check if execution was successful."""
         return self.execution_status.lower() in {"completed", "succeeded"}
 
@@ -382,7 +382,7 @@ class OICExecutionSummary(FlextValueObject):
 
 
 # Export main entities and value objects
-__all__ = [
+__all__: list[str] = [
     "ConnectionStatus",
     "IntegrationStatus",
     "OICConnection",

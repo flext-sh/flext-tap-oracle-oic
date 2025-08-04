@@ -16,7 +16,7 @@ from flext_tap_oracle_oic.domain.entities import (
     OICResourceType,
 )
 
-__all__ = [
+__all__: list[str] = [
     "OICConnection",
     "OICIntegration",
     "OICLookup",

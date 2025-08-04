@@ -156,7 +156,7 @@ class TestValidator:
         assert hasattr(tap_instance, "catalog")
         assert hasattr(tap_instance, "discover_streams")
         if tap_instance.name != "tap-oracle-oic":
-            msg = f"Expected {'tap-oracle-oic'}, got {tap_instance.name}"
+            msg: str = f"Expected {'tap-oracle-oic'}, got {tap_instance.name}"
             raise AssertionError(msg)
 
     @staticmethod
@@ -165,13 +165,13 @@ class TestValidator:
         assert stream.schema is not None
         assert isinstance(stream.schema, dict)
         if "type" not in stream.schema:
-            msg = f"Expected {'type'} in {stream.schema}"
+            msg: str = f"Expected {'type'} in {stream.schema}"
             raise AssertionError(msg)
         if stream.schema["type"] != "object":
-            msg = f"Expected {'object'}, got {stream.schema['type']}"
+            msg: str = f"Expected {'object'}, got {stream.schema['type']}"
             raise AssertionError(msg)
         if "properties" not in stream.schema:
-            msg = f"Expected {'properties'} in {stream.schema}"
+            msg: str = f"Expected {'properties'} in {stream.schema}"
             raise AssertionError(msg)
         assert len(stream.schema["properties"]) > 0
 
@@ -185,30 +185,30 @@ class TestValidator:
         properties = stream.schema.get("properties", {})
         for key in stream.primary_keys:
             if key not in properties:
-                msg = f"Primary key {key} missing from schema"
+                msg: str = f"Primary key {key} missing from schema"
                 raise AssertionError(msg)
 
     @staticmethod
     def validate_singer_record(record: dict[str, object]) -> None:
         if "type" not in record:
-            msg = f"Expected {'type'} in {record}"
+            msg: str = f"Expected {'type'} in {record}"
             raise AssertionError(msg)
         if record["type"] != "RECORD":
-            msg = f"Expected {'RECORD'}, got {record['type']}"
+            msg: str = f"Expected {'RECORD'}, got {record['type']}"
             raise AssertionError(msg)
         if "stream" not in record:
-            msg = f"Expected {'stream'} in {record}"
+            msg: str = f"Expected {'stream'} in {record}"
             raise AssertionError(msg)
         assert "record" in record
         if "time_extracted" not in record:
-            msg = f"Expected {'time_extracted'} in {record}"
+            msg: str = f"Expected {'time_extracted'} in {record}"
             raise AssertionError(msg)
         assert isinstance(record["record"], dict)
 
     @staticmethod
     def validate_config_schema(config_schema: dict[str, object]) -> None:
         if "properties" not in config_schema:
-            msg = f"Expected {'properties'} in {config_schema}"
+            msg: str = f"Expected {'properties'} in {config_schema}"
             raise AssertionError(msg)
         properties = config_schema["properties"]
 
@@ -216,14 +216,14 @@ class TestValidator:
         required_fields = ["base_url", "auth_method"]
         for field in required_fields:
             if field not in properties:
-                msg = f"Required field {field} missing from properties"
+                msg: str = f"Required field {field} missing from properties"
                 raise AssertionError(msg)
 
         # OAuth2 fields
         oauth2_fields = ["oauth_client_id", "oauth_client_secret", "oauth_token_url"]
         for field in oauth2_fields:
             if field not in properties:
-                msg = f"OAuth2 field {field} missing from properties"
+                msg: str = f"OAuth2 field {field} missing from properties"
                 raise AssertionError(msg)
 
     @staticmethod
@@ -515,7 +515,7 @@ def requires_python_version(min_version: str) -> object:
 @contextmanager
 def timeout_test(seconds: float) -> object:
     def timeout_handler(signum: int, frame: Any) -> NoReturn:
-        msg = f"Test timed out after {seconds} seconds"
+        msg: str = f"Test timed out after {seconds} seconds"
         raise TimeoutError(msg)
 
     signal.signal(signal.SIGALRM, timeout_handler)
@@ -568,14 +568,16 @@ def assert_config_valid(config: dict[str, object]) -> None:
         raise AssertionError(msg)
     assert "auth_method" in config, "auth_method is required"
     if config["auth_method"] != "oauth2":
-        msg = f"OIC only supports oauth2 authentication, got {config['auth_method']}"
+        msg: str = (
+            f"OIC only supports oauth2 authentication, got {config['auth_method']}"
+        )
         raise AssertionError(msg)
 
     if config["auth_method"] == "oauth2":
         oauth2_required = ["oauth_client_id", "oauth_client_secret", "oauth_token_url"]
         for field in oauth2_required:
             if field not in config:
-                msg = f"OAuth2 field {field} is required in config"
+                msg: str = f"OAuth2 field {field} is required in config"
                 raise AssertionError(msg)
     else:
         msg = (
@@ -602,7 +604,7 @@ def assert_stream_quality(stream: Any) -> None:
     # Validate primary keys are meaningful
     for key in stream.primary_keys:
         if key not in properties:
-            msg = f"Primary key {key} must exist in schema"
+            msg: str = f"Primary key {key} must exist in schema"
             raise AssertionError(msg)
         assert properties[key].get("type") in {
             "string",

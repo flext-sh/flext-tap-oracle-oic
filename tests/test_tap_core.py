@@ -29,7 +29,7 @@ class TestTapOIC:
         tap = TapOIC(config=config, validate_config=False)
 
         if tap.name != "tap-oracle-oic":
-            msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
+            msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
         assert tap.config == config
 
@@ -37,7 +37,7 @@ class TestTapOIC:
         tap = TapOIC(validate_config=False)
 
         if tap.name != "tap-oracle-oic":
-            msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
+            msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
         assert hasattr(tap, "config")
 
@@ -54,7 +54,7 @@ class TestTapOIC:
         streams = tap.discover_streams()
 
         if len(streams) != 5:
-            msg = f"Expected {5}, got {len(streams)}"
+            msg: str = f"Expected {5}, got {len(streams)}"
             raise AssertionError(msg)
         stream_names = [stream.name for stream in streams]
         expected_streams = [
@@ -67,7 +67,7 @@ class TestTapOIC:
 
         for expected in expected_streams:
             if expected not in stream_names:
-                msg = f"Expected {expected} in {stream_names}"
+                msg: str = f"Expected {expected} in {stream_names}"
                 raise AssertionError(msg)
 
     def test_extended_streams_discovery(self) -> None:
@@ -86,7 +86,7 @@ class TestTapOIC:
         # Current implementation doesn't have extended infrastructure streams
         # Extended config doesn't add additional streams in current version
         if len(all_streams) != 5:
-            msg = f"Expected {5}, got {len(all_streams)}"
+            msg: str = f"Expected {5}, got {len(all_streams)}"
             raise AssertionError(msg)
 
         # Verify we get the expected core streams
@@ -100,7 +100,7 @@ class TestTapOIC:
         ]
         for expected in expected_streams:
             if expected not in stream_names:
-                msg = f"Expected {expected} in {stream_names}"
+                msg: str = f"Expected {expected} in {stream_names}"
                 raise AssertionError(msg)
 
     def test_extended_streams_disabled(self) -> None:
@@ -119,7 +119,7 @@ class TestTapOIC:
         streams = [s for s in all_streams if "infrastructure" in s.name.lower()]
 
         if len(streams) != 0:
-            msg = f"Expected {0}, got {len(streams)}"
+            msg: str = f"Expected {0}, got {len(streams)}"
             raise AssertionError(msg)
 
     def test_discover_streams(self) -> None:
@@ -136,7 +136,7 @@ class TestTapOIC:
 
         # Should have 5 core streams
         if len(streams) != 5:
-            msg = f"Expected {5}, got {len(streams)}"
+            msg: str = f"Expected {5}, got {len(streams)}"
             raise AssertionError(msg)
 
     def test_config_validation_warnings(self) -> None:
@@ -153,7 +153,7 @@ class TestTapOIC:
 
         # Should work with HTTP config (though HTTPS is recommended in production)
         if tap.name != "tap-oracle-oic":
-            msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
+            msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
         assert tap.config["base_url"] == "http://test.integration.ocp.oraclecloud.com"
 
@@ -174,11 +174,11 @@ class TestTapOIC:
         # Verify the error message mentions the missing required properties
         error_message = str(exc_info.value)
         if "oic_host" not in error_message:
-            msg = f"Expected {'oic_host'} in {error_message}"
+            msg: str = f"Expected {'oic_host'} in {error_message}"
             raise AssertionError(msg)
         assert "username" in error_message
         if "password" not in error_message:
-            msg = f"Expected {'password'} in {error_message}"
+            msg: str = f"Expected {'password'} in {error_message}"
             raise AssertionError(msg)
 
     def test_capabilities(self) -> None:
@@ -188,7 +188,7 @@ class TestTapOIC:
 
         for capability in expected_capabilities:
             if capability not in [cap.value for cap in tap.capabilities]:
-                msg = f"Expected {capability} in {[cap.value for cap in tap.capabilities]}"
+                msg: str = f"Expected {capability} in {[cap.value for cap in tap.capabilities]}"
                 raise AssertionError(msg)
 
 
@@ -249,7 +249,9 @@ class TestTapOICWithFixtures:
         tap = TapOIC(config=sample_config, validate_config=False)
 
         if tap.config["base_url"] != sample_config["base_url"]:
-            msg = f"Expected {sample_config['base_url']}, got {tap.config['base_url']}"
+            msg: str = (
+                f"Expected {sample_config['base_url']}, got {tap.config['base_url']}"
+            )
             raise AssertionError(
                 msg,
             )
@@ -268,7 +270,7 @@ class TestTapOICWithFixtures:
         # Current implementation only has 5 core streams regardless of extended config
         # Extended infrastructure streams are not implemented in current version
         if len(all_streams) != 5:
-            msg = f"Expected {5}, got {len(all_streams)}"
+            msg: str = f"Expected {5}, got {len(all_streams)}"
             raise AssertionError(msg)
 
         # Verify we get the expected core streams
@@ -282,5 +284,5 @@ class TestTapOICWithFixtures:
         ]
         for expected in expected_core_streams:
             if expected not in stream_names:
-                msg = f"Expected {expected} in {stream_names}"
+                msg: str = f"Expected {expected} in {stream_names}"
                 raise AssertionError(msg)

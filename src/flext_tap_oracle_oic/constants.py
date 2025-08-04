@@ -101,7 +101,7 @@ OIC_ENVIRONMENT_API_PATH = FlextOracleOicConstants.OIC_ENVIRONMENT_API_PATH
 OIC_ENDPOINTS = FlextOracleOicConstants.OIC_ENDPOINTS
 
 
-__all__ = [
+__all__: list[str] = [
     "OIC_API_BASE_PATH",
     "OIC_B2B_API_PATH",
     "OIC_DESIGNTIME_API_PATH",

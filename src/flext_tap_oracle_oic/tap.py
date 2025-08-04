@@ -170,15 +170,15 @@ class TapOracleOIC(Tap):
             # Use real Oracle OIC client to test authentication
             auth_result = self.client.get_authenticated_session()
 
-            if auth_result.is_success:
+            if auth_result.success:
                 logger.info("Oracle OIC connection test successful")
                 return FlextResult.ok(True)
-            error_msg = f"Oracle OIC connection test failed: {auth_result.error}"
+            error_msg: str = f"Oracle OIC connection test failed: {auth_result.error}"
             logger.error(error_msg)
             return FlextResult.fail(error_msg)
 
         except (RuntimeError, ValueError, TypeError) as e:
-            error_msg = f"Oracle OIC connection test exception: {e}"
+            error_msg: str = f"Oracle OIC connection test exception: {e}"
             logger.exception(error_msg)
             return FlextResult.fail(error_msg)
 
@@ -249,7 +249,7 @@ def main() -> int:
         if "--test" in sys.argv:
             logger.info("Testing Oracle OIC connection")
             result = tap.test_connection()
-            if result.is_success:
+            if result.success:
                 return 0
             return 1
 

@@ -20,7 +20,7 @@ class TestTapOIC:
         }
         tap = TapOIC(config=config, validate_config=False)
         if tap.name != "tap-oracle-oic":
-            msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
+            msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
         assert tap.config == config
 
@@ -36,11 +36,11 @@ class TestTapOIC:
 
         # Should have at least core streams
         if len(streams) < 5:
-            msg = f"Expected {len(streams)} >= {5}"
+            msg: str = f"Expected {len(streams)} >= {5}"
             raise AssertionError(msg)
         stream_names = [s.name for s in streams]
         if "integrations" not in stream_names:
-            msg = f"Expected {'integrations'} in {stream_names}"
+            msg: str = f"Expected {'integrations'} in {stream_names}"
             raise AssertionError(msg)
         assert "connections" in stream_names
 
@@ -69,13 +69,13 @@ class TestTapOIC:
         # Should include core streams
         stream_names = [s.name for s in streams]
         if "integrations" not in stream_names:
-            msg = f"Expected {'integrations'} in {stream_names}"
+            msg: str = f"Expected {'integrations'} in {stream_names}"
             raise AssertionError(msg)
         assert "connections" in stream_names
         if "packages" not in stream_names:
-            msg = f"Expected {'packages'} in {stream_names}"
+            msg: str = f"Expected {'packages'} in {stream_names}"
             raise AssertionError(msg)
         assert "libraries" in stream_names
         if "lookups" not in stream_names:
-            msg = f"Expected {'lookups'} in {stream_names}"
+            msg: str = f"Expected {'lookups'} in {stream_names}"
             raise AssertionError(msg)

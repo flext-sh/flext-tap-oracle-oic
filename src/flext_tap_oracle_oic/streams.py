@@ -84,7 +84,8 @@ class OICPaginator(BaseOffsetPaginator):
             return None
 
     def _calculate_next_offset(
-        self, data: dict[str, object] | list[object],
+        self,
+        data: dict[str, object] | list[object],
     ) -> int | None:
         # Handle different OIC response formats
         items = self._extract_items_from_response(data)
@@ -198,7 +199,7 @@ class OICBaseStream(RESTStream[dict[str, object]]):
         # RESTStream provides self.tap as the parent tap instance
         if hasattr(self, "tap") and hasattr(self.tap, "client"):
             session_result = self.tap.client.get_authenticated_session()
-            if session_result.is_success and session_result.data is not None:
+            if session_result.success and session_result.data is not None:
                 session = session_result.data
                 if isinstance(session, requests.Session):
                     return session

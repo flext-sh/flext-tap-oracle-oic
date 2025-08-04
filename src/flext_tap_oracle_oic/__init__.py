@@ -67,7 +67,7 @@ with contextlib.suppress(ImportError):
 # PUBLIC API EXPORTS
 # ================================
 
-__all__ = [
+__all__: list[str] = [
     # Core patterns from flext-core
     "BaseConfig",
     "BaseModel",
