@@ -84,7 +84,7 @@ class OICPaginator(BaseOffsetPaginator):
             return None
 
     def _calculate_next_offset(
-        self, data: dict[str, object] | list[object]
+        self, data: dict[str, object] | list[object],
     ) -> int | None:
         # Handle different OIC response formats
         items = self._extract_items_from_response(data)

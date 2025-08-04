@@ -8,10 +8,7 @@ from __future__ import annotations
 
 import os
 import sys
-from typing import TYPE_CHECKING, ClassVar
-
-if TYPE_CHECKING:
-    from collections.abc import Sequence
+from typing import ClassVar
 
 # Type aliases to avoid explicit Any
 StreamType = object  # Represents Singer/Meltano Stream
