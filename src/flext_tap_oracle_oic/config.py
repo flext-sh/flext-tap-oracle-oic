@@ -264,13 +264,13 @@ class TapOracleOICConfig(BaseSettings):
                 selection.exclude_integrations,
             )
             if overlap:
-                msg = f"Include and exclude integrations overlap: {overlap}"
+                msg: str = f"Include and exclude integrations overlap: {overlap}"
                 raise ValueError(msg)
 
         if selection.include_lookups and selection.exclude_lookups:
             overlap = set(selection.include_lookups) & set(selection.exclude_lookups)
             if overlap:
-                msg = f"Include and exclude lookups overlap: {overlap}"
+                msg: str = f"Include and exclude lookups overlap: {overlap}"
                 raise ValueError(msg)
 
         return self
@@ -336,7 +336,7 @@ class TapOracleOICConfig(BaseSettings):
 
 
 # Export main configuration classes
-__all__ = [
+__all__: list[str] = [
     "DataExtractionConfig",
     "DiscoveryConfig",
     "OICAuthConfig",

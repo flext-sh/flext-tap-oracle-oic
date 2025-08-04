@@ -18,4 +18,4 @@ from flext_oracle_oic_ext.oic_patterns import (
 # Alias for backward compatibility
 OICOAuth2Authenticator = OICTapAuthenticator
 
-__all__ = ["OICAuthConfig", "OICOAuth2Authenticator", "OICTapAuthenticator"]
+__all__: list[str] = ["OICAuthConfig", "OICOAuth2Authenticator", "OICTapAuthenticator"]

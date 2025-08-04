@@ -49,11 +49,11 @@ class TestOracleOICClient:
     ) -> None:
         """Test client initialization."""
         if client.base_url != client_config["oic_url"]:
-            msg = f"Expected {client_config['oic_url']}, got {client.base_url}"
+            msg: str = f"Expected {client_config['oic_url']}, got {client.base_url}"
             raise AssertionError(msg)
         assert client.oauth_client_id == client_config["oauth_client_id"]
         if client.oauth_client_secret != client_config["oauth_client_secret"]:
-            msg = f"Expected {client_config['oauth_client_secret']}, got {client.oauth_client_secret}"
+            msg: str = f"Expected {client_config['oauth_client_secret']}, got {client.oauth_client_secret}"
             raise AssertionError(msg)
 
     def test_client_session_configuration(self, client: OracleOICClient) -> None:
@@ -98,7 +98,7 @@ class TestOracleOICClient:
         with contextlib.suppress(Exception):
             # May fail due to implementation details, but should not crash
             result = client.get_access_token()
-            if isinstance(result, FlextResult) and result.is_success:
+            if isinstance(result, FlextResult) and result.success:
                 assert result.data is not None
 
     @patch("requests.Session.get")
@@ -132,7 +132,7 @@ class TestOracleOICClient:
         expected = f"{base_url}{path}"
 
         if full_url != expected:
-            msg = f"Expected {expected}, got {full_url}"
+            msg: str = f"Expected {expected}, got {full_url}"
             raise AssertionError(msg)
 
     def test_error_handling(self) -> None:
@@ -158,7 +158,7 @@ class TestOracleOICClient:
             oauth_endpoint="https://auth.example.com/oauth/token",
         )
         if client.oauth_client_id != "test":
-            msg = f"Expected {'test'}, got {client.oauth_client_id}"
+            msg: str = f"Expected {'test'}, got {client.oauth_client_id}"
             raise AssertionError(msg)
         assert client.base_url == "https://test.example.com"
 
@@ -199,16 +199,16 @@ class TestOracleOICClient:
         """Test FlextResult pattern usage."""
         # Test FlextResult creation
         success_result = FlextResult.ok({"test": "data"})
-        if not (success_result.is_success):
-            msg = f"Expected True, got {success_result.is_success}"
+        if not (success_result.success):
+            msg: str = f"Expected True, got {success_result.success}"
             raise AssertionError(msg)
         if success_result.data != {"test": "data"}:
             expected_data = {"test": "data"}
-            msg = f"Expected {expected_data}, got {success_result.data}"
+            msg: str = f"Expected {expected_data}, got {success_result.data}"
             raise AssertionError(msg)
 
         failure_result: FlextResult[Any] = FlextResult.fail("Test error")
-        if failure_result.is_success:
-            msg = f"Expected False, got {failure_result.is_success}"
+        if failure_result.success:
+            msg: str = f"Expected False, got {failure_result.success}"
             raise AssertionError(msg)
         assert failure_result.error == "Test error"

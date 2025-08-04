@@ -221,7 +221,7 @@ class FlextTapOracleOicStreamError(FlextTapOracleOicError):
         )
 
 
-__all__ = [
+__all__: list[str] = [
     "FlextTapOracleOicAPIError",
     "FlextTapOracleOicAuthenticationError",
     "FlextTapOracleOicConfigurationError",

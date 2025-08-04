@@ -17,4 +17,4 @@ logger = get_logger(__name__)
 # Alias for backward compatibility - uses library implementation
 OracleOICClient = OICTapClient
 
-__all__ = ["OracleOICClient"]
+__all__: list[str] = ["OracleOICClient"]
