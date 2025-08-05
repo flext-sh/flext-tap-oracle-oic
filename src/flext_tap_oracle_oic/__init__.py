@@ -82,6 +82,7 @@ __all__: list[str] = [
     "LookupsStream",
     # OIC Authentication
     "OICAuthenticator",
+    "OICBaseStream",
     # OIC Client
     "OICClient",
     # Domain entities
