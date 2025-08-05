@@ -101,7 +101,7 @@ class TapOracleOIC(Tap):
             )
         return self._client
 
-    def discover_streams(self) -> list[StreamType]:  # type: ignore[override]
+    def discover_streams(self) -> list[StreamType]:
         """Discover available streams using real Oracle OIC client."""
         logger.info("Discovering Oracle OIC streams using consolidated streams")
 
