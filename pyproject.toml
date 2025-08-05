@@ -59,8 +59,11 @@ Documentation = "https://github.com/flext-sh/flext/blob/main/README.md"
 tap-oracle-oic = "flext_tap_oracle_oic.tap:TapOracleOIC.cli"
 flext-tap-oracle-oic = "flext_tap_oracle_oic.tap:TapOracleOIC.cli"
 
+[tool.ruff]
 extend = "../.ruff-shared.toml"
-lint.isort.known-first-party = ["flext_tap_oracle_oic"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["flext_tap_oracle_oic"]
 
 
 [tool.mypy]

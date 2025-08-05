@@ -12,6 +12,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 import requests
+
 from flext_tap_oracle_oic.auth import OICOAuth2Authenticator
 
 

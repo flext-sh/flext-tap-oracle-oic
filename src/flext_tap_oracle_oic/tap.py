@@ -8,11 +8,9 @@ from __future__ import annotations
 
 import os
 import sys
-from typing import ClassVar
 
-# Type aliases to avoid explicit Any
-StreamType = object  # Represents Singer/Meltano Stream
-StreamConfigType = object  # Represents stream configuration
+# Import proper types from typing
+from typing import TYPE_CHECKING, ClassVar
 
 # Import from flext-core for foundational patterns (standardized)
 from flext_core import (
@@ -22,6 +20,10 @@ from flext_core import (
 
 # Import generic interfaces from flext-meltano
 from flext_meltano import Tap
+
+# Type aliases
+StreamConfigType = object  # Represents stream configuration
+
 from flext_meltano.common_schemas import create_oracle_oic_tap_schema
 from flext_oracle_oic_ext.oic_patterns import (
     OICAuthConfig,
@@ -35,6 +37,9 @@ from flext_tap_oracle_oic.streams_consolidated import (
     CORE_STREAMS,
     INFRASTRUCTURE_STREAMS,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 # Alias for backward compatibility
 OracleOICClient = OICTapClient
@@ -101,7 +106,7 @@ class TapOracleOIC(Tap):
             )
         return self._client
 
-    def discover_streams(self) -> list[StreamType]:
+    def discover_streams(self) -> Sequence[object]:
         """Discover available streams using real Oracle OIC client."""
         logger.info("Discovering Oracle OIC streams using consolidated streams")
 
@@ -178,9 +183,9 @@ class TapOracleOIC(Tap):
             return FlextResult.fail(error_msg)
 
         except (RuntimeError, ValueError, TypeError) as e:
-            error_msg: str = f"Oracle OIC connection test exception: {e}"
-            logger.exception(error_msg)
-            return FlextResult.fail(error_msg)
+            exception_msg: str = f"Oracle OIC connection test exception: {e}"
+            logger.exception(exception_msg)
+            return FlextResult.fail(exception_msg)
 
 
 # Alias for backwards compatibility

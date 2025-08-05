@@ -270,8 +270,8 @@ class TapOracleOICConfig(BaseSettings):
         if selection.include_lookups and selection.exclude_lookups:
             overlap = set(selection.include_lookups) & set(selection.exclude_lookups)
             if overlap:
-                msg: str = f"Include and exclude lookups overlap: {overlap}"
-                raise ValueError(msg)
+                lookups_msg: str = f"Include and exclude lookups overlap: {overlap}"
+                raise ValueError(lookups_msg)
 
         return self
 
