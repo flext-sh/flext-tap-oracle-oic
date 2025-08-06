@@ -16,7 +16,7 @@ import requests
 HTTP_OK = 200
 
 if TYPE_CHECKING:
-    from singer_sdk.authenticators import OAuthAuthenticator
+    from flext_meltano import OAuthAuthenticator
 
 
 class OICHealthChecker:
