@@ -13,7 +13,6 @@ Features:
     - Advanced configuration management
 """
 
-# MIGRATED: Singer SDK imports centralized via flext-meltano
 from __future__ import annotations
 
 from typing import ClassVar

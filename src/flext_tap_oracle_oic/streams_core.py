@@ -17,10 +17,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-# MIGRATED: Singer SDK imports centralized via flext-meltano
 from flext_meltano import singer_typing as th
-
-# CORE INTEGRATION STREAMS - WORKING
 
 
 class IntegrationsStream:
