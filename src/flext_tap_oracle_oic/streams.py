@@ -32,7 +32,6 @@ from flext_core.exceptions import FlextError as FlextServiceError
 from singer_sdk.pagination import BaseOffsetPaginator
 from singer_sdk.streams import RESTStream
 
-# Removed auth import - authentication is handled by Tap's client
 from flext_tap_oracle_oic.constants import (
     OIC_API_BASE_PATH,
     OIC_B2B_API_PATH,

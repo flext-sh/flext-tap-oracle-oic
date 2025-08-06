@@ -8,22 +8,13 @@ from __future__ import annotations
 
 import os
 import sys
-
-# Import proper types from typing
 from typing import TYPE_CHECKING, ClassVar
 
-# Import from flext-core for foundational patterns (standardized)
 from flext_core import (
     FlextResult,
     get_logger,
 )
-
-# Import generic interfaces from flext-meltano
 from flext_meltano import Tap
-
-# Type aliases
-StreamConfigType = object  # Represents stream configuration
-
 from flext_meltano.common_schemas import create_oracle_oic_tap_schema
 from flext_oracle_oic_ext.oic_patterns import (
     OICAuthConfig,
@@ -32,6 +23,7 @@ from flext_oracle_oic_ext.oic_patterns import (
     OICTapClient,
 )
 
+from flext_tap_oracle_oic.streams import OICBaseStream
 from flext_tap_oracle_oic.streams_consolidated import (
     ALL_STREAMS,
     CORE_STREAMS,
@@ -43,6 +35,9 @@ if TYPE_CHECKING:
 
 # Alias for backward compatibility
 OracleOICClient = OICTapClient
+
+# Type aliases
+StreamConfigType = object  # Represents stream configuration
 
 logger = get_logger(__name__)
 
@@ -137,8 +132,6 @@ class TapOracleOIC(Tap):
         stream_config: StreamConfigType,
     ) -> object:
         """Create real stream instance using OICBaseStream."""
-        from flext_tap_oracle_oic.streams import OICBaseStream
-
         # Create dynamic stream class inheriting from OICBaseStream
         stream_class = type(
             class_name,
@@ -177,7 +170,7 @@ class TapOracleOIC(Tap):
 
             if auth_result.success:
                 logger.info("Oracle OIC connection test successful")
-                return FlextResult.ok(True)
+                return FlextResult.ok(data=True)
             error_msg: str = f"Oracle OIC connection test failed: {auth_result.error}"
             logger.error(error_msg)
             return FlextResult.fail(error_msg)
