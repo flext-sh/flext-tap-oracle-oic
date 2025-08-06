@@ -16,6 +16,7 @@ from flext_core import (
 )
 from flext_meltano import Tap
 from flext_meltano.common_schemas import create_oracle_oic_tap_schema
+from singer_sdk import Stream
 from flext_oracle_oic_ext.oic_patterns import (
     OICAuthConfig,
     OICConnectionConfig,
@@ -101,7 +102,7 @@ class TapOracleOIC(Tap):
             )
         return self._client
 
-    def discover_streams(self) -> Sequence[object]:
+    def discover_streams(self) -> Sequence[Stream]:
         """Discover available streams using real Oracle OIC client."""
         logger.info("Discovering Oracle OIC streams using consolidated streams")
 
@@ -130,7 +131,7 @@ class TapOracleOIC(Tap):
         self,
         class_name: str,
         stream_config: StreamConfigType,
-    ) -> object:
+    ) -> Stream:
         """Create real stream instance using OICBaseStream."""
         # Create dynamic stream class inheriting from OICBaseStream
         stream_class = type(
@@ -158,7 +159,8 @@ class TapOracleOIC(Tap):
             },
         )
 
-        return stream_class(tap=self)
+        # Type assertion since we know stream_class inherits from OICBaseStream (which is a Stream)
+        return stream_class(tap=self)  # type: ignore[no-any-return]
 
     def test_connection(self) -> FlextResult[bool]:
         """Test connection to Oracle OIC using real client."""

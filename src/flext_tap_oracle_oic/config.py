@@ -7,8 +7,8 @@ Uses flext-core FlextValueObject and configuration patterns.
 from __future__ import annotations
 
 # Import from flext-core for foundational patterns (standardized)
+from flext_core import FlextBaseSettings as BaseSettings, SettingsConfigDict
 from pydantic import BaseModel, Field, field_validator, model_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class OICAuthConfig(BaseModel):
