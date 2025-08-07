@@ -6,6 +6,7 @@ Provides enterprise-ready setup utilities with FlextResult pattern support.
 
 from __future__ import annotations
 
+import os
 from typing import cast
 
 import requests
@@ -160,9 +161,9 @@ def create_development_oic_config(
     """
     try:
         auth_config = OICAuthConfig(
-            oauth_client_id="dev-client-id",
-            oauth_client_secret="dev-client-secret",
-            oauth_token_url="https://identity.oraclecloud.com/oauth2/v1/token",
+            oauth_client_id=os.getenv("OIC_DEV_CLIENT_ID", "dev-client-id"),
+            oauth_client_secret=os.getenv("OIC_DEV_CLIENT_SECRET", "dev-client-secret"),
+            oauth_token_url=os.getenv("OIC_TOKEN_URL", "https://identity.oraclecloud.com/oauth2/v1/token"),
             oauth_client_aud=None,
             oauth_scope=None,
         )
@@ -236,9 +237,9 @@ def create_production_oic_config(
     """
     try:
         auth_config = OICAuthConfig(
-            oauth_client_id="prod-client-id",
-            oauth_client_secret="prod-client-secret",
-            oauth_token_url="https://identity.oraclecloud.com/oauth2/v1/token",
+            oauth_client_id=os.getenv("OIC_PROD_CLIENT_ID", "prod-client-id"),
+            oauth_client_secret=os.getenv("OIC_PROD_CLIENT_SECRET", "prod-client-secret"),
+            oauth_token_url=os.getenv("OIC_TOKEN_URL", "https://identity.oraclecloud.com/oauth2/v1/token"),
             oauth_client_aud=None,
             oauth_scope=None,
         )
@@ -314,9 +315,9 @@ def create_discovery_only_config(
     """
     try:
         auth_config = OICAuthConfig(
-            oauth_client_id="discovery-client-id",
-            oauth_client_secret="discovery-client-secret",
-            oauth_token_url="https://identity.oraclecloud.com/oauth2/v1/token",
+            oauth_client_id=os.getenv("OIC_DISCOVERY_CLIENT_ID", "discovery-client-id"),
+            oauth_client_secret=os.getenv("OIC_DISCOVERY_CLIENT_SECRET", "discovery-client-secret"),
+            oauth_token_url=os.getenv("OIC_TOKEN_URL", "https://identity.oraclecloud.com/oauth2/v1/token"),
             oauth_client_aud=None,
             oauth_scope=None,
         )
@@ -393,9 +394,9 @@ def create_monitoring_config(**overrides: object) -> FlextResult[TapOracleOICCon
     """
     try:
         auth_config = OICAuthConfig(
-            oauth_client_id="monitoring-client-id",
-            oauth_client_secret="monitoring-client-secret",
-            oauth_token_url="https://identity.oraclecloud.com/oauth2/v1/token",
+            oauth_client_id=os.getenv("OIC_MONITORING_CLIENT_ID", "monitoring-client-id"),
+            oauth_client_secret=os.getenv("OIC_MONITORING_CLIENT_SECRET", "monitoring-client-secret"),
+            oauth_token_url=os.getenv("OIC_TOKEN_URL", "https://identity.oraclecloud.com/oauth2/v1/token"),
             oauth_client_aud=None,
             oauth_scope=None,
         )
