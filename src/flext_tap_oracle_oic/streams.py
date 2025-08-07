@@ -28,6 +28,7 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 import requests
+from flext_core import get_logger
 from flext_core.exceptions import FlextError as FlextServiceError
 from singer_sdk.pagination import BaseOffsetPaginator
 from singer_sdk.streams import RESTStream
@@ -41,6 +42,14 @@ from flext_tap_oracle_oic.constants import (
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
+
+# Constants for paginator and response tracking
+RESPONSE_TIME_HISTORY_SIZE = 10
+MIN_RESPONSE_SAMPLES = 5
+SLOW_RESPONSE_THRESHOLD = 5.0
+HTTP_UNAUTHORIZED = 401
+HTTP_FORBIDDEN = 403
+HTTP_RATE_LIMITED = 429
 
 
 class OICPaginator(BaseOffsetPaginator):
@@ -79,7 +88,14 @@ class OICPaginator(BaseOffsetPaginator):
 
             return self._calculate_next_offset(data)
 
-        except (ValueError, KeyError, TypeError, AttributeError):
+        except (ValueError, KeyError, TypeError, AttributeError) as e:
+            # EXPLICIT TRANSPARENCY: OIC pagination parsing error with proper error handling
+            logger = get_logger(__name__)
+            logger.warning(f"OIC pagination parsing failed: {type(e).__name__}: {e}")
+            logger.info("Returning None - pagination parsing failure properly handled")
+            logger.debug("This indicates end of pagination or malformed OIC response")
+            logger.debug("Error context: parsing pagination offset from OIC API response")
+            # Returning None is appropriate for pagination end - documented behavior
             return None
 
     def _calculate_next_offset(
@@ -112,15 +128,15 @@ class OICPaginator(BaseOffsetPaginator):
     def _track_response_time(self, response_time: float) -> None:
         self._response_times.append(response_time)
 
-        # Keep only last 10 response times
-        if len(self._response_times) > 10:
+        # Keep only last response times based on history size constant
+        if len(self._response_times) > RESPONSE_TIME_HISTORY_SIZE:
             self._response_times.pop(0)
 
         # Adjust page size based on average response time
-        if len(self._response_times) >= 5:
+        if len(self._response_times) >= MIN_RESPONSE_SAMPLES:
             avg_time = sum(self._response_times) / len(self._response_times)
 
-            if avg_time > 5.0 and self._page_size > self._min_page_size:
+            if avg_time > SLOW_RESPONSE_THRESHOLD and self._page_size > self._min_page_size:
                 # Slow responses - reduce page size
                 self._page_size = max(self._min_page_size, int(self._page_size * 0.8))
             elif avg_time < 1.0 and self._page_size < self._max_page_size:
@@ -351,24 +367,28 @@ class OICBaseStream(RESTStream[dict[str, object]]):
         data: dict[str, object] | list[object],
     ) -> Iterator[dict[str, object]]:
         if isinstance(data, list):
-            for item in data:
-                if isinstance(item, dict):
-                    yield item
+            yield from self._process_list_data(data)
         elif isinstance(data, dict):
-            if "items" in data:
-                items = data["items"]
-                if isinstance(items, list):
-                    for item in items:
-                        if isinstance(item, dict):
-                            yield item
-            elif "data" in data:
-                data_items = data["data"]
-                if isinstance(data_items, list):
-                    for item in data_items:
-                        if isinstance(item, dict):
-                            yield item
-            elif self._is_single_record(data):
-                yield data
+            yield from self._process_dict_data(data)
+
+    def _process_list_data(self, data: list[object]) -> Iterator[dict[str, object]]:
+        """Process list-type response data."""
+        for item in data:
+            if isinstance(item, dict):
+                yield item
+
+    def _process_dict_data(self, data: dict[str, object]) -> Iterator[dict[str, object]]:
+        """Process dict-type response data."""
+        if "items" in data:
+            items = data["items"]
+            if isinstance(items, list):
+                yield from self._process_list_data(items)
+        elif "data" in data:
+            data_items = data["data"]
+            if isinstance(data_items, list):
+                yield from self._process_list_data(data_items)
+        elif self._is_single_record(data):
+            yield data
 
     def _is_empty_result_expected(self, data: dict[str, object] | list[object]) -> bool:
         """Check if empty result is expected/normal."""
@@ -418,13 +438,13 @@ class OICBaseStream(RESTStream[dict[str, object]]):
 
         self.logger.error("OIC API error from %s: %s", response.url, error_message)
 
-        if response.status_code == 401:
+        if response.status_code == HTTP_UNAUTHORIZED:
             msg = "Unauthorized: Authentication failed or token expired"
             raise FlextServiceError(msg)
-        if response.status_code == 403:
+        if response.status_code == HTTP_FORBIDDEN:
             msg = "Forbidden: Insufficient permissions to access resource"
             raise FlextServiceError(msg)
-        if response.status_code == 429:
+        if response.status_code == HTTP_RATE_LIMITED:
             msg = "Rate limit exceeded: Too many requests"
             raise FlextServiceError(msg)
         response.raise_for_status()
