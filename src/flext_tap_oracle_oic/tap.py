@@ -161,7 +161,7 @@ class TapOracleOIC(Tap):
         )
 
         # Type assertion since we know stream_class inherits from OICBaseStream (which is a Stream)
-        return stream_class(tap=self)  # type: ignore[no-any-return]
+        return stream_class(tap=self)
 
     def test_connection(self) -> FlextResult[bool]:
         """Test connection to Oracle OIC using real client."""
@@ -206,7 +206,9 @@ def main() -> int:
         logger.exception("Oracle OIC tap execution failed")
         logger.warning(f"Tap execution failed with error: {type(e).__name__}: {e}")
         logger.info("Returning 1 - legitimate tap execution failure properly handled")
-        logger.debug("This exit code indicates tap execution failure - documented behavior")
+        logger.debug(
+            "This exit code indicates tap execution failure - documented behavior"
+        )
         logger.debug("Error context: Oracle OIC tap main() function execution failure")
         # Exit code 1 is appropriate for execution failure - standard Unix convention
         return 1
@@ -274,8 +276,7 @@ def _execute_discover_command(tap: TapOracleOIC) -> int:
                 "key_properties": getattr(stream, "primary_keys", []),
                 "replication_method": (
                     "INCREMENTAL"
-                    if hasattr(stream, "replication_key")
-                    and stream.replication_key
+                    if hasattr(stream, "replication_key") and stream.replication_key
                     else "FULL_TABLE"
                 ),
                 "replication_key": getattr(stream, "replication_key", None),
