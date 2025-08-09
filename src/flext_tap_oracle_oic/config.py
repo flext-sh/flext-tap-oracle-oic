@@ -9,7 +9,7 @@ from __future__ import annotations
 import os
 
 # Import from flext-core for foundational patterns (standardized)
-from flext_core import FlextBaseSettings as BaseSettings, SettingsConfigDict
+from flext_core import FlextSettings as BaseSettings, SettingsConfigDict
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 
@@ -307,8 +307,12 @@ class TapOracleOICConfig(BaseSettings):
         defaults = {
             "auth": OICAuthConfig(
                 oauth_client_id=os.getenv("OIC_CLIENT_ID", "your-client-id"),
-                oauth_client_secret=os.getenv("OIC_CLIENT_SECRET", "your-client-secret"),
-                oauth_token_url=os.getenv("OIC_TOKEN_URL", "https://idcs-url/oauth2/v1/token"),
+                oauth_client_secret=os.getenv(
+                    "OIC_CLIENT_SECRET", "your-client-secret"
+                ),
+                oauth_token_url=os.getenv(
+                    "OIC_TOKEN_URL", "https://idcs-url/oauth2/v1/token"
+                ),
                 oauth_client_aud=None,
                 oauth_scope=None,
             ),
