@@ -53,7 +53,10 @@ class FlextTapOracleOicConnectionError(FlextConnectionError):
         if endpoint is not None:
             context["endpoint"] = endpoint
 
-        super().__init__(f"Oracle OIC tap connection: {message}", **context)
+        super().__init__(f"Oracle OIC tap connection: {message}")
+        # Store context information as instance attributes
+        for key, value in context.items():
+            setattr(self, key, value)
 
 
 class FlextTapOracleOicAuthenticationError(FlextAuthenticationError):
@@ -73,7 +76,10 @@ class FlextTapOracleOicAuthenticationError(FlextAuthenticationError):
         if username is not None:
             context["username"] = username
 
-        super().__init__(f"Oracle OIC tap auth: {message}", **context)
+        super().__init__(f"Oracle OIC tap auth: {message}")
+        # Store context information as instance attributes
+        for key, value in context.items():
+            setattr(self, key, value)
 
 
 class FlextTapOracleOicValidationError(FlextValidationError):
@@ -119,7 +125,10 @@ class FlextTapOracleOicConfigurationError(FlextConfigurationError):
         if config_key is not None:
             context["config_key"] = config_key
 
-        super().__init__(f"Oracle OIC tap config: {message}", **context)
+        super().__init__(f"Oracle OIC tap config: {message}")
+        # Store context information as instance attributes
+        for key, value in context.items():
+            setattr(self, key, value)
 
 
 class FlextTapOracleOicProcessingError(FlextProcessingError):
@@ -139,7 +148,10 @@ class FlextTapOracleOicProcessingError(FlextProcessingError):
         if processing_stage is not None:
             context["processing_stage"] = processing_stage
 
-        super().__init__(f"Oracle OIC tap processing: {message}", **context)
+        super().__init__(f"Oracle OIC tap processing: {message}")
+        # Store context information as instance attributes
+        for key, value in context.items():
+            setattr(self, key, value)
 
 
 class FlextTapOracleOicAPIError(FlextTapOracleOicError):
@@ -190,7 +202,10 @@ class FlextTapOracleOicTimeoutError(FlextTimeoutError):
         if timeout_seconds is not None:
             context["timeout_seconds"] = timeout_seconds
 
-        super().__init__(f"Oracle OIC tap timeout: {message}", **context)
+        super().__init__(f"Oracle OIC tap timeout: {message}")
+        # Store context information as instance attributes
+        for key, value in context.items():
+            setattr(self, key, value)
 
 
 class FlextTapOracleOicStreamError(FlextTapOracleOicError):
