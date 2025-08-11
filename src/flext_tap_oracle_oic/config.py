@@ -9,8 +9,9 @@ from __future__ import annotations
 import os
 
 # Import from flext-core for foundational patterns (standardized)
-from flext_core import FlextSettings as BaseSettings, SettingsConfigDict
+from flext_core import FlextSettings as BaseSettings
 from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic_settings import SettingsConfigDict
 
 
 class OICAuthConfig(BaseModel):

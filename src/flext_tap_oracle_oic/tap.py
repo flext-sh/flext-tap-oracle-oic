@@ -8,13 +8,13 @@ from __future__ import annotations
 
 import os
 import sys
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, cast
 
 from flext_core import (
     FlextResult,
     get_logger,
 )
-from flext_meltano import Tap
+from flext_meltano import Stream, Tap
 from flext_meltano.common_schemas import create_oracle_oic_tap_schema
 from flext_oracle_oic_ext.oic_patterns import (
     OICAuthConfig,
@@ -161,7 +161,7 @@ class TapOracleOIC(Tap):
         )
 
         # Type assertion since we know stream_class inherits from OICBaseStream (which is a Stream)
-        return stream_class(tap=self)
+        return cast("Stream", stream_class(tap=self))
 
     def test_connection(self) -> FlextResult[bool]:
         """Test connection to Oracle OIC using real client."""
@@ -173,7 +173,7 @@ class TapOracleOIC(Tap):
 
             if auth_result.success:
                 logger.info("Oracle OIC connection test successful")
-                return FlextResult.ok(True)
+                return FlextResult.ok(data=True)
             error_msg: str = f"Oracle OIC connection test failed: {auth_result.error}"
             logger.error(error_msg)
             return FlextResult.fail(error_msg)

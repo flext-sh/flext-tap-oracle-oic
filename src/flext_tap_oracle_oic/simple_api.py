@@ -141,7 +141,7 @@ def validate_oic_config(config: TapOracleOICConfig) -> FlextResult[bool]:
         if not config.auth.oauth_token_url:
             return FlextResult.fail("OAuth token URL is required")
 
-        return FlextResult.ok(True)
+        return FlextResult.ok(data=True)
 
     except (ValueError, ValidationError, AttributeError) as e:
         return FlextResult.fail(f"Configuration validation failed: {e}")
