@@ -5,7 +5,8 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError as ConfigValidationError
 
-from flext_tap_oracle_oic.tap import TapOIC
+# Import from reorganized module
+from flext_tap_oracle_oic.tap_client import TapOIC
 
 
 class TestTapOIC:

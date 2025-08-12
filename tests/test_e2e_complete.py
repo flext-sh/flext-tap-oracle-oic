@@ -20,7 +20,8 @@ from flext_core import get_logger
 # Use ValidationError from pydantic instead
 from singer_sdk.exceptions import ConfigValidationError
 
-from flext_tap_oracle_oic.tap import TapOIC
+# Import from reorganized module
+from flext_tap_oracle_oic.tap_client import TapOIC
 
 """Tests all functionalities including:
 - Discovery
@@ -41,7 +42,7 @@ class TestTapOracleOICE2E:
         return {
             "oauth_client_id": "test_client_id",
             "oauth_client_secret": "test_client_secret",
-            "oauth_endpoint": "https://test.identity.oraclecloud.com/oauth2/v1/token",
+            "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
             "oic_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_scope": "urn:opc:resource:consumer:all",
             "start_date": "2024-01-01T00:00:00Z",
@@ -55,7 +56,7 @@ class TestTapOracleOICE2E:
     def config_path(self, tmp_path: Path, config: dict[str, object]) -> str:
         """Create a temporary config file for CLI tests."""
         config_file = tmp_path / "test_config.json"
-        with open(config_file, "w", encoding="utf-8") as f:
+        with config_file.open("w", encoding="utf-8") as f:
             json.dump(config, f, indent=2)
         return str(config_file)
 
@@ -271,8 +272,8 @@ class TestTapOracleOICE2E:
             ],
         }
 
-        # Load catalog using Singer SDK method
-        # TODO: Fix catalog import when singer_sdk.catalog is available
+        # Load catalog using Singer SDK method (pending upstream availability)
+        # Tracking: https://github.com/flext/issues/catalog-import
         # from singer_sdk.catalog import Catalog
         # tap.catalog = Catalog.from_dict(selected_catalog)
 
@@ -364,7 +365,7 @@ class TestTapOracleOICE2E:
         json_output = "\n".join(json_lines)
 
         # Save catalog
-        with open(catalog_file, "w", encoding="utf-8") as f:
+        with catalog_file.open("w", encoding="utf-8") as f:
             f.write(json_output)
 
         # 2. Run extraction with catalog
@@ -431,7 +432,7 @@ class TestTapOracleOICE2E:
             assert config_path.exists()
 
         # Load and validate config
-        with open(config_path, encoding="utf-8") as f:
+        with Path(config_path).open(encoding="utf-8") as f:
             config = json.load(f)
 
         # Check that config file is valid JSON and has expected structure
@@ -447,7 +448,7 @@ class TestTapOracleOICE2E:
 
 
 # Additional test class using Singer SDK test framework
-# TODO: Fix dynamic class creation when MyPy understands it better
+# Tracking: https://github.com/flext/issues/mypy-dynamic-classes
 # TapOICTestClass = get_tap_test_class(
 #     tap_class=TapOIC,
 #     config={

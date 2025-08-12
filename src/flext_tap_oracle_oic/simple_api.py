@@ -1,7 +1,11 @@
 """Simple API for Oracle Integration Cloud tap setup and operations.
 
-MIGRATED TO FLEXT-CORE:
-Provides enterprise-ready setup utilities with FlextResult pattern support.
+SIMPLIFIED FOR PEP8 REORGANIZATION:
+Provides basic setup utilities using flext-oracle-oic-ext patterns.
+Complex configuration has been moved to flext-oracle-oic-ext library.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
@@ -9,47 +13,42 @@ from __future__ import annotations
 import os
 from typing import cast
 
-import requests
+# flext-core foundation
+from flext_core import FlextResult
 
-# Import from flext-core for foundational patterns (standardized)
-from flext_core import (
-    FlextResult,
-)
-from pydantic import ValidationError
-
-from flext_tap_oracle_oic.config import (
-    DataExtractionConfig,
-    DiscoveryConfig,
+# Use flext-oracle-oic-ext for configuration classes
+from flext_oracle_oic_ext import (
     OICAuthConfig,
     OICConnectionConfig,
-    StreamSelectionConfig,
-    TapOracleOICConfig,
 )
+from pydantic import SecretStr
 
 
 def setup_oic_tap(
-    config: TapOracleOICConfig | None = None,
-) -> FlextResult[TapOracleOICConfig]:
-    """Set up Oracle Integration Cloud tap with configuration.
+    config: object | None = None,
+) -> FlextResult[object]:
+    """Setup Oracle Integration Cloud tap with basic configuration.
 
     Args:
-        config: Optional configuration. If None, creates defaults.
+        config: Optional configuration override
 
     Returns:
-        FlextResult with TapOracleOICConfig or error message.
+        FlextResult with basic config dict or error message.
 
     """
     try:
         if config is None:
-            # Create with intelligent defaults
-            config = TapOracleOICConfig.create_with_defaults()
-
-        # Validate configuration
-        config.model_validate(config.model_dump())
+            # Create basic configuration dictionary
+            config = {
+                "oauth_client_id": os.getenv("OIC_CLIENT_ID", "your-client-id"),
+                "oauth_client_secret": os.getenv("OIC_CLIENT_SECRET", "your-secret"),
+                "oauth_token_url": os.getenv("OIC_TOKEN_URL", "https://idcs/oauth2/v1/token"),
+                "oic_url": os.getenv("OIC_URL", "https://instance.integration.ocp.oraclecloud.com"),
+            }
 
         return FlextResult.ok(config)
 
-    except (ValueError, ValidationError, TypeError) as e:
+    except (ValueError, TypeError) as e:
         return FlextResult.fail(f"Failed to setup OIC tap: {e}")
 
 
@@ -74,15 +73,14 @@ def create_oic_auth_config(
     try:
         config = OICAuthConfig(
             oauth_client_id=client_id,
-            oauth_client_secret=client_secret,
+            oauth_client_secret=SecretStr(client_secret),
             oauth_token_url=token_url,
-            oauth_client_aud=cast("str | None", kwargs.get("oauth_client_aud")),
-            oauth_scope=cast("str | None", kwargs.get("oauth_scope")),
+            oauth_scope=cast("str", kwargs.get("oauth_scope", "urn:opc:resource:consumer:all")),
         )
 
         return FlextResult.ok(config)
 
-    except (ValueError, ValidationError, TypeError) as e:
+    except (ValueError, TypeError) as e:
         return FlextResult.fail(f"Failed to create OIC auth config: {e}")
 
 
@@ -103,18 +101,18 @@ def create_oic_connection_config(
     try:
         config = OICConnectionConfig(
             base_url=base_url,
-            auth_method=cast("str", kwargs.get("auth_method", "oauth2")),
-            timeout=cast("int", kwargs.get("timeout", 300)),
-            retry_count=cast("int", kwargs.get("retry_count", 3)),
+            api_version=cast("str", kwargs.get("api_version", "v1")),
+            request_timeout=cast("int", kwargs.get("request_timeout", 30)),
+            max_retries=cast("int", kwargs.get("max_retries", 3)),
         )
 
         return FlextResult.ok(config)
 
-    except (ValueError, ValidationError, TypeError) as e:
+    except (ValueError, TypeError) as e:
         return FlextResult.fail(f"Failed to create OIC connection config: {e}")
 
 
-def validate_oic_config(config: TapOracleOICConfig) -> FlextResult[bool]:
+def validate_oic_config(config: object) -> FlextResult[bool]:
     """Validate OIC tap configuration.
 
     Args:
@@ -125,346 +123,24 @@ def validate_oic_config(config: TapOracleOICConfig) -> FlextResult[bool]:
 
     """
     try:
-        # Validate using Pydantic model validation
-        config.model_validate(config.model_dump())
+        # Basic validation for dictionary config
+        if isinstance(config, dict):
+            required_keys = ["oauth_client_id", "oauth_client_secret", "oauth_token_url", "oic_url"]
+            missing_keys = [key for key in required_keys if not config.get(key)]
 
-        # Additional business rule validations
-        if not config.connection.base_url:
-            return FlextResult.fail("Base URL is required")
-
-        if not config.auth.oauth_client_id:
-            return FlextResult.fail("OAuth client ID is required")
-
-        if not config.auth.oauth_client_secret:
-            return FlextResult.fail("OAuth client secret is required")
-
-        if not config.auth.oauth_token_url:
-            return FlextResult.fail("OAuth token URL is required")
+            if missing_keys:
+                return FlextResult.fail(f"Missing required configuration keys: {missing_keys}")
 
         return FlextResult.ok(data=True)
 
-    except (ValueError, ValidationError, AttributeError) as e:
-        return FlextResult.fail(f"Configuration validation failed: {e}")
+    except (ValueError, TypeError) as e:
+        return FlextResult.fail(f"Failed to validate OIC config: {e}")
 
 
-def create_development_oic_config(
-    **overrides: object,
-) -> FlextResult[TapOracleOICConfig]:
-    """Create development OIC configuration with defaults.
-
-    Args:
-        **overrides: Configuration overrides
-
-    Returns:
-        FlextResult with TapOracleOICConfig for development use.
-
-    """
-    try:
-        auth_config = OICAuthConfig(
-            oauth_client_id=os.getenv("OIC_DEV_CLIENT_ID", "dev-client-id"),
-            oauth_client_secret=os.getenv("OIC_DEV_CLIENT_SECRET", "dev-client-secret"),
-            oauth_token_url=os.getenv("OIC_TOKEN_URL", "https://identity.oraclecloud.com/oauth2/v1/token"),
-            oauth_client_aud=None,
-            oauth_scope=None,
-        )
-
-        connection_config = OICConnectionConfig(
-            base_url="https://dev-instance.integration.ocp.oraclecloud.com",
-            timeout=120,
-            retry_count=3,
-            retry_delay=2.0,
-            page_size=50,
-            max_concurrent_requests=3,
-        )
-
-        discovery_config = DiscoveryConfig(
-            discover_integrations=True,
-            discover_connections=True,
-            discover_lookups=False,
-            discover_libraries=False,
-        )
-
-        data_extraction_config = DataExtractionConfig(
-            extract_integration_metadata=True,
-            extract_connection_properties=True,
-            extract_lookup_data=False,
-            created_after=None,
-            modified_after=None,
-        )
-
-        config = TapOracleOICConfig(
-            auth=auth_config,
-            connection=connection_config,
-            stream_selection=StreamSelectionConfig(
-                stream_maps=None,
-                stream_map_config=None,
-                include_integrations=None,
-                exclude_integrations=None,
-                include_lookups=None,
-                exclude_lookups=None,
-                include_patterns=None,
-                exclude_patterns=None,
-            ),
-            discovery=discovery_config,
-            data_extraction=data_extraction_config,
-            project_name="flext-data.taps.flext-data.taps.flext-tap-oracle-oic",
-            project_version="0.9.0",
-        )
-
-        # Apply overrides
-        if overrides:
-            config_dict = config.model_dump()
-            config_dict.update(overrides)
-            config = TapOracleOICConfig(**config_dict)
-
-        return FlextResult.ok(config)
-
-    except (ValueError, ValidationError, TypeError, requests.RequestException) as e:
-        return FlextResult.fail(f"Failed to create development config: {e}")
-
-
-def create_production_oic_config(
-    **overrides: object,
-) -> FlextResult[TapOracleOICConfig]:
-    """Create production OIC configuration with security defaults.
-
-    Args:
-        **overrides: Configuration overrides
-
-    Returns:
-        FlextResult with TapOracleOICConfig for production use.
-
-    """
-    try:
-        auth_config = OICAuthConfig(
-            oauth_client_id=os.getenv("OIC_PROD_CLIENT_ID", "prod-client-id"),
-            oauth_client_secret=os.getenv("OIC_PROD_CLIENT_SECRET", "prod-client-secret"),
-            oauth_token_url=os.getenv("OIC_TOKEN_URL", "https://identity.oraclecloud.com/oauth2/v1/token"),
-            oauth_client_aud=None,
-            oauth_scope=None,
-        )
-
-        connection_config = OICConnectionConfig(
-            base_url="https://prod-instance.integration.ocp.oraclecloud.com",
-            timeout=300,
-            retry_count=5,
-            retry_delay=1.0,
-            page_size=100,
-            max_concurrent_requests=5,
-        )
-
-        discovery_config = DiscoveryConfig(
-            discover_integrations=True,
-            discover_connections=True,
-            discover_lookups=True,
-            discover_libraries=False,
-            discover_agents=False,
-            discovery_timeout=900,
-        )
-
-        data_extraction_config = DataExtractionConfig(
-            extract_integration_metadata=True,
-            extract_connection_properties=True,
-            extract_lookup_data=True,
-            created_after=None,
-            modified_after=None,
-        )
-
-        config = TapOracleOICConfig(
-            auth=auth_config,
-            connection=connection_config,
-            stream_selection=StreamSelectionConfig(
-                stream_maps=None,
-                stream_map_config=None,
-                include_integrations=None,
-                exclude_integrations=None,
-                include_lookups=None,
-                exclude_lookups=None,
-                include_patterns=None,
-                exclude_patterns=None,
-            ),
-            discovery=discovery_config,
-            data_extraction=data_extraction_config,
-            project_name="flext-data.taps.flext-data.taps.flext-tap-oracle-oic",
-            project_version="0.9.0",
-        )
-
-        # Apply overrides
-        if overrides:
-            config_dict = config.model_dump()
-            config_dict.update(overrides)
-            config = TapOracleOICConfig(**config_dict)
-
-        return FlextResult.ok(config)
-
-    except (ValueError, ValidationError, TypeError, requests.RequestException) as e:
-        return FlextResult.fail(f"Failed to create production config: {e}")
-
-
-def create_discovery_only_config(
-    **overrides: object,
-) -> FlextResult[TapOracleOICConfig]:
-    """Create OIC configuration optimized for catalog discovery only.
-
-    Args:
-        **overrides: Configuration overrides
-
-    Returns:
-        FlextResult with TapOracleOICConfig optimized for discovery.
-
-    """
-    try:
-        auth_config = OICAuthConfig(
-            oauth_client_id=os.getenv("OIC_DISCOVERY_CLIENT_ID", "discovery-client-id"),
-            oauth_client_secret=os.getenv("OIC_DISCOVERY_CLIENT_SECRET", "discovery-client-secret"),
-            oauth_token_url=os.getenv("OIC_TOKEN_URL", "https://identity.oraclecloud.com/oauth2/v1/token"),
-            oauth_client_aud=None,
-            oauth_scope=None,
-        )
-
-        connection_config = OICConnectionConfig(
-            base_url="https://your-instance.integration.ocp.oraclecloud.com",
-            timeout=600,
-            retry_count=3,
-            page_size=200,
-            max_concurrent_requests=10,
-        )
-
-        discovery_config = DiscoveryConfig(
-            discover_integrations=True,
-            discover_connections=True,
-            discover_lookups=True,
-            discover_libraries=True,
-            discover_agents=True,
-            discover_certificates=True,
-            discovery_batch_size=100,
-            discovery_timeout=1200,
-        )
-
-        data_extraction_config = DataExtractionConfig(
-            extract_integration_metadata=False,
-            extract_connection_properties=False,
-            extract_lookup_data=False,
-            extract_monitoring_data=False,
-            extract_audit_logs=False,
-            created_after=None,
-            modified_after=None,
-        )
-
-        config = TapOracleOICConfig(
-            auth=auth_config,
-            connection=connection_config,
-            stream_selection=StreamSelectionConfig(
-                stream_maps=None,
-                stream_map_config=None,
-                include_integrations=None,
-                exclude_integrations=None,
-                include_lookups=None,
-                exclude_lookups=None,
-                include_patterns=None,
-                exclude_patterns=None,
-            ),
-            discovery=discovery_config,
-            data_extraction=data_extraction_config,
-            project_name="flext-data.taps.flext-data.taps.flext-tap-oracle-oic",
-            project_version="0.9.0",
-        )
-
-        # Apply overrides
-        if overrides:
-            config_dict = config.model_dump()
-            config_dict.update(overrides)
-            config = TapOracleOICConfig(**config_dict)
-
-        return FlextResult.ok(config)
-
-    except (ValueError, ValidationError, TypeError, requests.RequestException) as e:
-        return FlextResult.fail(f"Failed to create discovery config: {e}")
-
-
-def create_monitoring_config(**overrides: object) -> FlextResult[TapOracleOICConfig]:
-    """Create OIC configuration optimized for monitoring data extraction.
-
-    Args:
-        **overrides: Configuration overrides
-
-    Returns:
-        FlextResult with TapOracleOICConfig optimized for monitoring.
-
-    """
-    try:
-        auth_config = OICAuthConfig(
-            oauth_client_id=os.getenv("OIC_MONITORING_CLIENT_ID", "monitoring-client-id"),
-            oauth_client_secret=os.getenv("OIC_MONITORING_CLIENT_SECRET", "monitoring-client-secret"),
-            oauth_token_url=os.getenv("OIC_TOKEN_URL", "https://identity.oraclecloud.com/oauth2/v1/token"),
-            oauth_client_aud=None,
-            oauth_scope=None,
-        )
-
-        connection_config = OICConnectionConfig(
-            base_url="https://your-instance.integration.ocp.oraclecloud.com",
-            timeout=300,
-            retry_count=5,
-            page_size=500,
-            max_concurrent_requests=8,
-        )
-
-        discovery_config = DiscoveryConfig(
-            discover_integrations=False,
-            discover_connections=False,
-            discover_lookups=False,
-        )
-
-        data_extraction_config = DataExtractionConfig(
-            extract_integration_metadata=False,
-            extract_connection_properties=False,
-            extract_lookup_data=False,
-            extract_monitoring_data=True,
-            extract_audit_logs=True,
-            created_after=None,
-            modified_after=None,
-        )
-
-        config = TapOracleOICConfig(
-            auth=auth_config,
-            connection=connection_config,
-            stream_selection=StreamSelectionConfig(
-                stream_maps=None,
-                stream_map_config=None,
-                include_integrations=None,
-                exclude_integrations=None,
-                include_lookups=None,
-                exclude_lookups=None,
-                include_patterns=None,
-                exclude_patterns=None,
-            ),
-            discovery=discovery_config,
-            data_extraction=data_extraction_config,
-            project_name="flext-data.taps.flext-data.taps.flext-tap-oracle-oic",
-            project_version="0.9.0",
-        )
-
-        # Apply overrides
-        if overrides:
-            config_dict = config.model_dump()
-            config_dict.update(overrides)
-            config = TapOracleOICConfig(**config_dict)
-
-        return FlextResult.ok(config)
-
-    except (ValueError, ValidationError, TypeError, requests.RequestException) as e:
-        return FlextResult.fail(f"Failed to create monitoring config: {e}")
-
-
-# Export main API functions
+# Export simplified API
 __all__: list[str] = [
-    "FlextResult",
-    "create_development_oic_config",
-    "create_discovery_only_config",
-    "create_monitoring_config",
     "create_oic_auth_config",
     "create_oic_connection_config",
-    "create_production_oic_config",
     "setup_oic_tap",
     "validate_oic_config",
 ]
