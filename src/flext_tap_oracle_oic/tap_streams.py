@@ -1,24 +1,19 @@
-"""Oracle Integration Cloud Stream Definitions.
+"""Oracle Integration Cloud stream definitions - PEP8 reorganized.
+
+This module consolidates ALL stream-related functionality:
+- OICBaseStream: Professional base class with intelligent OIC API support
+- OICPaginator: Adaptive pagination with performance optimization
+- Stream discovery and lifecycle management with enterprise error handling
+- Complete Oracle OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
+
+Design: Composition over inheritance using:
+- flext-core: FlextResult, logging, error handling patterns
+- singer-sdk: RESTStream base with pagination and authentication
+- requests: HTTP session management with retry logic
+- Oracle OIC APIs: Complete endpoint support with intelligent discovery
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
-
-Professional-grade stream implementations with comprehensive OIC API support.
-Incorporates best practices from extractors and provides complete Singer SDK
-functionality with intelligent error handling, automatic discovery, and
-robust data quality validation.
-
-Main Classes:
-    - OICBaseStream: Professional base class for all OIC streams
-    - OICPaginator: Intelligent paginator with retry logic
-
-Architecture:
-    All streams inherit from OICBaseStream which provides:
-    - OAuth2/IDCS authentication with token refresh
-    - Intelligent pagination with error recovery
-    - Comprehensive error handling and retries
-    - Data quality validation and metrics
-    - Automatic endpoint discovery
-    - Rate limiting and performance optimization
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
@@ -53,13 +48,14 @@ HTTP_RATE_LIMITED = 429
 
 
 class OICPaginator(BaseOffsetPaginator):
-    """Intelligent Oracle OIC API paginator with error recovery and optimization.
+    """Intelligent Oracle OIC API paginator with adaptive optimization.
 
-    Features:
-        - Automatic detection of pagination patterns
-        - Dynamic page size adjustment based on response time
-        - Error recovery with exponential backoff
-        - Memory-efficient streaming for large datasets
+    Enterprise-grade pagination features:
+    - Automatic detection of OIC pagination patterns
+    - Dynamic page size adjustment based on response performance
+    - Error recovery with exponential backoff
+    - Memory-efficient streaming for large datasets
+    - Response time tracking and optimization
     """
 
     def __init__(self, start_value: int = 0, page_size: int = 100) -> None:
@@ -70,7 +66,7 @@ class OICPaginator(BaseOffsetPaginator):
         self._response_times: list[float] = []
 
     def get_next(self, response: requests.Response) -> int | None:
-        """Calculate next offset for pagination.
+        """Calculate next offset for Oracle OIC pagination.
 
         Args:
             response: HTTP response from OIC API.
@@ -89,33 +85,27 @@ class OICPaginator(BaseOffsetPaginator):
             return self._calculate_next_offset(data)
 
         except (ValueError, KeyError, TypeError, AttributeError) as e:
-            # EXPLICIT TRANSPARENCY: OIC pagination parsing error with proper error handling
             logger = get_logger(__name__)
             logger.warning(f"OIC pagination parsing failed: {type(e).__name__}: {e}")
             logger.info("Returning None - pagination parsing failure properly handled")
             logger.debug("This indicates end of pagination or malformed OIC response")
-            logger.debug("Error context: parsing pagination offset from OIC API response")
-            # Returning None is appropriate for pagination end - documented behavior
             return None
 
     def _calculate_next_offset(
         self,
         data: dict[str, object] | list[object],
     ) -> int | None:
-        # Handle different OIC response formats
+        """Calculate next offset based on OIC response format."""
         items = self._extract_items_from_response(data)
-        if items is None:
+        if items is None or not items or len(items) < self._page_size:
             return None
-
-        if not items or len(items) < self._page_size:
-            return None
-
         return self.current_value + len(items)
 
     def _extract_items_from_response(
         self,
         data: dict[str, object] | list[object],
     ) -> list[object] | None:
+        """Extract items from various OIC response formats."""
         if isinstance(data, list):
             return data
         if isinstance(data, dict):
@@ -126,9 +116,10 @@ class OICPaginator(BaseOffsetPaginator):
         return None
 
     def _track_response_time(self, response_time: float) -> None:
+        """Track response times for adaptive page sizing."""
         self._response_times.append(response_time)
 
-        # Keep only last response times based on history size constant
+        # Keep only recent response times
         if len(self._response_times) > RESPONSE_TIME_HISTORY_SIZE:
             self._response_times.pop(0)
 
@@ -145,29 +136,25 @@ class OICPaginator(BaseOffsetPaginator):
 
 
 class OICBaseStream(RESTStream[dict[str, object]]):
-    """Base stream class for Oracle Integration Cloud APIs.
+    """Professional base stream class for Oracle Integration Cloud APIs.
 
-    Incorporates best practices from extractors and provides comprehensive
-    OIC API support with intelligent error handling, data quality validation,
-    and performance optimization.
-
-    Features:
-        - Intelligent endpoint discovery and URL construction
-        - OAuth2/IDCS authentication with automatic token refresh
-        - Adaptive pagination with performance optimization
-        - Comprehensive error handling with exponential backoff
-        - Data quality validation and metrics collection
-        - Rate limiting and request optimization
-        - Incremental extraction with state management
-        - Support for all OIC API patterns and response formats
+    Enterprise-grade stream implementation with:
+    - Intelligent endpoint discovery and URL construction
+    - OAuth2/IDCS authentication with automatic token refresh
+    - Adaptive pagination with performance optimization
+    - Comprehensive error handling with exponential backoff
+    - Data quality validation and metrics collection
+    - Rate limiting and request optimization
+    - Incremental extraction with state management
+    - Support for all OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
     """
 
     @property
     def url_base(self) -> str:
-        """Build base URL for OIC API requests.
+        """Build base URL for Oracle OIC API requests with intelligent discovery.
 
         Returns:
-            Base URL with appropriate OIC API endpoint.
+            Base URL with appropriate OIC API endpoint for stream type.
 
         """
         base_url = str(
@@ -178,15 +165,13 @@ class OICBaseStream(RESTStream[dict[str, object]]):
             msg = "Base URL is required but not configured"
             raise ValueError(msg)
 
-        # Auto-detect region from URL if not explicitly configured
+        # Auto-detect region from URL pattern
         region = self.config.get("region")
         if not region and "integration.ocp.oraclecloud.com" in base_url:
-            # Extract region from URL pattern
-
             region_match = re.search(r"(\w+-\w+-\d+)", base_url)
             region = region_match.group(1) if region_match else "us-ashburn-1"
 
-        # Convert to appropriate API endpoint based on stream type
+        # Convert to appropriate API endpoint based on stream requirements
         if "integration.ocp.oraclecloud.com" in base_url:
             if hasattr(self, "requires_design_api") and self.requires_design_api:
                 base_url = f"https://design.integration.{region}.ocp.oraclecloud.com"
@@ -209,9 +194,8 @@ class OICBaseStream(RESTStream[dict[str, object]]):
 
     @property
     def requests_session(self) -> requests.Session:
-        """Get authenticated requests session from the Tap's client."""
-        # Access the Tap's OIC client to get the authenticated session
-        # RESTStream provides self.tap as the parent tap instance
+        """Get authenticated requests session from parent tap's OIC client."""
+        # Access the Tap's OIC client for authenticated session
         if hasattr(self, "tap") and hasattr(self.tap, "client"):
             session_result = self.tap.client.get_authenticated_session()
             if session_result.success and session_result.data is not None:
@@ -219,14 +203,14 @@ class OICBaseStream(RESTStream[dict[str, object]]):
                 if isinstance(session, requests.Session):
                     return session
 
-        # Fallback to parent implementation if client not available
+        # Fallback to parent implementation
         return super().requests_session
 
     def get_new_paginator(self) -> OICPaginator:
-        """Create new paginator for OIC API requests.
+        """Create new Oracle OIC paginator with configuration.
 
         Returns:
-            OICPaginator instance configured with page size from config.
+            OICPaginator instance configured with settings from tap config.
 
         """
         return OICPaginator(start_value=0, page_size=self.config.get("page_size", 100))
@@ -236,14 +220,14 @@ class OICBaseStream(RESTStream[dict[str, object]]):
         context: Mapping[str, object] | None,
         next_page_token: object | None,
     ) -> dict[str, object]:
-        """Build URL parameters for OIC API requests.
+        """Build URL parameters for Oracle OIC API requests.
 
         Args:
             context: Stream context with replication values.
             next_page_token: Token for pagination (offset value).
 
         Returns:
-            Dictionary of URL parameters for the API request.
+            Dictionary of URL parameters optimized for OIC API.
 
         """
         params: dict[str, object] = {}
@@ -302,13 +286,13 @@ class OICBaseStream(RESTStream[dict[str, object]]):
         self,
         response: requests.Response,
     ) -> Iterator[dict[str, object]]:
-        """Parse OIC API response and yield records.
+        """Parse Oracle OIC API response and yield records with validation.
 
         Args:
             response: HTTP response from OIC API.
 
         Yields:
-            Individual records from the API response.
+            Individual records from the API response with tap metadata.
 
         """
         try:
@@ -325,23 +309,23 @@ class OICBaseStream(RESTStream[dict[str, object]]):
                     raise
                 return
 
-            # Track response metrics
+            # Track response metrics for monitoring
             self._track_response_metrics(response, data)
 
-            # Extract records from response and yield valid ones
+            # Extract records from response and yield with validation
             yield from self._extract_and_yield_records(data, response.url)
 
         except (ValueError, TypeError, KeyError, AttributeError):
             self.logger.exception("Error parsing response from %s", response.url)
             if self.config.get("fail_on_parsing_errors", True):
                 raise
-            # Continue processing if configured to ignore parsing errors
 
     def _extract_and_yield_records(
         self,
         data: dict[str, object] | list[object],
         url: str,
     ) -> Iterator[dict[str, object]]:
+        """Extract and yield records with validation and enrichment."""
         records_yielded = 0
 
         for item in self._extract_items_for_processing(data):
@@ -366,6 +350,7 @@ class OICBaseStream(RESTStream[dict[str, object]]):
         self,
         data: dict[str, object] | list[object],
     ) -> Iterator[dict[str, object]]:
+        """Extract items from various OIC response formats for processing."""
         if isinstance(data, list):
             yield from self._process_list_data(data)
         elif isinstance(data, dict):
@@ -378,7 +363,7 @@ class OICBaseStream(RESTStream[dict[str, object]]):
                 yield item
 
     def _process_dict_data(self, data: dict[str, object]) -> Iterator[dict[str, object]]:
-        """Process dict-type response data."""
+        """Process dict-type response data with OIC format detection."""
         if "items" in data:
             items = data["items"]
             if isinstance(items, list):
@@ -391,7 +376,7 @@ class OICBaseStream(RESTStream[dict[str, object]]):
             yield data
 
     def _is_empty_result_expected(self, data: dict[str, object] | list[object]) -> bool:
-        """Check if empty result is expected/normal."""
+        """Check if empty result is expected/normal based on OIC response metadata."""
         if isinstance(data, dict):
             items = data.get("items", [])
             data_items = data.get("data", [])
@@ -401,11 +386,10 @@ class OICBaseStream(RESTStream[dict[str, object]]):
                 or (isinstance(items, list) and len(items) == 0)
                 or (isinstance(data_items, list) and len(data_items) == 0)
             )
-        # For list data, empty is expected when the list is empty
         return len(data) == 0
 
     def _is_single_record(self, data: dict[str, object]) -> bool:
-        """Check if dict represents a single record vs metadata container."""
+        """Check if dict represents a single record vs OIC metadata container."""
         metadata_keys = {
             "totalSize",
             "count",
@@ -418,18 +402,18 @@ class OICBaseStream(RESTStream[dict[str, object]]):
         return not any(key in data for key in metadata_keys)
 
     def _validate_record(self, record: dict[str, object]) -> bool:
-        """Validate record meets basic requirements."""
+        """Validate record meets basic requirements for processing."""
         return isinstance(record, dict)
 
     def _enrich_record(self, record: dict[str, object]) -> dict[str, object]:
-        """Enrich record with tap metadata."""
+        """Enrich record with tap metadata for traceability."""
         enriched = dict(record)
         enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
         enriched["_tap_stream_name"] = self.name
         return enriched
 
     def _handle_response_error(self, response: requests.Response) -> None:
-        """Handle OIC API response errors."""
+        """Handle Oracle OIC API response errors with proper categorization."""
         try:
             error_data = response.json()
             error_message = error_data.get("message") or error_data.get("error")
@@ -454,7 +438,7 @@ class OICBaseStream(RESTStream[dict[str, object]]):
         response: requests.Response,
         data: dict[str, object] | list[object],
     ) -> None:
-        """Track response metrics for monitoring."""
+        """Track response metrics for monitoring and optimization."""
         # Log response time and size for monitoring
         if hasattr(response, "elapsed"):
             self.logger.debug("Response time: %.2fs", response.elapsed.total_seconds())
@@ -471,3 +455,10 @@ class OICBaseStream(RESTStream[dict[str, object]]):
                 data_items = data["data"]
                 if isinstance(data_items, list):
                     self.logger.debug("Received %s records", len(data_items))
+
+
+# Export for module interface
+__all__: list[str] = [
+    "OICBaseStream",
+    "OICPaginator",
+]

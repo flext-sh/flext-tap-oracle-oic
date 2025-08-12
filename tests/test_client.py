@@ -14,7 +14,8 @@ import pytest
 import requests
 from flext_core import FlextResult
 
-from flext_tap_oracle_oic.client import OracleOICClient
+# Import from reorganized module
+from flext_tap_oracle_oic.tap_client import OracleOICClient
 
 
 class TestOracleOICClient:

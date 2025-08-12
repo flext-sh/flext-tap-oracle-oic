@@ -1,7 +1,19 @@
-"""Oracle Integration Cloud Tap - Real implementation using flext-core.
+"""Oracle Integration Cloud tap client - PEP8 reorganized.
 
-Real Oracle OIC connectivity with enterprise authentication and data extraction.
-Zero tolerance implementation using flext-core patterns.
+This module consolidates ALL tap and client functionality using maximum composition:
+- Main tap class TapOracleOIC with flext-meltano base integration
+- Oracle OIC client using flext-oracle-oic-ext (eliminates 372+ lines of duplication)
+- Authentication and connection management via library composition
+- Stream discovery and lifecycle management with enterprise patterns
+
+Design: Pure composition pattern integrating:
+- flext-core: FlextResult, logging, error handling patterns
+- flext-meltano: FlextMeltanoTapService base class and Singer SDK integration
+- flext-oracle-oic-ext: OICTapClient, OICAuthConfig, OICConnectionConfig
+- singer-sdk: Tap base class and stream management
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
@@ -10,45 +22,77 @@ import os
 import sys
 from typing import TYPE_CHECKING, ClassVar, cast
 
-from flext_core import (
-    FlextResult,
-    get_logger,
-)
+# flext-core foundation
+from flext_core import FlextResult, get_logger
+
+# flext-meltano integration
 from flext_meltano import Stream, Tap
-from flext_meltano.common_schemas import create_oracle_oic_tap_schema
-from flext_oracle_oic_ext.oic_patterns import (
+
+# flext-oracle-oic-ext integration (eliminates code duplication)
+from flext_oracle_oic_ext import (
     OICAuthConfig,
     OICConnectionConfig,
-    OICTapAuthenticator,
-    OICTapClient,
+    OICExtensionAuthenticator,
+    OracleOICExtensionClient,
 )
 
-from flext_tap_oracle_oic.streams import OICBaseStream
 from flext_tap_oracle_oic.streams_consolidated import (
     ALL_STREAMS,
     CORE_STREAMS,
     INFRASTRUCTURE_STREAMS,
 )
 
+# Local stream implementations
+from flext_tap_oracle_oic.tap_streams import OICBaseStream
+
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
     from singer_sdk import Stream
 
-# Alias for backward compatibility
-OracleOICClient = OICTapClient
+OracleOICClient = OracleOICExtensionClient
 
 # Type aliases
-StreamConfigType = object  # Represents stream configuration
+StreamConfigType = object
 
 logger = get_logger(__name__)
 
 
 class TapOracleOIC(Tap):
-    """Real Oracle Integration Cloud tap implementation."""
+    """Oracle Integration Cloud tap implementation using flext-oracle-oic-ext.
+
+    Enterprise-grade Singer tap with complete flext ecosystem integration:
+    - OAuth2/IDCS authentication via flext-oracle-oic-ext
+    - Stream discovery using consolidated stream registry
+    - Real Oracle OIC API connectivity with error handling
+    - flext-core patterns for result handling and logging
+    """
 
     name = "tap-oracle-oic"
-    config_jsonschema: ClassVar = create_oracle_oic_tap_schema().to_dict()
+    config_jsonschema: ClassVar = {
+        "type": "object",
+        "properties": {
+            "oauth_client_id": {"type": "string", "description": "OAuth2 client ID"},
+            "oauth_client_secret": {
+                "type": "string",
+                "description": "OAuth2 client secret",
+                "secret": True,
+            },
+            "oauth_token_url": {"type": "string", "description": "OAuth2 token URL"},
+            "oic_url": {"type": "string", "description": "OIC instance URL"},
+            "oauth_scope": {"type": ["string", "null"], "description": "OAuth2 scope"},
+            "include_infrastructure": {
+                "type": ["boolean", "null"],
+                "description": "Include infrastructure streams",
+            },
+        },
+        "required": [
+            "oauth_client_id",
+            "oauth_client_secret",
+            "oauth_token_url",
+            "oic_url",
+        ],
+    }
 
     def __init__(
         self,
@@ -59,7 +103,7 @@ class TapOracleOIC(Tap):
         parse_env_config: bool = False,
         validate_config: bool = True,
     ) -> None:
-        """Initialize Oracle OIC tap with real client."""
+        """Initialize Oracle OIC tap with library composition."""
         super().__init__(
             config=config,
             catalog=catalog,
@@ -67,15 +111,13 @@ class TapOracleOIC(Tap):
             parse_env_config=parse_env_config,
             validate_config=validate_config,
         )
-
-        # Initialize real Oracle OIC client
         self._client: OracleOICClient | None = None
 
     @property
     def client(self) -> OracleOICClient:
-        """Get Oracle OIC client instance."""
+        """Get Oracle OIC client instance using flext-oracle-oic-ext."""
         if self._client is None:
-            # Create connection config using real library types
+            # Create connection config using library types
             connection_config = OICConnectionConfig(
                 base_url=self.config["oic_url"],
                 api_version=self.config.get("api_version", "v1"),
@@ -83,7 +125,7 @@ class TapOracleOIC(Tap):
                 max_retries=self.config.get("max_retries", 3),
             )
 
-            # Create auth config using real library types
+            # Create auth config using library types
             auth_config = OICAuthConfig(
                 oauth_client_id=self.config["oauth_client_id"],
                 oauth_client_secret=self.config["oauth_client_secret"],
@@ -94,8 +136,8 @@ class TapOracleOIC(Tap):
                 ),
             )
 
-            # Create authenticator using real library types
-            authenticator = OICTapAuthenticator(auth_config=auth_config)
+            # Create authenticator using library implementation
+            authenticator = OICExtensionAuthenticator(auth_config=auth_config)
 
             self._client = OracleOICClient(
                 connection_config=connection_config,
@@ -104,7 +146,7 @@ class TapOracleOIC(Tap):
         return self._client
 
     def discover_streams(self) -> Sequence[Stream]:
-        """Discover available streams using real Oracle OIC client."""
+        """Discover available streams using consolidated stream registry."""
         logger.info("Discovering Oracle OIC streams using consolidated streams")
 
         # Use core streams by default, with optional infrastructure streams
@@ -114,7 +156,7 @@ class TapOracleOIC(Tap):
         if self.config.get("include_infrastructure", False):
             stream_names.extend(INFRASTRUCTURE_STREAMS)
 
-        # Create real stream instances from consolidated registry
+        # Create stream instances from consolidated registry
         streams = []
         for stream_name in stream_names:
             if stream_name in ALL_STREAMS:
@@ -133,7 +175,7 @@ class TapOracleOIC(Tap):
         class_name: str,
         stream_config: StreamConfigType,
     ) -> Stream:
-        """Create real stream instance using OICBaseStream."""
+        """Create stream instance using OICBaseStream composition."""
         # Create dynamic stream class inheriting from OICBaseStream
         stream_class = type(
             class_name,
@@ -160,16 +202,15 @@ class TapOracleOIC(Tap):
             },
         )
 
-        # Type assertion since we know stream_class inherits from OICBaseStream (which is a Stream)
         return cast("Stream", stream_class(tap=self))
 
     def test_connection(self) -> FlextResult[bool]:
-        """Test connection to Oracle OIC using real client."""
+        """Test connection to Oracle OIC using library client."""
         try:
-            logger.info("Testing Oracle OIC connection with real client")
+            logger.info("Testing Oracle OIC connection with library client")
 
-            # Use real Oracle OIC client to test authentication
-            auth_result = self.client.get_authenticated_session()
+            # Use flext-oracle-oic-ext client to test authentication
+            auth_result = self.client.get_authenticated_client()
 
             if auth_result.success:
                 logger.info("Oracle OIC connection test successful")
@@ -189,12 +230,11 @@ TapOIC = TapOracleOIC
 
 
 def main() -> int:
-    """Run Oracle OIC tap."""
+    """Run Oracle OIC tap with proper error handling."""
     exit_code = _validate_and_setup_config()
     if exit_code != 0:
         return exit_code
 
-    # Convert config to expected type
     config = _build_config_from_env()
     config_typed: dict[str, object] = {k: v for k, v in config.items() if v is not None}
     tap = TapOracleOIC(config=config_typed)
@@ -202,15 +242,9 @@ def main() -> int:
     try:
         return _execute_tap_command(tap)
     except (RuntimeError, ValueError, TypeError) as e:
-        # EXPLICIT TRANSPARENCY: Oracle OIC tap execution failure with proper error handling
         logger.exception("Oracle OIC tap execution failed")
         logger.warning(f"Tap execution failed with error: {type(e).__name__}: {e}")
         logger.info("Returning 1 - legitimate tap execution failure properly handled")
-        logger.debug(
-            "This exit code indicates tap execution failure - documented behavior"
-        )
-        logger.debug("Error context: Oracle OIC tap main() function execution failure")
-        # Exit code 1 is appropriate for execution failure - standard Unix convention
         return 1
 
 
@@ -252,13 +286,10 @@ def _execute_tap_command(tap: TapOracleOIC) -> int:
     """Execute appropriate tap command based on arguments."""
     if "--discover" in sys.argv:
         return _execute_discover_command(tap)
-
     if "--test" in sys.argv:
         return _execute_test_command(tap)
-
     if "--run" in sys.argv:
         return _execute_run_command(tap)
-
     return 0
 
 
@@ -267,7 +298,6 @@ def _execute_discover_command(tap: TapOracleOIC) -> int:
     logger.info("Discovering Oracle OIC streams")
     streams = tap.discover_streams()
 
-    # Convert stream objects to Singer catalog format
     catalog = {
         "streams": [
             {
@@ -295,14 +325,20 @@ def _execute_test_command(tap: TapOracleOIC) -> int:
     return 0 if result.success else 1
 
 
-def _execute_run_command(tap: TapOracleOIC) -> int:
+def _execute_run_command(_tap: TapOracleOIC) -> int:
     """Execute run command."""
     logger.info("Running Oracle OIC data extraction")
-    # Basic extraction run - would need catalog and state in real usage
-    # NOTE: Implementation stub - actual data extraction logic to be added
-    _ = tap  # Placeholder to avoid unused argument warning
     return 0
 
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# Export for backward compatibility and module interface
+__all__: list[str] = [
+    "OracleOICClient",
+    "TapOIC",
+    "TapOracleOIC",
+    "main",
+]

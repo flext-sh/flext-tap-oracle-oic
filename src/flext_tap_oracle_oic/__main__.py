@@ -12,7 +12,7 @@ Architecture:
 
 from __future__ import annotations
 
-from flext_tap_oracle_oic.tap import TapOIC
+from flext_tap_oracle_oic.tap_client import TapOIC
 
 
 def main() -> None:

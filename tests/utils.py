@@ -446,7 +446,7 @@ class TestFileManager:
         filename: str = "test_config.json",
     ) -> Path:
         config_path = self.temp_dir / filename
-        with open(config_path, "w", encoding="utf-8") as f:
+        with config_path.open("w", encoding="utf-8") as f:
             json.dump(config, f, indent=2)
         self.created_files.append(config_path)
         return config_path
@@ -457,7 +457,7 @@ class TestFileManager:
         filename: str = "test_catalog.json",
     ) -> Path:
         catalog_path = self.temp_dir / filename
-        with open(catalog_path, "w", encoding="utf-8") as f:
+        with catalog_path.open("w", encoding="utf-8") as f:
             json.dump(catalog, f, indent=2)
         self.created_files.append(catalog_path)
         return catalog_path
@@ -468,7 +468,7 @@ class TestFileManager:
         filename: str = "test_records.jsonl",
     ) -> Path:
         records_path = self.temp_dir / filename
-        with open(records_path, "w", encoding="utf-8") as f:
+        with records_path.open("w", encoding="utf-8") as f:
             f.writelines(json.dumps(record) + "\n" for record in records)
         self.created_files.append(records_path)
         return records_path

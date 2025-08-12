@@ -12,7 +12,8 @@ from typing import Any
 import pytest
 from singer_sdk.exceptions import ConfigValidationError
 
-from flext_tap_oracle_oic.tap import TapOIC
+# Import from reorganized module
+from flext_tap_oracle_oic.tap_client import TapOIC
 
 
 class TestTapOIC:
