@@ -12,6 +12,8 @@ from typing import TYPE_CHECKING
 
 import requests
 
+JSON_MIME = "application/json"
+
 # Constants
 HTTP_OK = 200
 
@@ -29,8 +31,8 @@ class OICHealthChecker:
 
     def _get_headers(self) -> dict[str, str]:
         headers = {
-            "Accept": FlextApiConstants.ContentTypes.JSON,
-            "Content-Type": FlextApiConstants.ContentTypes.JSON,
+            "Accept": JSON_MIME,
+            "Content-Type": JSON_MIME,
         }
         # Add auth header
         auth_headers = self.authenticator.auth_headers

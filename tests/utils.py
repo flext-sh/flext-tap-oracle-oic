@@ -481,7 +481,7 @@ class TestFileManager:
 
 
 def skip_if_no_internet() -> None:
-    """Skip test if no internet connection available."
+    """Skip test if no internet connection available."""
     try:
         requests.get("https://www.google.com", timeout=5)
     except requests.RequestException:
@@ -500,7 +500,8 @@ def skip_if_no_production_config() -> None:
 
 
 def requires_python_version(min_version: str) -> object:
-    """Require minimum Python version for test."
+    """Require minimum Python version for test."""
+
     def decorator(func: Any) -> object:
         if version.parse(
             f"{sys.version_info.major}.{sys.version_info.minor}",
@@ -518,6 +519,7 @@ def requires_python_version(min_version: str) -> object:
 @contextmanager
 def timeout_test(seconds: float) -> object:
     """Add timeout to test function."""
+
     def timeout_handler(signum: int, frame: Any) -> NoReturn:
         msg: str = f"Test timed out after {seconds} seconds"
         raise TimeoutError(msg)
@@ -567,7 +569,7 @@ class ConcurrentTestRunner:
 
 
 def assert_config_valid(config: dict[str, object]) -> None:
-    """Assert configuration is valid for OIC tap."
+    """Assert configuration is valid for OIC tap."""
     if "base_url" not in config:
         msg = "base_url is required in config"
         raise AssertionError(msg)

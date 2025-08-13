@@ -128,7 +128,10 @@ class OICPaginator(BaseOffsetPaginator):
         if len(self._response_times) >= MIN_RESPONSE_SAMPLES:
             avg_time = sum(self._response_times) / len(self._response_times)
 
-            if avg_time > SLOW_RESPONSE_THRESHOLD and self._page_size > self._min_page_size:
+            if (
+                avg_time > SLOW_RESPONSE_THRESHOLD
+                and self._page_size > self._min_page_size
+            ):
                 # Slow responses - reduce page size
                 self._page_size = max(self._min_page_size, int(self._page_size * 0.8))
             elif avg_time < 1.0 and self._page_size < self._max_page_size:
@@ -363,7 +366,9 @@ class OICBaseStream(RESTStream[dict[str, object]]):
             if isinstance(item, dict):
                 yield item
 
-    def _process_dict_data(self, data: dict[str, object]) -> Iterator[dict[str, object]]:
+    def _process_dict_data(
+        self, data: dict[str, object],
+    ) -> Iterator[dict[str, object]]:
         """Process dict-type response data with OIC format detection."""
         if "items" in data:
             items = data["items"]

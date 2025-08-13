@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 from unittest.mock import Mock
@@ -201,9 +203,10 @@ class TestTapOracleOICE2E:
 
     def test_cli_discovery(self, config_path: str) -> None:
         """Test CLI discovery."""
+        python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
         result = subprocess.run(
             [
-                "python",
+                python_exe,
                 "-m",
                 "flext_tap_oracle_oic",
                 "--config",
@@ -332,9 +335,10 @@ class TestTapOracleOICE2E:
         """Test full extraction flow."""
         # 1. Run discovery
         catalog_file = tmp_path / "catalog.json"
+        python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
         discover_result = subprocess.run(
             [
-                "python",
+                python_exe,
                 "-m",
                 "flext_tap_oracle_oic",
                 "--config",
@@ -370,9 +374,10 @@ class TestTapOracleOICE2E:
 
         # 2. Run extraction with catalog
         tmp_path / "output.jsonl"
+        python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
         extract_result = subprocess.run(
             [
-                "python",
+                python_exe,
                 "-m",
                 "flext_tap_oracle_oic",
                 "--config",
@@ -418,8 +423,9 @@ class TestTapOracleOICE2E:
 
         # If config doesn't exist, it should be generated
         if not config_path.exists():
+            python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
             result = subprocess.run(
-                ["python", "generate_config.py"],
+                [python_exe, "generate_config.py"],
                 capture_output=True,
                 text=True,
                 cwd=Path(__file__).parent.parent,

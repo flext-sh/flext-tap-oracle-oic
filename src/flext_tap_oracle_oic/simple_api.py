@@ -42,8 +42,12 @@ def setup_oic_tap(
             config = {
                 "oauth_client_id": os.getenv("OIC_CLIENT_ID", "your-client-id"),
                 "oauth_client_secret": os.getenv("OIC_CLIENT_SECRET", "your-secret"),
-                "oauth_token_url": os.getenv("OIC_TOKEN_URL", "https://idcs/oauth2/v1/token"),
-                "oic_url": os.getenv("OIC_URL", "https://instance.integration.ocp.oraclecloud.com"),
+                "oauth_token_url": os.getenv(
+                    "OIC_TOKEN_URL", "https://idcs/oauth2/v1/token",
+                ),
+                "oic_url": os.getenv(
+                    "OIC_URL", "https://instance.integration.ocp.oraclecloud.com",
+                ),
             }
 
         return FlextResult.ok(config)
@@ -75,7 +79,9 @@ def create_oic_auth_config(
             oauth_client_id=client_id,
             oauth_client_secret=SecretStr(client_secret),
             oauth_token_url=token_url,
-            oauth_scope=cast("str", kwargs.get("oauth_scope", "urn:opc:resource:consumer:all")),
+            oauth_scope=cast(
+                "str", kwargs.get("oauth_scope", "urn:opc:resource:consumer:all"),
+            ),
         )
 
         return FlextResult.ok(config)
@@ -125,11 +131,18 @@ def validate_oic_config(config: object) -> FlextResult[bool]:
     try:
         # Basic validation for dictionary config
         if isinstance(config, dict):
-            required_keys = ["oauth_client_id", "oauth_client_secret", "oauth_token_url", "oic_url"]
+            required_keys = [
+                "oauth_client_id",
+                "oauth_client_secret",
+                "oauth_token_url",
+                "oic_url",
+            ]
             missing_keys = [key for key in required_keys if not config.get(key)]
 
             if missing_keys:
-                return FlextResult.fail(f"Missing required configuration keys: {missing_keys}")
+                return FlextResult.fail(
+                    f"Missing required configuration keys: {missing_keys}",
+                )
 
         return FlextResult.ok(data=True)
 
