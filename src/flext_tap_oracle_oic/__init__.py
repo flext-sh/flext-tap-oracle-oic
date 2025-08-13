@@ -69,7 +69,7 @@ with contextlib.suppress(ImportError):
     from flext_tap_oracle_oic.tap_streams import OICBaseStream, OICPaginator
 
 with contextlib.suppress(ImportError):
-    from flext_tap_oracle_oic.tap_models import OICIntegration
+    from flext_tap_oracle_oic.models import OICIntegration
 
 with contextlib.suppress(ImportError):
     from flext_tap_oracle_oic.tap_config import OICAuthConfig, OICConnectionConfig

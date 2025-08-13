@@ -7,10 +7,10 @@ Module test_e2e_complete.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import shutil
-import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -204,27 +204,36 @@ class TestTapOracleOICE2E:
     def test_cli_discovery(self, config_path: str) -> None:
         """Test CLI discovery."""
         python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
-        result = subprocess.run(
-            [
-                python_exe,
-                "-m",
-                "flext_tap_oracle_oic",
-                "--config",
-                config_path,
-                "--discover",
-            ],
-            capture_output=True,
-            text=True,
-            cwd=Path(__file__).parent.parent,
-            check=False,
+        async def _run(cmd_list: list[str], cwd: str | None = None) -> tuple[int, str, str]:
+            process = await asyncio.create_subprocess_exec(
+                *cmd_list,
+                cwd=cwd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            stdout, stderr = await process.communicate()
+            return process.returncode, stdout.decode(), stderr.decode()
+
+        rc, out, err = asyncio.run(
+            _run(
+                [
+                    python_exe,
+                    "-m",
+                    "flext_tap_oracle_oic",
+                    "--config",
+                    config_path,
+                    "--discover",
+                ],
+                cwd=str(Path(__file__).parent.parent),
+            ),
         )
 
-        if result.returncode != 0:
-            msg: str = f"Expected {0}, got {result.returncode}"
+        if rc != 0:
+            msg: str = f"Expected {0}, got {rc}"
             raise AssertionError(msg)
 
         # Extract JSON from output (skip log lines)
-        output_lines = result.stdout.strip().split("\n")
+        output_lines = out.strip().split("\n")
         json_lines = []
         in_json = False
 
@@ -336,27 +345,36 @@ class TestTapOracleOICE2E:
         # 1. Run discovery
         catalog_file = tmp_path / "catalog.json"
         python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
-        discover_result = subprocess.run(
-            [
-                python_exe,
-                "-m",
-                "flext_tap_oracle_oic",
-                "--config",
-                config_path,
-                "--discover",
-            ],
-            capture_output=True,
-            text=True,
-            cwd=Path(__file__).parent.parent,
-            check=False,
+        async def _run(cmd_list: list[str], cwd: str | None = None) -> tuple[int, str, str]:
+            process = await asyncio.create_subprocess_exec(
+                *cmd_list,
+                cwd=cwd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            stdout, stderr = await process.communicate()
+            return process.returncode, stdout.decode(), stderr.decode()
+
+        rc1, out1, err1 = asyncio.run(
+            _run(
+                [
+                    python_exe,
+                    "-m",
+                    "flext_tap_oracle_oic",
+                    "--config",
+                    config_path,
+                    "--discover",
+                ],
+                cwd=str(Path(__file__).parent.parent),
+            ),
         )
 
-        if discover_result.returncode != 0:
-            msg: str = f"Expected {0}, got {discover_result.returncode}"
+        if rc1 != 0:
+            msg: str = f"Expected {0}, got {rc1}"
             raise AssertionError(msg)
 
         # Extract JSON from stdout (skip log lines)
-        output_lines = discover_result.stdout.strip().split("\n")
+        output_lines = out1.strip().split("\n")
         json_lines = []
         in_json = False
 
@@ -375,40 +393,39 @@ class TestTapOracleOICE2E:
         # 2. Run extraction with catalog
         tmp_path / "output.jsonl"
         python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
-        extract_result = subprocess.run(
-            [
-                python_exe,
-                "-m",
-                "flext_tap_oracle_oic",
-                "--config",
-                config_path,
-                "--catalog",
-                str(catalog_file),
-            ],
-            capture_output=True,
-            text=True,
-            cwd=Path(__file__).parent.parent,
-            check=False,
+        rc2, out2, err2 = asyncio.run(
+            _run(
+                [
+                    python_exe,
+                    "-m",
+                    "flext_tap_oracle_oic",
+                    "--config",
+                    config_path,
+                    "--catalog",
+                    str(catalog_file),
+                ],
+                cwd=str(Path(__file__).parent.parent),
+            ),
         )
 
         # Check extraction completed (allowing connection errors for test credentials)
-        if extract_result.returncode != 0:
+        if rc2 != 0:
             # For E2E tests with mock credentials, connection errors are expected
             if (
-                "ConnectionError" in extract_result.stderr
-                or "Name or service not known" in extract_result.stderr
+                "ConnectionError" in err2
+                or "Name or service not known" in err2
             ):
                 # This is expected with test.* hostnames
                 pytest.skip(
                     "Skipping extraction test due to mock credentials causing connection error",
                 )
             # Real error - should fail the test
-            elif extract_result.returncode != 0:
-                msg: str = f"Expected 0, got {extract_result.returncode}. Extraction failed: {extract_result.stderr}"
+            elif rc2 != 0:
+                msg: str = f"Expected 0, got {rc2}. Extraction failed: {err2}"
                 raise AssertionError(msg)
 
         # Check output contains Singer messages
-        output_lines = extract_result.stdout.strip().split("\n")
+        output_lines = out2.strip().split("\n")
         for line in output_lines:
             msg = json.loads(line)
             if msg:
@@ -424,16 +441,21 @@ class TestTapOracleOICE2E:
         # If config doesn't exist, it should be generated
         if not config_path.exists():
             python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
-            result = subprocess.run(
-                [python_exe, "generate_config.py"],
-                capture_output=True,
-                text=True,
-                cwd=Path(__file__).parent.parent,
-                input="y\n",
-                check=False,
+            async def _run_input(cmd_list: list[str], cwd: str | None = None, input_text: str = "") -> tuple[int, str, str]:
+                process = await asyncio.create_subprocess_exec(
+                    *cmd_list,
+                    cwd=cwd,
+                    stdin=asyncio.subprocess.PIPE,
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE,
+                )
+                stdout, stderr = await process.communicate(input=input_text.encode())
+                return process.returncode, stdout.decode(), stderr.decode()
+            rc3, _o, _e = asyncio.run(
+                _run_input([python_exe, "generate_config.py"], cwd=str(Path(__file__).parent.parent), input_text="y\n"),
             )
-            if result.returncode != 0:
-                msg: str = f"Expected {0}, got {result.returncode}"
+            if rc3 != 0:
+                msg: str = f"Expected {0}, got {rc3}"
                 raise AssertionError(msg)
             assert config_path.exists()
 
