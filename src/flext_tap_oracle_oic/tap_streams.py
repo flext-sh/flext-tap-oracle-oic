@@ -59,6 +59,7 @@ class OICPaginator(BaseOffsetPaginator):
     """
 
     def __init__(self, start_value: int = 0, page_size: int = 100) -> None:
+        """Initialize paginator with starting offset and page size."""
         super().__init__(start_value, page_size)
         self._max_page_size = 1000
         self._min_page_size = 10

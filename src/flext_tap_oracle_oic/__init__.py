@@ -103,12 +103,6 @@ __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 
 # === COMPLETE PUBLIC API EXPORTS ===
 __all__: list[str] = [
-    "annotations", "FlextResult", "FlextValueObject", "get_logger", "BatchSink",
-    "FlextMeltanoBaseService", "FlextMeltanoBridge", "FlextMeltanoConfig", "FlextMeltanoEvent",
-    "FlextMeltanoTapService", "OAuthAuthenticator", "PropertiesList", "Property", "Sink", "SQLSink",
-    "Stream", "Tap", "Target", "create_meltano_tap_service", "get_tap_test_class", "singer_typing",
-    "__version_info__",
-] = [
     # === FLEXT-MELTANO COMPLETE RE-EXPORTS ===
     "BatchSink",
     "FlextMeltanoBaseService",

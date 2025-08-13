@@ -27,7 +27,7 @@ from pydantic import SecretStr
 def setup_oic_tap(
     config: object | None = None,
 ) -> FlextResult[object]:
-    """Setup Oracle Integration Cloud tap with basic configuration.
+    """Set up Oracle Integration Cloud tap with basic configuration.
 
     Args:
         config: Optional configuration override
