@@ -43,10 +43,12 @@ def setup_oic_tap(
                 "oauth_client_id": os.getenv("OIC_CLIENT_ID", "your-client-id"),
                 "oauth_client_secret": os.getenv("OIC_CLIENT_SECRET", "your-secret"),
                 "oauth_token_url": os.getenv(
-                    "OIC_TOKEN_URL", "https://idcs/oauth2/v1/token",
+                    "OIC_TOKEN_URL",
+                    "https://idcs/oauth2/v1/token",
                 ),
                 "oic_url": os.getenv(
-                    "OIC_URL", "https://instance.integration.ocp.oraclecloud.com",
+                    "OIC_URL",
+                    "https://instance.integration.ocp.oraclecloud.com",
                 ),
             }
 
@@ -80,7 +82,8 @@ def create_oic_auth_config(
             oauth_client_secret=SecretStr(client_secret),
             oauth_token_url=token_url,
             oauth_scope=cast(
-                "str", kwargs.get("oauth_scope", "urn:opc:resource:consumer:all"),
+                "str",
+                kwargs.get("oauth_scope", "urn:opc:resource:consumer:all"),
             ),
         )
 

@@ -204,7 +204,11 @@ class TestTapOracleOICE2E:
     def test_cli_discovery(self, config_path: str) -> None:
         """Test CLI discovery."""
         python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
-        async def _run(cmd_list: list[str], cwd: str | None = None) -> tuple[int, str, str]:
+
+        async def _run(
+            cmd_list: list[str],
+            cwd: str | None = None,
+        ) -> tuple[int, str, str]:
             process = await asyncio.create_subprocess_exec(
                 *cmd_list,
                 cwd=cwd,
@@ -214,7 +218,7 @@ class TestTapOracleOICE2E:
             stdout, stderr = await process.communicate()
             return process.returncode, stdout.decode(), stderr.decode()
 
-        rc, out, err = asyncio.run(
+        rc, out, _err = asyncio.run(
             _run(
                 [
                     python_exe,
@@ -345,7 +349,11 @@ class TestTapOracleOICE2E:
         # 1. Run discovery
         catalog_file = tmp_path / "catalog.json"
         python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
-        async def _run(cmd_list: list[str], cwd: str | None = None) -> tuple[int, str, str]:
+
+        async def _run(
+            cmd_list: list[str],
+            cwd: str | None = None,
+        ) -> tuple[int, str, str]:
             process = await asyncio.create_subprocess_exec(
                 *cmd_list,
                 cwd=cwd,
@@ -355,7 +363,7 @@ class TestTapOracleOICE2E:
             stdout, stderr = await process.communicate()
             return process.returncode, stdout.decode(), stderr.decode()
 
-        rc1, out1, err1 = asyncio.run(
+        rc1, out1, _err1 = asyncio.run(
             _run(
                 [
                     python_exe,
@@ -411,10 +419,7 @@ class TestTapOracleOICE2E:
         # Check extraction completed (allowing connection errors for test credentials)
         if rc2 != 0:
             # For E2E tests with mock credentials, connection errors are expected
-            if (
-                "ConnectionError" in err2
-                or "Name or service not known" in err2
-            ):
+            if "ConnectionError" in err2 or "Name or service not known" in err2:
                 # This is expected with test.* hostnames
                 pytest.skip(
                     "Skipping extraction test due to mock credentials causing connection error",
@@ -440,8 +445,15 @@ class TestTapOracleOICE2E:
 
         # If config doesn't exist, it should be generated
         if not config_path.exists():
-            python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
-            async def _run_input(cmd_list: list[str], cwd: str | None = None, input_text: str = "") -> tuple[int, str, str]:
+            python_exe = (
+                shutil.which("python3") or shutil.which("python") or sys.executable
+            )
+
+            async def _run_input(
+                cmd_list: list[str],
+                cwd: str | None = None,
+                input_text: str = "",
+            ) -> tuple[int, str, str]:
                 process = await asyncio.create_subprocess_exec(
                     *cmd_list,
                     cwd=cwd,
@@ -451,8 +463,13 @@ class TestTapOracleOICE2E:
                 )
                 stdout, stderr = await process.communicate(input=input_text.encode())
                 return process.returncode, stdout.decode(), stderr.decode()
+
             rc3, _o, _e = asyncio.run(
-                _run_input([python_exe, "generate_config.py"], cwd=str(Path(__file__).parent.parent), input_text="y\n"),
+                _run_input(
+                    [python_exe, "generate_config.py"],
+                    cwd=str(Path(__file__).parent.parent),
+                    input_text="y\n",
+                ),
             )
             if rc3 != 0:
                 msg: str = f"Expected {0}, got {rc3}"
