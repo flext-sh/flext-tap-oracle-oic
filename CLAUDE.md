@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is **flext-tap-oracle-oic**, a Singer Tap for Oracle Integration Cloud (OIC) data extraction. It's part of the FLEXT ecosystem, an enterprise-grade distributed data integration platform. The tap implements Clean Architecture + Domain-Driven Design (DDD) patterns using Python 3.13+ with zero-tolerance quality standards.
+This is **flext-tap-oracle-oic**, a Singer Tap for Oracle Integration Cloud (OIC) data extraction. The tap implements Clean Architecture + Domain-Driven Design (DDD) patterns using Python 3.13+ with zero-tolerance quality standards.
 
 ## Architecture
 
