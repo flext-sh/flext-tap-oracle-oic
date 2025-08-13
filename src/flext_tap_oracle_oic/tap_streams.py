@@ -367,7 +367,8 @@ class OICBaseStream(RESTStream[dict[str, object]]):
                 yield item
 
     def _process_dict_data(
-        self, data: dict[str, object],
+        self,
+        data: dict[str, object],
     ) -> Iterator[dict[str, object]]:
         """Process dict-type response data with OIC format detection."""
         if "items" in data:
