@@ -16,7 +16,7 @@ from flext_tap_oracle_oic.tap_client import TapOIC
 
 
 def main() -> None:
-    """Main entry point for Oracle OIC tap."""
+    """Provide entry point for Oracle OIC tap."""
     TapOIC.cli()
 
 

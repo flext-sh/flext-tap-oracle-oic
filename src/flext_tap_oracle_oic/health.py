@@ -23,13 +23,14 @@ class OICHealthChecker:
     """Health check utilities for Oracle Integration Cloud."""
 
     def __init__(self, base_url: str, authenticator: OAuthAuthenticator) -> None:
+        """Initialize health checker with base URL and authenticator."""
         self.base_url = base_url.rstrip("/")
         self.authenticator = authenticator
 
     def _get_headers(self) -> dict[str, str]:
         headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
+            "Accept": FlextApiConstants.ContentTypes.JSON,
+            "Content-Type": FlextApiConstants.ContentTypes.JSON,
         }
         # Add auth header
         auth_headers = self.authenticator.auth_headers
