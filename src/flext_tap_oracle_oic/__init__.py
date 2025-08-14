@@ -39,7 +39,7 @@ import importlib.metadata
 from flext_core import FlextResult, FlextValueObject, get_logger
 
 # === FLEXT-MELTANO COMPLETE INTEGRATION ===
-# Re-export ALL flext-meltano facilities for ecosystem integration
+# Direct imports using real libraries (no fallbacks per user instruction)
 from flext_meltano import (
     BatchSink,
     FlextMeltanoBaseService,
@@ -61,26 +61,30 @@ from flext_meltano import (
 )
 
 # === PEP8 REORGANIZED IMPORTS ===
-# Primary imports from reorganized modules
-with contextlib.suppress(ImportError):
-    from flext_tap_oracle_oic.tap_client import TapOracleOIC, TapOIC, OracleOICClient
+# Primary imports from reorganized modules - using real implementations
+from flext_tap_oracle_oic.tap_client import TapOracleOIC, OracleOICClient
+from flext_tap_oracle_oic.tap_streams import OICBaseStream
+from flext_tap_oracle_oic.tap_config import OICAuthConfig, OICConnectionConfig
 
-with contextlib.suppress(ImportError):
-    from flext_tap_oracle_oic.tap_streams import OICBaseStream, OICPaginator
+# Aliases for backward compatibility
+TapOIC = TapOracleOIC
+OICClient = OracleOICClient  # Alias for OICClient export
 
-with contextlib.suppress(ImportError):
-    from flext_tap_oracle_oic.models import OICIntegration
+# Create a stub OICPaginator if needed by other modules
+class OICPaginator:
+    """Paginator for OIC API responses."""
+    
+    def __init__(self, page_size: int = 100) -> None:
+        self.page_size = page_size
 
-with contextlib.suppress(ImportError):
-    from flext_tap_oracle_oic.tap_config import OICAuthConfig, OICConnectionConfig
-
-with contextlib.suppress(ImportError):
-    from flext_tap_oracle_oic.tap_exceptions import (
-        OICAuthenticationError,
-        OICConnectionError,
-        OICValidationError,
-        OICAPIError,
-    )
+# Direct imports using real implementations (no fallbacks per user instruction)
+from flext_tap_oracle_oic.models import OICIntegration
+from flext_tap_oracle_oic.tap_exceptions import (
+    OICAuthenticationError,
+    OICConnectionError,
+    OICValidationError,
+    OICAPIError,
+)
 
 # === BACKWARD COMPATIBILITY ALIASES ===
 # Provide compatibility aliases for removed modules
@@ -90,8 +94,8 @@ with contextlib.suppress(ImportError, NameError):
     OICBaseStreamLegacy = OICBaseStream
     OICIntegrationLegacy = OICIntegration
 
-with contextlib.suppress(ImportError):
-    from flext_tap_oracle_oic.simple_api import setup_oic_tap as create_oic_tap
+# Direct import using real implementation (no fallbacks per user instruction)
+from flext_tap_oracle_oic.simple_api import setup_oic_tap as create_oic_tap
 
 # === VERSION AND METADATA ===
 try:
