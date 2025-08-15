@@ -1,34 +1,4 @@
-"""FLEXT Tap Oracle OIC - Enterprise Singer Tap for Oracle Integration Cloud.
-
-**REORGANIZED**: PEP8 systematic reorganization with maximum composition and zero duplication
-**Architecture**: Production-ready Singer tap implementing Clean Architecture, DDD, and enterprise patterns
-**Integration**: Complete flext-meltano + flext-oracle-oic-ext ecosystem integration
-**Quality**: 100% type safety, 90%+ test coverage, zero-tolerance quality standards
-
-## PEP8 Reorganized Structure:
-
-### Core Modules (PEP8 Names):
-- **tap_config.py**: Configuration patterns with flext-core + flext-oracle-oic-ext
-- **tap_client.py**: Main tap class with maximum library composition
-- **tap_streams.py**: Stream definitions with intelligent OIC API support
-- **tap_models.py**: Domain models and entities with DDD patterns
-- **tap_exceptions.py**: Exception handling with flext-core factory patterns
-
-### Integration Strategy:
-1. **Maximum Composition**: Uses flext-core + flext-meltano + flext-oracle-oic-ext
-2. **Zero Duplication**: Eliminates 372+ lines of duplicated OIC client code
-3. **Backward Compatibility**: All original imports and APIs preserved
-4. **Library Integration**: Complete flext-oracle-oic-ext utilization
-
-### Enterprise Features:
-- **flext-oracle-oic-ext Integration**: Complete OIC client library utilization
-- **flext-meltano Integration**: All facilities (base classes, schemas, bridge)
-- **flext-core Foundation**: FlextResult, logging, error handling throughout
-- **Production Quality**: 100% MyPy compliance, comprehensive error handling
-
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-"""
+"""Enterprise Singer Tap for Oracle Integration Cloud data extraction."""
 
 from __future__ import annotations
 

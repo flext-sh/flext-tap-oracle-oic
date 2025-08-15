@@ -20,7 +20,7 @@ from __future__ import annotations
 from typing import Optional
 
 from pydantic import Field, HttpUrl
-from flext_core import FlextSettings, FlextValueObject, FlextResult, get_logger
+from flext_core import FlextSettings, FlextValueObject, FlextResult, FlextBaseConfigModel, get_logger
 
 logger = get_logger(__name__)
 
@@ -96,11 +96,11 @@ class OICConnectionConfig(FlextValueObject):
         }
 
 
-class TapOracleOICConfig(FlextSettings):
+class TapOracleOICConfig(FlextBaseConfigModel):
     """Complete Tap Oracle OIC configuration combining auth and connection.
     
-    Real configuration implementation using flext-core patterns
-    with environment variable integration and comprehensive validation.
+    Real configuration implementation using FlextBaseConfigModel patterns
+    with comprehensive validation and business rule enforcement.
     """
     
     # Authentication configuration
@@ -119,6 +119,42 @@ class TapOracleOICConfig(FlextSettings):
     # Stream configuration
     include_extended: bool = Field(default=False, description="Include extended streams")
     start_date: Optional[str] = Field(default=None, description="Start date for incremental extraction")
+    
+    def validate_business_rules(self) -> FlextResult[None]:
+        """Validate Oracle OIC tap configuration business rules using FlextBaseConfigModel pattern."""
+        # Validate OAuth2 authentication configuration
+        auth_validation = self.auth_config.validate_business_rules()
+        if not auth_validation.success:
+            return auth_validation
+        
+        # Validate connection configuration
+        connection_validation = self.connection_config.validate_business_rules()
+        if not connection_validation.success:
+            return connection_validation
+        
+        # Validate stream configuration
+        if self.start_date:
+            # Basic ISO date format validation
+            if len(self.start_date) < 10:  # Minimum YYYY-MM-DD
+                return FlextResult.fail("Start date must be in YYYY-MM-DD format or ISO 8601")
+            
+            # Check for reasonable date format
+            if not any(char in self.start_date for char in ['-', 'T']):
+                return FlextResult.fail("Start date must be in ISO date format")
+        
+        # Cross-validate authentication and connection URLs
+        try:
+            token_host = str(self.oauth_token_url).split('//')[1].split('/')[0]
+            base_host = str(self.base_url).split('//')[1].split('/')[0] 
+            
+            # Basic validation that hosts are properly formatted
+            if not token_host or not base_host:
+                return FlextResult.fail("OAuth token URL and base URL must be valid URLs")
+                
+        except (IndexError, AttributeError) as e:
+            return FlextResult.fail(f"URL validation failed: {e}")
+        
+        return FlextResult.ok(None)
     
     @property
     def auth_config(self) -> OICAuthConfig:
@@ -152,6 +188,7 @@ __all__: list[str] = [
     "OICAuthConfig",
     "OICConnectionConfig", 
     "TapOracleOICConfig",
+    "FlextBaseConfigModel",
     "FlextSettings",
     "get_logger",
 ]
