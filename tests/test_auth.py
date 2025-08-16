@@ -12,6 +12,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 import requests
+from flext_meltano import OAuthAuthenticator
 from flext_oracle_oic_ext import (
     OICTapAuthenticator as OICOAuth2Authenticator,
 )
@@ -184,8 +185,6 @@ class TestOICOAuth2Authenticator:
         authenticator: OICOAuth2Authenticator,
     ) -> None:
         """Test authenticator inherits from Singer SDK properly."""
-        from flext_meltano import OAuthAuthenticator
-
         assert isinstance(authenticator, OAuthAuthenticator)
 
     def test_stream_reference(

@@ -28,6 +28,9 @@ from pydantic import ConfigDict, Field, HttpUrl
 
 logger = get_logger(__name__)
 
+# Constants for validation limits
+MIN_DATE_LENGTH = 10  # Minimum length for YYYY-MM-DD format
+
 
 class OICAuthConfig(FlextValueObject):
     """Oracle Integration Cloud OAuth2 authentication configuration.
@@ -177,18 +180,36 @@ class TapOracleOICConfig(FlextBaseConfigModel):
             return connection_validation
 
         # Validate stream configuration
-        if self.start_date:
-            # Basic ISO date format validation
-            if len(self.start_date) < 10:  # Minimum YYYY-MM-DD
-                return FlextResult.fail(
-                    "Start date must be in YYYY-MM-DD format or ISO 8601",
-                )
-
-            # Check for reasonable date format
-            if not any(char in self.start_date for char in ["-", "T"]):
-                return FlextResult.fail("Start date must be in ISO date format")
+        stream_validation = self._validate_stream_configuration()
+        if not stream_validation.success:
+            return stream_validation
 
         # Cross-validate authentication and connection URLs
+        url_validation = self._validate_urls()
+        if not url_validation.success:
+            return url_validation
+
+        return FlextResult.ok(None)
+
+    def _validate_stream_configuration(self) -> FlextResult[None]:
+        """Validate stream configuration."""
+        if not self.start_date:
+            return FlextResult.ok(None)
+
+        # Basic ISO date format validation
+        if len(self.start_date) < MIN_DATE_LENGTH:  # Minimum YYYY-MM-DD
+            return FlextResult.fail(
+                "Start date must be in YYYY-MM-DD format or ISO 8601",
+            )
+
+        # Check for reasonable date format
+        if not any(char in self.start_date for char in ["-", "T"]):
+            return FlextResult.fail("Start date must be in ISO date format")
+
+        return FlextResult.ok(None)
+
+    def _validate_urls(self) -> FlextResult[None]:
+        """Validate OAuth token URL and base URL."""
         try:
             token_host = str(self.oauth_token_url).split("//")[1].split("/")[0]
             base_host = str(self.base_url).split("//")[1].split("/")[0]

@@ -7,9 +7,12 @@ integrations, and the overall OIC instance health.
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 import requests
-from flext_meltano import OAuthAuthenticator
+
+if TYPE_CHECKING:
+    from flext_meltano import OAuthAuthenticator
 
 JSON_MIME = "application/json"
 
