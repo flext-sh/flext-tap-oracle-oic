@@ -13,10 +13,7 @@ from __future__ import annotations
 import os
 from typing import cast
 
-# flext-core foundation
 from flext_core import FlextResult
-
-# Use flext-oracle-oic-ext for configuration classes
 from flext_oracle_oic_ext import (
     OICAuthConfig,
     OICConnectionConfig,

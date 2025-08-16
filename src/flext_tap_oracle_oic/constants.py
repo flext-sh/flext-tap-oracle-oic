@@ -7,8 +7,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-# Import flext-core constants for inheritance
-from flext_core.constants import FlextConstants
+from flext_core import FlextConstants
 
 
 class FlextOracleOicConstants(FlextConstants):

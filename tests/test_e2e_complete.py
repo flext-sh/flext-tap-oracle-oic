@@ -18,12 +18,9 @@ from unittest.mock import Mock
 
 import pytest
 from flext_core import get_logger
+from singer_sdk import ConfigValidationError
 
-# Use ValidationError from pydantic instead
-from singer_sdk.exceptions import ConfigValidationError
-
-# Import from reorganized module
-from flext_tap_oracle_oic.tap_client import TapOIC
+from flext_tap_oracle_oic import TapOIC
 
 """Tests all functionalities including:
 - Discovery

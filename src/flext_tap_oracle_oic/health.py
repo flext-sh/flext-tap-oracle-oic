@@ -4,21 +4,17 @@ This module provides health checking capabilities for OIC connections,
 integrations, and the overall OIC instance health.
 """
 
-# MIGRATED: Singer SDK imports centralized via flext-meltano
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
 
 import requests
+from flext_meltano import OAuthAuthenticator
 
 JSON_MIME = "application/json"
 
 # Constants
 HTTP_OK = 200
-
-if TYPE_CHECKING:
-    from flext_meltano import OAuthAuthenticator
 
 
 class OICHealthChecker:

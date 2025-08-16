@@ -23,10 +23,8 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 import requests
-from flext_core import get_logger
-from flext_core.exceptions import FlextError as FlextServiceError
-from singer_sdk.pagination import BaseOffsetPaginator
-from singer_sdk.streams import RESTStream
+from flext_core import FlextError as FlextServiceError, get_logger
+from singer_sdk import BaseOffsetPaginator, RESTStream
 
 from flext_tap_oracle_oic.constants import (
     OIC_API_BASE_PATH,

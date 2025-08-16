@@ -18,7 +18,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-# Re-export domain entities
 from flext_tap_oracle_oic.domain.entities import OICIntegration
 
 # Export for backward compatibility and module interface

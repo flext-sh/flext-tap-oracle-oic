@@ -10,12 +10,9 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-# MIGRATED: Singer SDK imports centralized via flext-meltano
 from flext_meltano import singer_typing as th
 
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
-
-# CORE BUSINESS STREAMS
 
 
 class IntegrationsStream(OICBaseStream):
