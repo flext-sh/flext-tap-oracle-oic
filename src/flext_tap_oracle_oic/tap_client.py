@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING, ClassVar, cast
 
 import requests
 from flext_core import FlextResult, get_logger
-from flext_meltano import Stream, Tap
+from flext_meltano import Tap
 from singer_sdk import Stream
 
 from flext_tap_oracle_oic.streams_consolidated import (
@@ -109,7 +109,7 @@ class OracleOICClient:
         headers_result = self._get_auth_headers()
         if not headers_result.success:
             return FlextResult.fail(
-                f"Failed to get auth headers: {headers_result.error}"
+                f"Failed to get auth headers: {headers_result.error}",
             )
 
         try:
@@ -128,13 +128,15 @@ class OracleOICClient:
             return FlextResult.fail(f"Unexpected OIC API error: {e}")
 
     def post(
-        self, endpoint: str, data: dict[str, object] | None = None
+        self,
+        endpoint: str,
+        data: dict[str, object] | None = None,
     ) -> FlextResult[requests.Response]:
         """Make authenticated POST request to OIC API."""
         headers_result = self._get_auth_headers()
         if not headers_result.success:
             return FlextResult.fail(
-                f"Failed to get auth headers: {headers_result.error}"
+                f"Failed to get auth headers: {headers_result.error}",
             )
 
         try:
