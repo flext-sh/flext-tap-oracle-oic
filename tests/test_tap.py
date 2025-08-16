@@ -5,14 +5,14 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError as ConfigValidationError
 
-# Import from reorganized module
-from flext_tap_oracle_oic.tap_client import TapOIC
+from flext_tap_oracle_oic import TapOIC
 
 
 class TestTapOIC:
     """Test cases for TapOIC."""
 
     def test_tap_initialization(self) -> None:
+        """Test tap initialization function."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client",
@@ -26,6 +26,7 @@ class TestTapOIC:
         assert tap.config == config
 
     def test_discover_streams(self) -> None:
+        """Test discover streams function."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client",
@@ -46,9 +47,7 @@ class TestTapOIC:
         assert "connections" in stream_names
 
     def test_config_validation(self) -> None:
-        """Test config validation."""
-        # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
-
+        """Test config validation."""  # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
         # Missing required fields should raise exception when validation is enabled
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
@@ -57,6 +56,7 @@ class TestTapOIC:
             TapOIC(config=config, validate_config=True)
 
     def test_include_extended_streams(self) -> None:
+        """Test include extended streams function."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client",

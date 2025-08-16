@@ -17,26 +17,30 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Optional
-
-from pydantic import Field, HttpUrl
-from flext_core import FlextSettings, FlextValueObject, FlextResult, FlextBaseConfigModel, get_logger
+from flext_core import (
+    FlextBaseConfigModel,
+    FlextResult,
+    FlextSettings,
+    FlextValueObject,
+    get_logger,
+)
+from pydantic import ConfigDict, Field, HttpUrl
 
 logger = get_logger(__name__)
 
 
 class OICAuthConfig(FlextValueObject):
     """Oracle Integration Cloud OAuth2 authentication configuration.
-    
+
     Real implementation of OAuth2/IDCS authentication configuration
     with proper field validation and security patterns.
     """
-    
+
     client_id: str = Field(..., description="OAuth2 client ID")
     client_secret: str = Field(..., description="OAuth2 client secret", repr=False)
     token_url: HttpUrl = Field(..., description="OAuth2 token endpoint URL")
     audience: str = Field(..., description="OAuth2 audience/scope")
-    
+
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate OAuth2 configuration business rules."""
         if not self.client_id.strip():
@@ -46,7 +50,7 @@ class OICAuthConfig(FlextValueObject):
         if not self.audience.strip():
             return FlextResult.fail("OAuth2 audience cannot be empty")
         return FlextResult.ok(None)
-    
+
     def get_token_request_data(self) -> dict[str, str]:
         """Get OAuth2 token request data for client credentials flow."""
         return {
@@ -59,17 +63,32 @@ class OICAuthConfig(FlextValueObject):
 
 class OICConnectionConfig(FlextValueObject):
     """Oracle Integration Cloud connection configuration.
-    
+
     Real implementation of OIC connection parameters with proper
     validation and performance tuning capabilities.
     """
-    
+
     base_url: HttpUrl = Field(..., description="OIC instance base URL")
     api_version: str = Field(default="v1", description="OIC API version")
-    timeout: int = Field(default=30, ge=1, le=300, description="Request timeout in seconds")
-    max_retries: int = Field(default=3, ge=0, le=10, description="Maximum retry attempts")
-    page_size: int = Field(default=100, ge=1, le=1000, description="API pagination size")
-    
+    timeout: int = Field(
+        default=30,
+        ge=1,
+        le=300,
+        description="Request timeout in seconds",
+    )
+    max_retries: int = Field(
+        default=3,
+        ge=0,
+        le=10,
+        description="Maximum retry attempts",
+    )
+    page_size: int = Field(
+        default=100,
+        ge=1,
+        le=1000,
+        description="API pagination size",
+    )
+
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate connection configuration business rules."""
         if not self.api_version.strip():
@@ -81,12 +100,12 @@ class OICConnectionConfig(FlextValueObject):
         if self.page_size <= 0:
             return FlextResult.fail("Page size must be positive")
         return FlextResult.ok(None)
-    
+
     @property
     def api_base_url(self) -> str:
         """Get full API base URL with version."""
         return f"{str(self.base_url).rstrip('/')}/ic/api/integration/{self.api_version}"
-    
+
     def get_headers(self) -> dict[str, str]:
         """Get default headers for OIC API requests."""
         return {
@@ -98,64 +117,93 @@ class OICConnectionConfig(FlextValueObject):
 
 class TapOracleOICConfig(FlextBaseConfigModel):
     """Complete Tap Oracle OIC configuration combining auth and connection.
-    
+
     Real configuration implementation using FlextBaseConfigModel patterns
     with comprehensive validation and business rule enforcement.
     """
-    
+
     # Authentication configuration
     oauth_client_id: str = Field(..., description="OAuth2 client ID")
-    oauth_client_secret: str = Field(..., description="OAuth2 client secret", repr=False)
+    oauth_client_secret: str = Field(
+        ...,
+        description="OAuth2 client secret",
+        repr=False,
+    )
     oauth_token_url: HttpUrl = Field(..., description="OAuth2 token endpoint URL")
     oauth_audience: str = Field(..., description="OAuth2 audience/scope")
-    
+
     # Connection configuration
     base_url: HttpUrl = Field(..., description="OIC instance base URL")
     api_version: str = Field(default="v1", description="OIC API version")
-    timeout: int = Field(default=30, ge=1, le=300, description="Request timeout in seconds")
-    max_retries: int = Field(default=3, ge=0, le=10, description="Maximum retry attempts")
-    page_size: int = Field(default=100, ge=1, le=1000, description="API pagination size")
-    
+    timeout: int = Field(
+        default=30,
+        ge=1,
+        le=300,
+        description="Request timeout in seconds",
+    )
+    max_retries: int = Field(
+        default=3,
+        ge=0,
+        le=10,
+        description="Maximum retry attempts",
+    )
+    page_size: int = Field(
+        default=100,
+        ge=1,
+        le=1000,
+        description="API pagination size",
+    )
+
     # Stream configuration
-    include_extended: bool = Field(default=False, description="Include extended streams")
-    start_date: Optional[str] = Field(default=None, description="Start date for incremental extraction")
-    
+    include_extended: bool = Field(
+        default=False,
+        description="Include extended streams",
+    )
+    start_date: str | None = Field(
+        default=None,
+        description="Start date for incremental extraction",
+    )
+
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate Oracle OIC tap configuration business rules using FlextBaseConfigModel pattern."""
         # Validate OAuth2 authentication configuration
         auth_validation = self.auth_config.validate_business_rules()
         if not auth_validation.success:
             return auth_validation
-        
+
         # Validate connection configuration
         connection_validation = self.connection_config.validate_business_rules()
         if not connection_validation.success:
             return connection_validation
-        
+
         # Validate stream configuration
         if self.start_date:
             # Basic ISO date format validation
             if len(self.start_date) < 10:  # Minimum YYYY-MM-DD
-                return FlextResult.fail("Start date must be in YYYY-MM-DD format or ISO 8601")
-            
+                return FlextResult.fail(
+                    "Start date must be in YYYY-MM-DD format or ISO 8601",
+                )
+
             # Check for reasonable date format
-            if not any(char in self.start_date for char in ['-', 'T']):
+            if not any(char in self.start_date for char in ["-", "T"]):
                 return FlextResult.fail("Start date must be in ISO date format")
-        
+
         # Cross-validate authentication and connection URLs
         try:
-            token_host = str(self.oauth_token_url).split('//')[1].split('/')[0]
-            base_host = str(self.base_url).split('//')[1].split('/')[0] 
-            
+            token_host = str(self.oauth_token_url).split("//")[1].split("/")[0]
+            base_host = str(self.base_url).split("//")[1].split("/")[0]
+
             # Basic validation that hosts are properly formatted
             if not token_host or not base_host:
-                return FlextResult.fail("OAuth token URL and base URL must be valid URLs")
-                
+                return FlextResult.fail(
+                    "OAuth token URL and base URL must be valid URLs",
+                )
+
         except (IndexError, AttributeError) as e:
             return FlextResult.fail(f"URL validation failed: {e}")
-        
+
         return FlextResult.ok(None)
-    
+
     @property
     def auth_config(self) -> OICAuthConfig:
         """Get authentication configuration."""
@@ -165,7 +213,7 @@ class TapOracleOICConfig(FlextBaseConfigModel):
             token_url=self.oauth_token_url,
             audience=self.oauth_audience,
         )
-    
+
     @property
     def connection_config(self) -> OICConnectionConfig:
         """Get connection configuration."""
@@ -177,18 +225,15 @@ class TapOracleOICConfig(FlextBaseConfigModel):
             page_size=self.page_size,
         )
 
-    class Config:
-        """Pydantic model configuration."""
-        env_prefix = "TAP_ORACLE_OIC_"
-        case_sensitive = False
+    model_config = ConfigDict(env_prefix="TAP_ORACLE_OIC_", case_sensitive=False)
 
 
 # Main exports
 __all__: list[str] = [
-    "OICAuthConfig",
-    "OICConnectionConfig", 
-    "TapOracleOICConfig",
     "FlextBaseConfigModel",
     "FlextSettings",
+    "OICAuthConfig",
+    "OICConnectionConfig",
+    "TapOracleOICConfig",
     "get_logger",
 ]

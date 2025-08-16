@@ -10,10 +10,9 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-from singer_sdk.exceptions import ConfigValidationError
+from singer_sdk import ConfigValidationError
 
-# Import from reorganized module
-from flext_tap_oracle_oic.tap_client import TapOIC
+from flext_tap_oracle_oic import TapOIC
 
 
 class TestTapOIC:

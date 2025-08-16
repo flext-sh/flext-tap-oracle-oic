@@ -9,7 +9,6 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from enum import StrEnum
 
-# Import from flext-core for foundational patterns (standardized)
 from flext_core import (
     FlextValueObject,
     FlextValueObject as FlextDomainBaseModel,

@@ -40,12 +40,20 @@ from flext_tap_oracle_oic.tap_config import OICAuthConfig, OICConnectionConfig
 TapOIC = TapOracleOIC
 OICClient = OracleOICClient  # Alias for OICClient export
 
+
 # Create a stub OICPaginator if needed by other modules
 class OICPaginator:
     """Paginator for OIC API responses."""
-    
+
     def __init__(self, page_size: int = 100) -> None:
+        """Init   function.
+
+        Args:
+            page_size (int): Description.
+
+        """
         self.page_size = page_size
+
 
 # Direct imports using real implementations (no fallbacks per user instruction)
 from flext_tap_oracle_oic.models import OICIntegration
