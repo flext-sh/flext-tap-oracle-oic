@@ -34,25 +34,25 @@ def setup_oic_tap(
 
     """
     try:
-      if config is None:
-          # Create basic configuration dictionary
-          config = {
-              "oauth_client_id": os.getenv("OIC_CLIENT_ID", "your-client-id"),
-              "oauth_client_secret": os.getenv("OIC_CLIENT_SECRET", "your-secret"),
-              "oauth_token_url": os.getenv(
-                  "OIC_TOKEN_URL",
-                  "https://idcs/oauth2/v1/token",
-              ),
-              "oic_url": os.getenv(
-                  "OIC_URL",
-                  "https://instance.integration.ocp.oraclecloud.com",
-              ),
-          }
+        if config is None:
+            # Create basic configuration dictionary
+            config = {
+                "oauth_client_id": os.getenv("OIC_CLIENT_ID", "your-client-id"),
+                "oauth_client_secret": os.getenv("OIC_CLIENT_SECRET", "your-secret"),
+                "oauth_token_url": os.getenv(
+                    "OIC_TOKEN_URL",
+                    "https://idcs/oauth2/v1/token",
+                ),
+                "oic_url": os.getenv(
+                    "OIC_URL",
+                    "https://instance.integration.ocp.oraclecloud.com",
+                ),
+            }
 
-      return FlextResult.ok(config)
+        return FlextResult.ok(config)
 
     except (ValueError, TypeError) as e:
-      return FlextResult.fail(f"Failed to setup OIC tap: {e}")
+        return FlextResult.fail(f"Failed to setup OIC tap: {e}")
 
 
 def create_oic_auth_config(
@@ -74,20 +74,20 @@ def create_oic_auth_config(
 
     """
     try:
-      config = OICAuthConfig(
-          oauth_client_id=client_id,
-          oauth_client_secret=SecretStr(client_secret),
-          oauth_token_url=token_url,
-          oauth_scope=cast(
-              "str",
-              kwargs.get("oauth_scope", "urn:opc:resource:consumer:all"),
-          ),
-      )
+        config = OICAuthConfig(
+            oauth_client_id=client_id,
+            oauth_client_secret=SecretStr(client_secret),
+            oauth_token_url=token_url,
+            oauth_scope=cast(
+                "str",
+                kwargs.get("oauth_scope", "urn:opc:resource:consumer:all"),
+            ),
+        )
 
-      return FlextResult.ok(config)
+        return FlextResult.ok(config)
 
     except (ValueError, TypeError) as e:
-      return FlextResult.fail(f"Failed to create OIC auth config: {e}")
+        return FlextResult.fail(f"Failed to create OIC auth config: {e}")
 
 
 def create_oic_connection_config(
@@ -105,17 +105,17 @@ def create_oic_connection_config(
 
     """
     try:
-      config = OICConnectionConfig(
-          base_url=base_url,
-          api_version=cast("str", kwargs.get("api_version", "v1")),
-          request_timeout=cast("int", kwargs.get("request_timeout", 30)),
-          max_retries=cast("int", kwargs.get("max_retries", 3)),
-      )
+        config = OICConnectionConfig(
+            base_url=base_url,
+            api_version=cast("str", kwargs.get("api_version", "v1")),
+            request_timeout=cast("int", kwargs.get("request_timeout", 30)),
+            max_retries=cast("int", kwargs.get("max_retries", 3)),
+        )
 
-      return FlextResult.ok(config)
+        return FlextResult.ok(config)
 
     except (ValueError, TypeError) as e:
-      return FlextResult.fail(f"Failed to create OIC connection config: {e}")
+        return FlextResult.fail(f"Failed to create OIC connection config: {e}")
 
 
 def validate_oic_config(config: object) -> FlextResult[bool]:
@@ -129,25 +129,25 @@ def validate_oic_config(config: object) -> FlextResult[bool]:
 
     """
     try:
-      # Basic validation for dictionary config
-      if isinstance(config, dict):
-          required_keys = [
-              "oauth_client_id",
-              "oauth_client_secret",
-              "oauth_token_url",
-              "oic_url",
-          ]
-          missing_keys = [key for key in required_keys if not config.get(key)]
+        # Basic validation for dictionary config
+        if isinstance(config, dict):
+            required_keys = [
+                "oauth_client_id",
+                "oauth_client_secret",
+                "oauth_token_url",
+                "oic_url",
+            ]
+            missing_keys = [key for key in required_keys if not config.get(key)]
 
-          if missing_keys:
-              return FlextResult.fail(
-                  f"Missing required configuration keys: {missing_keys}",
-              )
+            if missing_keys:
+                return FlextResult.fail(
+                    f"Missing required configuration keys: {missing_keys}",
+                )
 
-      return FlextResult.ok(data=True)
+        return FlextResult.ok(data=True)
 
     except (ValueError, TypeError) as e:
-      return FlextResult.fail(f"Failed to validate OIC config: {e}")
+        return FlextResult.fail(f"Failed to validate OIC config: {e}")
 
 
 # Export simplified API
