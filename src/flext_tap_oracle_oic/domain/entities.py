@@ -53,29 +53,29 @@ class OICConnection(FlextDomainBaseModel):
     model_config = ConfigDict(frozen=False)
 
     connection_id: str = Field(
-        ...,
-        min_length=1,
-        description="OIC connection identifier",
+      ...,
+      min_length=1,
+      description="OIC connection identifier",
     )
     adapter_type: str = Field(
-        ...,
-        min_length=1,
-        description="Adapter type (e.g., REST, SOAP, DB)",
+      ...,
+      min_length=1,
+      description="Adapter type (e.g., REST, SOAP, DB)",
     )
     name: str = Field(..., min_length=1, description="Connection name")
 
     # Connection properties
     connection_url: str | None = Field(None, description="Connection endpoint URL")
     connection_properties: dict[str, object] = Field(
-        default_factory=dict,
-        description="Connection properties",
+      default_factory=dict,
+      description="Connection properties",
     )
     security_policy: str | None = Field(None, description="Security policy name")
 
     # Connection state
     connection_status: ConnectionStatus = Field(
-        default=ConnectionStatus.CONFIGURED,
-        description="Connection status",
+      default=ConnectionStatus.CONFIGURED,
+      description="Connection status",
     )
     last_tested: datetime | None = Field(None, description="Last test timestamp")
     test_result: dict[str, object] | None = Field(None, description="Last test result")
@@ -88,14 +88,14 @@ class OICConnection(FlextDomainBaseModel):
     updated_at: datetime | None = Field(None, description="Last update timestamp")
 
     def test_connection(self) -> None:
-        """Mark connection as tested."""
-        self.last_tested = datetime.now(UTC)
-        self.connection_status = ConnectionStatus.TESTED
+      """Mark connection as tested."""
+      self.last_tested = datetime.now(UTC)
+      self.connection_status = ConnectionStatus.TESTED
 
     def mark_failed(self, error: str) -> None:
-        """Mark connection as failed with error details."""
-        self.connection_status = ConnectionStatus.FAILED
-        self.test_result = {"error": error, "timestamp": datetime.now(UTC).isoformat()}
+      """Mark connection as failed with error details."""
+      self.connection_status = ConnectionStatus.FAILED
+      self.test_result = {"error": error, "timestamp": datetime.now(UTC).isoformat()}
 
 
 class OICIntegration(FlextDomainBaseModel):
@@ -104,9 +104,9 @@ class OICIntegration(FlextDomainBaseModel):
     model_config = ConfigDict(frozen=False)
 
     integration_id: str = Field(
-        ...,
-        min_length=1,
-        description="OIC integration identifier",
+      ...,
+      min_length=1,
+      description="OIC integration identifier",
     )
     integration_code: str = Field(..., min_length=1, description="Integration code")
     name: str = Field(..., min_length=1, description="Integration name")
@@ -115,8 +115,8 @@ class OICIntegration(FlextDomainBaseModel):
 
     # Integration details
     integration_type: str = Field(
-        ...,
-        description="Integration type (e.g., APP_DRIVEN, SCHEDULED)",
+      ...,
+      description="Integration type (e.g., APP_DRIVEN, SCHEDULED)",
     )
     pattern: str | None = Field(None, description="Integration pattern")
     style: str | None = Field(None, description="Integration style")
@@ -128,8 +128,8 @@ class OICIntegration(FlextDomainBaseModel):
 
     # State
     integration_status: IntegrationStatus = Field(
-        default=IntegrationStatus.CONFIGURED,
-        description="Integration status",
+      default=IntegrationStatus.CONFIGURED,
+      description="Integration status",
     )
     activated_at: datetime | None = Field(None, description="Activation timestamp")
     deactivated_at: datetime | None = Field(None, description="Deactivation timestamp")
@@ -141,8 +141,8 @@ class OICIntegration(FlextDomainBaseModel):
 
     # Connections
     connection_ids: list[str] = Field(
-        default_factory=list,
-        description="Associated connection IDs",
+      default_factory=list,
+      description="Associated connection IDs",
     )
 
     # Metadata
@@ -150,30 +150,30 @@ class OICIntegration(FlextDomainBaseModel):
     updated_at: datetime | None = Field(None, description="Last update timestamp")
 
     def activate(self) -> None:
-        """Activate the integration."""
-        self.integration_status = IntegrationStatus.ACTIVATED
-        self.activated_at = datetime.now(UTC)
+      """Activate the integration."""
+      self.integration_status = IntegrationStatus.ACTIVATED
+      self.activated_at = datetime.now(UTC)
 
     def deactivate(self) -> None:
-        """Deactivate the integration."""
-        self.integration_status = IntegrationStatus.DEACTIVATED
-        self.deactivated_at = datetime.now(UTC)
+      """Deactivate the integration."""
+      self.integration_status = IntegrationStatus.DEACTIVATED
+      self.deactivated_at = datetime.now(UTC)
 
     def lock(self, user: str) -> None:
-        """Lock the integration for a specific user."""
-        self.locked_by = user
-        self.locked_at = datetime.now(UTC)
-        self.integration_status = IntegrationStatus.LOCKED
+      """Lock the integration for a specific user."""
+      self.locked_by = user
+      self.locked_at = datetime.now(UTC)
+      self.integration_status = IntegrationStatus.LOCKED
 
     def unlock(self) -> None:
-        """Unlock the integration."""
-        self.locked_by = None
-        self.locked_at = None
+      """Unlock the integration."""
+      self.locked_by = None
+      self.locked_at = None
 
     @property
     def is_active(self) -> bool:
-        """Check if integration is active."""
-        return self.integration_status == IntegrationStatus.ACTIVATED
+      """Check if integration is active."""
+      return self.integration_status == IntegrationStatus.ACTIVATED
 
 
 class OICLookup(FlextDomainBaseModel):
@@ -187,13 +187,13 @@ class OICLookup(FlextDomainBaseModel):
 
     # Lookup structure
     columns: list[dict[str, object]] = Field(
-        default_factory=list,
-        description="Column definitions",
+      default_factory=list,
+      description="Column definitions",
     )
     key_columns: list[str] = Field(default_factory=list, description="Key column names")
     value_columns: list[str] = Field(
-        default_factory=list,
-        description="Value column names",
+      default_factory=list,
+      description="Value column names",
     )
 
     # Data
@@ -210,18 +210,18 @@ class OICLookup(FlextDomainBaseModel):
     updated_at: datetime | None = Field(None, description="Last update timestamp")
 
     def update_statistics(self, row_count: int, data_size: int | None = None) -> None:
-        """Update lookup statistics."""
-        self.row_count = row_count
-        self.data_size_bytes = data_size
+      """Update lookup statistics."""
+      self.row_count = row_count
+      self.data_size_bytes = data_size
 
     def record_import(self) -> None:
-        """Record successful import."""
-        self.last_imported = datetime.now(UTC)
+      """Record successful import."""
+      self.last_imported = datetime.now(UTC)
 
     @property
     def is_empty(self) -> bool:
-        """Check if lookup is empty."""
-        return self.row_count == 0
+      """Check if lookup is empty."""
+      return self.row_count == 0
 
 
 class OICMonitoringRecord(FlextDomainBaseModel):
@@ -246,32 +246,32 @@ class OICMonitoringRecord(FlextDomainBaseModel):
 
     # Metrics
     message_count: int = Field(
-        default=0,
-        ge=0,
-        description="Number of messages processed",
+      default=0,
+      ge=0,
+      description="Number of messages processed",
     )
     error_count: int = Field(default=0, ge=0, description="Number of errors")
 
     # Tracking
     business_identifiers: dict[str, object] = Field(
-        default_factory=dict,
-        description="Business tracking identifiers",
+      default_factory=dict,
+      description="Business tracking identifiers",
     )
 
     @property
     def successful(self) -> bool:
-        """Check if execution was successful."""
-        return self.execution_status.lower() in {"completed", "succeeded"}
+      """Check if execution was successful."""
+      return self.execution_status.lower() in {"completed", "succeeded"}
 
     @property
     def is_failed(self) -> bool:
-        """Check if execution failed."""
-        return self.execution_status.lower() in {"failed", "faulted", "aborted"}
+      """Check if execution failed."""
+      return self.execution_status.lower() in {"failed", "faulted", "aborted"}
 
     @property
     def duration_seconds(self) -> float | None:
-        """Get duration in seconds."""
-        return self.duration_ms / 1000.0 if self.duration_ms is not None else None
+      """Get duration in seconds."""
+      return self.duration_ms / 1000.0 if self.duration_ms is not None else None
 
 
 class OICProject(FlextDomainBaseModel):
@@ -285,16 +285,16 @@ class OICProject(FlextDomainBaseModel):
 
     # Project resources
     integration_ids: list[str] = Field(
-        default_factory=list,
-        description="Integration IDs in project",
+      default_factory=list,
+      description="Integration IDs in project",
     )
     connection_ids: list[str] = Field(
-        default_factory=list,
-        description="Connection IDs in project",
+      default_factory=list,
+      description="Connection IDs in project",
     )
     lookup_ids: list[str] = Field(
-        default_factory=list,
-        description="Lookup IDs in project",
+      default_factory=list,
+      description="Lookup IDs in project",
     )
 
     # Deployment
@@ -307,27 +307,27 @@ class OICProject(FlextDomainBaseModel):
     updated_at: datetime | None = Field(None, description="Last update timestamp")
 
     def add_integration(self, integration_id: str) -> None:
-        """Add integration to project."""
-        if integration_id not in self.integration_ids:
-            self.integration_ids.append(integration_id)
+      """Add integration to project."""
+      if integration_id not in self.integration_ids:
+          self.integration_ids.append(integration_id)
 
     def remove_integration(self, integration_id: str) -> None:
-        """Remove integration from project."""
-        if integration_id in self.integration_ids:
-            self.integration_ids.remove(integration_id)
+      """Remove integration from project."""
+      if integration_id in self.integration_ids:
+          self.integration_ids.remove(integration_id)
 
     def deploy(self, user: str) -> None:
-        """Deploy the project."""
-        self.deployment_status = "deployed"
-        self.deployed_at = datetime.now(UTC)
-        self.deployed_by = user
+      """Deploy the project."""
+      self.deployment_status = "deployed"
+      self.deployed_at = datetime.now(UTC)
+      self.deployed_by = user
 
     @property
     def total_resources(self) -> int:
-        """Get total number of resources in project."""
-        return (
-            len(self.integration_ids) + len(self.connection_ids) + len(self.lookup_ids)
-        )
+      """Get total number of resources in project."""
+      return (
+          len(self.integration_ids) + len(self.connection_ids) + len(self.lookup_ids)
+      )
 
 
 # Value Objects for configuration and metadata
@@ -347,37 +347,37 @@ class OICExecutionSummary(FlextValueObject):
 
     integration_id: str = Field(..., description="Integration ID")
     total_executions: int = Field(
-        default=0,
-        ge=0,
-        description="Total number of executions",
+      default=0,
+      ge=0,
+      description="Total number of executions",
     )
     successful_executions: int = Field(
-        default=0,
-        ge=0,
-        description="Successful executions",
+      default=0,
+      ge=0,
+      description="Successful executions",
     )
     failed_executions: int = Field(default=0, ge=0, description="Failed executions")
     average_duration_ms: float | None = Field(
-        None,
-        ge=0,
-        description="Average execution duration",
+      None,
+      ge=0,
+      description="Average execution duration",
     )
     last_execution_at: datetime | None = Field(
-        None,
-        description="Last execution timestamp",
+      None,
+      description="Last execution timestamp",
     )
 
     @property
     def success_rate(self) -> float:
-        """Calculate success rate percentage."""
-        if self.total_executions == 0:
-            return 0.0
-        return (self.successful_executions / self.total_executions) * 100.0
+      """Calculate success rate percentage."""
+      if self.total_executions == 0:
+          return 0.0
+      return (self.successful_executions / self.total_executions) * 100.0
 
     @property
     def failure_rate(self) -> float:
-        """Calculate failure rate percentage."""
-        return 100.0 - self.success_rate
+      """Calculate failure rate percentage."""
+      return 100.0 - self.success_rate
 
 
 # Export main entities and value objects
