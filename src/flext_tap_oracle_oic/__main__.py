@@ -2,7 +2,7 @@
 
 This module provides the main command-line interface for the tap-oic Singer tap.
 It can be executed as a module using:
-            python -m tap_oic
+          python -m tap_oic
 
 Architecture:
     Improved CLI with 100% Singer SDK compatibility and organized subcommands

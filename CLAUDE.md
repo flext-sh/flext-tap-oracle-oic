@@ -10,10 +10,19 @@ This is **flext-tap-oracle-oic**, a Singer Tap for Oracle Integration Cloud (OIC
 
 ### Core Components
 
-- **TapOracleOIC**: Main Singer tap class implementing Singer SDK patterns
-- **OICBaseStream**: Base class for all OIC data streams with authentication, pagination, and error handling
+- **TapOracleOIC**: Main Singer tap class implementing Singer SDK patterns (`src/flext_tap_oracle_oic/tap_client.py`)
+- **OICBaseStream**: Base class for all OIC data streams with authentication, pagination, and error handling (`src/flext_tap_oracle_oic/tap_streams.py`)
 - **OICTapClient**: Oracle OIC API client with OAuth2/IDCS authentication (imported from flext-oracle-oic-ext)
-- **Consolidated Streams**: Single source of truth for all OIC entity streams (integrations, connections, packages, etc.)
+- **Consolidated Streams**: Single source of truth for all OIC entity streams (`src/flext_tap_oracle_oic/streams_consolidated.py`)
+
+### Key Files
+
+- `src/flext_tap_oracle_oic/tap_client.py` - Main tap implementation and client logic
+- `src/flext_tap_oracle_oic/streams_consolidated.py` - All stream definitions in one place
+- `src/flext_tap_oracle_oic/tap_streams.py` - Base stream class with common functionality
+- `src/flext_tap_oracle_oic/tap_config.py` - Configuration models and validation
+- `src/flext_tap_oracle_oic/domain/entities.py` - Domain entities and models
+- `tests/conftest.py` - Test configuration and fixtures
 
 ### Dependencies
 
@@ -54,46 +63,6 @@ make test-integration         # Integration tests only
 make test-singer              # Singer protocol specific tests
 make test-fast                # Tests without coverage (faster feedback)
 
-## TODO: GAPS DE ARQUITETURA IDENTIFICADOS - PRIORIDADE ALTA
-
-### 🚨 GAP 1: Oracle OIC Extension Dependency Gap
-**Status**: ALTO - Dependency em flext-oracle-oic-ext pode criar circular dependencies
-**Problema**:
-- OICTapClient imported from flext-oracle-oic-ext mas relationship não clear
-- Extension library pode não ser properly layered
-- Shared client patterns podem estar na wrong layer
-
-**TODO**:
-- [ ] Review architecture de flext-oracle-oic-ext integration
-- [ ] Ensure proper layering entre tap e extension
-- [ ] Document client sharing patterns
-- [ ] Avoid circular dependencies
-
-### 🚨 GAP 2: OAuth2/IDCS Authentication Complexity
-**Status**: ALTO - Authentication patterns podem ser over-engineered
-**Problema**:
-- OAuth2/IDCS authentication com automatic token refresh é complex
-- Error recovery logic pode não be optimal
-- Rate limiting implementation pode conflict com Singer patterns
-
-**TODO**:
-- [ ] Simplify authentication patterns onde possível
-- [ ] Optimize token refresh e error recovery
-- [ ] Align rate limiting com Singer SDK patterns
-- [ ] Document authentication best practices
-
-### 🚨 GAP 3: Stream Consolidation vs Maintainability
-**Status**: ALTO - Consolidated streams podem impact maintainability
-**Problema**:
-- Single source of truth para all OIC entities pode be hard to maintain
-- Stream inheritance hierarchy pode be complex
-- Testing individual streams pode be challenging
-
-**TODO**:
-- [ ] Review stream organization para balance consolidation vs maintainability
-- [ ] Simplify stream inheritance hierarchy
-- [ ] Improve individual stream testing patterns
-- [ ] Document stream organization principles
 make coverage-html            # Generate HTML coverage report
 ```
 
@@ -138,6 +107,30 @@ pytest tests/test_client.py -v -s --pdb
 # Watch mode (if available)
 pytest-watch tests/
 ```
+
+## Project Conventions
+
+### Code Organization
+
+- **Consolidation Pattern**: All streams are consolidated in `streams_consolidated.py` to eliminate duplication
+- **Clean Architecture**: Domain entities in `domain/`, infrastructure concerns separate from business logic
+- **flext-core Integration**: Uses FlextResult for error handling, unified logging patterns
+- **Singer SDK Compliance**: Full Singer protocol implementation with automatic catalog discovery
+
+### Testing Strategy
+
+- **Test Markers**: Use `unit`, `integration`, `singer`, `slow`, `e2e` markers for test categorization
+- **Fixtures**: Comprehensive test fixtures in `conftest.py` including OIC configuration mocks
+- **Coverage**: Minimum 90% coverage enforced via pytest configuration
+- **Mock Strategy**: Uses `pytest-mock` for external API mocking in unit tests
+
+### Development Patterns
+
+- **Stream Implementation**: New streams should inherit from `OICBaseStream` in `tap_streams.py`
+- **Error Handling**: Use `FlextResult` from flext-core for consistent error handling patterns
+- **Configuration**: All config models use Pydantic with strict validation in `tap_config.py`
+- **Authentication**: OAuth2/IDCS flow handled automatically by base stream class
+- **API Calls**: All Oracle OIC API interactions go through the base stream's request methods
 
 ## Configuration
 
