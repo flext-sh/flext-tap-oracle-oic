@@ -46,13 +46,13 @@ class OICPaginator:
     """Paginator for OIC API responses."""
 
     def __init__(self, page_size: int = 100) -> None:
-      """Init function.
+        """Init function.
 
-      Args:
-          page_size (int): Description.
+        Args:
+            page_size (int): Description.
 
-      """
-      self.page_size = page_size
+        """
+        self.page_size = page_size
 
 
 # Direct imports using real implementations (no fallbacks per user instruction)

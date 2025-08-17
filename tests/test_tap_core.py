@@ -19,210 +19,210 @@ class TestTapOIC:
     """Test the main TapOIC class."""
 
     def test_tap_initialization(self) -> None:
-      config = {
-          "base_url": "https://test.integration.ocp.oraclecloud.com",
-          "oauth_client_id": "test_client_id",
-          "oauth_client_secret": "test_client_secret",
-          "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
-      }
+        config = {
+            "base_url": "https://test.integration.ocp.oraclecloud.com",
+            "oauth_client_id": "test_client_id",
+            "oauth_client_secret": "test_client_secret",
+            "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
+        }
 
-      tap = TapOIC(config=config, validate_config=False)
+        tap = TapOIC(config=config, validate_config=False)
 
-      if tap.name != "tap-oracle-oic":
-          msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
-          raise AssertionError(msg)
-      assert tap.config == config
+        if tap.name != "tap-oracle-oic":
+            msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
+            raise AssertionError(msg)
+        assert tap.config == config
 
     def test_tap_initialization_without_config(self) -> None:
-      tap = TapOIC(validate_config=False)
+        tap = TapOIC(validate_config=False)
 
-      if tap.name != "tap-oracle-oic":
-          msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
-          raise AssertionError(msg)
-      assert hasattr(tap, "config")
+        if tap.name != "tap-oracle-oic":
+            msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
+            raise AssertionError(msg)
+        assert hasattr(tap, "config")
 
     def test_core_streams_discovery(self) -> None:
-      config = {
-          "base_url": "https://test.integration.ocp.oraclecloud.com",
-          "oauth_client_id": "test_client_id",
-          "oauth_client_secret": "test_client_secret",
-          "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
-      }
+        config = {
+            "base_url": "https://test.integration.ocp.oraclecloud.com",
+            "oauth_client_id": "test_client_id",
+            "oauth_client_secret": "test_client_secret",
+            "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
+        }
 
-      tap = TapOIC(config=config, validate_config=False)
-      # Test discovery instead of accessing private method
-      streams = tap.discover_streams()
+        tap = TapOIC(config=config, validate_config=False)
+        # Test discovery instead of accessing private method
+        streams = tap.discover_streams()
 
-      if len(streams) != 5:
-          msg: str = f"Expected {5}, got {len(streams)}"
-          raise AssertionError(msg)
-      stream_names = [stream.name for stream in streams]
-      expected_streams = [
-          "integrations",
-          "connections",
-          "packages",
-          "lookups",
-          "libraries",
-      ]
+        if len(streams) != 5:
+            msg: str = f"Expected {5}, got {len(streams)}"
+            raise AssertionError(msg)
+        stream_names = [stream.name for stream in streams]
+        expected_streams = [
+            "integrations",
+            "connections",
+            "packages",
+            "lookups",
+            "libraries",
+        ]
 
-      for expected in expected_streams:
-          if expected not in stream_names:
-              msg: str = f"Expected {expected} in {stream_names}"
-              raise AssertionError(msg)
+        for expected in expected_streams:
+            if expected not in stream_names:
+                msg: str = f"Expected {expected} in {stream_names}"
+                raise AssertionError(msg)
 
     def test_extended_streams_discovery(self) -> None:
-      config = {
-          "base_url": "https://test.integration.ocp.oraclecloud.com",
-          "oauth_client_id": "test_client_id",
-          "oauth_client_secret": "test_client_secret",
-          "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
-          "include_extended": True,
-      }
+        config = {
+            "base_url": "https://test.integration.ocp.oraclecloud.com",
+            "oauth_client_id": "test_client_id",
+            "oauth_client_secret": "test_client_secret",
+            "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
+            "include_extended": True,
+        }
 
-      tap = TapOIC(config=config, validate_config=False)
-      # Test all streams through discover_streams
-      all_streams = tap.discover_streams()
+        tap = TapOIC(config=config, validate_config=False)
+        # Test all streams through discover_streams
+        all_streams = tap.discover_streams()
 
-      # Current implementation doesn't have extended infrastructure streams
-      # Extended config doesn't add additional streams in current version
-      if len(all_streams) != 5:
-          msg: str = f"Expected {5}, got {len(all_streams)}"
-          raise AssertionError(msg)
+        # Current implementation doesn't have extended infrastructure streams
+        # Extended config doesn't add additional streams in current version
+        if len(all_streams) != 5:
+            msg: str = f"Expected {5}, got {len(all_streams)}"
+            raise AssertionError(msg)
 
-      # Verify we get the expected core streams
-      stream_names = [s.name for s in all_streams]
-      expected_streams = [
-          "integrations",
-          "connections",
-          "packages",
-          "lookups",
-          "libraries",
-      ]
-      for expected in expected_streams:
-          if expected not in stream_names:
-              msg: str = f"Expected {expected} in {stream_names}"
-              raise AssertionError(msg)
+        # Verify we get the expected core streams
+        stream_names = [s.name for s in all_streams]
+        expected_streams = [
+            "integrations",
+            "connections",
+            "packages",
+            "lookups",
+            "libraries",
+        ]
+        for expected in expected_streams:
+            if expected not in stream_names:
+                msg: str = f"Expected {expected} in {stream_names}"
+                raise AssertionError(msg)
 
     def test_extended_streams_disabled(self) -> None:
-      config = {
-          "base_url": "https://test.integration.ocp.oraclecloud.com",
-          "oauth_client_id": "test_client_id",
-          "oauth_client_secret": "test_client_secret",
-          "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
-          "include_extended": False,
-      }
+        config = {
+            "base_url": "https://test.integration.ocp.oraclecloud.com",
+            "oauth_client_id": "test_client_id",
+            "oauth_client_secret": "test_client_secret",
+            "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
+            "include_extended": False,
+        }
 
-      tap = TapOIC(config=config, validate_config=False)
-      # Test all streams through discover_streams
-      all_streams = tap.discover_streams()
-      # Filter infrastructure streams if needed for specific tests
-      streams = [s for s in all_streams if "infrastructure" in s.name.lower()]
+        tap = TapOIC(config=config, validate_config=False)
+        # Test all streams through discover_streams
+        all_streams = tap.discover_streams()
+        # Filter infrastructure streams if needed for specific tests
+        streams = [s for s in all_streams if "infrastructure" in s.name.lower()]
 
-      if len(streams) != 0:
-          msg: str = f"Expected {0}, got {len(streams)}"
-          raise AssertionError(msg)
+        if len(streams) != 0:
+            msg: str = f"Expected {0}, got {len(streams)}"
+            raise AssertionError(msg)
 
     def test_discover_streams(self) -> None:
-      config = {
-          "base_url": "https://test.integration.ocp.oraclecloud.com",
-          "oauth_client_id": "test_client_id",
-          "oauth_client_secret": "test_client_secret",
-          "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
-          "include_extended": True,
-      }
+        config = {
+            "base_url": "https://test.integration.ocp.oraclecloud.com",
+            "oauth_client_id": "test_client_id",
+            "oauth_client_secret": "test_client_secret",
+            "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
+            "include_extended": True,
+        }
 
-      tap = TapOIC(config=config, validate_config=False)
-      streams = tap.discover_streams()
+        tap = TapOIC(config=config, validate_config=False)
+        streams = tap.discover_streams()
 
-      # Should have 5 core streams
-      if len(streams) != 5:
-          msg: str = f"Expected {5}, got {len(streams)}"
-          raise AssertionError(msg)
+        # Should have 5 core streams
+        if len(streams) != 5:
+            msg: str = f"Expected {5}, got {len(streams)}"
+            raise AssertionError(msg)
 
     def test_config_validation_warnings(self) -> None:
-      """Test that the tap works with HTTP endpoints (though HTTPS is recommended)."""
-      config = {
-          "base_url": "http://test.integration.ocp.oraclecloud.com",  # HTTP instead of HTTPS
-          "oauth_client_id": "test_client_id",
-          "oauth_client_secret": "test_client_secret",
-          "oauth_endpoint": "http://test.identity.oraclecloud.com/oauth2/v1/token",  # HTTP
-          "oic_url": "http://test.integration.ocp.oraclecloud.com",  # Required field
-      }
+        """Test that the tap works with HTTP endpoints (though HTTPS is recommended)."""
+        config = {
+            "base_url": "http://test.integration.ocp.oraclecloud.com",  # HTTP instead of HTTPS
+            "oauth_client_id": "test_client_id",
+            "oauth_client_secret": "test_client_secret",
+            "oauth_endpoint": "http://test.identity.oraclecloud.com/oauth2/v1/token",  # HTTP
+            "oic_url": "http://test.integration.ocp.oraclecloud.com",  # Required field
+        }
 
-      tap = TapOIC(config=config, validate_config=False)
+        tap = TapOIC(config=config, validate_config=False)
 
-      # Should work with HTTP config (though HTTPS is recommended in production)
-      if tap.name != "tap-oracle-oic":
-          msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
-          raise AssertionError(msg)
-      assert tap.config["base_url"] == "http://test.integration.ocp.oraclecloud.com"
+        # Should work with HTTP config (though HTTPS is recommended in production)
+        if tap.name != "tap-oracle-oic":
+            msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
+            raise AssertionError(msg)
+        assert tap.config["base_url"] == "http://test.integration.ocp.oraclecloud.com"
 
     def test_missing_required_fields_warning(self) -> None:
-      """Test that the missing required fields validation works correctly."""
-      # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
+        """Test that the missing required fields validation works correctly."""
+        # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
 
-      config = {
-          "base_url": "https://test.integration.ocp.oraclecloud.com",
-          # Missing oauth_client_id, oauth_client_secret, oauth_endpoint, oic_url
-      }
+        config = {
+            "base_url": "https://test.integration.ocp.oraclecloud.com",
+            # Missing oauth_client_id, oauth_client_secret, oauth_endpoint, oic_url
+        }
 
-      # Test validation through normal instantiation with incomplete config
-      # This should raise ConfigValidationError for missing required fields
-      with pytest.raises(ConfigValidationError) as exc_info:
-          TapOIC(config=config, validate_config=True)
+        # Test validation through normal instantiation with incomplete config
+        # This should raise ConfigValidationError for missing required fields
+        with pytest.raises(ConfigValidationError) as exc_info:
+            TapOIC(config=config, validate_config=True)
 
-      # Verify the error message mentions the missing required properties
-      error_message = str(exc_info.value)
-      if "oic_host" not in error_message:
-          msg: str = f"Expected {'oic_host'} in {error_message}"
-          raise AssertionError(msg)
-      assert "username" in error_message
-      if "password" not in error_message:
-          msg: str = f"Expected {'password'} in {error_message}"
-          raise AssertionError(msg)
+        # Verify the error message mentions the missing required properties
+        error_message = str(exc_info.value)
+        if "oic_host" not in error_message:
+            msg: str = f"Expected {'oic_host'} in {error_message}"
+            raise AssertionError(msg)
+        assert "username" in error_message
+        if "password" not in error_message:
+            msg: str = f"Expected {'password'} in {error_message}"
+            raise AssertionError(msg)
 
     def test_capabilities(self) -> None:
-      tap = TapOIC(validate_config=False)
+        tap = TapOIC(validate_config=False)
 
-      expected_capabilities = ["catalog", "state", "discover"]
+        expected_capabilities = ["catalog", "state", "discover"]
 
-      for capability in expected_capabilities:
-          if capability not in [cap.value for cap in tap.capabilities]:
-              msg: str = f"Expected {capability} in {[cap.value for cap in tap.capabilities]}"
-              raise AssertionError(msg)
+        for capability in expected_capabilities:
+            if capability not in [cap.value for cap in tap.capabilities]:
+                msg: str = f"Expected {capability} in {[cap.value for cap in tap.capabilities]}"
+                raise AssertionError(msg)
 
 
 class TestTapOICIntegration:
     """Integration tests for TapOIC."""
 
     def test_streams_have_correct_tap_reference(self) -> None:
-      """Test that the streams have the correct tap reference."""
-      config = {
-          "base_url": "https://test.integration.ocp.oraclecloud.com",
-          "oauth_client_id": "test_client_id",
-          "oauth_client_secret": "test_client_secret",
-          "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
-      }
+        """Test that the streams have the correct tap reference."""
+        config = {
+            "base_url": "https://test.integration.ocp.oraclecloud.com",
+            "oauth_client_id": "test_client_id",
+            "oauth_client_secret": "test_client_secret",
+            "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
+        }
 
-      tap = TapOIC(config=config, validate_config=False)
-      # Test discovery instead of accessing private method
-      streams = tap.discover_streams()
+        tap = TapOIC(config=config, validate_config=False)
+        # Test discovery instead of accessing private method
+        streams = tap.discover_streams()
 
-      # Verify that all streams have the TAP instance as reference
-      # Verify streams are properly initialized (check public attributes only)
-      for stream in streams:
-          assert hasattr(stream, "name")
-          assert stream.name is not None
+        # Verify that all streams have the TAP instance as reference
+        # Verify streams are properly initialized (check public attributes only)
+        for stream in streams:
+            assert hasattr(stream, "name")
+            assert stream.name is not None
 
 
 @pytest.fixture
 def sample_config() -> Any:
     """Sample config."""
     return {
-      "base_url": "https://test.integration.ocp.oraclecloud.com",
-      "oauth_client_id": "test_client_id",
-      "oauth_client_secret": "test_client_secret",
-      "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
+        "base_url": "https://test.integration.ocp.oraclecloud.com",
+        "oauth_client_id": "test_client_id",
+        "oauth_client_secret": "test_client_secret",
+        "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
     }
 
 
@@ -230,14 +230,14 @@ def sample_config() -> Any:
 def sample_config_with_extended() -> Any:
     """Sample config with extended streams."""
     return {
-      "base_url": "https://test.integration.ocp.oraclecloud.com",
-      "oauth_client_id": "test_client_id",
-      "oauth_client_secret": "test_client_secret",
-      "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
-      "include_extended": True,
-      "include_monitoring": True,
-      "include_logs": True,
-      "include_artifacts": True,
+        "base_url": "https://test.integration.ocp.oraclecloud.com",
+        "oauth_client_id": "test_client_id",
+        "oauth_client_secret": "test_client_secret",
+        "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
+        "include_extended": True,
+        "include_monitoring": True,
+        "include_logs": True,
+        "include_artifacts": True,
     }
 
 
@@ -245,44 +245,44 @@ class TestTapOICWithFixtures:
     """Tests using fixtures."""
 
     def test_tap_with_sample_config(self, sample_config: dict[str, object]) -> None:
-      """Test that the tap is initialized correctly with the sample config."""
-      tap = TapOIC(config=sample_config, validate_config=False)
+        """Test that the tap is initialized correctly with the sample config."""
+        tap = TapOIC(config=sample_config, validate_config=False)
 
-      if tap.config["base_url"] != sample_config["base_url"]:
-          msg: str = (
-              f"Expected {sample_config['base_url']}, got {tap.config['base_url']}"
-          )
-          raise AssertionError(
-              msg,
-          )
-      assert tap.config["oauth_client_id"] == sample_config["oauth_client_id"]
+        if tap.config["base_url"] != sample_config["base_url"]:
+            msg: str = (
+                f"Expected {sample_config['base_url']}, got {tap.config['base_url']}"
+            )
+            raise AssertionError(
+                msg,
+            )
+        assert tap.config["oauth_client_id"] == sample_config["oauth_client_id"]
 
     def test_streams_count_with_extended_config(
-      self,
-      sample_config_with_extended: dict[str, object],
+        self,
+        sample_config_with_extended: dict[str, object],
     ) -> None:
-      """Test that the number of streams is correct with the extended config."""
-      tap = TapOIC(config=sample_config_with_extended, validate_config=False)
+        """Test that the number of streams is correct with the extended config."""
+        tap = TapOIC(config=sample_config_with_extended, validate_config=False)
 
-      # Test using public discover_streams method
-      all_streams = tap.discover_streams()
+        # Test using public discover_streams method
+        all_streams = tap.discover_streams()
 
-      # Current implementation only has 5 core streams regardless of extended config
-      # Extended infrastructure streams are not implemented in current version
-      if len(all_streams) != 5:
-          msg: str = f"Expected {5}, got {len(all_streams)}"
-          raise AssertionError(msg)
+        # Current implementation only has 5 core streams regardless of extended config
+        # Extended infrastructure streams are not implemented in current version
+        if len(all_streams) != 5:
+            msg: str = f"Expected {5}, got {len(all_streams)}"
+            raise AssertionError(msg)
 
-      # Verify we get the expected core streams
-      stream_names = [s.name for s in all_streams]
-      expected_core_streams = [
-          "integrations",
-          "connections",
-          "packages",
-          "lookups",
-          "libraries",
-      ]
-      for expected in expected_core_streams:
-          if expected not in stream_names:
-              msg: str = f"Expected {expected} in {stream_names}"
-              raise AssertionError(msg)
+        # Verify we get the expected core streams
+        stream_names = [s.name for s in all_streams]
+        expected_core_streams = [
+            "integrations",
+            "connections",
+            "packages",
+            "lookups",
+            "libraries",
+        ]
+        for expected in expected_core_streams:
+            if expected not in stream_names:
+                msg: str = f"Expected {expected} in {stream_names}"
+                raise AssertionError(msg)

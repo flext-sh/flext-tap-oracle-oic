@@ -32,23 +32,23 @@ class OICExceptionFactory:
 
     @staticmethod
     def create_authentication_error(message: str) -> FlextAuthenticationError:
-      """Create OIC authentication error."""
-      return OICAuthenticationError(message)
+        """Create OIC authentication error."""
+        return OICAuthenticationError(message)
 
     @staticmethod
     def create_connection_error(message: str) -> FlextConnectionError:
-      """Create OIC connection error."""
-      return OICConnectionError(message)
+        """Create OIC connection error."""
+        return OICConnectionError(message)
 
     @staticmethod
     def create_validation_error(message: str) -> FlextValidationError:
-      """Create OIC validation error."""
-      return OICValidationError(message)
+        """Create OIC validation error."""
+        return OICValidationError(message)
 
     @staticmethod
     def create_api_error(message: str) -> FlextError:
-      """Create OIC API error."""
-      return OICAPIError(message)
+        """Create OIC API error."""
+        return OICAPIError(message)
 
 
 # Specific Oracle OIC exceptions

@@ -54,84 +54,84 @@ class OICPaginator(BaseOffsetPaginator):
     """
 
     def __init__(self, start_value: int = 0, page_size: int = 100) -> None:
-      """Initialize paginator with starting offset and page size."""
-      super().__init__(start_value, page_size)
-      self._max_page_size = 1000
-      self._min_page_size = 10
-      self._adaptive_sizing = True
-      self._response_times: list[float] = []
+        """Initialize paginator with starting offset and page size."""
+        super().__init__(start_value, page_size)
+        self._max_page_size = 1000
+        self._min_page_size = 10
+        self._adaptive_sizing = True
+        self._response_times: list[float] = []
 
     def get_next(self, response: requests.Response) -> int | None:
-      """Calculate next offset for Oracle OIC pagination.
+        """Calculate next offset for Oracle OIC pagination.
 
-      Args:
-          response: HTTP response from OIC API.
+        Args:
+            response: HTTP response from OIC API.
 
-      Returns:
-          Next offset value or None if no more pages.
+        Returns:
+            Next offset value or None if no more pages.
 
-      """
-      try:
-          data = response.json()
+        """
+        try:
+            data = response.json()
 
-          # Track response time for adaptive sizing
-          if hasattr(response, "elapsed") and self._adaptive_sizing:
-              self._track_response_time(response.elapsed.total_seconds())
+            # Track response time for adaptive sizing
+            if hasattr(response, "elapsed") and self._adaptive_sizing:
+                self._track_response_time(response.elapsed.total_seconds())
 
-          return self._calculate_next_offset(data)
+            return self._calculate_next_offset(data)
 
-      except (ValueError, KeyError, TypeError, AttributeError) as e:
-          logger = get_logger(__name__)
-          logger.warning(f"OIC pagination parsing failed: {type(e).__name__}: {e}")
-          logger.info("Returning None - pagination parsing failure properly handled")
-          logger.debug("This indicates end of pagination or malformed OIC response")
-          return None
+        except (ValueError, KeyError, TypeError, AttributeError) as e:
+            logger = get_logger(__name__)
+            logger.warning(f"OIC pagination parsing failed: {type(e).__name__}: {e}")
+            logger.info("Returning None - pagination parsing failure properly handled")
+            logger.debug("This indicates end of pagination or malformed OIC response")
+            return None
 
     def _calculate_next_offset(
-      self,
-      data: dict[str, object] | list[object],
+        self,
+        data: dict[str, object] | list[object],
     ) -> int | None:
-      """Calculate next offset based on OIC response format."""
-      items = self._extract_items_from_response(data)
-      if items is None or not items or len(items) < self._page_size:
-          return None
-      return self.current_value + len(items)
+        """Calculate next offset based on OIC response format."""
+        items = self._extract_items_from_response(data)
+        if items is None or not items or len(items) < self._page_size:
+            return None
+        return self.current_value + len(items)
 
     def _extract_items_from_response(
-      self,
-      data: dict[str, object] | list[object],
+        self,
+        data: dict[str, object] | list[object],
     ) -> list[object] | None:
-      """Extract items from various OIC response formats."""
-      if isinstance(data, list):
-          return data
-      if isinstance(data, dict):
-          if "items" in data and isinstance(data["items"], list):
-              return data["items"]
-          if "data" in data and isinstance(data["data"], list):
-              return data["data"]
-      return None
+        """Extract items from various OIC response formats."""
+        if isinstance(data, list):
+            return data
+        if isinstance(data, dict):
+            if "items" in data and isinstance(data["items"], list):
+                return data["items"]
+            if "data" in data and isinstance(data["data"], list):
+                return data["data"]
+        return None
 
     def _track_response_time(self, response_time: float) -> None:
-      """Track response times for adaptive page sizing."""
-      self._response_times.append(response_time)
+        """Track response times for adaptive page sizing."""
+        self._response_times.append(response_time)
 
-      # Keep only recent response times
-      if len(self._response_times) > RESPONSE_TIME_HISTORY_SIZE:
-          self._response_times.pop(0)
+        # Keep only recent response times
+        if len(self._response_times) > RESPONSE_TIME_HISTORY_SIZE:
+            self._response_times.pop(0)
 
-      # Adjust page size based on average response time
-      if len(self._response_times) >= MIN_RESPONSE_SAMPLES:
-          avg_time = sum(self._response_times) / len(self._response_times)
+        # Adjust page size based on average response time
+        if len(self._response_times) >= MIN_RESPONSE_SAMPLES:
+            avg_time = sum(self._response_times) / len(self._response_times)
 
-          if (
-              avg_time > SLOW_RESPONSE_THRESHOLD
-              and self._page_size > self._min_page_size
-          ):
-              # Slow responses - reduce page size
-              self._page_size = max(self._min_page_size, int(self._page_size * 0.8))
-          elif avg_time < 1.0 and self._page_size < self._max_page_size:
-              # Fast responses - increase page size
-              self._page_size = min(self._max_page_size, int(self._page_size * 1.2))
+            if (
+                avg_time > SLOW_RESPONSE_THRESHOLD
+                and self._page_size > self._min_page_size
+            ):
+                # Slow responses - reduce page size
+                self._page_size = max(self._min_page_size, int(self._page_size * 0.8))
+            elif avg_time < 1.0 and self._page_size < self._max_page_size:
+                # Fast responses - increase page size
+                self._page_size = min(self._max_page_size, int(self._page_size * 1.2))
 
 
 class OICBaseStream(RESTStream[dict[str, object]]):
@@ -150,313 +150,313 @@ class OICBaseStream(RESTStream[dict[str, object]]):
 
     @property
     def url_base(self) -> str:
-      """Build base URL for Oracle OIC API requests with intelligent discovery.
+        """Build base URL for Oracle OIC API requests with intelligent discovery.
 
-      Returns:
-          Base URL with appropriate OIC API endpoint for stream type.
+        Returns:
+            Base URL with appropriate OIC API endpoint for stream type.
 
-      """
-      base_url = str(
-          self.config.get("base_url") or self.config.get("oic_url", ""),
-      ).rstrip("/")
+        """
+        base_url = str(
+            self.config.get("base_url") or self.config.get("oic_url", ""),
+        ).rstrip("/")
 
-      if not base_url:
-          msg = "Base URL is required but not configured"
-          raise ValueError(msg)
+        if not base_url:
+            msg = "Base URL is required but not configured"
+            raise ValueError(msg)
 
-      # Auto-detect region from URL pattern
-      region = self.config.get("region")
-      if not region and "integration.ocp.oraclecloud.com" in base_url:
-          region_match = re.search(r"(\w+-\w+-\d+)", base_url)
-          region = region_match.group(1) if region_match else "us-ashburn-1"
+        # Auto-detect region from URL pattern
+        region = self.config.get("region")
+        if not region and "integration.ocp.oraclecloud.com" in base_url:
+            region_match = re.search(r"(\w+-\w+-\d+)", base_url)
+            region = region_match.group(1) if region_match else "us-ashburn-1"
 
-      # Convert to appropriate API endpoint based on stream requirements
-      if "integration.ocp.oraclecloud.com" in base_url:
-          if hasattr(self, "requires_design_api") and self.requires_design_api:
-              base_url = f"https://design.integration.{region}.ocp.oraclecloud.com"
-          elif hasattr(self, "requires_runtime_api") and self.requires_runtime_api:
-              base_url = f"https://runtime.integration.{region}.ocp.oraclecloud.com"
+        # Convert to appropriate API endpoint based on stream requirements
+        if "integration.ocp.oraclecloud.com" in base_url:
+            if hasattr(self, "requires_design_api") and self.requires_design_api:
+                base_url = f"https://design.integration.{region}.ocp.oraclecloud.com"
+            elif hasattr(self, "requires_runtime_api") and self.requires_runtime_api:
+                base_url = f"https://runtime.integration.{region}.ocp.oraclecloud.com"
 
-      # Handle specialized API paths
-      if hasattr(self, "api_path"):
-          return base_url + str(self.api_path)
-      if hasattr(self, "api_category"):
-          api_paths = {
-              "core": OIC_API_BASE_PATH,
-              "monitoring": OIC_MONITORING_API_PATH,
-              "b2b": OIC_B2B_API_PATH,
-              "process": OIC_PROCESS_API_PATH,
-          }
-          return base_url + api_paths.get(self.api_category, OIC_API_BASE_PATH)
+        # Handle specialized API paths
+        if hasattr(self, "api_path"):
+            return base_url + str(self.api_path)
+        if hasattr(self, "api_category"):
+            api_paths = {
+                "core": OIC_API_BASE_PATH,
+                "monitoring": OIC_MONITORING_API_PATH,
+                "b2b": OIC_B2B_API_PATH,
+                "process": OIC_PROCESS_API_PATH,
+            }
+            return base_url + api_paths.get(self.api_category, OIC_API_BASE_PATH)
 
-      return base_url + OIC_API_BASE_PATH
+        return base_url + OIC_API_BASE_PATH
 
     @property
     def requests_session(self) -> requests.Session:
-      """Get authenticated requests session from parent tap's OIC client."""
-      # Access the Tap's OIC client for authenticated session
-      if hasattr(self, "tap") and hasattr(self.tap, "client"):
-          session_result = self.tap.client.get_authenticated_session()
-          if session_result.success and session_result.data is not None:
-              session = session_result.data
-              if isinstance(session, requests.Session):
-                  return session
+        """Get authenticated requests session from parent tap's OIC client."""
+        # Access the Tap's OIC client for authenticated session
+        if hasattr(self, "tap") and hasattr(self.tap, "client"):
+            session_result = self.tap.client.get_authenticated_session()
+            if session_result.success and session_result.data is not None:
+                session = session_result.data
+                if isinstance(session, requests.Session):
+                    return session
 
-      # Fallback to parent implementation
-      return super().requests_session
+        # Fallback to parent implementation
+        return super().requests_session
 
     def get_new_paginator(self) -> OICPaginator:
-      """Create new Oracle OIC paginator with configuration.
+        """Create new Oracle OIC paginator with configuration.
 
-      Returns:
-          OICPaginator instance configured with settings from tap config.
+        Returns:
+            OICPaginator instance configured with settings from tap config.
 
-      """
-      return OICPaginator(start_value=0, page_size=self.config.get("page_size", 100))
+        """
+        return OICPaginator(start_value=0, page_size=self.config.get("page_size", 100))
 
     def get_url_params(
-      self,
-      context: Mapping[str, object] | None,
-      next_page_token: object | None,
+        self,
+        context: Mapping[str, object] | None,
+        next_page_token: object | None,
     ) -> dict[str, object]:
-      """Build URL parameters for Oracle OIC API requests.
+        """Build URL parameters for Oracle OIC API requests.
 
-      Args:
-          context: Stream context with replication values.
-          next_page_token: Token for pagination (offset value).
+        Args:
+            context: Stream context with replication values.
+            next_page_token: Token for pagination (offset value).
 
-      Returns:
-          Dictionary of URL parameters optimized for OIC API.
+        Returns:
+            Dictionary of URL parameters optimized for OIC API.
 
-      """
-      params: dict[str, object] = {}
+        """
+        params: dict[str, object] = {}
 
-      # Pagination parameters
-      page_size = self.config.get("page_size", 100)
-      params["limit"] = min(page_size, 1000)  # OIC API limit
-      params["offset"] = next_page_token or 0
+        # Pagination parameters
+        page_size = self.config.get("page_size", 100)
+        params["limit"] = min(page_size, 1000)  # OIC API limit
+        params["offset"] = next_page_token or 0
 
-      # Instance filtering
-      instance_id = self.config.get("instance_id")
-      if instance_id:
-          params["integrationInstance"] = instance_id
+        # Instance filtering
+        instance_id = self.config.get("instance_id")
+        if instance_id:
+            params["integrationInstance"] = instance_id
 
-      # Sorting parameters
-      sort_field = self.config.get("sort_field")
-      if sort_field:
-          sort_direction = "desc" if self.config.get("sort_desc", False) else "asc"
-          params["orderBy"] = f"{sort_field}:{sort_direction}"
-      elif hasattr(self, "default_sort"):
-          params["orderBy"] = self.default_sort
+        # Sorting parameters
+        sort_field = self.config.get("sort_field")
+        if sort_field:
+            sort_direction = "desc" if self.config.get("sort_desc", False) else "asc"
+            params["orderBy"] = f"{sort_field}:{sort_direction}"
+        elif hasattr(self, "default_sort"):
+            params["orderBy"] = self.default_sort
 
-      # Custom query filter
-      custom_filter = self.config.get("custom_filter")
-      if custom_filter:
-          params["q"] = custom_filter
+        # Custom query filter
+        custom_filter = self.config.get("custom_filter")
+        if custom_filter:
+            params["q"] = custom_filter
 
-      # Date range filtering for incremental extraction
-      if (
-          self.replication_key
-          and context
-          and context.get("starting_replication_value")
-      ):
-          start_date = context["starting_replication_value"]
-          params[f"{self.replication_key}>="] = start_date
+        # Date range filtering for incremental extraction
+        if (
+            self.replication_key
+            and context
+            and context.get("starting_replication_value")
+        ):
+            start_date = context["starting_replication_value"]
+            params[f"{self.replication_key}>="] = start_date
 
-      # Field selection for reduced payload
-      select_fields = self.config.get("select_fields")
-      if select_fields:
-          if isinstance(select_fields, list):
-              params["fields"] = ",".join(select_fields)
-          else:
-              params["fields"] = select_fields
+        # Field selection for reduced payload
+        select_fields = self.config.get("select_fields")
+        if select_fields:
+            if isinstance(select_fields, list):
+                params["fields"] = ",".join(select_fields)
+            else:
+                params["fields"] = select_fields
 
-      # Stream-specific parameters
-      if hasattr(self, "additional_params"):
-          if callable(self.additional_params):
-              params.update(self.additional_params(context))
-          else:
-              params.update(self.additional_params)
+        # Stream-specific parameters
+        if hasattr(self, "additional_params"):
+            if callable(self.additional_params):
+                params.update(self.additional_params(context))
+            else:
+                params.update(self.additional_params)
 
-      # Remove empty values
-      return {k: v for k, v in params.items() if v is not None}
+        # Remove empty values
+        return {k: v for k, v in params.items() if v is not None}
 
     def parse_response(
-      self,
-      response: requests.Response,
+        self,
+        response: requests.Response,
     ) -> Iterator[dict[str, object]]:
-      """Parse Oracle OIC API response and yield records with validation.
+        """Parse Oracle OIC API response and yield records with validation.
 
-      Args:
-          response: HTTP response from OIC API.
+        Args:
+            response: HTTP response from OIC API.
 
-      Yields:
-          Individual records from the API response with tap metadata.
+        Yields:
+            Individual records from the API response with tap metadata.
 
-      """
-      try:
-          # Validate response status
-          if not response.ok:
-              self._handle_response_error(response)
-              return
+        """
+        try:
+            # Validate response status
+            if not response.ok:
+                self._handle_response_error(response)
+                return
 
-          try:
-              data = response.json()
-          except (ValueError, TypeError, KeyError):
-              self.logger.exception("Failed to parse JSON from %s", response.url)
-              if self.config.get("fail_on_parsing_errors", True):
-                  raise
-              return
+            try:
+                data = response.json()
+            except (ValueError, TypeError, KeyError):
+                self.logger.exception("Failed to parse JSON from %s", response.url)
+                if self.config.get("fail_on_parsing_errors", True):
+                    raise
+                return
 
-          # Track response metrics for monitoring
-          self._track_response_metrics(response, data)
+            # Track response metrics for monitoring
+            self._track_response_metrics(response, data)
 
-          # Extract records from response and yield with validation
-          yield from self._extract_and_yield_records(data, response.url)
+            # Extract records from response and yield with validation
+            yield from self._extract_and_yield_records(data, response.url)
 
-      except (ValueError, TypeError, KeyError, AttributeError):
-          self.logger.exception("Error parsing response from %s", response.url)
-          if self.config.get("fail_on_parsing_errors", True):
-              raise
+        except (ValueError, TypeError, KeyError, AttributeError):
+            self.logger.exception("Error parsing response from %s", response.url)
+            if self.config.get("fail_on_parsing_errors", True):
+                raise
 
     def _extract_and_yield_records(
-      self,
-      data: dict[str, object] | list[object],
-      url: str,
+        self,
+        data: dict[str, object] | list[object],
+        url: str,
     ) -> Iterator[dict[str, object]]:
-      """Extract and yield records with validation and enrichment."""
-      records_yielded = 0
+        """Extract and yield records with validation and enrichment."""
+        records_yielded = 0
 
-      for item in self._extract_items_for_processing(data):
-          if self._validate_record(item):
-              yield self._enrich_record(item)
-              records_yielded += 1
+        for item in self._extract_items_for_processing(data):
+            if self._validate_record(item):
+                yield self._enrich_record(item)
+                records_yielded += 1
 
-      if records_yielded == 0 and not self._is_empty_result_expected(data):
-          self.logger.warning(
-              "Unknown response format from %s: %s",
-              url,
-              list(data.keys()) if isinstance(data, dict) else type(data),
-          )
-      elif records_yielded > 0:
-          self.logger.debug(
-              "Successfully parsed %s records from %s",
-              records_yielded,
-              url,
-          )
+        if records_yielded == 0 and not self._is_empty_result_expected(data):
+            self.logger.warning(
+                "Unknown response format from %s: %s",
+                url,
+                list(data.keys()) if isinstance(data, dict) else type(data),
+            )
+        elif records_yielded > 0:
+            self.logger.debug(
+                "Successfully parsed %s records from %s",
+                records_yielded,
+                url,
+            )
 
     def _extract_items_for_processing(
-      self,
-      data: dict[str, object] | list[object],
+        self,
+        data: dict[str, object] | list[object],
     ) -> Iterator[dict[str, object]]:
-      """Extract items from various OIC response formats for processing."""
-      if isinstance(data, list):
-          yield from self._process_list_data(data)
-      elif isinstance(data, dict):
-          yield from self._process_dict_data(data)
+        """Extract items from various OIC response formats for processing."""
+        if isinstance(data, list):
+            yield from self._process_list_data(data)
+        elif isinstance(data, dict):
+            yield from self._process_dict_data(data)
 
     def _process_list_data(self, data: list[object]) -> Iterator[dict[str, object]]:
-      """Process list-type response data."""
-      for item in data:
-          if isinstance(item, dict):
-              yield item
+        """Process list-type response data."""
+        for item in data:
+            if isinstance(item, dict):
+                yield item
 
     def _process_dict_data(
-      self,
-      data: dict[str, object],
+        self,
+        data: dict[str, object],
     ) -> Iterator[dict[str, object]]:
-      """Process dict-type response data with OIC format detection."""
-      if "items" in data:
-          items = data["items"]
-          if isinstance(items, list):
-              yield from self._process_list_data(items)
-      elif "data" in data:
-          data_items = data["data"]
-          if isinstance(data_items, list):
-              yield from self._process_list_data(data_items)
-      elif self._is_single_record(data):
-          yield data
+        """Process dict-type response data with OIC format detection."""
+        if "items" in data:
+            items = data["items"]
+            if isinstance(items, list):
+                yield from self._process_list_data(items)
+        elif "data" in data:
+            data_items = data["data"]
+            if isinstance(data_items, list):
+                yield from self._process_list_data(data_items)
+        elif self._is_single_record(data):
+            yield data
 
     def _is_empty_result_expected(self, data: dict[str, object] | list[object]) -> bool:
-      """Check if empty result is expected/normal based on OIC response metadata."""
-      if isinstance(data, dict):
-          items = data.get("items", [])
-          data_items = data.get("data", [])
-          return (
-              data.get("totalSize", 0) == 0
-              or data.get("count", 0) == 0
-              or (isinstance(items, list) and len(items) == 0)
-              or (isinstance(data_items, list) and len(data_items) == 0)
-          )
-      return len(data) == 0
+        """Check if empty result is expected/normal based on OIC response metadata."""
+        if isinstance(data, dict):
+            items = data.get("items", [])
+            data_items = data.get("data", [])
+            return (
+                data.get("totalSize", 0) == 0
+                or data.get("count", 0) == 0
+                or (isinstance(items, list) and len(items) == 0)
+                or (isinstance(data_items, list) and len(data_items) == 0)
+            )
+        return len(data) == 0
 
     def _is_single_record(self, data: dict[str, object]) -> bool:
-      """Check if dict represents a single record vs OIC metadata container."""
-      metadata_keys = {
-          "totalSize",
-          "count",
-          "hasMore",
-          "offset",
-          "limit",
-          "items",
-          "data",
-      }
-      return not any(key in data for key in metadata_keys)
+        """Check if dict represents a single record vs OIC metadata container."""
+        metadata_keys = {
+            "totalSize",
+            "count",
+            "hasMore",
+            "offset",
+            "limit",
+            "items",
+            "data",
+        }
+        return not any(key in data for key in metadata_keys)
 
     def _validate_record(self, record: dict[str, object]) -> bool:
-      """Validate record meets basic requirements for processing."""
-      return isinstance(record, dict)
+        """Validate record meets basic requirements for processing."""
+        return isinstance(record, dict)
 
     def _enrich_record(self, record: dict[str, object]) -> dict[str, object]:
-      """Enrich record with tap metadata for traceability."""
-      enriched = dict(record)
-      enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
-      enriched["_tap_stream_name"] = self.name
-      return enriched
+        """Enrich record with tap metadata for traceability."""
+        enriched = dict(record)
+        enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
+        enriched["_tap_stream_name"] = self.name
+        return enriched
 
     def _handle_response_error(self, response: requests.Response) -> None:
-      """Handle Oracle OIC API response errors with proper categorization."""
-      try:
-          error_data = response.json()
-          error_message = error_data.get("message") or error_data.get("error")
-      except (ValueError, TypeError, KeyError):
-          error_message = response.text or f"HTTP {response.status_code}"
+        """Handle Oracle OIC API response errors with proper categorization."""
+        try:
+            error_data = response.json()
+            error_message = error_data.get("message") or error_data.get("error")
+        except (ValueError, TypeError, KeyError):
+            error_message = response.text or f"HTTP {response.status_code}"
 
-      self.logger.error("OIC API error from %s: %s", response.url, error_message)
+        self.logger.error("OIC API error from %s: %s", response.url, error_message)
 
-      if response.status_code == HTTP_UNAUTHORIZED:
-          msg = "Unauthorized: Authentication failed or token expired"
-          raise FlextServiceError(msg)
-      if response.status_code == HTTP_FORBIDDEN:
-          msg = "Forbidden: Insufficient permissions to access resource"
-          raise FlextServiceError(msg)
-      if response.status_code == HTTP_RATE_LIMITED:
-          msg = "Rate limit exceeded: Too many requests"
-          raise FlextServiceError(msg)
-      response.raise_for_status()
+        if response.status_code == HTTP_UNAUTHORIZED:
+            msg = "Unauthorized: Authentication failed or token expired"
+            raise FlextServiceError(msg)
+        if response.status_code == HTTP_FORBIDDEN:
+            msg = "Forbidden: Insufficient permissions to access resource"
+            raise FlextServiceError(msg)
+        if response.status_code == HTTP_RATE_LIMITED:
+            msg = "Rate limit exceeded: Too many requests"
+            raise FlextServiceError(msg)
+        response.raise_for_status()
 
     def _track_response_metrics(
-      self,
-      response: requests.Response,
-      data: dict[str, object] | list[object],
+        self,
+        response: requests.Response,
+        data: dict[str, object] | list[object],
     ) -> None:
-      """Track response metrics for monitoring and optimization."""
-      # Log response time and size for monitoring
-      if hasattr(response, "elapsed"):
-          self.logger.debug("Response time: %.2fs", response.elapsed.total_seconds())
+        """Track response metrics for monitoring and optimization."""
+        # Log response time and size for monitoring
+        if hasattr(response, "elapsed"):
+            self.logger.debug("Response time: %.2fs", response.elapsed.total_seconds())
 
-      # Log record count for monitoring
-      if isinstance(data, list):
-          self.logger.debug("Received %s records", len(data))
-      elif isinstance(data, dict):
-          if "items" in data:
-              items = data["items"]
-              if isinstance(items, list):
-                  self.logger.debug("Received %s records", len(items))
-          elif "data" in data:
-              data_items = data["data"]
-              if isinstance(data_items, list):
-                  self.logger.debug("Received %s records", len(data_items))
+        # Log record count for monitoring
+        if isinstance(data, list):
+            self.logger.debug("Received %s records", len(data))
+        elif isinstance(data, dict):
+            if "items" in data:
+                items = data["items"]
+                if isinstance(items, list):
+                    self.logger.debug("Received %s records", len(items))
+            elif "data" in data:
+                data_items = data["data"]
+                if isinstance(data_items, list):
+                    self.logger.debug("Received %s records", len(data_items))
 
 
 # Export for module interface
