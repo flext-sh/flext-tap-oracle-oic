@@ -198,7 +198,7 @@ class TestOracleOICClient:
     def test_service_result_pattern(self) -> None:
         """Test FlextResult pattern usage."""
         # Test FlextResult creation
-        success_result = FlextResult.ok({"test": "data"})
+        success_result = FlextResult[None].ok({"test": "data"})
         if not (success_result.success):
             msg: str = f"Expected True, got {success_result.success}"
             raise AssertionError(msg)
@@ -207,7 +207,7 @@ class TestOracleOICClient:
             msg: str = f"Expected {expected_data}, got {success_result.data}"
             raise AssertionError(msg)
 
-        failure_result: FlextResult[Any] = FlextResult.fail("Test error")
+        failure_result: FlextResult[Any] = FlextResult[None].fail("Test error")
         if failure_result.success:
             msg: str = f"Expected False, got {failure_result.success}"
             raise AssertionError(msg)
