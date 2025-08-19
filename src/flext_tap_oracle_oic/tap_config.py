@@ -47,12 +47,12 @@ class OICAuthConfig(FlextValueObject):
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate OAuth2 configuration business rules."""
         if not self.client_id.strip():
-            return FlextResult.fail("OAuth2 client ID cannot be empty")
+            return FlextResult[None].fail("OAuth2 client ID cannot be empty")
         if not self.client_secret.strip():
-            return FlextResult.fail("OAuth2 client secret cannot be empty")
+            return FlextResult[None].fail("OAuth2 client secret cannot be empty")
         if not self.audience.strip():
-            return FlextResult.fail("OAuth2 audience cannot be empty")
-        return FlextResult.ok(None)
+            return FlextResult[None].fail("OAuth2 audience cannot be empty")
+        return FlextResult[None].ok(None)
 
     def get_token_request_data(self) -> dict[str, str]:
         """Get OAuth2 token request data for client credentials flow."""
@@ -95,14 +95,14 @@ class OICConnectionConfig(FlextValueObject):
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate connection configuration business rules."""
         if not self.api_version.strip():
-            return FlextResult.fail("API version cannot be empty")
+            return FlextResult[None].fail("API version cannot be empty")
         if self.timeout <= 0:
-            return FlextResult.fail("Timeout must be positive")
+            return FlextResult[None].fail("Timeout must be positive")
         if self.max_retries < 0:
-            return FlextResult.fail("Max retries cannot be negative")
+            return FlextResult[None].fail("Max retries cannot be negative")
         if self.page_size <= 0:
-            return FlextResult.fail("Page size must be positive")
-        return FlextResult.ok(None)
+            return FlextResult[None].fail("Page size must be positive")
+        return FlextResult[None].ok(None)
 
     @property
     def api_base_url(self) -> str:
@@ -189,24 +189,24 @@ class TapOracleOICConfig(FlextBaseConfigModel):
         if not url_validation.success:
             return url_validation
 
-        return FlextResult.ok(None)
+        return FlextResult[None].ok(None)
 
     def _validate_stream_configuration(self) -> FlextResult[None]:
         """Validate stream configuration."""
         if not self.start_date:
-            return FlextResult.ok(None)
+            return FlextResult[None].ok(None)
 
         # Basic ISO date format validation
         if len(self.start_date) < MIN_DATE_LENGTH:  # Minimum YYYY-MM-DD
-            return FlextResult.fail(
+            return FlextResult[None].fail(
                 "Start date must be in YYYY-MM-DD format or ISO 8601",
             )
 
         # Check for reasonable date format
         if not any(char in self.start_date for char in ["-", "T"]):
-            return FlextResult.fail("Start date must be in ISO date format")
+            return FlextResult[None].fail("Start date must be in ISO date format")
 
-        return FlextResult.ok(None)
+        return FlextResult[None].ok(None)
 
     def _validate_urls(self) -> FlextResult[None]:
         """Validate OAuth token URL and base URL."""
@@ -216,14 +216,14 @@ class TapOracleOICConfig(FlextBaseConfigModel):
 
             # Basic validation that hosts are properly formatted
             if not token_host or not base_host:
-                return FlextResult.fail(
+                return FlextResult[None].fail(
                     "OAuth token URL and base URL must be valid URLs",
                 )
 
         except (IndexError, AttributeError) as e:
-            return FlextResult.fail(f"URL validation failed: {e}")
+            return FlextResult[None].fail(f"URL validation failed: {e}")
 
-        return FlextResult.ok(None)
+        return FlextResult[None].ok(None)
 
     @property
     def auth_config(self) -> OICAuthConfig:

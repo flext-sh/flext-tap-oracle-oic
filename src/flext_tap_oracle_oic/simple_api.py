@@ -49,10 +49,10 @@ def setup_oic_tap(
                 ),
             }
 
-        return FlextResult.ok(config)
+        return FlextResult[None].ok(config)
 
     except (ValueError, TypeError) as e:
-        return FlextResult.fail(f"Failed to setup OIC tap: {e}")
+        return FlextResult[None].fail(f"Failed to setup OIC tap: {e}")
 
 
 def create_oic_auth_config(
@@ -84,10 +84,10 @@ def create_oic_auth_config(
             ),
         )
 
-        return FlextResult.ok(config)
+        return FlextResult[None].ok(config)
 
     except (ValueError, TypeError) as e:
-        return FlextResult.fail(f"Failed to create OIC auth config: {e}")
+        return FlextResult[None].fail(f"Failed to create OIC auth config: {e}")
 
 
 def create_oic_connection_config(
@@ -112,10 +112,10 @@ def create_oic_connection_config(
             max_retries=cast("int", kwargs.get("max_retries", 3)),
         )
 
-        return FlextResult.ok(config)
+        return FlextResult[None].ok(config)
 
     except (ValueError, TypeError) as e:
-        return FlextResult.fail(f"Failed to create OIC connection config: {e}")
+        return FlextResult[None].fail(f"Failed to create OIC connection config: {e}")
 
 
 def validate_oic_config(config: object) -> FlextResult[bool]:
@@ -140,14 +140,14 @@ def validate_oic_config(config: object) -> FlextResult[bool]:
             missing_keys = [key for key in required_keys if not config.get(key)]
 
             if missing_keys:
-                return FlextResult.fail(
+                return FlextResult[None].fail(
                     f"Missing required configuration keys: {missing_keys}",
                 )
 
-        return FlextResult.ok(data=True)
+        return FlextResult[None].ok(True)
 
     except (ValueError, TypeError) as e:
-        return FlextResult.fail(f"Failed to validate OIC config: {e}")
+        return FlextResult[None].fail(f"Failed to validate OIC config: {e}")
 
 
 # Export simplified API
