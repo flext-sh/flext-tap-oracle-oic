@@ -94,7 +94,9 @@ class OracleOICClient:
         """Get authorization headers with OAuth2 token."""
         token_result = self.authenticator.get_access_token()
         if not token_result.success:
-            return FlextResult[None].fail(f"Failed to get access token: {token_result.error}")
+            return FlextResult[None].fail(
+                f"Failed to get access token: {token_result.error}"
+            )
 
         headers = self.connection_config.get_headers()
         headers["Authorization"] = f"Bearer {token_result.data}"
