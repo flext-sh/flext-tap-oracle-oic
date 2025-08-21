@@ -7,7 +7,7 @@ This module implements ALL configuration-related functionality using flext-core 
 - Discovery and extraction configuration with enterprise patterns
 
 Design: Uses real implementation with flext-core integration:
-- flext-core: FlextSettings, FlextValueObject for configuration patterns
+- flext-core: FlextSettings, FlextValue for configuration patterns
 - Pydantic: Real data validation and environment integration
 - OAuth2: Real authentication flow implementation
 
@@ -21,7 +21,7 @@ from flext_core import (
     FlextBaseConfigModel,
     FlextResult,
     FlextSettings,
-    FlextValueObject,
+    FlextValue,
     get_logger,
 )
 from pydantic import ConfigDict, Field, HttpUrl
@@ -32,7 +32,7 @@ logger = get_logger(__name__)
 MIN_DATE_LENGTH = 10  # Minimum length for YYYY-MM-DD format
 
 
-class OICAuthConfig(FlextValueObject):
+class OICAuthConfig(FlextValue):
     """Oracle Integration Cloud OAuth2 authentication configuration.
 
     Real implementation of OAuth2/IDCS authentication configuration
@@ -64,7 +64,7 @@ class OICAuthConfig(FlextValueObject):
         }
 
 
-class OICConnectionConfig(FlextValueObject):
+class OICConnectionConfig(FlextValue):
     """Oracle Integration Cloud connection configuration.
 
     Real implementation of OIC connection parameters with proper
