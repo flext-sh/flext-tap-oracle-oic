@@ -6,7 +6,7 @@ import contextlib
 import importlib.metadata
 
 # === FLEXT-CORE FOUNDATION ===
-from flext_core import FlextResult, FlextValueObject, get_logger
+from flext_core import FlextResult, FlextValue, get_logger
 
 # === FLEXT-MELTANO COMPLETE INTEGRATION ===
 # Direct imports using real libraries (no fallbacks per user instruction)
@@ -105,7 +105,7 @@ __all__: list[str] = [
     "singer_typing",
     # === FLEXT-CORE RE-EXPORTS ===
     "FlextResult",
-    "FlextValueObject",
+    "FlextValue",
     "get_logger",
     # === PEP8 REORGANIZED PRIMARY EXPORTS ===
     # Main tap classes
