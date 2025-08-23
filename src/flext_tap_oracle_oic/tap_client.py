@@ -310,7 +310,7 @@ class TapOracleOIC(Tap):
 
             if test_result.success:
                 logger.info("Oracle OIC connection test successful")
-                return FlextResult[None].ok(True)
+                return FlextResult[None].ok(data=True)
 
             error_msg: str = f"Oracle OIC connection test failed: {test_result.error}"
             logger.error(error_msg)
