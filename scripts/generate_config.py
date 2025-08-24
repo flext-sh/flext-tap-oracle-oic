@@ -31,18 +31,13 @@ def main() -> None:
     """Generate config.json file for tap-oracle-oic."""
     try:
         # Generate configuration using centralized generator
-        config = generate_project_config(
+        generate_project_config(
             project_type=ProjectType.TAP_ORACLE_OIC,
             config_path="config.json",
             overwrite=False,
         )
 
-        print("✅ Successfully generated tap-oracle-oic configuration")
-        print("📄 Configuration saved to: config.json")
-        print(f"🔧 Configuration includes: {', '.join(config.keys())}")
-
-    except (RuntimeError, ValueError, TypeError) as e:
-        print(f"❌ Error generating configuration: {e}")
+    except (RuntimeError, ValueError, TypeError):
         sys.exit(1)
 
 
