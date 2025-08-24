@@ -65,16 +65,16 @@ class OICExtensionAuthenticator:
 
             token_data = response.json()
             if "access_token" not in token_data:
-                return FlextResult[None].fail("No access_token in OAuth2 response")
+                return FlextResult[str].fail("No access_token in OAuth2 response")
 
             self._access_token = token_data["access_token"]
             logger.info("OAuth2 access token obtained successfully")
-            return FlextResult[None].ok(self._access_token)
+            return FlextResult[str].ok(self._access_token)
 
         except requests.RequestException as e:
-            return FlextResult[None].fail(f"OAuth2 authentication failed: {e}")
+            return FlextResult[str].fail(f"OAuth2 authentication failed: {e}")
         except Exception as e:
-            return FlextResult[None].fail(f"Unexpected authentication error: {e}")
+            return FlextResult[str].fail(f"Unexpected authentication error: {e}")
 
 
 class OracleOICClient:
@@ -94,19 +94,19 @@ class OracleOICClient:
         """Get authorization headers with OAuth2 token."""
         token_result = self.authenticator.get_access_token()
         if not token_result.success:
-            return FlextResult[None].fail(
+            return FlextResult[dict[str, str]].fail(
                 f"Failed to get access token: {token_result.error}"
             )
 
         headers = self.connection_config.get_headers()
         headers["Authorization"] = f"Bearer {token_result.data}"
-        return FlextResult[None].ok(headers)
+        return FlextResult[dict[str, str]].ok(headers)
 
     def get(self, endpoint: str) -> FlextResult[requests.Response]:
         """Make authenticated GET request to OIC API."""
         headers_result = self._get_auth_headers()
         if not headers_result.success:
-            return FlextResult[None].fail(
+            return FlextResult[requests.Response].fail(
                 f"Failed to get auth headers: {headers_result.error}",
             )
 
@@ -118,12 +118,12 @@ class OracleOICClient:
                 timeout=self.connection_config.timeout,
             )
             response.raise_for_status()
-            return FlextResult[None].ok(response)
+            return FlextResult[requests.Response].ok(response)
 
         except requests.RequestException as e:
-            return FlextResult[None].fail(f"OIC API request failed: {e}")
+            return FlextResult[requests.Response].fail(f"OIC API request failed: {e}")
         except Exception as e:
-            return FlextResult[None].fail(f"Unexpected OIC API error: {e}")
+            return FlextResult[requests.Response].fail(f"Unexpected OIC API error: {e}")
 
     def post(
         self,
@@ -133,7 +133,7 @@ class OracleOICClient:
         """Make authenticated POST request to OIC API."""
         headers_result = self._get_auth_headers()
         if not headers_result.success:
-            return FlextResult[None].fail(
+            return FlextResult[requests.Response].fail(
                 f"Failed to get auth headers: {headers_result.error}",
             )
 
@@ -146,12 +146,12 @@ class OracleOICClient:
                 json=data,
             )
             response.raise_for_status()
-            return FlextResult[None].ok(response)
+            return FlextResult[requests.Response].ok(response)
 
         except requests.RequestException as e:
-            return FlextResult[None].fail(f"OIC API request failed: {e}")
+            return FlextResult[requests.Response].fail(f"OIC API request failed: {e}")
         except Exception as e:
-            return FlextResult[None].fail(f"Unexpected OIC API error: {e}")
+            return FlextResult[requests.Response].fail(f"Unexpected OIC API error: {e}")
 
 
 class TapOracleOIC(Tap):
@@ -310,16 +310,16 @@ class TapOracleOIC(Tap):
 
             if test_result.success:
                 logger.info("Oracle OIC connection test successful")
-                return FlextResult[None].ok(data=True)
+                return FlextResult[bool].ok(data=True)
 
             error_msg: str = f"Oracle OIC connection test failed: {test_result.error}"
             logger.error(error_msg)
-            return FlextResult[None].fail(error_msg)
+            return FlextResult[bool].fail(error_msg)
 
         except (RuntimeError, ValueError, TypeError) as e:
             exception_msg: str = f"Oracle OIC connection test exception: {e}"
             logger.exception(exception_msg)
-            return FlextResult[None].fail(exception_msg)
+            return FlextResult[bool].fail(exception_msg)
 
 
 # Alias for backwards compatibility

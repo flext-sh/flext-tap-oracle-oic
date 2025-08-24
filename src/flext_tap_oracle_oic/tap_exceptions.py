@@ -18,7 +18,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core.exceptions import (
+from flext_core import (
     FlextAuthenticationError,
     FlextConnectionError,
     FlextError,
