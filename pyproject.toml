@@ -60,7 +60,7 @@ tap-oracle-oic = "flext_tap_oracle_oic.tap:TapOracleOIC.cli"
 flext-tap-oracle-oic = "flext_tap_oracle_oic.tap:TapOracleOIC.cli"
 
 [tool.ruff]
-extend = "../.config/tools/.ruff-shared.toml"
+extend = "../ruff-shared.toml"
 lint.isort.known-first-party = ["flext_tap_oracle_oic"]
 
 [tool.mypy]
