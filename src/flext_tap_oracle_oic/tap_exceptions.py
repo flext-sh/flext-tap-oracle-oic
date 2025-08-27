@@ -19,10 +19,10 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_core import (
-    FlextExceptions.AuthenticationError,
-    FlextExceptions.ConnectionError,
-    FlextExceptions.Error,
-    FlextExceptions.ValidationError,
+    FlextExceptions,
+    FlextExceptions,
+    FlextExceptions,
+    FlextExceptions,
 )
 
 
@@ -31,49 +31,49 @@ class OICExceptionFactory:
     """Factory for Oracle OIC specific exceptions."""
 
     @staticmethod
-    def create_authentication_error(message: str) -> FlextExceptions.AuthenticationError:
+    def create_authentication_error(message: str) -> FlextExceptions:
         """Create OIC authentication error."""
         return OICAuthenticationError(message)
 
     @staticmethod
-    def create_connection_error(message: str) -> FlextExceptions.ConnectionError:
+    def create_connection_error(message: str) -> FlextExceptions:
         """Create OIC connection error."""
         return OICConnectionError(message)
 
     @staticmethod
-    def create_validation_error(message: str) -> FlextExceptions.ValidationError:
+    def create_validation_error(message: str) -> FlextExceptions:
         """Create OIC validation error."""
         return OICValidationError(message)
 
     @staticmethod
-    def create_api_error(message: str) -> FlextExceptions.Error:
+    def create_api_error(message: str) -> FlextExceptions:
         """Create OIC API error."""
         return OICAPIError(message)
 
 
 # Specific Oracle OIC exceptions
-class OICAuthenticationError(FlextExceptions.AuthenticationError):
+class OICAuthenticationError(FlextExceptions):
     """Oracle OIC authentication error."""
 
 
-class OICConnectionError(FlextExceptions.ConnectionError):
+class OICConnectionError(FlextExceptions):
     """Oracle OIC connection error."""
 
 
-class OICValidationError(FlextExceptions.ValidationError):
+class OICValidationError(FlextExceptions):
     """Oracle OIC validation error."""
 
 
-class OICAPIError(FlextExceptions.Error):
+class OICAPIError(FlextExceptions):
     """Oracle OIC API error."""
 
 
 # Export for backward compatibility and module interface
 __all__: list[str] = [
-    "FlextExceptions.AuthenticationError",
-    "FlextExceptions.ConnectionError",
-    "FlextExceptions.Error",
-    "FlextExceptions.ValidationError",
+    "FlextExceptions",
+    "FlextExceptions",
+    "FlextExceptions",
+    "FlextExceptions",
     "OICAPIError",
     "OICAuthenticationError",
     "OICConnectionError",

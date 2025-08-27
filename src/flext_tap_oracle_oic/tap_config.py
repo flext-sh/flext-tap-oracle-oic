@@ -7,7 +7,7 @@ This module implements ALL configuration-related functionality using flext-core 
 - Discovery and extraction configuration with enterprise patterns
 
 Design: Uses real implementation with flext-core integration:
-- flext-core: FlextSettings, FlextValue for configuration patterns
+- flext-core: FlextConfig, FlextValue for configuration patterns
 - Pydantic: Real data validation and environment integration
 - OAuth2: Real authentication flow implementation
 
@@ -19,8 +19,8 @@ from __future__ import annotations
 
 from flext_core import (
     FlextBaseConfigModel,
+    FlextConfig,
     FlextResult,
-    FlextSettings,
     FlextValue,
     get_logger,
 )
@@ -252,7 +252,7 @@ class TapOracleOICConfig(FlextBaseConfigModel):
 # Main exports
 __all__: list[str] = [
     "FlextBaseConfigModel",
-    "FlextSettings",
+    "FlextConfig",
     "OICAuthConfig",
     "OICConnectionConfig",
     "TapOracleOICConfig",
