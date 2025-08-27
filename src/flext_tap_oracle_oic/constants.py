@@ -13,13 +13,13 @@ from flext_core import FlextConstants
 class FlextOracleOicConstants(FlextConstants):
     """FLEXT Oracle OIC TAP constants extending flext-core platform constants."""
 
-    # Oracle OIC API Constants (from official documentation)
-    OIC_API_BASE_PATH = "/ic/api/integration/v1"
-    OIC_MONITORING_API_PATH = "/ic/api/monitoring/v1"
-    OIC_DESIGNTIME_API_PATH = "/ic/api/designtime/v1"
-    OIC_PROCESS_API_PATH = "/ic/api/process/v1"
-    OIC_B2B_API_PATH = "/ic/api/b2b/v1"
-    OIC_ENVIRONMENT_API_PATH = "/ic/api/environment/v1"
+    # Oracle OIC API Constants (use centralized constants)
+    OIC_API_BASE_PATH = FlextConstants.OracleOIC.OIC_API_BASE_PATH
+    OIC_MONITORING_API_PATH = FlextConstants.OracleOIC.OIC_MONITORING_API_PATH
+    OIC_DESIGNTIME_API_PATH = FlextConstants.OracleOIC.OIC_DESIGNTIME_API_PATH
+    OIC_PROCESS_API_PATH = FlextConstants.OracleOIC.OIC_PROCESS_API_PATH
+    OIC_B2B_API_PATH = FlextConstants.OracleOIC.OIC_B2B_API_PATH
+    OIC_ENVIRONMENT_API_PATH = FlextConstants.OracleOIC.OIC_ENVIRONMENT_API_PATH
 
     # Official OIC REST API Endpoints
     OIC_ENDPOINTS: ClassVar[dict[str, str]] = {
