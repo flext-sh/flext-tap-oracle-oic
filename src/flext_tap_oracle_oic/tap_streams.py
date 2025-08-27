@@ -23,7 +23,7 @@ from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
 
 import requests
-from flext_core import FlextError as FlextServiceError, get_logger
+from flext_core import FlextExceptions as FlextServiceError, get_logger
 from singer_sdk import BaseOffsetPaginator, RESTStream
 
 from flext_tap_oracle_oic.constants import (
