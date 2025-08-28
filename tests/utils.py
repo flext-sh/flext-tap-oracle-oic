@@ -15,7 +15,7 @@ from collections.abc import Callable, Generator
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, NoReturn
+from typing import NoReturn, object
 
 import pytest
 import requests
@@ -146,7 +146,7 @@ class TestValidator:
     """Validator utilities for test assertions."""
 
     @staticmethod
-    def validate_tap_instance(tap_instance: Any) -> None:
+    def validate_tap_instance(tap_instance: object) -> None:
         assert hasattr(tap_instance, "name")
         assert hasattr(tap_instance, "config")
         assert hasattr(tap_instance, "catalog")
@@ -156,7 +156,7 @@ class TestValidator:
             raise AssertionError(msg)
 
     @staticmethod
-    def validate_stream_schema(stream: Any) -> None:
+    def validate_stream_schema(stream: object) -> None:
         assert hasattr(stream, "schema")
         assert stream.schema is not None
         assert isinstance(stream.schema, dict)
@@ -172,7 +172,7 @@ class TestValidator:
         assert len(stream.schema["properties"]) > 0
 
     @staticmethod
-    def validate_stream_metadata(stream: Any) -> None:
+    def validate_stream_metadata(stream: object) -> None:
         assert hasattr(stream, "primary_keys")
         assert stream.primary_keys is not None
         assert len(stream.primary_keys) > 0
@@ -239,7 +239,7 @@ class MockAPIServer:
     """Mock API server for testing HTTP interactions."""
 
     def __init__(self) -> None:
-        self.requests_mock: Any = None
+        self.requests_mock: object = None
         self.base_url = "https://test-oic.integration.ocp.oraclecloud.com"
         self.token_url = "https://test-idcs.identity.oraclecloud.com/oauth2/v1/token"
 
@@ -296,7 +296,7 @@ class MockAPIServer:
             )
 
     @contextmanager
-    def mock_context(self, requests_mock_instance: Any) -> object:
+    def mock_context(self, requests_mock_instance: object) -> object:
         self.requests_mock = requests_mock_instance
         try:
             yield self
@@ -491,7 +491,7 @@ def skip_if_no_production_config() -> None:
 def requires_python_version(min_version: str) -> object:
     """Require minimum Python version for test."""
 
-    def decorator(func: Any) -> object:
+    def decorator(func: object) -> object:
         if version.parse(
             f"{sys.version_info.major}.{sys.version_info.minor}",
         ) < version.parse(min_version):
@@ -509,7 +509,7 @@ def requires_python_version(min_version: str) -> object:
 def timeout_test(seconds: float) -> object:
     """Add timeout to test function."""
 
-    def timeout_handler(_signum: int, _frame: Any) -> NoReturn:
+    def timeout_handler(_signum: int, _frame: object) -> NoReturn:
         msg: str = f"Test timed out after {seconds} seconds"
         raise TimeoutError(msg)
 
@@ -529,10 +529,12 @@ class ConcurrentTestRunner:
         self.max_workers = max_workers
         self.results: list[dict[str, object]] = []
 
-    def run_tests_parallel(self, test_functions: list[Callable[[], Any]]) -> list[Any]:
+    def run_tests_parallel(
+        self, test_functions: list[Callable[[], object]]
+    ) -> list[object]:
         self.results.clear()
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-            future_to_test: dict[Any, Callable[[], Any]] = {
+            future_to_test: dict[object, Callable[[], object]] = {
                 executor.submit(test_func): test_func for test_func in test_functions
             }
 
@@ -582,7 +584,7 @@ def assert_config_valid(config: dict[str, object]) -> None:
         raise ValueError(msg)
 
 
-def assert_stream_quality(stream: Any) -> None:
+def assert_stream_quality(stream: object) -> None:
     """Assert stream meets quality standards."""
     TestValidator.validate_stream_schema(stream)
     TestValidator.validate_stream_metadata(stream)

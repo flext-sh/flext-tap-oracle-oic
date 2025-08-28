@@ -6,7 +6,8 @@ Real tests for the Oracle Integration Cloud client module.
 from __future__ import annotations
 
 import contextlib
-from typing import Any
+
+object
 from unittest.mock import Mock, patch
 from urllib.parse import urljoin
 
@@ -207,7 +208,7 @@ class TestOracleOICClient:
             msg: str = f"Expected {expected_data}, got {success_result.data}"
             raise AssertionError(msg)
 
-        failure_result: FlextResult[Any] = FlextResult[None].fail("Test error")
+        failure_result: FlextResult[object] = FlextResult[None].fail("Test error")
         if failure_result.success:
             msg: str = f"Expected False, got {failure_result.success}"
             raise AssertionError(msg)

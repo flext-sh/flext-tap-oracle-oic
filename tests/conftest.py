@@ -8,7 +8,8 @@ from __future__ import annotations
 
 import os
 from collections.abc import Generator, Iterator
-from typing import Any
+
+object
 from unittest.mock import Mock
 
 import pytest
@@ -545,7 +546,7 @@ def pytest_configure(config: pytest.Config) -> None:
 
 # Mock services
 @pytest.fixture
-def mock_oic_client() -> type[Any]:
+def mock_oic_client() -> type[object]:
     """Mock Oracle OIC client for testing."""
 
     class MockOICClient:
@@ -584,7 +585,7 @@ def mock_oic_client() -> type[Any]:
             self,
             request_func: object,
             **kwargs: object,
-        ) -> Iterator[Any]:
+        ) -> Iterator[object]:
             """Mock pagination."""
             yield from []
 
@@ -592,7 +593,7 @@ def mock_oic_client() -> type[Any]:
 
 
 @pytest.fixture
-def mock_oauth_authenticator() -> type[Any]:
+def mock_oauth_authenticator() -> type[object]:
     """Mock OAuth2 authenticator for testing."""
 
     class MockOAuthAuthenticator:

@@ -13,7 +13,8 @@ import os
 import shutil
 import sys
 from pathlib import Path
-from typing import Any
+
+object
 from unittest.mock import Mock
 
 import pytest
@@ -48,7 +49,7 @@ class TestTapOracleOICE2E:
         }
 
     @pytest.fixture
-    def tap(self, config: dict[str, object]) -> Any:
+    def tap(self, config: dict[str, object]) -> object:
         return TapOIC(config=config)
 
     @pytest.fixture
