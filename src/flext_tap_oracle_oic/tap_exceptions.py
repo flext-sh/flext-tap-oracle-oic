@@ -18,12 +18,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import (
-    FlextExceptions,
-    FlextExceptions,
-    FlextExceptions,
-    FlextExceptions,
-)
+from flext_core import FlextExceptions
 
 
 # Oracle OIC exception factory using standard pattern
