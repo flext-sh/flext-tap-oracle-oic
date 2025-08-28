@@ -7,7 +7,7 @@ Tests the main TapOIC class and core functionality without external dependencies
 
 from __future__ import annotations
 
-from typing import Any
+object
 
 import pytest
 from singer_sdk import ConfigValidationError
@@ -216,7 +216,7 @@ class TestTapOICIntegration:
 
 
 @pytest.fixture
-def sample_config() -> Any:
+def sample_config() -> object:
     """Sample config."""
     return {
         "base_url": "https://test.integration.ocp.oraclecloud.com",
@@ -227,7 +227,7 @@ def sample_config() -> Any:
 
 
 @pytest.fixture
-def sample_config_with_extended() -> Any:
+def sample_config_with_extended() -> object:
     """Sample config with extended streams."""
     return {
         "base_url": "https://test.integration.ocp.oraclecloud.com",
