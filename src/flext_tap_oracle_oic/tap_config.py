@@ -7,7 +7,7 @@ This module implements ALL configuration-related functionality using flext-core 
 - Discovery and extraction configuration with enterprise patterns
 
 Design: Uses real implementation with flext-core integration:
-- flext-core: FlextConfig, FlextValue for configuration patterns
+- flext-core: FlextConfig, FlextModels.Value for configuration patterns
 - Pydantic: Real data validation and environment integration
 - OAuth2: Real authentication flow implementation
 
@@ -18,21 +18,21 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_core import (
-    FlextBaseConfigModel,
+    FlextConfig.BaseConfigModel,
     FlextConfig,
     FlextResult,
-    FlextValue,
-    get_logger,
+    FlextModels.Value,
+    FlextLogger,
 )
 from pydantic import ConfigDict, Field, HttpUrl
 
-logger = get_logger(__name__)
+logger = FlextLogger(__name__)
 
 # Constants for validation limits
 MIN_DATE_LENGTH = 10  # Minimum length for YYYY-MM-DD format
 
 
-class OICAuthConfig(FlextValue):
+class OICAuthConfig(FlextModels.Value):
     """Oracle Integration Cloud OAuth2 authentication configuration.
 
     Real implementation of OAuth2/IDCS authentication configuration
@@ -64,7 +64,7 @@ class OICAuthConfig(FlextValue):
         }
 
 
-class OICConnectionConfig(FlextValue):
+class OICConnectionConfig(FlextModels.Value):
     """Oracle Integration Cloud connection configuration.
 
     Real implementation of OIC connection parameters with proper
@@ -118,10 +118,10 @@ class OICConnectionConfig(FlextValue):
         }
 
 
-class TapOracleOICConfig(FlextBaseConfigModel):
+class TapOracleOICConfig(FlextConfig.BaseConfigModel):
     """Complete Tap Oracle OIC configuration combining auth and connection.
 
-    Real configuration implementation using FlextBaseConfigModel patterns
+    Real configuration implementation using FlextConfig.BaseConfigModel patterns
     with comprehensive validation and business rule enforcement.
     """
 
@@ -168,7 +168,7 @@ class TapOracleOICConfig(FlextBaseConfigModel):
     )
 
     def validate_business_rules(self) -> FlextResult[None]:
-        """Validate Oracle OIC tap configuration business rules using FlextBaseConfigModel pattern."""
+        """Validate Oracle OIC tap configuration business rules using FlextConfig.BaseConfigModel pattern."""
         # Validate OAuth2 authentication configuration
         auth_validation = self.auth_config.validate_business_rules()
         if not auth_validation.success:
@@ -251,10 +251,10 @@ class TapOracleOICConfig(FlextBaseConfigModel):
 
 # Main exports
 __all__: list[str] = [
-    "FlextBaseConfigModel",
+    "FlextConfig.BaseConfigModel",
     "FlextConfig",
     "OICAuthConfig",
     "OICConnectionConfig",
     "TapOracleOICConfig",
-    "get_logger",
+    "FlextLogger",
 ]

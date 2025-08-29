@@ -24,7 +24,7 @@ from collections.abc import Sequence
 from typing import ClassVar, cast
 
 import requests
-from flext_core import FlextResult, get_logger
+from flext_core import FlextLogger, FlextResult
 from flext_meltano import Stream, Tap
 
 from flext_tap_oracle_oic.streams_consolidated import (
@@ -41,7 +41,7 @@ from flext_tap_oracle_oic.tap_streams import OICBaseStream
 # Type aliases
 StreamConfigType = object
 
-logger = get_logger(__name__)
+logger = FlextLogger(__name__)
 
 
 class OICExtensionAuthenticator:

@@ -23,7 +23,7 @@ from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
 
 import requests
-from flext_core import FlextExceptions as FlextServiceError, get_logger
+from flext_core import FlextExceptions as FlextServiceError, FlextLogger
 from singer_sdk import BaseOffsetPaginator, RESTStream
 
 from flext_tap_oracle_oic.constants import (
@@ -81,7 +81,7 @@ class OICPaginator(BaseOffsetPaginator):
             return self._calculate_next_offset(data)
 
         except (ValueError, KeyError, TypeError, AttributeError) as e:
-            logger = get_logger(__name__)
+            logger = FlextLogger(__name__)
             logger.warning(f"OIC pagination parsing failed: {type(e).__name__}: {e}")
             logger.info("Returning None - pagination parsing failure properly handled")
             logger.debug("This indicates end of pagination or malformed OIC response")
