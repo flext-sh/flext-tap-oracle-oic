@@ -18,7 +18,7 @@ object
 from unittest.mock import Mock
 
 import pytest
-from flext_core import get_logger
+from flext_core import FlextLogger
 from singer_sdk import ConfigValidationError
 
 from flext_tap_oracle_oic import TapOIC
@@ -177,7 +177,7 @@ class TestTapOracleOICE2E:
                 # Other errors might be acceptable (no data, API changes, etc.)
                 # Log warning but don't fail test
 
-                logger = get_logger(__name__)
+                logger = FlextLogger(__name__)
                 logger.warning(f"Non-critical error in live connection test: {e}")
 
     def test_state_management(self, tap: TapOIC) -> None:

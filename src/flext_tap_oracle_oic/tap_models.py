@@ -7,7 +7,7 @@ This module consolidates ALL model and entity definitions:
 - Value objects following DDD patterns with flext-core integration
 
 Design: Pure domain modeling using:
-- flext-core: FlextValue, FlextEntity patterns
+- flext-core: FlextModels.Value, FlextModels.Entity patterns
 - pydantic: Validation and serialization
 - typing: Complete type safety and documentation
 - Domain-driven design: Rich domain models with behavior

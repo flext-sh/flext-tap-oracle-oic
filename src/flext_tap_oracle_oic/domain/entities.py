@@ -10,8 +10,8 @@ from datetime import UTC, datetime
 from enum import StrEnum
 
 from flext_core import (
-    FlextValue,
-    FlextValue as FlextDomainBaseModel,
+    FlextModels.Value,
+    FlextModels.Value as FlextDomainBaseModel,
 )
 from pydantic import ConfigDict, Field
 
@@ -331,7 +331,7 @@ class OICProject(FlextDomainBaseModel):
 
 
 # Value Objects for configuration and metadata
-class OICResourceMetadata(FlextValue):
+class OICResourceMetadata(FlextModels.Value):
     """OIC resource metadata value object."""
 
     resource_type: OICResourceType = Field(..., description="Resource type")
@@ -342,7 +342,7 @@ class OICResourceMetadata(FlextValue):
     updated_at: datetime | None = Field(None, description="Last update timestamp")
 
 
-class OICExecutionSummary(FlextValue):
+class OICExecutionSummary(FlextModels.Value):
     """OIC execution summary value object."""
 
     integration_id: str = Field(..., description="Integration ID")
