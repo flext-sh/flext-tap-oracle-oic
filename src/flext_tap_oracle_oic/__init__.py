@@ -6,7 +6,7 @@ import contextlib
 import importlib.metadata
 
 # === FLEXT-CORE FOUNDATION ===
-from flext_core import FlextResult, FlextModels.Value, FlextLogger
+from flext_core import FlextResult, FlextModels, FlextLogger
 
 # === FLEXT-MELTANO COMPLETE INTEGRATION ===
 # Direct imports using real libraries (no fallbacks per user instruction)

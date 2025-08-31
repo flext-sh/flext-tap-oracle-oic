@@ -1,7 +1,7 @@
 """Domain entities for FLEXT-TAP-ORACLE-OIC v0.7.0 using flext-core patterns.
 
 MIGRATED TO FLEXT-CORE:
-Uses flext-core FlextDomainBaseModel and value object patterns.
+Uses flext-core FlextModels.Entity and value object patterns.
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ from enum import StrEnum
 
 from flext_core import (
     FlextModels.Value,
-    FlextModels.Value as FlextDomainBaseModel,
+    FlextModels.Value as FlextModels.Entity,
 )
 from pydantic import ConfigDict, Field
 
@@ -47,7 +47,7 @@ class ConnectionStatus(StrEnum):
     FAILED = "failed"
 
 
-class OICConnection(FlextDomainBaseModel):
+class OICConnection(FlextModels.Entity):
     """OIC connection domain entity using flext-core patterns."""
 
     model_config = ConfigDict(frozen=False)
@@ -98,7 +98,7 @@ class OICConnection(FlextDomainBaseModel):
         self.test_result = {"error": error, "timestamp": datetime.now(UTC).isoformat()}
 
 
-class OICIntegration(FlextDomainBaseModel):
+class OICIntegration(FlextModels.Entity):
     """OIC integration domain entity using flext-core patterns."""
 
     model_config = ConfigDict(frozen=False)
@@ -176,7 +176,7 @@ class OICIntegration(FlextDomainBaseModel):
         return self.integration_status == IntegrationStatus.ACTIVATED
 
 
-class OICLookup(FlextDomainBaseModel):
+class OICLookup(FlextModels.Entity):
     """OIC lookup table domain entity using flext-core patterns."""
 
     model_config = ConfigDict(frozen=False)
@@ -224,7 +224,7 @@ class OICLookup(FlextDomainBaseModel):
         return self.row_count == 0
 
 
-class OICMonitoringRecord(FlextDomainBaseModel):
+class OICMonitoringRecord(FlextModels.Entity):
     """OIC monitoring record domain entity using flext-core patterns."""
 
     instance_id: str = Field(..., min_length=1, description="Flow instance ID")
@@ -274,7 +274,7 @@ class OICMonitoringRecord(FlextDomainBaseModel):
         return self.duration_ms / 1000.0 if self.duration_ms is not None else None
 
 
-class OICProject(FlextDomainBaseModel):
+class OICProject(FlextModels.Entity):
     """OIC project domain entity using flext-core patterns."""
 
     model_config = ConfigDict(frozen=False)
