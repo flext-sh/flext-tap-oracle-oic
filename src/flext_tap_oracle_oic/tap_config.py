@@ -18,7 +18,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_core import (
-    FlextConfig.BaseConfigModel,
+    FlextConfig.BaseModel,
     FlextConfig,
     FlextResult,
     FlextModels.Value,
@@ -118,10 +118,10 @@ class OICConnectionConfig(FlextModels.Value):
         }
 
 
-class TapOracleOICConfig(FlextConfig.BaseConfigModel):
+class TapOracleOICConfig(FlextConfig.BaseModel):
     """Complete Tap Oracle OIC configuration combining auth and connection.
 
-    Real configuration implementation using FlextConfig.BaseConfigModel patterns
+    Real configuration implementation using FlextConfig.BaseModel patterns
     with comprehensive validation and business rule enforcement.
     """
 
@@ -168,7 +168,7 @@ class TapOracleOICConfig(FlextConfig.BaseConfigModel):
     )
 
     def validate_business_rules(self) -> FlextResult[None]:
-        """Validate Oracle OIC tap configuration business rules using FlextConfig.BaseConfigModel pattern."""
+        """Validate Oracle OIC tap configuration business rules using FlextConfig.BaseModel pattern."""
         # Validate OAuth2 authentication configuration
         auth_validation = self.auth_config.validate_business_rules()
         if not auth_validation.success:
@@ -251,7 +251,7 @@ class TapOracleOICConfig(FlextConfig.BaseConfigModel):
 
 # Main exports
 __all__: list[str] = [
-    "FlextConfig.BaseConfigModel",
+    "FlextConfig.BaseModel",
     "FlextConfig",
     "OICAuthConfig",
     "OICConnectionConfig",
