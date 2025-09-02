@@ -24,7 +24,7 @@ from datetime import UTC, datetime
 
 import requests
 from flext_core import FlextExceptions as FlextServiceError, FlextLogger
-from singer_sdk import BaseOffsetPaginator, RESTStream
+from flext_meltano import FlextTapStream
 
 from flext_tap_oracle_oic.constants import (
     OIC_API_BASE_PATH,
@@ -42,7 +42,7 @@ HTTP_FORBIDDEN = 403
 HTTP_RATE_LIMITED = 429
 
 
-class OICPaginator(BaseOffsetPaginator):
+class OICPaginator:
     """Intelligent Oracle OIC API paginator with adaptive optimization.
 
     Enterprise-grade pagination features:
@@ -134,7 +134,7 @@ class OICPaginator(BaseOffsetPaginator):
                 self._page_size = min(self._max_page_size, int(self._page_size * 1.2))
 
 
-class OICBaseStream(RESTStream[dict[str, object]]):
+class OICBaseStream(FlextTapStream):
     """Professional base stream class for Oracle Integration Cloud APIs.
 
     Enterprise-grade stream implementation with:
