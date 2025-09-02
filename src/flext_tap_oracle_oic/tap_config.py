@@ -7,7 +7,7 @@ This module implements ALL configuration-related functionality using flext-core 
 - Discovery and extraction configuration with enterprise patterns
 
 Design: Uses real implementation with flext-core integration:
-- flext-core: FlextConfig, FlextModels.Value for configuration patterns
+- flext-core: FlextConfig, FlextModels for configuration patterns
 - Pydantic: Real data validation and environment integration
 - OAuth2: Real authentication flow implementation
 
@@ -18,11 +18,9 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_core import (
-    FlextConfig.BaseModel,
-    FlextConfig,
-    FlextResult,
-    FlextModels.Value,
     FlextLogger,
+    FlextModels,
+    FlextResult,
 )
 from pydantic import ConfigDict, Field, HttpUrl
 
@@ -32,7 +30,7 @@ logger = FlextLogger(__name__)
 MIN_DATE_LENGTH = 10  # Minimum length for YYYY-MM-DD format
 
 
-class OICAuthConfig(FlextModels.Value):
+class OICAuthConfig(FlextModels.BaseModel):
     """Oracle Integration Cloud OAuth2 authentication configuration.
 
     Real implementation of OAuth2/IDCS authentication configuration
@@ -64,7 +62,7 @@ class OICAuthConfig(FlextModels.Value):
         }
 
 
-class OICConnectionConfig(FlextModels.Value):
+class OICConnectionConfig(FlextModels.BaseModel):
     """Oracle Integration Cloud connection configuration.
 
     Real implementation of OIC connection parameters with proper
@@ -118,7 +116,7 @@ class OICConnectionConfig(FlextModels.Value):
         }
 
 
-class TapOracleOICConfig(FlextConfig.BaseModel):
+class TapOracleOICConfig(FlextModels.BaseModel):
     """Complete Tap Oracle OIC configuration combining auth and connection.
 
     Real configuration implementation using FlextConfig.BaseModel patterns
@@ -251,10 +249,7 @@ class TapOracleOICConfig(FlextConfig.BaseModel):
 
 # Main exports
 __all__: list[str] = [
-    "FlextConfig.BaseModel",
-    "FlextConfig",
     "OICAuthConfig",
     "OICConnectionConfig",
     "TapOracleOICConfig",
-    "FlextLogger",
 ]

@@ -1,7 +1,7 @@
 """Domain entities for FLEXT-TAP-ORACLE-OIC v0.7.0 using flext-core patterns.
 
 MIGRATED TO FLEXT-CORE:
-Uses flext-core FlextModels.Entity and value object patterns.
+Uses flext-core FlextModels and value object patterns.
 """
 
 from __future__ import annotations
@@ -10,8 +10,7 @@ from datetime import UTC, datetime
 from enum import StrEnum
 
 from flext_core import (
-    FlextModels.Value,
-    FlextModels.Value as FlextModels.Entity,
+    FlextModels,
 )
 from pydantic import ConfigDict, Field
 
@@ -47,7 +46,7 @@ class ConnectionStatus(StrEnum):
     FAILED = "failed"
 
 
-class OICConnection(FlextModels.Entity):
+class OICConnection(FlextModels):
     """OIC connection domain entity using flext-core patterns."""
 
     model_config = ConfigDict(frozen=False)
@@ -98,7 +97,7 @@ class OICConnection(FlextModels.Entity):
         self.test_result = {"error": error, "timestamp": datetime.now(UTC).isoformat()}
 
 
-class OICIntegration(FlextModels.Entity):
+class OICIntegration(FlextModels):
     """OIC integration domain entity using flext-core patterns."""
 
     model_config = ConfigDict(frozen=False)
@@ -176,7 +175,7 @@ class OICIntegration(FlextModels.Entity):
         return self.integration_status == IntegrationStatus.ACTIVATED
 
 
-class OICLookup(FlextModels.Entity):
+class OICLookup(FlextModels):
     """OIC lookup table domain entity using flext-core patterns."""
 
     model_config = ConfigDict(frozen=False)
@@ -224,7 +223,7 @@ class OICLookup(FlextModels.Entity):
         return self.row_count == 0
 
 
-class OICMonitoringRecord(FlextModels.Entity):
+class OICMonitoringRecord(FlextModels):
     """OIC monitoring record domain entity using flext-core patterns."""
 
     instance_id: str = Field(..., min_length=1, description="Flow instance ID")
@@ -274,7 +273,7 @@ class OICMonitoringRecord(FlextModels.Entity):
         return self.duration_ms / 1000.0 if self.duration_ms is not None else None
 
 
-class OICProject(FlextModels.Entity):
+class OICProject(FlextModels):
     """OIC project domain entity using flext-core patterns."""
 
     model_config = ConfigDict(frozen=False)
@@ -331,7 +330,7 @@ class OICProject(FlextModels.Entity):
 
 
 # Value Objects for configuration and metadata
-class OICResourceMetadata(FlextModels.Value):
+class OICResourceMetadata(FlextModels):
     """OIC resource metadata value object."""
 
     resource_type: OICResourceType = Field(..., description="Resource type")
@@ -342,7 +341,7 @@ class OICResourceMetadata(FlextModels.Value):
     updated_at: datetime | None = Field(None, description="Last update timestamp")
 
 
-class OICExecutionSummary(FlextModels.Value):
+class OICExecutionSummary(FlextModels):
     """OIC execution summary value object."""
 
     integration_id: str = Field(..., description="Integration ID")
