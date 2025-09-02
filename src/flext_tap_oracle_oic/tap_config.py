@@ -30,7 +30,7 @@ logger = FlextLogger(__name__)
 MIN_DATE_LENGTH = 10  # Minimum length for YYYY-MM-DD format
 
 
-class OICAuthConfig(FlextModels.BaseModel):
+class OICAuthConfig(FlextModels.BaseConfig):
     """Oracle Integration Cloud OAuth2 authentication configuration.
 
     Real implementation of OAuth2/IDCS authentication configuration
@@ -62,7 +62,7 @@ class OICAuthConfig(FlextModels.BaseModel):
         }
 
 
-class OICConnectionConfig(FlextModels.BaseModel):
+class OICConnectionConfig(FlextModels.BaseConfig):
     """Oracle Integration Cloud connection configuration.
 
     Real implementation of OIC connection parameters with proper
@@ -116,7 +116,7 @@ class OICConnectionConfig(FlextModels.BaseModel):
         }
 
 
-class TapOracleOICConfig(FlextModels.BaseModel):
+class TapOracleOICConfig(FlextModels.BaseConfig):
     """Complete Tap Oracle OIC configuration combining auth and connection.
 
     Real configuration implementation using FlextConfig.BaseModel patterns
