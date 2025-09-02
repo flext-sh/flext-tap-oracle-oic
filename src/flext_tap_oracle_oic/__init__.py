@@ -105,7 +105,7 @@ __all__: list[str] = [
     "singer_typing",
     # === FLEXT-CORE RE-EXPORTS ===
     "FlextResult",
-    "FlextModels.Value",
+    "FlextModels",
     "FlextLogger",
     # === PEP8 REORGANIZED PRIMARY EXPORTS ===
     # Main tap classes
