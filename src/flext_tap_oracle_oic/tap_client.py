@@ -25,7 +25,7 @@ from typing import ClassVar, cast
 
 import requests
 from flext_core import FlextLogger, FlextResult
-from flext_meltano import Stream, Tap
+from flext_meltano import FlextTapAbstract as Tap, FlextTapStream as Stream
 
 from flext_tap_oracle_oic.streams_consolidated import (
     ALL_STREAMS,

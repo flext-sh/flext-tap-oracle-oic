@@ -13,18 +13,7 @@ import sys
 from flext_tap_oracle_oic import (
     ProjectType,
     generate_project_config,
-    get_base_config,
-    get_domain_entity,
-    get_domain_value_object,
-    get_field,
-    get_service_result,
 )
-
-FlextResult = get_service_result()
-DomainEntity = get_domain_entity()
-Field = get_field()
-FlextModels = get_domain_value_object()
-BaseConfig = get_base_config()
 
 
 def main() -> None:

@@ -9,25 +9,16 @@ import importlib.metadata
 from flext_core import FlextResult, FlextModels, FlextLogger
 
 # === FLEXT-MELTANO COMPLETE INTEGRATION ===
-# Direct imports using real libraries (no fallbacks per user instruction)
+# Use modern FlextMeltano abstractions (zero Singer SDK dependency)
 from flext_meltano import (
-    BatchSink,
-    FlextMeltanoBaseService,
     FlextMeltanoBridge,
     FlextMeltanoConfig,
-    FlextMeltanoEvent,
-    FlextMeltanoTapService,
-    OAuthAuthenticator,
-    PropertiesList,
-    Property,
-    Sink,
-    SQLSink,
-    Stream,
-    Tap,
-    Target,
-    create_meltano_tap_service,
-    get_tap_test_class,
-    singer_typing,
+    FlextMeltanoTypeAdapters,
+    FlextTapAbstract as Tap,
+    FlextTapStream as Stream,
+    FlextSingerTypes,
+    FlextPropertiesList as PropertiesList,
+    create_flext_tap_config,
 )
 
 # === PEP8 REORGANIZED IMPORTS ===
@@ -134,4 +125,4 @@ __all__: list[str] = [
     "__version_info__",
 ]
 
-from . import infrastructure
+# from . import infrastructure  # Module doesn't exist, commented out
