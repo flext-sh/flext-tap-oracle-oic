@@ -52,7 +52,9 @@ class IntegrationsStream(OICBaseStream):
             description="Last update timestamp",
         ),
         th.Property("createdBy", th.StringType(), description="Created by user"),
-        th.Property("lastUpdatedBy", th.StringType(), description="Last updated by user"),
+        th.Property(
+            "lastUpdatedBy", th.StringType(), description="Last updated by user"
+        ),
         th.Property(
             "connections",
             th.ArrayType(th.ObjectType()),
@@ -99,7 +101,9 @@ class ConnectionsStream(OICBaseStream):
     schema = th.PropertiesList(
         th.Property("id", th.StringType(), description="Connection ID"),
         th.Property("name", th.StringType(), description="Connection name"),
-        th.Property("description", th.StringType(), description="Connection description"),
+        th.Property(
+            "description", th.StringType(), description="Connection description"
+        ),
         th.Property("adapterType", th.StringType(), description="Adapter type"),
         th.Property(
             "adapterDisplayName",
@@ -115,7 +119,9 @@ class ConnectionsStream(OICBaseStream):
             description="Last update timestamp",
         ),
         th.Property("createdBy", th.StringType(), description="Created by user"),
-        th.Property("lastUpdatedBy", th.StringType(), description="Last updated by user"),
+        th.Property(
+            "lastUpdatedBy", th.StringType(), description="Last updated by user"
+        ),
         th.Property("connectionUrl", th.StringType(), description="Connection URL"),
         th.Property("securityPolicy", th.StringType(), description="Security policy"),
         th.Property(
@@ -157,7 +163,9 @@ class PackagesStream(OICBaseStream):
             description="Last update timestamp",
         ),
         th.Property("createdBy", th.StringType(), description="Created by user"),
-        th.Property("lastUpdatedBy", th.StringType(), description="Last updated by user"),
+        th.Property(
+            "lastUpdatedBy", th.StringType(), description="Last updated by user"
+        ),
         th.Property(
             "integrations",
             th.ArrayType(th.ObjectType()),
@@ -198,13 +206,17 @@ class LookupsStream(OICBaseStream):
             description="Last update timestamp",
         ),
         th.Property("createdBy", th.StringType(), description="Created by user"),
-        th.Property("lastUpdatedBy", th.StringType(), description="Last updated by user"),
+        th.Property(
+            "lastUpdatedBy", th.StringType(), description="Last updated by user"
+        ),
         th.Property(
             "valueCount",
             th.IntegerType(),
             description="Number of lookup values",
         ),
-        th.Property("defaultValue", th.StringType(), description="Default lookup value"),
+        th.Property(
+            "defaultValue", th.StringType(), description="Default lookup value"
+        ),
         th.Property("isReadOnly", th.BooleanType(), description="Is read-only"),
         th.Property("usageCount", th.IntegerType(), description="Usage count"),
     ).to_dict()
@@ -239,7 +251,9 @@ class LibrariesStream(OICBaseStream):
             description="Last update timestamp",
         ),
         th.Property("createdBy", th.StringType(), description="Created by user"),
-        th.Property("lastUpdatedBy", th.StringType(), description="Last updated by user"),
+        th.Property(
+            "lastUpdatedBy", th.StringType(), description="Last updated by user"
+        ),
         th.Property("version", th.StringType(), description="Library version"),
         th.Property("size", th.IntegerType(), description="Library size"),
         th.Property("usageCount", th.IntegerType(), description="Usage count"),
@@ -326,7 +340,9 @@ class AdaptersStream(OICBaseStream):
         ),
         th.Property("isCustom", th.BooleanType(), description="Is custom adapter"),
         th.Property("isDeprecated", th.BooleanType(), description="Is deprecated"),
-        th.Property("documentationUrl", th.StringType(), description="Documentation URL"),
+        th.Property(
+            "documentationUrl", th.StringType(), description="Documentation URL"
+        ),
     ).to_dict()
 
 
@@ -359,7 +375,9 @@ class ProjectsStream(OICBaseStream):
             description="Last update timestamp",
         ),
         th.Property("createdBy", th.StringType(), description="Created by user"),
-        th.Property("lastUpdatedBy", th.StringType(), description="Last updated by user"),
+        th.Property(
+            "lastUpdatedBy", th.StringType(), description="Last updated by user"
+        ),
         th.Property(
             "folders",
             th.ArrayType(th.ObjectType()),
@@ -411,7 +429,9 @@ class ExecutionsStream(OICBaseStream):
         th.Property("status", th.StringType(), description="Execution status"),
         th.Property("startTime", th.DateTimeType(), description="Execution start time"),
         th.Property("endTime", th.DateTimeType(), description="Execution end time"),
-        th.Property("duration", th.IntegerType(), description="Execution duration (ms)"),
+        th.Property(
+            "duration", th.IntegerType(), description="Execution duration (ms)"
+        ),
         th.Property("errorCode", th.StringType(), description="Error code"),
         th.Property("errorMessage", th.StringType(), description="Error message"),
         th.Property("payloadSize", th.IntegerType(), description="Payload size"),
@@ -449,7 +469,9 @@ class MetricsStream(OICBaseStream):
             th.StringType(),
             description="Related integration",
         ),
-        th.Property("connectionName", th.StringType(), description="Related connection"),
+        th.Property(
+            "connectionName", th.StringType(), description="Related connection"
+        ),
     ).to_dict()
 
 
