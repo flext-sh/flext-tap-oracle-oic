@@ -46,7 +46,6 @@ class OICPaginator:
         self.page_size = page_size
 
 
-# Direct imports using real implementations (no fallbacks per user instruction)
 from flext_tap_oracle_oic.models import OICIntegration
 from flext_tap_oracle_oic.tap_exceptions import (
     OICAuthenticationError,
@@ -54,16 +53,6 @@ from flext_tap_oracle_oic.tap_exceptions import (
     OICValidationError,
     OICAPIError,
 )
-
-# === BACKWARD COMPATIBILITY ALIASES ===
-# Provide compatibility aliases for removed modules
-with contextlib.suppress(ImportError, NameError):
-    # Redirect legacy imports to new modules
-    TapOracleOICLegacy = TapOracleOIC
-    OICBaseStreamLegacy = OICBaseStream
-    OICIntegrationLegacy = OICIntegration
-
-# Direct import using real implementation (no fallbacks per user instruction)
 from flext_tap_oracle_oic.simple_api import setup_oic_tap as create_oic_tap
 
 # === VERSION AND METADATA ===
