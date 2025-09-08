@@ -2,9 +2,21 @@
 
 This module provides health checking capabilities for OIC connections,
 integrations, and the overall OIC instance health.
+
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
+
+from flext_core import FlextTypes
+
+"""
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
+
 
 from datetime import UTC, datetime
 
@@ -25,7 +37,7 @@ class OICHealthChecker:
         self.base_url = base_url.rstrip("/")
         self.authenticator = authenticator
 
-    def _get_headers(self) -> dict[str, str]:
+    def _get_headers(self) -> FlextTypes.Core.Headers:
         headers = {
             "Accept": JSON_MIME,
             "Content-Type": JSON_MIME,
@@ -36,7 +48,7 @@ class OICHealthChecker:
             headers.update(auth_headers)
         return headers
 
-    def check_health(self) -> dict[str, object]:
+    def check_health(self) -> FlextTypes.Core.Dict:
         """Check OIC instance health."""
         try:
             # Try to access the integrations endpoint as a health check
@@ -68,7 +80,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_connection(self, connection_id: str) -> dict[str, object]:
+    def test_connection(self, connection_id: str) -> FlextTypes.Core.Dict:
         """Test specific OIC connection."""
         try:
             # Call the connection test endpoint
@@ -104,7 +116,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_integration(self, integration_id: str) -> dict[str, object]:
+    def test_integration(self, integration_id: str) -> FlextTypes.Core.Dict:
         """Test specific OIC integration."""
         try:
             # Get integration details
@@ -149,7 +161,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def check_monitoring_health(self) -> dict[str, object]:
+    def check_monitoring_health(self) -> FlextTypes.Core.Dict:
         """Check OIC monitoring service health."""
         try:
             # Try to access monitoring endpoint

@@ -1,3 +1,11 @@
+"""Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
+"""
+
+from __future__ import annotations
+
+from flext_core import FlextTypes
+
 """Oracle Integration Cloud tap client - PEP8 reorganized.
 
 This module consolidates ALL tap and client functionality using maximum composition:
@@ -15,8 +23,11 @@ Design: Pure composition pattern integrating:
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
+"""
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
-from __future__ import annotations
 
 import os
 import sys
@@ -90,17 +101,17 @@ class OracleOICClient:
         self.authenticator = authenticator
         self._session = requests.Session()
 
-    def _get_auth_headers(self) -> FlextResult[dict[str, str]]:
+    def _get_auth_headers(self) -> FlextResult[FlextTypes.Core.Headers]:
         """Get authorization headers with OAuth2 token."""
         token_result = self.authenticator.get_access_token()
         if not token_result.success:
-            return FlextResult[dict[str, str]].fail(
+            return FlextResult[FlextTypes.Core.Headers].fail(
                 f"Failed to get access token: {token_result.error}"
             )
 
         headers = self.connection_config.get_headers()
         headers["Authorization"] = f"Bearer {token_result.data}"
-        return FlextResult[dict[str, str]].ok(headers)
+        return FlextResult[FlextTypes.Core.Headers].ok(headers)
 
     def get(self, endpoint: str) -> FlextResult[requests.Response]:
         """Make authenticated GET request to OIC API."""
@@ -128,7 +139,7 @@ class OracleOICClient:
     def post(
         self,
         endpoint: str,
-        data: dict[str, object] | None = None,
+        data: FlextTypes.Core.Dict | None = None,
     ) -> FlextResult[requests.Response]:
         """Make authenticated POST request to OIC API."""
         headers_result = self._get_auth_headers()
@@ -193,9 +204,9 @@ class TapOracleOIC(Tap):
     def __init__(
         self,
         *,
-        config: dict[str, object] | None = None,
-        catalog: dict[str, object] | None = None,
-        state: dict[str, object] | None = None,
+        config: FlextTypes.Core.Dict | None = None,
+        catalog: FlextTypes.Core.Dict | None = None,
+        state: FlextTypes.Core.Dict | None = None,
         parse_env_config: bool = False,
         validate_config: bool = True,
     ) -> None:
@@ -333,7 +344,9 @@ def main() -> int:
         return exit_code
 
     config = _build_config_from_env()
-    config_typed: dict[str, object] = {k: v for k, v in config.items() if v is not None}
+    config_typed: FlextTypes.Core.Dict = {
+        k: v for k, v in config.items() if v is not None
+    }
     tap = TapOracleOIC(config=config_typed)
 
     try:
@@ -433,7 +446,7 @@ if __name__ == "__main__":
 
 
 # Export for backward compatibility and module interface
-__all__: list[str] = [
+__all__: FlextTypes.Core.StringList = [
     "OracleOICClient",
     "TapOIC",
     "TapOracleOIC",

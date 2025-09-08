@@ -3,9 +3,15 @@
 Core TAP functionality tests.
 
 Tests the main TapOIC class and core functionality without external dependencies.
+
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
+
+from flext_core import FlextTypes
 
 object
 
@@ -244,7 +250,7 @@ def sample_config_with_extended() -> object:
 class TestTapOICWithFixtures:
     """Tests using fixtures."""
 
-    def test_tap_with_sample_config(self, sample_config: dict[str, object]) -> None:
+    def test_tap_with_sample_config(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test that the tap is initialized correctly with the sample config."""
         tap = TapOIC(config=sample_config, validate_config=False)
 
@@ -259,7 +265,7 @@ class TestTapOICWithFixtures:
 
     def test_streams_count_with_extended_config(
         self,
-        sample_config_with_extended: dict[str, object],
+        sample_config_with_extended: FlextTypes.Core.Dict,
     ) -> None:
         """Test that the number of streams is correct with the extended config."""
         tap = TapOIC(config=sample_config_with_extended, validate_config=False)

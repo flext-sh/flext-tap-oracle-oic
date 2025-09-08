@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+"""Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
+"""
+
+# !/usr/bin/env python3
 
 """Comprehensive End-to-End tests for tap-oracle-oic.
 
@@ -13,6 +17,8 @@ import os
 import shutil
 import sys
 from pathlib import Path
+
+from flext_core import FlextTypes
 
 object
 from unittest.mock import Mock
@@ -37,7 +43,7 @@ class TestTapOracleOICE2E:
     """End-to-end tests for tap-oracle-oic."""
 
     @pytest.fixture
-    def config(self) -> dict[str, object]:
+    def config(self) -> FlextTypes.Core.Dict:
         """Mock configuration that matches the required schema."""
         return {
             "oauth_client_id": "test_client_id",
@@ -49,18 +55,20 @@ class TestTapOracleOICE2E:
         }
 
     @pytest.fixture
-    def tap(self, config: dict[str, object]) -> object:
+    def tap(self, config: FlextTypes.Core.Dict) -> object:
         return TapOIC(config=config)
 
     @pytest.fixture
-    def config_path(self, tmp_path: Path, config: dict[str, object]) -> str:
+    def config_path(self, tmp_path: Path, config: FlextTypes.Core.Dict) -> str:
         """Create a temporary config file for CLI tests."""
         config_file = tmp_path / "test_config.json"
         with config_file.open("w", encoding="utf-8") as f:
             json.dump(config, f, indent=2)
         return str(config_file)
 
-    def test_tap_initialization(self, tap: TapOIC, config: dict[str, object]) -> None:
+    def test_tap_initialization(
+        self, tap: TapOIC, config: FlextTypes.Core.Dict
+    ) -> None:
         if tap.name != "tap-oracle-oic":
             msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
@@ -204,7 +212,7 @@ class TestTapOracleOICE2E:
         python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
 
         async def _run(
-            cmd_list: list[str],
+            cmd_list: FlextTypes.Core.StringList,
             cwd: str | None = None,
         ) -> tuple[int, str, str]:
             process = await asyncio.create_subprocess_exec(
@@ -349,7 +357,7 @@ class TestTapOracleOICE2E:
         python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
 
         async def _run(
-            cmd_list: list[str],
+            cmd_list: FlextTypes.Core.StringList,
             cwd: str | None = None,
         ) -> tuple[int, str, str]:
             process = await asyncio.create_subprocess_exec(
@@ -448,7 +456,7 @@ class TestTapOracleOICE2E:
             )
 
             async def _run_input(
-                cmd_list: list[str],
+                cmd_list: FlextTypes.Core.StringList,
                 cwd: str | None = None,
                 input_text: str = "",
             ) -> tuple[int, str, str]:

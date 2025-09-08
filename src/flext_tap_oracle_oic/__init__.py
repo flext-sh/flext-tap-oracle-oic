@@ -1,15 +1,23 @@
-"""Enterprise Singer Tap for Oracle Integration Cloud data extraction."""
+"""Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
+"""
 
 from __future__ import annotations
+from flext_core import FlextTypes
+
+
+"""Enterprise Singer Tap for Oracle Integration Cloud data extraction.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
+
 
 import contextlib
 import importlib.metadata
 
-# === FLEXT-CORE FOUNDATION ===
 from flext_core import FlextResult, FlextModels, FlextLogger
 
-# === FLEXT-MELTANO COMPLETE INTEGRATION ===
-# Use modern FlextMeltano abstractions (zero Singer SDK dependency)
 from flext_meltano import (
     FlextMeltanoBridge,
     FlextMeltanoConfig,
@@ -21,8 +29,6 @@ from flext_meltano import (
     create_flext_tap_config,
 )
 
-# === PEP8 REORGANIZED IMPORTS ===
-# Primary imports from reorganized modules - using real implementations
 from flext_tap_oracle_oic.tap_client import TapOracleOIC, OracleOICClient
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
 from flext_tap_oracle_oic.tap_config import OICAuthConfig, OICConnectionConfig
@@ -41,6 +47,9 @@ class OICPaginator:
 
         Args:
             page_size (int): Description.
+
+        Returns:
+            object: Description of return value.
 
         """
         self.page_size = page_size
@@ -64,7 +73,7 @@ except importlib.metadata.PackageNotFoundError:
 __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 
 # === COMPLETE PUBLIC API EXPORTS ===
-__all__: list[str] = [
+__all__: FlextTypes.Core.StringList = [
     # === FLEXT-MELTANO COMPLETE RE-EXPORTS ===
     "BatchSink",
     "FlextMeltanoBaseService",

@@ -8,9 +8,19 @@ Architecture:
     Improved CLI with 100% Singer SDK compatibility and organized subcommands
 - Default: Standard Singer TAP protocol (--discover, --catalog, etc.)
 - Extended: Well-organized subcommands (extract, lifecycle, monitor, admin)
+
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
+
+"""
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
+
 
 from flext_tap_oracle_oic.tap_client import TapOIC
 

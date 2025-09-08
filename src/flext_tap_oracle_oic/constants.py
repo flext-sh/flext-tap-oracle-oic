@@ -1,9 +1,21 @@
 """FLEXT Oracle OIC TAP Constants extending flext-core platform constants.
 
 FLEXT Oracle OIC TAP specific constants that extend flext-core patterns.
+
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
+
+from flext_core import FlextTypes
+
+"""
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
+
 
 from typing import ClassVar
 
@@ -22,7 +34,7 @@ class FlextOracleOicConstants(FlextConstants):
     OIC_ENVIRONMENT_API_PATH = FlextConstants.OracleOIC.OIC_ENVIRONMENT_API_PATH
 
     # Official OIC REST API Endpoints
-    OIC_ENDPOINTS: ClassVar[dict[str, str]] = {
+    OIC_ENDPOINTS: ClassVar[FlextTypes.Core.Headers] = {
         # Core Integration APIs
         "integrations": "/integrations",
         "integrations_detail": "/integrations/{id}",
@@ -100,7 +112,7 @@ OIC_ENVIRONMENT_API_PATH = FlextOracleOicConstants.OIC_ENVIRONMENT_API_PATH
 OIC_ENDPOINTS = FlextOracleOicConstants.OIC_ENDPOINTS
 
 
-__all__: list[str] = [
+__all__: FlextTypes.Core.StringList = [
     "OIC_API_BASE_PATH",
     "OIC_B2B_API_PATH",
     "OIC_DESIGNTIME_API_PATH",

@@ -1,3 +1,11 @@
+"""Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
+"""
+
+from __future__ import annotations
+
+from flext_core import FlextTypes
+
 """Oracle Integration Cloud tap exceptions - PEP8 reorganized.
 
 This module consolidates ALL exception handling using flext-core factory patterns:
@@ -15,8 +23,11 @@ Design: Uses flext-core exception factory patterns:
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
+"""
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
-from __future__ import annotations
 
 from flext_core import FlextExceptions
 
@@ -64,7 +75,7 @@ class OICAPIError(FlextExceptions):
 
 
 # Export for backward compatibility and module interface
-__all__: list[str] = [
+__all__: FlextTypes.Core.StringList = [
     "FlextExceptions",
     "FlextExceptions",
     "FlextExceptions",

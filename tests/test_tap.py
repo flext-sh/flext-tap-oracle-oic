@@ -1,4 +1,8 @@
-"""Tests for tap-oracle-oic."""
+"""Tests for tap-oracle-oic.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 

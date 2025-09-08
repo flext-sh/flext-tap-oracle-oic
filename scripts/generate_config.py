@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import sys
 
-from flext_tap_oracle_oic import (
+from ..flext_tap_oracle_oic import (
     ProjectType,
     generate_project_config,
 )

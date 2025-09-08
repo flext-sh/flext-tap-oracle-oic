@@ -1,3 +1,9 @@
+"""Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
+"""
+
+from __future__ import annotations
+
 """Oracle Integration Cloud - Consolidated Streams.
 
 Consolidated stream implementations removing duplications between core, extended,
@@ -6,7 +12,6 @@ infrastructure, and monitoring modules. Follows DRY principles and FLEXT pattern
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 """
 
-from __future__ import annotations
 
 from typing import ClassVar
 

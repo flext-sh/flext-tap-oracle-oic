@@ -1,3 +1,11 @@
+"""Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
+"""
+
+from __future__ import annotations
+
+from flext_core import FlextTypes
+
 """Configuration patterns for Oracle Integration Cloud tap - Real implementation.
 
 This module implements ALL configuration-related functionality using flext-core patterns:
@@ -14,8 +22,11 @@ Design: Uses real implementation with flext-core integration:
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
+"""
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
-from __future__ import annotations
 
 from flext_core import (
     FlextLogger,
@@ -52,7 +63,7 @@ class OICAuthConfig(FlextModels.Config):
             return FlextResult[None].fail("OAuth2 audience cannot be empty")
         return FlextResult[None].ok(None)
 
-    def get_token_request_data(self) -> dict[str, str]:
+    def get_token_request_data(self) -> FlextTypes.Core.Headers:
         """Get OAuth2 token request data for client credentials flow."""
         return {
             "grant_type": "client_credentials",
@@ -107,7 +118,7 @@ class OICConnectionConfig(FlextModels.Config):
         """Get full API base URL with version."""
         return f"{str(self.base_url).rstrip('/')}/ic/api/integration/{self.api_version}"
 
-    def get_headers(self) -> dict[str, str]:
+    def get_headers(self) -> FlextTypes.Core.Headers:
         """Get default headers for OIC API requests."""
         return {
             "Content-Type": "application/json",
@@ -248,7 +259,7 @@ class TapOracleOICConfig(FlextModels.Config):
 
 
 # Main exports
-__all__: list[str] = [
+__all__: FlextTypes.Core.StringList = [
     "OICAuthConfig",
     "OICConnectionConfig",
     "TapOracleOICConfig",

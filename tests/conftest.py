@@ -2,17 +2,20 @@
 
 Provides pytest fixtures and configuration for testing Oracle OIC tap functionality
 using Singer protocol and real Oracle OIC API integration.
+
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
 
 import os
 from collections.abc import Generator, Iterator
-
-object
 from unittest.mock import Mock
 
 import pytest
+from flext_core import FlextTypes
 
 
 # Test environment setup
@@ -33,7 +36,7 @@ def set_test_environment() -> Generator[None]:
 
 # Oracle OIC configuration fixtures
 @pytest.fixture
-def basic_oic_config() -> dict[str, object]:
+def basic_oic_config() -> FlextTypes.Core.Dict:
     """Basic Oracle OIC tap configuration."""
     return {
         "base_url": "https://oic-test.integration.ocp.oraclecloud.com",
@@ -52,7 +55,7 @@ def basic_oic_config() -> dict[str, object]:
 
 
 @pytest.fixture
-def extended_oic_config(basic_oic_config: dict[str, object]) -> dict[str, object]:
+def extended_oic_config(basic_oic_config: FlextTypes.Core.Dict) -> FlextTypes.Core.Dict:
     """Extended Oracle OIC tap configuration with all streams."""
     config = basic_oic_config.copy()
     config.update(
@@ -71,7 +74,7 @@ def extended_oic_config(basic_oic_config: dict[str, object]) -> dict[str, object
 
 
 @pytest.fixture
-def filtered_oic_config(basic_oic_config: dict[str, object]) -> dict[str, object]:
+def filtered_oic_config(basic_oic_config: FlextTypes.Core.Dict) -> FlextTypes.Core.Dict:
     """Oracle OIC tap configuration with filters."""
     config = basic_oic_config.copy()
     config.update(
@@ -85,7 +88,9 @@ def filtered_oic_config(basic_oic_config: dict[str, object]) -> dict[str, object
 
 
 @pytest.fixture
-def performance_oic_config(basic_oic_config: dict[str, object]) -> dict[str, object]:
+def performance_oic_config(
+    basic_oic_config: FlextTypes.Core.Dict,
+) -> FlextTypes.Core.Dict:
     """Oracle OIC tap configuration for performance testing."""
     config = basic_oic_config.copy()
     config.update(
@@ -104,7 +109,7 @@ def performance_oic_config(basic_oic_config: dict[str, object]) -> dict[str, obj
 
 # Mock OIC API response fixtures
 @pytest.fixture
-def mock_oauth_token_response() -> dict[str, object]:
+def mock_oauth_token_response() -> FlextTypes.Core.Dict:
     """Mock OAuth2 token response."""
     return {
         "access_token": "mock_access_token_12345",
@@ -115,7 +120,7 @@ def mock_oauth_token_response() -> dict[str, object]:
 
 
 @pytest.fixture
-def sample_integration_data() -> list[dict[str, object]]:
+def sample_integration_data() -> list[FlextTypes.Core.Dict]:
     """Sample integration data for testing."""
     return [
         {
@@ -171,8 +176,8 @@ def sample_integration_data() -> list[dict[str, object]]:
 
 @pytest.fixture
 def mock_integrations_response(
-    sample_integration_data: list[dict[str, object]],
-) -> dict[str, object]:
+    sample_integration_data: list[FlextTypes.Core.Dict],
+) -> FlextTypes.Core.Dict:
     """Mock integrations API response."""
     return {
         "items": sample_integration_data,
@@ -184,7 +189,7 @@ def mock_integrations_response(
 
 
 @pytest.fixture
-def sample_connection_data() -> list[dict[str, object]]:
+def sample_connection_data() -> list[FlextTypes.Core.Dict]:
     """Sample connection data for testing."""
     return [
         {
@@ -234,8 +239,8 @@ def sample_connection_data() -> list[dict[str, object]]:
 
 @pytest.fixture
 def mock_connections_response(
-    sample_connection_data: list[dict[str, object]],
-) -> dict[str, object]:
+    sample_connection_data: list[FlextTypes.Core.Dict],
+) -> FlextTypes.Core.Dict:
     """Mock connections API response."""
     return {
         "items": sample_connection_data,
@@ -247,7 +252,7 @@ def mock_connections_response(
 
 
 @pytest.fixture
-def sample_package_data() -> list[dict[str, object]]:
+def sample_package_data() -> list[FlextTypes.Core.Dict]:
     """Sample package data for testing."""
     return [
         {
@@ -283,8 +288,8 @@ def sample_package_data() -> list[dict[str, object]]:
 
 @pytest.fixture
 def mock_packages_response(
-    sample_package_data: list[dict[str, object]],
-) -> dict[str, object]:
+    sample_package_data: list[FlextTypes.Core.Dict],
+) -> FlextTypes.Core.Dict:
     """Mock packages API response."""
     return {
         "items": sample_package_data,
@@ -296,7 +301,7 @@ def mock_packages_response(
 
 
 @pytest.fixture
-def sample_lookup_data() -> list[dict[str, object]]:
+def sample_lookup_data() -> list[FlextTypes.Core.Dict]:
     """Sample lookup data for testing."""
     return [
         {
@@ -330,8 +335,8 @@ def sample_lookup_data() -> list[dict[str, object]]:
 
 @pytest.fixture
 def mock_lookups_response(
-    sample_lookup_data: list[dict[str, object]],
-) -> dict[str, object]:
+    sample_lookup_data: list[FlextTypes.Core.Dict],
+) -> FlextTypes.Core.Dict:
     """Mock lookups API response."""
     return {
         "items": sample_lookup_data,
@@ -344,7 +349,7 @@ def mock_lookups_response(
 
 # Extended stream fixtures
 @pytest.fixture
-def sample_library_data() -> list[dict[str, object]]:
+def sample_library_data() -> list[FlextTypes.Core.Dict]:
     """Sample library data for testing."""
     return [
         {
@@ -361,7 +366,7 @@ def sample_library_data() -> list[dict[str, object]]:
 
 
 @pytest.fixture
-def sample_certificate_data() -> list[dict[str, object]]:
+def sample_certificate_data() -> list[FlextTypes.Core.Dict]:
     """Sample certificate data for testing."""
     return [
         {
@@ -379,7 +384,7 @@ def sample_certificate_data() -> list[dict[str, object]]:
 
 
 @pytest.fixture
-def sample_adapter_data() -> list[dict[str, object]]:
+def sample_adapter_data() -> list[FlextTypes.Core.Dict]:
     """Sample adapter data for testing."""
     return [
         {
@@ -397,7 +402,7 @@ def sample_adapter_data() -> list[dict[str, object]]:
 
 # Singer protocol fixtures
 @pytest.fixture
-def singer_catalog() -> dict[str, object]:
+def singer_catalog() -> FlextTypes.Core.Dict:
     """Singer catalog for OIC tap."""
     return {
         "streams": [
@@ -452,7 +457,7 @@ def singer_catalog() -> dict[str, object]:
 
 
 @pytest.fixture
-def singer_state() -> dict[str, object]:
+def singer_state() -> FlextTypes.Core.Dict:
     """Singer state for OIC tap."""
     return {
         "currently_syncing": None,
@@ -496,7 +501,7 @@ def mock_rate_limit_response() -> Mock:
 
 # Performance testing fixtures
 @pytest.fixture
-def large_integration_dataset() -> list[dict[str, object]]:
+def large_integration_dataset() -> list[FlextTypes.Core.Dict]:
     """Large integration dataset for performance testing."""
     integrations = []
 
@@ -519,7 +524,7 @@ def large_integration_dataset() -> list[dict[str, object]]:
 
 
 @pytest.fixture
-def benchmark_config() -> dict[str, object]:
+def benchmark_config() -> FlextTypes.Core.Dict:
     """Configuration for performance benchmarking."""
     return {
         "max_records_to_process": 1000,
@@ -550,7 +555,7 @@ def mock_oic_client() -> type[object]:
     """Mock Oracle OIC client for testing."""
 
     class MockOICClient:
-        def __init__(self, config: dict[str, object]) -> None:
+        def __init__(self, config: FlextTypes.Core.Dict) -> None:
             self.config = config
             self.authenticated = False
             self.call_count: dict[str, int] = {}
@@ -559,7 +564,7 @@ def mock_oic_client() -> type[object]:
             self.authenticated = True
             return True
 
-        async def get_integrations(self, **kwargs: object) -> dict[str, object]:
+        async def get_integrations(self, **kwargs: object) -> FlextTypes.Core.Dict:
             self.call_count["get_integrations"] = (
                 self.call_count.get("get_integrations", 0) + 1
             )
@@ -570,7 +575,7 @@ def mock_oic_client() -> type[object]:
                 "count": 0,
             }
 
-        async def get_connections(self, **kwargs: object) -> dict[str, object]:
+        async def get_connections(self, **kwargs: object) -> FlextTypes.Core.Dict:
             self.call_count["get_connections"] = (
                 self.call_count.get("get_connections", 0) + 1
             )
@@ -597,12 +602,12 @@ def mock_oauth_authenticator() -> type[object]:
     """Mock OAuth2 authenticator for testing."""
 
     class MockOAuthAuthenticator:
-        def __init__(self, config: dict[str, object]) -> None:
+        def __init__(self, config: FlextTypes.Core.Dict) -> None:
             self.config = config
             self.token = None
             self.token_expires_at = None
 
-        async def get_access_token(self) -> dict[str, object]:
+        async def get_access_token(self) -> FlextTypes.Core.Dict:
             return {
                 "success": True,
                 "value": "mock_access_token_12345",
@@ -611,7 +616,7 @@ def mock_oauth_authenticator() -> type[object]:
         def is_token_valid(self) -> bool:
             return True
 
-        async def refresh_token(self) -> dict[str, object]:
+        async def refresh_token(self) -> FlextTypes.Core.Dict:
             return await self.get_access_token()
 
     return MockOAuthAuthenticator
