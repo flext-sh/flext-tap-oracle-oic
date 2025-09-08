@@ -2,6 +2,10 @@
 
 This module provides utility functions and helpers for testing following
 enterprise testing best practices.
+
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
@@ -15,10 +19,11 @@ from collections.abc import Callable, Generator
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import contextmanager
 from pathlib import Path
-from typing import NoReturn, object
+from typing import NoReturn
 
 import pytest
 import requests
+from flext_core import FlextTypes
 from packaging import version
 
 
@@ -32,7 +37,7 @@ class TestDataBuilder:
         status: str = "ACTIVE",
         time_updated: str = "2024-01-15T10:30:00Z",
         **kwargs: object,
-    ) -> dict[str, object]:
+    ) -> FlextTypes.Core.Dict:
         record = {
             "id": integration_id,
             "name": name,
@@ -53,7 +58,7 @@ class TestDataBuilder:
         time_updated: str = "2024-01-15T10:30:00Z",
         connection_type: str = "REST",
         **kwargs: object,
-    ) -> dict[str, object]:
+    ) -> FlextTypes.Core.Dict:
         record = {
             "id": connection_id,
             "name": name,
@@ -74,7 +79,7 @@ class TestDataBuilder:
         time_updated: str = "2024-01-15T10:30:00Z",
         version: str = "0.9.0",
         **kwargs: object,
-    ) -> dict[str, object]:
+    ) -> FlextTypes.Core.Dict:
         record = {
             "id": package_id,
             "name": name,
@@ -95,7 +100,7 @@ class TestDataBuilder:
         start_time: str = "2024-01-15T10:30:00Z",
         end_time: str = "2024-01-15T10:35:00Z",
         **kwargs: object,
-    ) -> dict[str, object]:
+    ) -> FlextTypes.Core.Dict:
         record = {
             "instanceId": instance_id,
             "integrationId": integration_id,
@@ -111,9 +116,9 @@ class TestDataBuilder:
     @staticmethod
     def singer_record(
         stream: str,
-        record_data: dict[str, object],
+        record_data: FlextTypes.Core.Dict,
         time_extracted: str | None = None,
-    ) -> dict[str, object]:
+    ) -> FlextTypes.Core.Dict:
         if time_extracted is None:
             time_extracted = "2024-01-15T10:35:00Z"
         return {
@@ -126,9 +131,9 @@ class TestDataBuilder:
     @staticmethod
     def singer_schema(
         stream: str,
-        properties: dict[str, object],
-        key_properties: list[str] | None = None,
-    ) -> dict[str, object]:
+        properties: FlextTypes.Core.Dict,
+        key_properties: FlextTypes.Core.StringList | None = None,
+    ) -> FlextTypes.Core.Dict:
         if key_properties is None:
             key_properties = ["id"]
         return {
@@ -184,7 +189,7 @@ class TestValidator:
                 raise AssertionError(msg)
 
     @staticmethod
-    def validate_singer_record(record: dict[str, object]) -> None:
+    def validate_singer_record(record: FlextTypes.Core.Dict) -> None:
         if "type" not in record:
             msg: str = f"Expected {'type'} in {record}"
             raise AssertionError(msg)
@@ -201,7 +206,7 @@ class TestValidator:
         assert isinstance(record["record"], dict)
 
     @staticmethod
-    def validate_config_schema(config_schema: dict[str, object]) -> None:
+    def validate_config_schema(config_schema: FlextTypes.Core.Dict) -> None:
         if "properties" not in config_schema:
             msg: str = f"Expected {'properties'} in {config_schema}"
             raise AssertionError(msg)
@@ -221,7 +226,7 @@ class TestValidator:
 
     @staticmethod
     def validate_performance_metrics(
-        metrics: dict[str, object],
+        metrics: FlextTypes.Core.Dict,
         max_duration: float = 5.0,
         max_memory_growth: int = 100 * 1024 * 1024,  # 100MB
     ) -> None:
@@ -258,7 +263,7 @@ class MockAPIServer:
 
     def setup_integrations_mock(
         self,
-        records: list[dict[str, object]] | None = None,
+        records: list[FlextTypes.Core.Dict] | None = None,
     ) -> None:
         if records is None:
             records = [TestDataBuilder.integration_record()]
@@ -271,7 +276,7 @@ class MockAPIServer:
 
     def setup_connections_mock(
         self,
-        records: list[dict[str, object]] | None = None,
+        records: list[FlextTypes.Core.Dict] | None = None,
     ) -> None:
         if records is None:
             records = [TestDataBuilder.connection_record()]
@@ -310,10 +315,10 @@ class PerformanceMeasurer:
     def __init__(self) -> None:
         self.start_time: float | None = None
         self.end_time: float | None = None
-        self.measurements: list[dict[str, object]] = []
+        self.measurements: list[FlextTypes.Core.Dict] = []
 
     @contextmanager
-    def measure_duration(self) -> Generator[dict[str, object]]:
+    def measure_duration(self) -> Generator[FlextTypes.Core.Dict]:
         self.start_time = time.time()
         metrics = {"start_time": self.start_time}
         try:
@@ -342,7 +347,7 @@ class TestConfigGenerator:
     """Generate test configurations for various scenarios."""
 
     @staticmethod
-    def minimal_oauth2_config() -> dict[str, object]:
+    def minimal_oauth2_config() -> FlextTypes.Core.Dict:
         return {
             "base_url": "https://test-oic.integration.ocp.oraclecloud.com",
             "auth_method": "oauth2",
@@ -352,7 +357,7 @@ class TestConfigGenerator:
         }
 
     @staticmethod
-    def full_oauth2_config() -> dict[str, object]:
+    def full_oauth2_config() -> FlextTypes.Core.Dict:
         return {
             "base_url": "https://test-oic.integration.ocp.oraclecloud.com",
             "auth_method": "oauth2",
@@ -370,7 +375,7 @@ class TestConfigGenerator:
         }
 
     @staticmethod
-    def production_oauth2_config() -> dict[str, object]:
+    def production_oauth2_config() -> FlextTypes.Core.Dict:
         return {
             "base_url": "https://production-oic.integration.ocp.oraclecloud.com",
             "auth_method": "oauth2",
@@ -387,7 +392,7 @@ class TestConfigGenerator:
         }
 
     @staticmethod
-    def invalid_configs() -> list[dict[str, object]]:
+    def invalid_configs() -> list[FlextTypes.Core.Dict]:
         return [
             # Empty base URL
             {
@@ -431,7 +436,7 @@ class TestFileManager:
 
     def create_config_file(
         self,
-        config: dict[str, object],
+        config: FlextTypes.Core.Dict,
         filename: str = "test_config.json",
     ) -> Path:
         config_path = self.temp_dir / filename
@@ -442,7 +447,7 @@ class TestFileManager:
 
     def create_catalog_file(
         self,
-        catalog: dict[str, object],
+        catalog: FlextTypes.Core.Dict,
         filename: str = "test_catalog.json",
     ) -> Path:
         catalog_path = self.temp_dir / filename
@@ -453,7 +458,7 @@ class TestFileManager:
 
     def create_records_file(
         self,
-        records: list[dict[str, object]],
+        records: list[FlextTypes.Core.Dict],
         filename: str = "test_records.jsonl",
     ) -> Path:
         records_path = self.temp_dir / filename
@@ -527,11 +532,11 @@ class ConcurrentTestRunner:
 
     def __init__(self, max_workers: int = 4) -> None:
         self.max_workers = max_workers
-        self.results: list[dict[str, object]] = []
+        self.results: list[FlextTypes.Core.Dict] = []
 
     def run_tests_parallel(
         self, test_functions: list[Callable[[], object]]
-    ) -> list[object]:
+    ) -> FlextTypes.Core.List:
         self.results.clear()
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             future_to_test: dict[object, Callable[[], object]] = {
@@ -559,7 +564,7 @@ class ConcurrentTestRunner:
         return successful / len(self.results)
 
 
-def assert_config_valid(config: dict[str, object]) -> None:
+def assert_config_valid(config: FlextTypes.Core.Dict) -> None:
     """Assert configuration is valid for OIC tap."""
     if "base_url" not in config:
         msg = "base_url is required in config"

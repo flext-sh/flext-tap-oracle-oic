@@ -1,3 +1,11 @@
+"""Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
+"""
+
+from __future__ import annotations
+
+from flext_core import FlextTypes
+
 """Oracle Integration Cloud stream definitions - PEP8 reorganized.
 
 This module consolidates ALL stream-related functionality:
@@ -15,8 +23,11 @@ Design: Composition over inheritance using:
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
+"""
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
-from __future__ import annotations
 
 import re
 from collections.abc import Iterator, Mapping
@@ -89,7 +100,7 @@ class OICPaginator:
 
     def _calculate_next_offset(
         self,
-        data: dict[str, object] | list[object],
+        data: FlextTypes.Core.Dict | FlextTypes.Core.List,
     ) -> int | None:
         """Calculate next offset based on OIC response format."""
         items = self._extract_items_from_response(data)
@@ -99,8 +110,8 @@ class OICPaginator:
 
     def _extract_items_from_response(
         self,
-        data: dict[str, object] | list[object],
-    ) -> list[object] | None:
+        data: FlextTypes.Core.Dict | FlextTypes.Core.List,
+    ) -> FlextTypes.Core.List | None:
         """Extract items from various OIC response formats."""
         if isinstance(data, list):
             return data
@@ -218,7 +229,7 @@ class OICBaseStream(FlextTapStream):
         self,
         context: Mapping[str, object] | None,
         next_page_token: object | None,
-    ) -> dict[str, object]:
+    ) -> FlextTypes.Core.Dict:
         """Build URL parameters for Oracle OIC API requests.
 
         Args:
@@ -229,7 +240,7 @@ class OICBaseStream(FlextTapStream):
             Dictionary of URL parameters optimized for OIC API.
 
         """
-        params: dict[str, object] = {}
+        params: FlextTypes.Core.Dict = {}
 
         # Pagination parameters
         page_size = self.config.get("page_size", 100)
@@ -284,7 +295,7 @@ class OICBaseStream(FlextTapStream):
     def parse_response(
         self,
         response: requests.Response,
-    ) -> Iterator[dict[str, object]]:
+    ) -> Iterator[FlextTypes.Core.Dict]:
         """Parse Oracle OIC API response and yield records with validation.
 
         Args:
@@ -321,9 +332,9 @@ class OICBaseStream(FlextTapStream):
 
     def _extract_and_yield_records(
         self,
-        data: dict[str, object] | list[object],
+        data: FlextTypes.Core.Dict | FlextTypes.Core.List,
         url: str,
-    ) -> Iterator[dict[str, object]]:
+    ) -> Iterator[FlextTypes.Core.Dict]:
         """Extract and yield records with validation and enrichment."""
         records_yielded = 0
 
@@ -347,15 +358,17 @@ class OICBaseStream(FlextTapStream):
 
     def _extract_items_for_processing(
         self,
-        data: dict[str, object] | list[object],
-    ) -> Iterator[dict[str, object]]:
+        data: FlextTypes.Core.Dict | FlextTypes.Core.List,
+    ) -> Iterator[FlextTypes.Core.Dict]:
         """Extract items from various OIC response formats for processing."""
         if isinstance(data, list):
             yield from self._process_list_data(data)
         elif isinstance(data, dict):
             yield from self._process_dict_data(data)
 
-    def _process_list_data(self, data: list[object]) -> Iterator[dict[str, object]]:
+    def _process_list_data(
+        self, data: FlextTypes.Core.List
+    ) -> Iterator[FlextTypes.Core.Dict]:
         """Process list-type response data."""
         for item in data:
             if isinstance(item, dict):
@@ -363,8 +376,8 @@ class OICBaseStream(FlextTapStream):
 
     def _process_dict_data(
         self,
-        data: dict[str, object],
-    ) -> Iterator[dict[str, object]]:
+        data: FlextTypes.Core.Dict,
+    ) -> Iterator[FlextTypes.Core.Dict]:
         """Process dict-type response data with OIC format detection."""
         if "items" in data:
             items = data["items"]
@@ -377,7 +390,9 @@ class OICBaseStream(FlextTapStream):
         elif self._is_single_record(data):
             yield data
 
-    def _is_empty_result_expected(self, data: dict[str, object] | list[object]) -> bool:
+    def _is_empty_result_expected(
+        self, data: FlextTypes.Core.Dict | FlextTypes.Core.List
+    ) -> bool:
         """Check if empty result is expected/normal based on OIC response metadata."""
         if isinstance(data, dict):
             items = data.get("items", [])
@@ -390,7 +405,7 @@ class OICBaseStream(FlextTapStream):
             )
         return len(data) == 0
 
-    def _is_single_record(self, data: dict[str, object]) -> bool:
+    def _is_single_record(self, data: FlextTypes.Core.Dict) -> bool:
         """Check if dict represents a single record vs OIC metadata container."""
         metadata_keys = {
             "totalSize",
@@ -403,11 +418,11 @@ class OICBaseStream(FlextTapStream):
         }
         return not any(key in data for key in metadata_keys)
 
-    def _validate_record(self, record: dict[str, object]) -> bool:
+    def _validate_record(self, record: FlextTypes.Core.Dict) -> bool:
         """Validate record meets basic requirements for processing."""
         return isinstance(record, dict)
 
-    def _enrich_record(self, record: dict[str, object]) -> dict[str, object]:
+    def _enrich_record(self, record: FlextTypes.Core.Dict) -> FlextTypes.Core.Dict:
         """Enrich record with tap metadata for traceability."""
         enriched = dict(record)
         enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
@@ -438,7 +453,7 @@ class OICBaseStream(FlextTapStream):
     def _track_response_metrics(
         self,
         response: requests.Response,
-        data: dict[str, object] | list[object],
+        data: FlextTypes.Core.Dict | FlextTypes.Core.List,
     ) -> None:
         """Track response metrics for monitoring and optimization."""
         # Log response time and size for monitoring
@@ -460,7 +475,7 @@ class OICBaseStream(FlextTapStream):
 
 
 # Export for module interface
-__all__: list[str] = [
+__all__: FlextTypes.Core.StringList = [
     "OICBaseStream",
     "OICPaginator",
 ]

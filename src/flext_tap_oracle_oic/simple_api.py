@@ -1,3 +1,11 @@
+"""Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
+"""
+
+from __future__ import annotations
+
+from flext_core import FlextTypes
+
 """Simple API for Oracle Integration Cloud tap setup and operations.
 
 SIMPLIFIED FOR PEP8 REORGANIZATION:
@@ -8,7 +16,6 @@ Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
 
-from __future__ import annotations
 
 import os
 from typing import cast
@@ -153,7 +160,7 @@ def validate_oic_config(config: object) -> FlextResult[bool]:
 
 
 # Export simplified API
-__all__: list[str] = [
+__all__: FlextTypes.Core.StringList = [
     "create_oic_auth_config",
     "create_oic_connection_config",
     "setup_oic_tap",

@@ -1,6 +1,10 @@
 """Tests for OIC OAuth2 authenticator.
 
 Real tests for the actual authentication module without skips.
+
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 # MIGRATED: Singer SDK imports centralized via flext-meltano

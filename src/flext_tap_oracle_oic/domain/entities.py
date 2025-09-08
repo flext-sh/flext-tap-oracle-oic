@@ -2,9 +2,21 @@
 
 MIGRATED TO FLEXT-CORE:
 Uses flext-core FlextModels and value object patterns.
+
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
+
+from flext_core import FlextTypes
+
+"""
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
+
 
 from datetime import UTC, datetime
 from enum import StrEnum
@@ -65,7 +77,7 @@ class OICConnection(FlextModels):
 
     # Connection properties
     connection_url: str | None = Field(None, description="Connection endpoint URL")
-    connection_properties: dict[str, object] = Field(
+    connection_properties: FlextTypes.Core.Dict = Field(
         default_factory=dict,
         description="Connection properties",
     )
@@ -77,7 +89,9 @@ class OICConnection(FlextModels):
         description="Connection status",
     )
     last_tested: datetime | None = Field(None, description="Last test timestamp")
-    test_result: dict[str, object] | None = Field(None, description="Last test result")
+    test_result: FlextTypes.Core.Dict | None = Field(
+        None, description="Last test result"
+    )
 
     # Metadata
     version: str | None = Field(None, description="Connection version")
@@ -139,7 +153,7 @@ class OICIntegration(FlextModels):
     locked_at: datetime | None = Field(None, description="Lock timestamp")
 
     # Connections
-    connection_ids: list[str] = Field(
+    connection_ids: FlextTypes.Core.StringList = Field(
         default_factory=list,
         description="Associated connection IDs",
     )
@@ -185,12 +199,14 @@ class OICLookup(FlextModels):
     domain_name: str | None = Field(None, description="Domain name")
 
     # Lookup structure
-    columns: list[dict[str, object]] = Field(
+    columns: list[FlextTypes.Core.Dict] = Field(
         default_factory=list,
         description="Column definitions",
     )
-    key_columns: list[str] = Field(default_factory=list, description="Key column names")
-    value_columns: list[str] = Field(
+    key_columns: FlextTypes.Core.StringList = Field(
+        default_factory=list, description="Key column names"
+    )
+    value_columns: FlextTypes.Core.StringList = Field(
         default_factory=list,
         description="Value column names",
     )
@@ -252,7 +268,7 @@ class OICMonitoringRecord(FlextModels):
     error_count: int = Field(default=0, ge=0, description="Number of errors")
 
     # Tracking
-    business_identifiers: dict[str, object] = Field(
+    business_identifiers: FlextTypes.Core.Dict = Field(
         default_factory=dict,
         description="Business tracking identifiers",
     )
@@ -283,15 +299,15 @@ class OICProject(FlextModels):
     name: str = Field(..., min_length=1, description="Project name")
 
     # Project resources
-    integration_ids: list[str] = Field(
+    integration_ids: FlextTypes.Core.StringList = Field(
         default_factory=list,
         description="Integration IDs in project",
     )
-    connection_ids: list[str] = Field(
+    connection_ids: FlextTypes.Core.StringList = Field(
         default_factory=list,
         description="Connection IDs in project",
     )
-    lookup_ids: list[str] = Field(
+    lookup_ids: FlextTypes.Core.StringList = Field(
         default_factory=list,
         description="Lookup IDs in project",
     )
@@ -380,7 +396,7 @@ class OICExecutionSummary(FlextModels):
 
 
 # Export main entities and value objects
-__all__: list[str] = [
+__all__: FlextTypes.Core.StringList = [
     "ConnectionStatus",
     "IntegrationStatus",
     "OICConnection",
