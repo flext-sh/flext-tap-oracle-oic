@@ -501,7 +501,7 @@ def requires_python_version(min_version: str) -> object:
             f"{sys.version_info.major}.{sys.version_info.minor}",
         ) < version.parse(min_version):
 
-            def test_fail(*_args: object, **_kwargs: object) -> None:
+            def test_fail(*_args: object) -> None:
                 pytest.fail(f"Requires Python {min_version} or higher")
 
             return test_fail

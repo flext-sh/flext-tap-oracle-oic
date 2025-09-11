@@ -35,7 +35,7 @@ from flext_tap_oracle_oic.tap_config import OICAuthConfig, OICConnectionConfig
 
 # Aliases for backward compatibility
 TapOIC = TapOracleOIC
-OICClient = OracleOICClient  # Alias for OICClient export
+OICClient = OracleOICClient
 
 
 # Create a stub OICPaginator if needed by other modules
@@ -115,7 +115,7 @@ __all__: FlextTypes.Core.StringList = [
     "OICValidationError",
     "OICAPIError",
     # === BACKWARD COMPATIBILITY EXPORTS ===
-    "OICClient",  # Alias for OracleOICClient
+    "OICClient",
     # === SIMPLE API ===
     "create_oic_tap",
     # === METADATA ===
