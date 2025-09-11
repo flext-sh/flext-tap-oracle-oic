@@ -3,8 +3,8 @@ SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations
-from flext_core import FlextTypes
 
+from flext_core import FlextTypes
 
 """Enterprise Singer Tap for Oracle Integration Cloud data extraction.
 
@@ -13,25 +13,20 @@ SPDX-License-Identifier: MIT
 """
 
 
-import contextlib
 import importlib.metadata
 
-from flext_core import FlextResult, FlextModels, FlextLogger
-
+from flext_core import FlextLogger, FlextModels, FlextResult
 from flext_meltano import (
     FlextMeltanoBridge,
     FlextMeltanoConfig,
-    FlextMeltanoTypeAdapters,
+    FlextPropertiesList as PropertiesList,
     FlextTapAbstract as Tap,
     FlextTapStream as Stream,
-    FlextSingerTypes,
-    FlextPropertiesList as PropertiesList,
-    create_flext_tap_config,
 )
 
-from flext_tap_oracle_oic.tap_client import TapOracleOIC, OracleOICClient
-from flext_tap_oracle_oic.tap_streams import OICBaseStream
+from flext_tap_oracle_oic.tap_client import OracleOICClient, TapOracleOIC
 from flext_tap_oracle_oic.tap_config import OICAuthConfig, OICConnectionConfig
+from flext_tap_oracle_oic.tap_streams import OICBaseStream
 
 # Aliases for backward compatibility
 TapOIC = TapOracleOIC
@@ -56,13 +51,13 @@ class OICPaginator:
 
 
 from flext_tap_oracle_oic.models import OICIntegration
+from flext_tap_oracle_oic.simple_api import setup_oic_tap as create_oic_tap
 from flext_tap_oracle_oic.tap_exceptions import (
+    OICAPIError,
     OICAuthenticationError,
     OICConnectionError,
     OICValidationError,
-    OICAPIError,
 )
-from flext_tap_oracle_oic.simple_api import setup_oic_tap as create_oic_tap
 
 # === VERSION AND METADATA ===
 try:
@@ -76,51 +71,51 @@ __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 __all__: FlextTypes.Core.StringList = [
     # === FLEXT-MELTANO COMPLETE RE-EXPORTS ===
     "BatchSink",
+    "FlextLogger",
     "FlextMeltanoBaseService",
     "FlextMeltanoBridge",
     "FlextMeltanoConfig",
     "FlextMeltanoEvent",
     "FlextMeltanoTapService",
+    "FlextModels",
+    # === FLEXT-CORE RE-EXPORTS ===
+    "FlextResult",
     "OAuthAuthenticator",
+    "OICAPIError",
+    # Configuration classes
+    "OICAuthConfig",
+    # Exception classes
+    "OICAuthenticationError",
+    # Stream classes
+    "OICBaseStream",
+    # === BACKWARD COMPATIBILITY EXPORTS ===
+    "OICClient",
+    "OICConnectionConfig",
+    "OICConnectionError",
+    # Model classes
+    "OICIntegration",
+    "OICPaginator",
+    "OICValidationError",
+    "OracleOICClient",
     "PropertiesList",
     "Property",
     "SQLSink",
     "Sink",
     "Stream",
     "Tap",
-    "Target",
-    "create_meltano_tap_service",
-    "get_tap_test_class",
-    "singer_typing",
-    # === FLEXT-CORE RE-EXPORTS ===
-    "FlextResult",
-    "FlextModels",
-    "FlextLogger",
+    "TapOIC",
     # === PEP8 REORGANIZED PRIMARY EXPORTS ===
     # Main tap classes
     "TapOracleOIC",
-    "TapOIC",
-    "OracleOICClient",
-    # Stream classes
-    "OICBaseStream",
-    "OICPaginator",
-    # Configuration classes
-    "OICAuthConfig",
-    "OICConnectionConfig",
-    # Model classes
-    "OICIntegration",
-    # Exception classes
-    "OICAuthenticationError",
-    "OICConnectionError",
-    "OICValidationError",
-    "OICAPIError",
-    # === BACKWARD COMPATIBILITY EXPORTS ===
-    "OICClient",
-    # === SIMPLE API ===
-    "create_oic_tap",
+    "Target",
     # === METADATA ===
     "__version__",
     "__version_info__",
+    "create_meltano_tap_service",
+    # === SIMPLE API ===
+    "create_oic_tap",
+    "get_tap_test_class",
+    "singer_typing",
 ]
 
 # from . import infrastructure  # Module doesn't exist, commented out
