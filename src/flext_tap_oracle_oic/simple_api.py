@@ -1,11 +1,3 @@
-"""Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT.
-"""
-
-from __future__ import annotations
-
-from flext_core import FlextTypes
-
 """Simple API for Oracle Integration Cloud tap setup and operations.
 
 SIMPLIFIED FOR PEP8 REORGANIZATION:
@@ -16,11 +8,12 @@ Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
 
+from __future__ import annotations
 
 import os
 from typing import cast
 
-from flext_core import FlextResult
+from flext_core import FlextResult, FlextTypes
 from flext_oracle_oic_ext import (
     OICAuthConfig,
     OICConnectionConfig,

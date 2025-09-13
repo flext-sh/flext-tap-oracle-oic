@@ -3,24 +3,16 @@
 This module provides health checking capabilities for OIC connections,
 integrations, and the overall OIC instance health.
 
-
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
 
-from flext_core import FlextTypes
-
-"""
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-"""
-
-
 from datetime import UTC, datetime
 
 import requests
+from flext_core import FlextTypes
 
 from flext_tap_oracle_oic import OAuthAuthenticator
 

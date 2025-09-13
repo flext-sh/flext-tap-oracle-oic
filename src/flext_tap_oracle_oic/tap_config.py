@@ -1,11 +1,3 @@
-"""Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT.
-"""
-
-from __future__ import annotations
-
-from flext_core import FlextTypes
-
 """Configuration patterns for Oracle Integration Cloud tap - Real implementation.
 
 This module implements ALL configuration-related functionality using flext-core patterns:
@@ -20,18 +12,16 @@ Design: Uses real implementation with flext-core integration:
 - OAuth2: Real authentication flow implementation
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-"""
-"""
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
+SPDX-License-Identifier: MIT.
 """
 
+from __future__ import annotations
 
 from flext_core import (
     FlextLogger,
     FlextModels,
     FlextResult,
+    FlextTypes,
 )
 from pydantic import ConfigDict, Field, HttpUrl
 

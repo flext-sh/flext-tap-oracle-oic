@@ -4,38 +4,13 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from flext_core import FlextTypes
-
-"""Oracle Integration Cloud tap client - PEP8 reorganized.
-
-This module consolidates ALL tap and client functionality using maximum composition:
-- Main tap class TapOracleOIC with flext-meltano base integration
-- Oracle OIC client using flext-oracle-oic-ext (eliminates 372+ lines of duplication)
-- Authentication and connection management via library composition
-- Stream discovery and lifecycle management with enterprise patterns
-
-Design: Pure composition pattern integrating:
-- flext-core: FlextResult, logging, error handling patterns
-- flext-meltano: FlextMeltanoTapService base class and Singer SDK integration
-- flext-oracle-oic-ext: OICTapClient, OICAuthConfig, OICConnectionConfig
-- singer-sdk: Tap base class and stream management
-
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-"""
-"""
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-"""
-
-
 import os
 import sys
 from collections.abc import Sequence
 from typing import ClassVar, cast
 
 import requests
-from flext_core import FlextLogger, FlextResult
+from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_meltano import FlextTapAbstract as Tap, FlextTapStream as Stream
 
 from flext_tap_oracle_oic.streams_consolidated import (

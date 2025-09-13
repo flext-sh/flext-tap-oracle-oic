@@ -3,22 +3,13 @@
 - Extends flext-core types
 - Add Tap Oracle OIC-specific type aliases and Protocols here
 
-
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
 
-from flext_core import FlextTypes
-
-"""
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-"""
-
-
-from flext_core import E, F, FlextTypes as CoreFlextTypes, P, R, T, U, V
+from flext_core import E, F, FlextTypes, FlextTypes as CoreFlextTypes, P, R, T, U, V
 
 
 class FlextTypes(CoreFlextTypes):
