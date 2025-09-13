@@ -6,6 +6,8 @@ from __future__ import annotations
 
 from flext_core import FlextTypes
 
+from flext_tap_oracle_oic.domain.entities import OICIntegration
+
 """Oracle Integration Cloud data models - PEP8 reorganized.
 
 This module consolidates ALL model and entity definitions:
@@ -24,12 +26,11 @@ Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
 """
+
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
 
-
-from flext_tap_oracle_oic.domain.entities import OICIntegration
 
 # Export for backward compatibility and module interface
 __all__: FlextTypes.Core.StringList = [

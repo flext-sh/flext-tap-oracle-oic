@@ -1,7 +1,3 @@
-"""Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT.
-"""
-
 # !/usr/bin/env python3
 
 """Comprehensive End-to-End tests for tap-oracle-oic.
@@ -17,14 +13,10 @@ import os
 import shutil
 import sys
 from pathlib import Path
-
-from flext_core import FlextTypes
-
-object
 from unittest.mock import Mock
 
 import pytest
-from flext_core import FlextLogger
+from flext_core import FlextLogger, FlextTypes
 from singer_sdk import ConfigValidationError
 
 from flext_tap_oracle_oic import TapOIC

@@ -1,33 +1,8 @@
-"""Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT.
-"""
-
-from __future__ import annotations
-
-from flext_core import FlextTypes
-
 """Oracle Integration Cloud stream definitions - PEP8 reorganized.
 
-This module consolidates ALL stream-related functionality:
-- OICBaseStream: Professional base class with intelligent OIC API support
-- OICPaginator: Adaptive pagination with performance optimization
-- Stream discovery and lifecycle management with enterprise error handling
-- Complete Oracle OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
-
-Design: Composition over inheritance using:
-- flext-core: FlextResult, logging, error handling patterns
-- singer-sdk: RESTStream base with pagination and authentication
-- requests: HTTP session management with retry logic
-- Oracle OIC APIs: Complete endpoint support with intelligent discovery
-
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
-"""
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-"""
-
 
 import re
 from collections.abc import Iterator, Mapping

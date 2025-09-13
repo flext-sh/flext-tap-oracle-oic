@@ -1,28 +1,17 @@
 """Domain entities for FLEXT-TAP-ORACLE-OIC v0.7.0 using flext-core patterns.
 
-MIGRATED TO FLEXT-CORE:
-Uses flext-core FlextModels and value object patterns.
-
-
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
 
-from flext_core import FlextTypes
-
-"""
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-"""
-
-
 from datetime import UTC, datetime
 from enum import StrEnum
 
 from flext_core import (
     FlextModels,
+    FlextTypes,
 )
 from pydantic import ConfigDict, Field
 

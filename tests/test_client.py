@@ -10,16 +10,12 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import contextlib
-
-from flext_core import FlextTypes
-
-object
 from unittest.mock import Mock, patch
 from urllib.parse import urljoin
 
 import pytest
 import requests
-from flext_core import FlextResult
+from flext_core import FlextResult, FlextTypes
 
 from flext_tap_oracle_oic import OracleOICClient
 

@@ -2,20 +2,14 @@
 
 Core TAP functionality tests.
 
-Tests the main TapOIC class and core functionality without external dependencies.
-
-
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
 
-from flext_core import FlextTypes
-
-object
-
 import pytest
+from flext_core import FlextTypes
 from singer_sdk import ConfigValidationError
 
 from flext_tap_oracle_oic import TapOIC

@@ -1,13 +1,3 @@
-"""Professional test utilities for tap-oic.
-
-This module provides utility functions and helpers for testing following
-enterprise testing best practices.
-
-
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-"""
-
 from __future__ import annotations
 
 import json
@@ -244,6 +234,7 @@ class MockAPIServer:
     """Mock API server for testing HTTP interactions."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.requests_mock: object = None
         self.base_url = "https://test-oic.integration.ocp.oraclecloud.com"
         self.token_url = "https://test-idcs.identity.oraclecloud.com/oauth2/v1/token"
@@ -313,6 +304,7 @@ class PerformanceMeasurer:
     """Utility for measuring performance metrics."""
 
     def __init__(self) -> None:
+        """Initialize the instance."""
         self.start_time: float | None = None
         self.end_time: float | None = None
         self.measurements: list[FlextTypes.Core.Dict] = []
@@ -431,6 +423,7 @@ class TestFileManager:
     """Manage test files and temporary data."""
 
     def __init__(self, temp_dir: Path) -> None:
+        """Initialize the instance."""
         self.temp_dir = temp_dir
         self.created_files: list[Path] = []
 
@@ -514,7 +507,7 @@ def requires_python_version(min_version: str) -> object:
 def timeout_test(seconds: float) -> object:
     """Add timeout to test function."""
 
-    def timeout_handler(_signum: int, _frame: object) -> NoReturn:
+    def timeout_handler(_signum: int, __frame: object) -> NoReturn:
         msg: str = f"Test timed out after {seconds} seconds"
         raise TimeoutError(msg)
 
@@ -531,6 +524,7 @@ class ConcurrentTestRunner:
     """Utility for running tests concurrently."""
 
     def __init__(self, max_workers: int = 4) -> None:
+        """Initialize the instance."""
         self.max_workers = max_workers
         self.results: list[FlextTypes.Core.Dict] = []
 

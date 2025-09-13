@@ -556,6 +556,7 @@ def mock_oic_client() -> type[object]:
 
     class MockOICClient:
         def __init__(self, config: FlextTypes.Core.Dict) -> None:
+            """Initialize the instance."""
             self.config = config
             self.authenticated = False
             self.call_count: dict[str, int] = {}
@@ -603,6 +604,7 @@ def mock_oauth_authenticator() -> type[object]:
 
     class MockOAuthAuthenticator:
         def __init__(self, config: FlextTypes.Core.Dict) -> None:
+            """Initialize the instance."""
             self.config = config
             self.token = None
             self.token_expires_at = None
