@@ -565,7 +565,7 @@ def mock_oic_client() -> type[object]:
             self.authenticated = True
             return True
 
-        async def get_integrations(self, **kwargs: object) -> FlextTypes.Core.Dict:
+        async def get_integrations(self, **_kwargs: object) -> FlextTypes.Core.Dict:
             self.call_count["get_integrations"] = (
                 self.call_count.get("get_integrations", 0) + 1
             )
@@ -576,7 +576,7 @@ def mock_oic_client() -> type[object]:
                 "count": 0,
             }
 
-        async def get_connections(self, **kwargs: object) -> FlextTypes.Core.Dict:
+        async def get_connections(self, **_kwargs: object) -> FlextTypes.Core.Dict:
             self.call_count["get_connections"] = (
                 self.call_count.get("get_connections", 0) + 1
             )
@@ -589,8 +589,8 @@ def mock_oic_client() -> type[object]:
 
         def paginate_request(
             self,
-            request_func: object,
-            **kwargs: object,
+            _request_func: object,
+            **_kwargs: object,
         ) -> Iterator[object]:
             """Mock pagination."""
             yield from []
