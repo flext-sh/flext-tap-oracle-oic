@@ -66,6 +66,7 @@ class TestOICOAuth2Authenticator:
         assert payload["scope"] == "urn:opc:resource:consumer:all"
 
     def test_client_credentials_encoding(self) -> None:
+        """Test method."""
         """Test client credentials are properly base64 encoded."""
         # Test the base64 encoding logic
         client_id = "test_client_id"
@@ -129,6 +130,7 @@ class TestOICOAuth2Authenticator:
             raise AssertionError(msg)
 
     def test_config_validation(self, mock_stream: Mock) -> None:
+        """Test method."""
         """Test authenticator handles missing config properly."""
         # Test with missing oauth_endpoint
         mock_stream.config = {
@@ -143,6 +145,7 @@ class TestOICOAuth2Authenticator:
             raise AssertionError(msg)
 
     def test_token_validation(self) -> None:
+        """Test method."""
         """Test token validation logic."""
         # Test with mock token data
         token_data = {
@@ -175,6 +178,7 @@ class TestOICOAuth2Authenticator:
             authenticator.update_access_token()
 
     def test_scope_configuration(self, authenticator: OICOAuth2Authenticator) -> None:
+        """Test method."""
         """Test OAuth scope configuration."""
         payload = authenticator.oauth_request_payload
 

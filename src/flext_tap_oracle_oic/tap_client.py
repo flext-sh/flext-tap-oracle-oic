@@ -1,4 +1,6 @@
-"""Copyright (c) 2025 FLEXT Team. All rights reserved.
+"""Oracle Integration Cloud tap client implementation.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT.
 """
 

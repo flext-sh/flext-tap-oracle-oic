@@ -16,6 +16,7 @@ class TestTapOIC:
     """Test cases for TapOIC."""
 
     def test_tap_initialization(self) -> None:
+        """Test method."""
         """Test tap initialization function."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
@@ -30,6 +31,7 @@ class TestTapOIC:
         assert tap.config == config
 
     def test_discover_streams(self) -> None:
+        """Test method."""
         """Test discover streams function."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
@@ -51,6 +53,7 @@ class TestTapOIC:
         assert "connections" in stream_names
 
     def test_config_validation(self) -> None:
+        """Test method."""
         """Test config validation."""  # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
         # Missing required fields should raise exception when validation is enabled
         config = {
@@ -60,6 +63,7 @@ class TestTapOIC:
             TapOIC(config=config, validate_config=True)
 
     def test_include_extended_streams(self) -> None:
+        """Test method."""
         """Test include extended streams function."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",

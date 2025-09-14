@@ -60,6 +60,7 @@ class TestOracleOICClient:
             raise AssertionError(msg)
 
     def test_client_session_configuration(self, client: OracleOICClient) -> None:
+        """Test method."""
         """Test client session is properly configured."""
         assert hasattr(client, "session")
         assert isinstance(client.session, requests.Session)
@@ -69,6 +70,7 @@ class TestOracleOICClient:
         assert adapter is not None
 
     def test_auth_headers_structure(self, client: OracleOICClient) -> None:
+        """Test method."""
         """Test authentication headers structure."""
         with contextlib.suppress(Exception):
             # Expected if no valid token available
@@ -125,6 +127,7 @@ class TestOracleOICClient:
                 assert result is not None
 
     def test_url_construction(self) -> None:
+        """Test method."""
         """Test URL construction logic."""
         base_url = "https://test.integration.ocp.oraclecloud.com"
         path = "/ic/api/integration/v1/integrations"
@@ -139,6 +142,7 @@ class TestOracleOICClient:
             raise AssertionError(msg)
 
     def test_error_handling(self) -> None:
+        """Test method."""
         """Test client error handling."""
         # Test with invalid configuration
         invalid_client = OracleOICClient(
@@ -152,6 +156,7 @@ class TestOracleOICClient:
             invalid_client.get_auth_headers()
 
     def test_client_configuration_validation(self) -> None:
+        """Test method."""
         """Test client configuration validation."""
         # Test with minimal config
         client = OracleOICClient(
@@ -166,6 +171,7 @@ class TestOracleOICClient:
         assert client.base_url == "https://test.example.com"
 
     def test_session_retry_configuration(self, client: OracleOICClient) -> None:
+        """Test method."""
         """Test session retry configuration."""
         session = client.session
 
@@ -199,6 +205,7 @@ class TestOracleOICClient:
             client.get("/test")
 
     def test_service_result_pattern(self) -> None:
+        """Test method."""
         """Test FlextResult pattern usage."""
         # Test FlextResult creation
         success_result = FlextResult[None].ok({"test": "data"})

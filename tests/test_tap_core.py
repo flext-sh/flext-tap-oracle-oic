@@ -19,6 +19,7 @@ class TestTapOIC:
     """Test the main TapOIC class."""
 
     def test_tap_initialization(self) -> None:
+        """Test method."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
@@ -34,6 +35,7 @@ class TestTapOIC:
         assert tap.config == config
 
     def test_tap_initialization_without_config(self) -> None:
+        """Test method."""
         tap = TapOIC(validate_config=False)
 
         if tap.name != "tap-oracle-oic":
@@ -42,6 +44,7 @@ class TestTapOIC:
         assert hasattr(tap, "config")
 
     def test_core_streams_discovery(self) -> None:
+        """Test method."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
@@ -71,6 +74,7 @@ class TestTapOIC:
                 raise AssertionError(msg)
 
     def test_extended_streams_discovery(self) -> None:
+        """Test method."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
@@ -104,6 +108,7 @@ class TestTapOIC:
                 raise AssertionError(msg)
 
     def test_extended_streams_disabled(self) -> None:
+        """Test method."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
@@ -123,6 +128,7 @@ class TestTapOIC:
             raise AssertionError(msg)
 
     def test_discover_streams(self) -> None:
+        """Test method."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
@@ -140,6 +146,7 @@ class TestTapOIC:
             raise AssertionError(msg)
 
     def test_config_validation_warnings(self) -> None:
+        """Test method."""
         """Test that the tap works with HTTP endpoints (though HTTPS is recommended)."""
         config = {
             "base_url": "http://test.integration.ocp.oraclecloud.com",  # HTTP instead of HTTPS
@@ -158,6 +165,7 @@ class TestTapOIC:
         assert tap.config["base_url"] == "http://test.integration.ocp.oraclecloud.com"
 
     def test_missing_required_fields_warning(self) -> None:
+        """Test method."""
         """Test that the missing required fields validation works correctly."""
         # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
 
@@ -182,6 +190,7 @@ class TestTapOIC:
             raise AssertionError(msg)
 
     def test_capabilities(self) -> None:
+        """Test method."""
         tap = TapOIC(validate_config=False)
 
         expected_capabilities = ["catalog", "state", "discover"]
@@ -196,6 +205,7 @@ class TestTapOICIntegration:
     """Integration tests for TapOIC."""
 
     def test_streams_have_correct_tap_reference(self) -> None:
+        """Test method."""
         """Test that the streams have the correct tap reference."""
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
@@ -245,6 +255,7 @@ class TestTapOICWithFixtures:
     """Tests using fixtures."""
 
     def test_tap_with_sample_config(self, sample_config: FlextTypes.Core.Dict) -> None:
+        """Test method."""
         """Test that the tap is initialized correctly with the sample config."""
         tap = TapOIC(config=sample_config, validate_config=False)
 
