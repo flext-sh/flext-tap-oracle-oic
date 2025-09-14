@@ -1,4 +1,4 @@
-# !/usr/bin/env python3
+#!/usr/bin/env python3
 
 """Comprehensive End-to-End tests for tap-oracle-oic.
 
@@ -48,6 +48,7 @@ class TestTapOracleOICE2E:
 
     @pytest.fixture
     def tap(self, config: FlextTypes.Core.Dict) -> object:
+        """Create TapOIC instance for testing."""
         return TapOIC(config=config)
 
     @pytest.fixture
@@ -61,6 +62,7 @@ class TestTapOracleOICE2E:
     def test_tap_initialization(
         self, tap: TapOIC, config: FlextTypes.Core.Dict
     ) -> None:
+        """Test TapOIC initialization with configuration."""
         if tap.name != "tap-oracle-oic":
             msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
@@ -70,6 +72,7 @@ class TestTapOracleOICE2E:
             raise AssertionError(msg)
 
     def test_discover_streams(self, tap: TapOIC) -> None:
+        """Test method."""
         catalog = tap.discover_streams()
 
         # Check that we discovered streams
@@ -87,6 +90,7 @@ class TestTapOracleOICE2E:
         assert "lookups" in stream_names
 
     def test_catalog_generation(self, tap: TapOIC) -> None:
+        """Test method."""
         catalog_dict = tap.catalog_dict
 
         if "streams" not in catalog_dict:
@@ -105,6 +109,7 @@ class TestTapOracleOICE2E:
                 raise AssertionError(msg)
 
     def test_stream_schema_validation(self, tap: TapOIC) -> None:
+        """Test method."""
         catalog = tap.discover_streams()
 
         for stream in catalog:
@@ -126,6 +131,7 @@ class TestTapOracleOICE2E:
                 raise AssertionError(msg)
 
     def test_live_connection(self, tap: TapOIC) -> None:
+        """Test method."""
         """Test live connection with proper validation."""
         # Test authentication with proper error handling
         streams = tap.discover_streams()
@@ -181,6 +187,7 @@ class TestTapOracleOICE2E:
                 logger.warning(f"Non-critical error in live connection test: {e}")
 
     def test_state_management(self, tap: TapOIC) -> None:
+        """Test method."""
         # Create a test state
         test_state = {
             "bookmarks": {
@@ -200,6 +207,7 @@ class TestTapOracleOICE2E:
             raise AssertionError(msg)
 
     def test_cli_discovery(self, config_path: str) -> None:
+        """Test method."""
         """Test CLI discovery."""
         python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
 
@@ -253,6 +261,7 @@ class TestTapOracleOICE2E:
         assert len(catalog["streams"]) > 0
 
     def test_config_validation(self) -> None:
+        """Test method."""
         """Test config validation."""
         # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
 
@@ -265,6 +274,7 @@ class TestTapOracleOICE2E:
             TapOIC(config={"base_url": "not-a-url"})
 
     def test_stream_selection(self, tap: TapOIC) -> None:
+        """Test method."""
         catalog = tap.discover_streams()
 
         # Create a catalog with only selected streams
@@ -294,6 +304,7 @@ class TestTapOracleOICE2E:
         # Skip catalog loading for now due to missing import
 
     def test_error_handling(self) -> None:
+        """Test method."""
         """Test error handling."""
         # Test with invalid endpoint - create new tap instance with invalid config
         invalid_config = {
@@ -311,6 +322,7 @@ class TestTapOracleOICE2E:
         assert isinstance(streams, list)
 
     def test_pagination_handling(self, tap: TapOIC) -> None:
+        """Test method."""
         """Test pagination handling."""
         # Mock a paginated response
         mock_response = Mock()
@@ -328,6 +340,7 @@ class TestTapOracleOICE2E:
         assert isinstance(streams, list)
 
     def test_data_transformation(self, tap: TapOIC) -> None:
+        """Test method."""
         """Test data transformation."""
         catalog = tap.discover_streams()
 
@@ -343,6 +356,7 @@ class TestTapOracleOICE2E:
                         raise AssertionError(msg)
 
     def test_full_extraction_flow(self, config_path: str, tmp_path: Path) -> None:
+        """Test method."""
         """Test full extraction flow."""
         # 1. Run discovery
         catalog_file = tmp_path / "catalog.json"
@@ -438,6 +452,7 @@ class TestTapOracleOICE2E:
                 assert msg["type"] in {"SCHEMA", "RECORD", "STATE", "ACTIVATE_VERSION"}
 
     def test_conditional_config_generation(self) -> None:
+        """Test method."""
         """Test conditional config generation."""
         config_path = Path(__file__).parent.parent / "config.json"
 
