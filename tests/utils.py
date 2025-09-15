@@ -404,7 +404,7 @@ class TestFileManager:
     ) -> Path:
         """Create a test configuration file."""
         config_path = Path(filename)
-        config_path.write_text(str(config))
+        config_path.write_text(str(config), encoding="utf-8")
         self.created_files.append(config_path)
         return config_path
 
@@ -415,7 +415,7 @@ class TestFileManager:
     ) -> Path:
         """Create a test catalog file."""
         catalog_path = Path(filename)
-        catalog_path.write_text(str(catalog))
+        catalog_path.write_text(str(catalog), encoding="utf-8")
         self.created_files.append(catalog_path)
         return catalog_path
 
@@ -426,7 +426,7 @@ class TestFileManager:
     ) -> Path:
         """Create a test records file."""
         records_path = Path(filename)
-        with records_path.open("w") as f:
+        with records_path.open("w", encoding="utf-8") as f:
             for record in records:
                 f.write(str(record) + "\n")
         self.created_files.append(records_path)
