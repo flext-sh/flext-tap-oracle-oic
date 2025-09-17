@@ -17,13 +17,14 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
+from pydantic import ConfigDict, Field, HttpUrl
+
 from flext_core import (
     FlextLogger,
     FlextModels,
     FlextResult,
     FlextTypes,
 )
-from pydantic import ConfigDict, Field, HttpUrl
 
 logger = FlextLogger(__name__)
 
@@ -245,7 +246,7 @@ class TapOracleOICConfig(FlextModels.Config):
             page_size=self.page_size,
         )
 
-    model_config = ConfigDict(env_prefix="TAP_ORACLE_OIC_", case_sensitive=False)
+    model_config = ConfigDict()
 
 
 # Main exports

@@ -11,7 +11,6 @@ import importlib.metadata
 
 from flext_core import FlextLogger, FlextModels, FlextResult, FlextTypes
 from flext_meltano import FlextMeltanoBridge, FlextMeltanoConfig, FlextMeltanoTapService
-
 from flext_tap_oracle_oic.models import OICIntegration
 from flext_tap_oracle_oic.simple_api import setup_oic_tap as create_oic_tap
 from flext_tap_oracle_oic.tap_client import OracleOICClient, TapOracleOIC

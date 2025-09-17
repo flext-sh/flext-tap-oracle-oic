@@ -12,8 +12,8 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import requests
-from flext_core import FlextTypes
 
+from flext_core import FlextTypes
 from flext_tap_oracle_oic import OAuthAuthenticator
 
 JSON_MIME = "application/json"

@@ -9,9 +9,9 @@ from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
 
 import requests
+
 from flext_core import FlextExceptions as FlextServiceError, FlextLogger, FlextTypes
 from flext_meltano import FlextTapStream
-
 from flext_tap_oracle_oic.constants import (
     OIC_API_BASE_PATH,
     OIC_B2B_API_PATH,
