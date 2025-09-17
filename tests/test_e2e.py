@@ -16,9 +16,9 @@ from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
-from flext_core import FlextLogger, FlextTypes
 from singer_sdk import ConfigValidationError
 
+from flext_core import FlextLogger, FlextTypes
 from flext_tap_oracle_oic import TapOIC
 
 """Tests all functionalities including:

@@ -11,7 +11,6 @@ from __future__ import annotations
 from typing import ClassVar
 
 from flext_meltano import FlextSingerTypes
-
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
 
 th = FlextSingerTypes()

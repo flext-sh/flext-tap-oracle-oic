@@ -16,13 +16,13 @@ from flext_core import FlextConstants, FlextTypes
 class FlextOracleOicConstants(FlextConstants):
     """FLEXT Oracle OIC TAP constants extending flext-core platform constants."""
 
-    # Oracle OIC API Constants (use centralized constants)
-    OIC_API_BASE_PATH = FlextConstants.OracleOIC.OIC_API_BASE_PATH
-    OIC_MONITORING_API_PATH = FlextConstants.OracleOIC.OIC_MONITORING_API_PATH
-    OIC_DESIGNTIME_API_PATH = FlextConstants.OracleOIC.OIC_DESIGNTIME_API_PATH
-    OIC_PROCESS_API_PATH = FlextConstants.OracleOIC.OIC_PROCESS_API_PATH
-    OIC_B2B_API_PATH = FlextConstants.OracleOIC.OIC_B2B_API_PATH
-    OIC_ENVIRONMENT_API_PATH = FlextConstants.OracleOIC.OIC_ENVIRONMENT_API_PATH
+    # Oracle OIC API Constants (defined locally as not available in flext-core)
+    OIC_API_BASE_PATH = "/ic/api/integration/v1"
+    OIC_MONITORING_API_PATH = "/ic/api/integration/v1/monitoring"
+    OIC_DESIGNTIME_API_PATH = "/ic/api/integration/v1/designtime"
+    OIC_PROCESS_API_PATH = "/ic/api/integration/v1/processes"
+    OIC_B2B_API_PATH = "/ic/api/integration/v1/b2b"
+    OIC_ENVIRONMENT_API_PATH = "/ic/api/integration/v1/environments"
 
     # Official OIC REST API Endpoints
     OIC_ENDPOINTS: ClassVar[FlextTypes.Core.Headers] = {

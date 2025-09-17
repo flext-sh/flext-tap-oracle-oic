@@ -15,8 +15,8 @@ from urllib.parse import urljoin
 
 import pytest
 import requests
-from flext_core import FlextResult, FlextTypes
 
+from flext_core import FlextResult, FlextTypes
 from flext_tap_oracle_oic import OracleOICClient
 
 

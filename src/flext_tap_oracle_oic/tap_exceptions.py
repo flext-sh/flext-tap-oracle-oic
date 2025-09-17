@@ -26,40 +26,40 @@ class OICExceptionFactory:
     """Factory for Oracle OIC specific exceptions."""
 
     @staticmethod
-    def create_authentication_error(message: str) -> FlextExceptions:
+    def create_authentication_error(message: str) -> OICAuthenticationError:
         """Create OIC authentication error."""
         return OICAuthenticationError(message)
 
     @staticmethod
-    def create_connection_error(message: str) -> FlextExceptions:
+    def create_connection_error(message: str) -> OICConnectionError:
         """Create OIC connection error."""
         return OICConnectionError(message)
 
     @staticmethod
-    def create_validation_error(message: str) -> FlextExceptions:
+    def create_validation_error(message: str) -> OICValidationError:
         """Create OIC validation error."""
         return OICValidationError(message)
 
     @staticmethod
-    def create_api_error(message: str) -> FlextExceptions:
+    def create_api_error(message: str) -> OICAPIError:
         """Create OIC API error."""
         return OICAPIError(message)
 
 
 # Specific Oracle OIC exceptions
-class OICAuthenticationError(FlextExceptions):
+class OICAuthenticationError(FlextExceptions._AuthenticationError):
     """Oracle OIC authentication error."""
 
 
-class OICConnectionError(FlextExceptions):
+class OICConnectionError(FlextExceptions._ConnectionError):
     """Oracle OIC connection error."""
 
 
-class OICValidationError(FlextExceptions):
+class OICValidationError(FlextExceptions._ValidationError):
     """Oracle OIC validation error."""
 
 
-class OICAPIError(FlextExceptions):
+class OICAPIError(FlextExceptions._ProcessingError):
     """Oracle OIC API error."""
 
 
