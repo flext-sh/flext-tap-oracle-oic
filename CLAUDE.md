@@ -1,7 +1,7 @@
 # CLAUDE.md - FLEXT Tap Oracle OIC Quality Refactoring Guide
 
 **Project**: FLEXT Tap Oracle OIC - Enterprise Oracle Integration Cloud Extraction  
-**Status**: Quality Refactoring Required | **Architecture**: Clean Architecture + DDD  
+**Status**: Quality Refactoring Required · 1.0.0 Release Preparation | **Architecture**: Clean Architecture + DDD  
 **Dependencies**: Python 3.13+, flext-core, flext-oracle-oic-ext, flext-meltano, singer-sdk  
 **Coverage Target**: 75% minimum (proven achievable), 100% aspirational target | **Current Type Status**: Requires Assessment
 **Authority**: FLEXT-TAP-ORACLE-OIC | **Last Updated**: 2025-01-08
@@ -10,11 +10,11 @@
 
 ## 🔗 MCP SERVER INTEGRATION
 
-| MCP Server | Purpose | Status |
-|------------|---------|--------|
-| **serena** | Singer tap codebase analysis and Oracle OIC extraction patterns | **ACTIVE** |
-| **sequential-thinking** | Oracle OIC data processing and Singer protocol architecture | **ACTIVE** |
-| **github** | Singer ecosystem integration and Oracle OIC tap PRs | **ACTIVE** |
+| MCP Server              | Purpose                                                         | Status     |
+| ----------------------- | --------------------------------------------------------------- | ---------- |
+| **serena**              | Singer tap codebase analysis and Oracle OIC extraction patterns | **ACTIVE** |
+| **sequential-thinking** | Oracle OIC data processing and Singer protocol architecture     | **ACTIVE** |
+| **github**              | Singer ecosystem integration and Oracle OIC tap PRs             | **ACTIVE** |
 
 **Usage**: `claude mcp list` for available servers, leverage for Singer-specific development patterns and Oracle OIC extraction analysis.
 
