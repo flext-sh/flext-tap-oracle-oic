@@ -3,8 +3,20 @@
 **Project**: FLEXT Tap Oracle OIC - Enterprise Oracle Integration Cloud Extraction  
 **Status**: Quality Refactoring Required | **Architecture**: Clean Architecture + DDD  
 **Dependencies**: Python 3.13+, flext-core, flext-oracle-oic-ext, flext-meltano, singer-sdk  
-**Coverage Target**: 90% | **Current Type Status**: Requires Assessment  
+**Coverage Target**: 75% minimum (proven achievable), 100% aspirational target | **Current Type Status**: Requires Assessment
 **Authority**: FLEXT-TAP-ORACLE-OIC | **Last Updated**: 2025-01-08
+
+**Hierarchy**: This document provides project-specific standards based on workspace-level patterns defined in [../CLAUDE.md](../CLAUDE.md). For architectural principles, quality gates, and MCP server usage, reference the main workspace standards.
+
+## 🔗 MCP SERVER INTEGRATION
+
+| MCP Server | Purpose | Status |
+|------------|---------|--------|
+| **serena** | Singer tap codebase analysis and Oracle OIC extraction patterns | **ACTIVE** |
+| **sequential-thinking** | Oracle OIC data processing and Singer protocol architecture | **ACTIVE** |
+| **github** | Singer ecosystem integration and Oracle OIC tap PRs | **ACTIVE** |
+
+**Usage**: `claude mcp list` for available servers, leverage for Singer-specific development patterns and Oracle OIC extraction analysis.
 
 ---
 
@@ -256,7 +268,7 @@ class OICBaseStream(Stream):
         self._service = self._container.get(FlextTapOracleOicService)
         self._config = tap.config.model_dump()
 
-    def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
+    def get_records(self, context: dict | None) -> Iterable[dict[str, object]]:
         """Base record extraction with error handling and authentication."""
         # Implemented by subclasses with specific OIC entity logic
         raise NotImplementedError("Subclasses must implement get_records")
@@ -275,7 +287,7 @@ class IntegrationsStream(OICBaseStream):
     primary_keys = ["id"]
     replication_key = "lastUpdated"
 
-    def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
+    def get_records(self, context: dict | None) -> Iterable[dict[str, object]]:
         result = self._service.extract_integrations(self._config)
         if result.is_success:
             for integration in result.value:
@@ -290,7 +302,7 @@ class ConnectionsStream(OICBaseStream):
     primary_keys = ["id"]
     replication_key = "lastUpdated"
 
-    def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
+    def get_records(self, context: dict | None) -> Iterable[dict[str, object]]:
         result = self._service.extract_connections(self._config)
         if result.is_success:
             for connection in result.value:
@@ -307,7 +319,7 @@ class ActivityStream(OICBaseStream):
     replication_key = "timestamp"
     replication_method = "INCREMENTAL"
 
-    def get_records(self, context: dict | None) -> Iterable[dict[str, Any]]:
+    def get_records(self, context: dict | None) -> Iterable[dict[str, object]]:
         start_date = self._get_starting_timestamp(context)
         result = self._service.extract_monitoring_data(self._config, "activity", start_date)
         if result.is_success:
