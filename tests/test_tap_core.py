@@ -12,11 +12,11 @@ import pytest
 from singer_sdk import ConfigValidationError
 
 from flext_core import FlextTypes
-from flext_tap_oracle_oic import TapOIC
+from flext_tap_oracle_oic import TapOracleOIC
 
 
-class TestTapOIC:
-    """Test the main TapOIC class."""
+class TestTapOracleOIC:
+    """Test the main TapOracleOIC class."""
 
     def test_tap_initialization(self) -> None:
         """Test method."""
@@ -27,7 +27,7 @@ class TestTapOIC:
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
 
-        tap = TapOIC(config=config, validate_config=False)
+        tap = TapOracleOIC(config=config, validate_config=False)
 
         if tap.name != "tap-oracle-oic":
             msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
@@ -36,7 +36,7 @@ class TestTapOIC:
 
     def test_tap_initialization_without_config(self) -> None:
         """Test method."""
-        tap = TapOIC(validate_config=False)
+        tap = TapOracleOIC(validate_config=False)
 
         if tap.name != "tap-oracle-oic":
             msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
@@ -52,7 +52,7 @@ class TestTapOIC:
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
 
-        tap = TapOIC(config=config, validate_config=False)
+        tap = TapOracleOIC(config=config, validate_config=False)
         # Test discovery instead of accessing private method
         streams = tap.discover_streams()
 
@@ -83,7 +83,7 @@ class TestTapOIC:
             "include_extended": True,
         }
 
-        tap = TapOIC(config=config, validate_config=False)
+        tap = TapOracleOIC(config=config, validate_config=False)
         # Test all streams through discover_streams
         all_streams = tap.discover_streams()
 
@@ -117,7 +117,7 @@ class TestTapOIC:
             "include_extended": False,
         }
 
-        tap = TapOIC(config=config, validate_config=False)
+        tap = TapOracleOIC(config=config, validate_config=False)
         # Test all streams through discover_streams
         all_streams = tap.discover_streams()
         # Filter infrastructure streams if needed for specific tests
@@ -137,7 +137,7 @@ class TestTapOIC:
             "include_extended": True,
         }
 
-        tap = TapOIC(config=config, validate_config=False)
+        tap = TapOracleOIC(config=config, validate_config=False)
         streams = tap.discover_streams()
 
         # Should have 5 core streams
@@ -156,7 +156,7 @@ class TestTapOIC:
             "oic_url": "http://test.integration.ocp.oraclecloud.com",  # Required field
         }
 
-        tap = TapOIC(config=config, validate_config=False)
+        tap = TapOracleOIC(config=config, validate_config=False)
 
         # Should work with HTTP config (though HTTPS is recommended in production)
         if tap.name != "tap-oracle-oic":
@@ -177,7 +177,7 @@ class TestTapOIC:
         # Test validation through normal instantiation with incomplete config
         # This should raise ConfigValidationError for missing required fields
         with pytest.raises(ConfigValidationError) as exc_info:
-            TapOIC(config=config, validate_config=True)
+            TapOracleOIC(config=config, validate_config=True)
 
         # Verify the error message mentions the missing required properties
         error_message = str(exc_info.value)
@@ -191,7 +191,7 @@ class TestTapOIC:
 
     def test_capabilities(self) -> None:
         """Test method."""
-        tap = TapOIC(validate_config=False)
+        tap = TapOracleOIC(validate_config=False)
 
         expected_capabilities = ["catalog", "state", "discover"]
 
@@ -201,8 +201,8 @@ class TestTapOIC:
                 raise AssertionError(msg)
 
 
-class TestTapOICIntegration:
-    """Integration tests for TapOIC."""
+class TestTapOracleOICIntegration:
+    """Integration tests for TapOracleOIC."""
 
     def test_streams_have_correct_tap_reference(self) -> None:
         """Test method."""
@@ -214,7 +214,7 @@ class TestTapOICIntegration:
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
 
-        tap = TapOIC(config=config, validate_config=False)
+        tap = TapOracleOIC(config=config, validate_config=False)
         # Test discovery instead of accessing private method
         streams = tap.discover_streams()
 
@@ -251,13 +251,13 @@ def sample_config_with_extended() -> object:
     }
 
 
-class TestTapOICWithFixtures:
+class TestTapOracleOICWithFixtures:
     """Tests using fixtures."""
 
     def test_tap_with_sample_config(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test method."""
         """Test that the tap is initialized correctly with the sample config."""
-        tap = TapOIC(config=sample_config, validate_config=False)
+        tap = TapOracleOIC(config=sample_config, validate_config=False)
 
         if tap.config["base_url"] != sample_config["base_url"]:
             msg: str = (
@@ -273,7 +273,7 @@ class TestTapOICWithFixtures:
         sample_config_with_extended: FlextTypes.Core.Dict,
     ) -> None:
         """Test that the number of streams is correct with the extended config."""
-        tap = TapOIC(config=sample_config_with_extended, validate_config=False)
+        tap = TapOracleOIC(config=sample_config_with_extended, validate_config=False)
 
         # Test using public discover_streams method
         all_streams = tap.discover_streams()

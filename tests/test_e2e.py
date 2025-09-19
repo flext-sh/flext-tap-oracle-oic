@@ -19,7 +19,7 @@ import pytest
 from singer_sdk import ConfigValidationError
 
 from flext_core import FlextLogger, FlextTypes
-from flext_tap_oracle_oic import TapOIC
+from flext_tap_oracle_oic import TapOracleOIC
 
 """Tests all functionalities including:
 - Discovery
@@ -48,8 +48,8 @@ class TestTapOracleOICE2E:
 
     @pytest.fixture
     def tap(self, config: FlextTypes.Core.Dict) -> object:
-        """Create TapOIC instance for testing."""
-        return TapOIC(config=config)
+        """Create TapOracleOIC instance for testing."""
+        return TapOracleOIC(config=config)
 
     @pytest.fixture
     def config_path(self, tmp_path: Path, config: FlextTypes.Core.Dict) -> str:
@@ -60,9 +60,9 @@ class TestTapOracleOICE2E:
         return str(config_file)
 
     def test_tap_initialization(
-        self, tap: TapOIC, config: FlextTypes.Core.Dict
+        self, tap: TapOracleOIC, config: FlextTypes.Core.Dict
     ) -> None:
-        """Test TapOIC initialization with configuration."""
+        """Test TapOracleOIC initialization with configuration."""
         if tap.name != "tap-oracle-oic":
             msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
@@ -71,7 +71,7 @@ class TestTapOracleOICE2E:
             msg: str = f"Expected {config['oic_url']}, got {tap.config['oic_url']}"
             raise AssertionError(msg)
 
-    def test_discover_streams(self, tap: TapOIC) -> None:
+    def test_discover_streams(self, tap: TapOracleOIC) -> None:
         """Test method."""
         catalog = tap.discover_streams()
 
@@ -89,7 +89,7 @@ class TestTapOracleOICE2E:
             raise AssertionError(msg)
         assert "lookups" in stream_names
 
-    def test_catalog_generation(self, tap: TapOIC) -> None:
+    def test_catalog_generation(self, tap: TapOracleOIC) -> None:
         """Test method."""
         catalog_dict = tap.catalog_dict
 
@@ -108,7 +108,7 @@ class TestTapOracleOICE2E:
                 msg: str = f"Expected {'metadata'} in {stream}"
                 raise AssertionError(msg)
 
-    def test_stream_schema_validation(self, tap: TapOIC) -> None:
+    def test_stream_schema_validation(self, tap: TapOracleOIC) -> None:
         """Test method."""
         catalog = tap.discover_streams()
 
@@ -130,7 +130,7 @@ class TestTapOracleOICE2E:
                 msg: str = f"Expected {'id' in properties or 'name'} in {properties}"
                 raise AssertionError(msg)
 
-    def test_live_connection(self, tap: TapOIC) -> None:
+    def test_live_connection(self, tap: TapOracleOIC) -> None:
         """Test method."""
         """Test live connection with proper validation."""
         # Test authentication with proper error handling
@@ -186,7 +186,7 @@ class TestTapOracleOICE2E:
                 logger = FlextLogger(__name__)
                 logger.warning(f"Non-critical error in live connection test: {e}")
 
-    def test_state_management(self, tap: TapOIC) -> None:
+    def test_state_management(self, tap: TapOracleOIC) -> None:
         """Test method."""
         # Create a test state
         test_state = {
@@ -267,13 +267,13 @@ class TestTapOracleOICE2E:
 
         # Test missing required fields
         with pytest.raises(ConfigValidationError):
-            TapOIC(config={})
+            TapOracleOIC(config={})
 
         # Test invalid config
         with pytest.raises(ConfigValidationError):
-            TapOIC(config={"base_url": "not-a-url"})
+            TapOracleOIC(config={"base_url": "not-a-url"})
 
-    def test_stream_selection(self, tap: TapOIC) -> None:
+    def test_stream_selection(self, tap: TapOracleOIC) -> None:
         """Test method."""
         catalog = tap.discover_streams()
 
@@ -315,13 +315,13 @@ class TestTapOracleOICE2E:
             "oic_url": "https://invalid.example.com",
         }
 
-        invalid_tap = TapOIC(config=invalid_config, validate_config=False)
+        invalid_tap = TapOracleOIC(config=invalid_config, validate_config=False)
         streams = invalid_tap.discover_streams()
 
         # Should handle gracefully without crashing
         assert isinstance(streams, list)
 
-    def test_pagination_handling(self, tap: TapOIC) -> None:
+    def test_pagination_handling(self, tap: TapOracleOIC) -> None:
         """Test method."""
         """Test pagination handling."""
         # Mock a paginated response
@@ -339,7 +339,7 @@ class TestTapOracleOICE2E:
         streams = tap.discover_streams()
         assert isinstance(streams, list)
 
-    def test_data_transformation(self, tap: TapOIC) -> None:
+    def test_data_transformation(self, tap: TapOracleOIC) -> None:
         """Test method."""
         """Test data transformation."""
         catalog = tap.discover_streams()
@@ -507,8 +507,8 @@ class TestTapOracleOICE2E:
 
 # Additional test class using Singer SDK test framework
 # Tracking: https://github.com/flext/issues/mypy-dynamic-classes
-# TapOICTestClass = get_tap_test_class(
-#     tap_class=TapOIC,
+# TapOracleOICTestClass = get_tap_test_class(
+#     tap_class=TapOracleOIC,
 #     config={
 #         "oauth_client_id": "test_client",
 #         "oauth_client_secret": "test_secret",
@@ -519,4 +519,4 @@ class TestTapOracleOICE2E:
 # )
 
 
-# class TestTapOICSingerSDK(TapOICTestClass):
+# class TestTapOracleOICSingerSDK(TapOracleOICTestClass):

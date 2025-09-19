@@ -11,8 +11,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-import requests
-
+from flext_api import FlextApiClient
 from flext_core import FlextTypes
 from flext_tap_oracle_oic import OAuthAuthenticator
 
@@ -28,6 +27,7 @@ class OICHealthChecker:
         """Initialize health checker with base URL and authenticator."""
         self.base_url = base_url.rstrip("/")
         self.authenticator = authenticator
+        self._api_client = FlextApiClient(base_url=base_url)
 
     def _get_headers(self) -> FlextTypes.Core.Headers:
         headers = {
@@ -40,12 +40,14 @@ class OICHealthChecker:
             headers.update(auth_headers)
         return headers
 
-    def check_health(self) -> FlextTypes.Core.Dict:
+    async def check_health(self) -> FlextTypes.Core.Dict:
         """Check OIC instance health."""
         try:
             # Try to access the integrations endpoint as a health check
             url = f"{self.base_url}/ic/api/integration/v1/integrations?limit=1"
-            response = requests.get(url, headers=self._get_headers(), timeout=30)
+            response = await self._api_client.get(
+                url, headers=self._get_headers(), timeout=30
+            )
 
             if response.status_code == HTTP_OK:
                 return {
@@ -53,7 +55,10 @@ class OICHealthChecker:
                     "timestamp": datetime.now(UTC).isoformat(),
                     "instance_url": self.base_url,
                     "api_accessible": True,
-                    "response_time_ms": int(response.elapsed.total_seconds() * 1000),
+                    "response_time_ms": getattr(response, "elapsed", {}).get(
+                        "total_seconds", lambda: 0
+                    )()
+                    * 1000,
                 }
             return {
                 "status": "unhealthy",
@@ -61,9 +66,12 @@ class OICHealthChecker:
                 "instance_url": self.base_url,
                 "api_accessible": False,
                 "error": f"API returned status {response.status_code}",
-                "response_time_ms": int(response.elapsed.total_seconds() * 1000),
+                "response_time_ms": getattr(response, "elapsed", {}).get(
+                    "total_seconds", lambda: 0
+                )()
+                * 1000,
             }
-        except (requests.RequestException, ValueError, KeyError) as e:
+        except Exception as e:
             return {
                 "status": "error",
                 "timestamp": datetime.now(UTC).isoformat(),
@@ -72,15 +80,21 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_connection(self, connection_id: str) -> FlextTypes.Core.Dict:
+    async def test_connection(self, connection_id: str) -> FlextTypes.Core.Dict:
         """Test specific OIC connection."""
         try:
             # Call the connection test endpoint
             url = f"{self.base_url}/ic/api/integration/v1/connections/{connection_id}/test"
-            response = requests.post(url, headers=self._get_headers(), timeout=60)
+            response = await self._api_client.post(
+                url, headers=self._get_headers(), timeout=60
+            )
 
             if response.status_code in {200, 202}:
-                result = response.json() if response.text else {}
+                result = (
+                    response.json()
+                    if hasattr(response, "text") and response.text
+                    else {}
+                )
                 return {
                     "connectionId": connection_id,
                     "status": result.get("status", "success"),
@@ -90,17 +104,23 @@ class OICHealthChecker:
                         "Connection test successful",
                     ),
                     "details": result.get("details", {}),
-                    "response_time_ms": int(response.elapsed.total_seconds() * 1000),
+                    "response_time_ms": getattr(response, "elapsed", {}).get(
+                        "total_seconds", lambda: 0
+                    )()
+                    * 1000,
                 }
             return {
                 "connectionId": connection_id,
                 "status": "failed",
                 "timestamp": datetime.now(UTC).isoformat(),
                 "error": f"Test failed with status {response.status_code}",
-                "details": response.text or {},
-                "response_time_ms": int(response.elapsed.total_seconds() * 1000),
+                "details": getattr(response, "text", "") or {},
+                "response_time_ms": getattr(response, "elapsed", {}).get(
+                    "total_seconds", lambda: 0
+                )()
+                * 1000,
             }
-        except (requests.RequestException, ValueError, KeyError) as e:
+        except Exception as e:
             return {
                 "connectionId": connection_id,
                 "status": "error",
@@ -108,12 +128,14 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_integration(self, integration_id: str) -> FlextTypes.Core.Dict:
+    async def test_integration(self, integration_id: str) -> FlextTypes.Core.Dict:
         """Test specific OIC integration."""
         try:
             # Get integration details
             url = f"{self.base_url}/ic/api/integration/v1/integrations/{integration_id}"
-            response = requests.get(url, headers=self._get_headers(), timeout=30)
+            response = await self._api_client.get(
+                url, headers=self._get_headers(), timeout=30
+            )
 
             if response.status_code == HTTP_OK:
                 integration = response.json()
@@ -145,7 +167,7 @@ class OICHealthChecker:
                 "timestamp": datetime.now(UTC).isoformat(),
                 "error": f"Failed to get integration status: {response.status_code}",
             }
-        except (requests.RequestException, ValueError, KeyError) as e:
+        except Exception as e:
             return {
                 "integrationId": integration_id,
                 "health": "error",
@@ -153,12 +175,14 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def check_monitoring_health(self) -> FlextTypes.Core.Dict:
+    async def check_monitoring_health(self) -> FlextTypes.Core.Dict:
         """Check OIC monitoring service health."""
         try:
             # Try to access monitoring endpoint
             url = f"{self.base_url}/ic/api/monitoring/v1/instances?limit=1"
-            response = requests.get(url, headers=self._get_headers(), timeout=30)
+            response = await self._api_client.get(
+                url, headers=self._get_headers(), timeout=30
+            )
 
             if response.status_code == HTTP_OK:
                 return {
@@ -166,7 +190,10 @@ class OICHealthChecker:
                     "status": "healthy",
                     "timestamp": datetime.now(UTC).isoformat(),
                     "accessible": True,
-                    "response_time_ms": int(response.elapsed.total_seconds() * 1000),
+                    "response_time_ms": getattr(response, "elapsed", {}).get(
+                        "total_seconds", lambda: 0
+                    )()
+                    * 1000,
                 }
             return {
                 "service": "monitoring",
@@ -175,7 +202,7 @@ class OICHealthChecker:
                 "accessible": False,
                 "error": f"API returned status {response.status_code}",
             }
-        except (requests.RequestException, ValueError, KeyError) as e:
+        except Exception as e:
             return {
                 "service": "monitoring",
                 "status": "error",

@@ -6,13 +6,13 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
+import json
 import os
 import sys
 from collections.abc import Sequence
 from typing import ClassVar, cast
 
-import requests
-
+from flext_api import FlextApiClient
 from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_meltano import FlextTapAbstract as Tap, FlextTapStream as Stream
 from flext_tap_oracle_oic.streams_consolidated import (
@@ -25,6 +25,9 @@ from flext_tap_oracle_oic.tap_config import (
     OICConnectionConfig,
 )
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
+
+# Constants
+HTTP_ERROR_STATUS_THRESHOLD = 400
 
 # Type aliases
 StreamConfigType = object
@@ -39,30 +42,47 @@ class OICExtensionAuthenticator:
         """Initialize authenticator with OAuth2 configuration."""
         self.auth_config = auth_config
         self._access_token: str | None = None
+        self._api_client = FlextApiClient()
 
-    def get_access_token(self) -> FlextResult[str]:
+    async def get_access_token(self) -> FlextResult[str]:
         """Get OAuth2 access token using client credentials flow."""
         try:
-            response = requests.post(
+            response_result = await self._api_client.post(
                 str(self.auth_config.token_url),
                 data=self.auth_config.get_token_request_data(),
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
                 timeout=30,
             )
-            response.raise_for_status()
 
-            token_data = response.json()
-            if "access_token" not in token_data:
-                return FlextResult[str].fail("No access_token in OAuth2 response")
+            if response_result.is_failure:
+                return FlextResult[str].fail(
+                    f"OAuth2 request failed: {response_result.error}"
+                )
 
-            self._access_token = token_data["access_token"]
+            response = response_result.unwrap()
+            if response.status_code >= HTTP_ERROR_STATUS_THRESHOLD:
+                return FlextResult[str].fail(
+                    f"OAuth2 request failed with status {response.status_code}"
+                )
+
+            # Handle response.body properly - it could be str, dict, or None
+            if isinstance(response.body, dict):
+                token_data = response.body
+            elif isinstance(response.body, str):
+                token_data = json.loads(response.body)
+            else:
+                return FlextResult[str].fail("Empty or invalid OAuth response body")
+
+            access_token = token_data.get("access_token")
+            if not access_token or not isinstance(access_token, str):
+                return FlextResult[str].fail("No valid access token in response")
+
+            self._access_token = access_token
             logger.info("OAuth2 access token obtained successfully")
-            return FlextResult[str].ok(self._access_token)
+            return FlextResult[str].ok(access_token)
 
-        except requests.RequestException as e:
-            return FlextResult[str].fail(f"OAuth2 authentication failed: {e}")
         except Exception as e:
-            return FlextResult[str].fail(f"Unexpected authentication error: {e}")
+            return FlextResult[str].fail(f"OAuth2 authentication failed: {e}")
 
 
 class OracleOICClient:
@@ -76,11 +96,13 @@ class OracleOICClient:
         """Initialize OIC API client."""
         self.connection_config = connection_config
         self.authenticator = authenticator
-        self._session = requests.Session()
+        self._api_client = FlextApiClient(
+            base_url=connection_config.api_base_url, timeout=connection_config.timeout
+        )
 
-    def _get_auth_headers(self) -> FlextResult[FlextTypes.Core.Headers]:
+    async def _get_auth_headers(self) -> FlextResult[FlextTypes.Core.Headers]:
         """Get authorization headers with OAuth2 token."""
-        token_result = self.authenticator.get_access_token()
+        token_result = await self.authenticator.get_access_token()
         if not token_result.success:
             return FlextResult[FlextTypes.Core.Headers].fail(
                 f"Failed to get access token: {token_result.error}"
@@ -90,56 +112,76 @@ class OracleOICClient:
         headers["Authorization"] = f"Bearer {token_result.data}"
         return FlextResult[FlextTypes.Core.Headers].ok(headers)
 
-    def get(self, endpoint: str) -> FlextResult[requests.Response]:
+    async def get(self, endpoint: str) -> FlextResult[object]:
         """Make authenticated GET request to OIC API."""
-        headers_result = self._get_auth_headers()
+        headers_result = await self._get_auth_headers()
         if not headers_result.success:
-            return FlextResult[requests.Response].fail(
+            return FlextResult[object].fail(
                 f"Failed to get auth headers: {headers_result.error}",
             )
 
         try:
             url = f"{self.connection_config.api_base_url}/{endpoint.lstrip('/')}"
-            response = self._session.get(
+            response_result = await self._api_client.get(
                 url,
                 headers=headers_result.data,
                 timeout=self.connection_config.timeout,
             )
-            response.raise_for_status()
-            return FlextResult[requests.Response].ok(response)
 
-        except requests.RequestException as e:
-            return FlextResult[requests.Response].fail(f"OIC API request failed: {e}")
+            if response_result.is_failure:
+                return FlextResult[object].fail(
+                    f"OIC API request failed: {response_result.error}"
+                )
+
+            response = response_result.unwrap()
+            if response.status_code >= HTTP_ERROR_STATUS_THRESHOLD:
+                return FlextResult[object].fail(
+                    f"OIC API request failed with status {response.status_code}"
+                )
+
+            return FlextResult[object].ok(response)
+
         except Exception as e:
-            return FlextResult[requests.Response].fail(f"Unexpected OIC API error: {e}")
+            return FlextResult[object].fail(f"OIC API request failed: {e}")
 
-    def post(
+    async def post(
         self,
         endpoint: str,
         data: FlextTypes.Core.Dict | None = None,
-    ) -> FlextResult[requests.Response]:
+    ) -> FlextResult[object]:
         """Make authenticated POST request to OIC API."""
-        headers_result = self._get_auth_headers()
+        headers_result = await self._get_auth_headers()
         if not headers_result.success:
-            return FlextResult[requests.Response].fail(
+            return FlextResult[object].fail(
                 f"Failed to get auth headers: {headers_result.error}",
             )
 
         try:
             url = f"{self.connection_config.api_base_url}/{endpoint.lstrip('/')}"
-            response = self._session.post(
+            # Convert data to string dict for FlextApiClient compatibility
+            json_data = {str(k): str(v) for k, v in data.items()} if data else None
+            response_result = await self._api_client.post(
                 url,
                 headers=headers_result.data,
                 timeout=self.connection_config.timeout,
-                json=data,
+                json=json_data,
             )
-            response.raise_for_status()
-            return FlextResult[requests.Response].ok(response)
 
-        except requests.RequestException as e:
-            return FlextResult[requests.Response].fail(f"OIC API request failed: {e}")
+            if response_result.is_failure:
+                return FlextResult[object].fail(
+                    f"OIC API request failed: {response_result.error}"
+                )
+
+            response = response_result.unwrap()
+            if response.status_code >= HTTP_ERROR_STATUS_THRESHOLD:
+                return FlextResult[object].fail(
+                    f"OIC API request failed with status {response.status_code}"
+                )
+
+            return FlextResult[object].ok(response)
+
         except Exception as e:
-            return FlextResult[requests.Response].fail(f"Unexpected OIC API error: {e}")
+            return FlextResult[object].fail(f"OIC API request failed: {e}")
 
 
 class TapOracleOIC(Tap):
@@ -288,13 +330,13 @@ class TapOracleOIC(Tap):
 
         return cast("Stream", stream_class(tap=self))
 
-    def test_connection(self) -> FlextResult[bool]:
+    async def test_connection(self) -> FlextResult[bool]:
         """Test connection to Oracle OIC using real API client."""
         try:
             logger.info("Testing Oracle OIC connection")
 
             # Test authentication by making a simple API call
-            test_result = self.client.get("integrations")
+            test_result = await self.client.get("integrations")
 
             if test_result.success:
                 logger.info("Oracle OIC connection test successful")
@@ -310,11 +352,11 @@ class TapOracleOIC(Tap):
             return FlextResult[bool].fail(exception_msg)
 
 
-# Alias for backwards compatibility
-TapOIC = TapOracleOIC
+# ZERO TOLERANCE: All legacy exception aliases removed
+# Use TapOracleOIC directly instead
 
 
-def main() -> int:
+async def main() -> int:
     """Run Oracle OIC tap with proper error handling."""
     exit_code = _validate_and_setup_config()
     if exit_code != 0:
@@ -327,7 +369,7 @@ def main() -> int:
     tap = TapOracleOIC(config=config_typed)
 
     try:
-        return _execute_tap_command(tap)
+        return await _execute_tap_command(tap)
     except (RuntimeError, ValueError, TypeError) as e:
         logger.exception("Oracle OIC tap execution failed")
         logger.warning(f"Tap execution failed with error: {type(e).__name__}: {e}")
@@ -369,12 +411,12 @@ def _validate_and_setup_config() -> int:
     return 0
 
 
-def _execute_tap_command(tap: TapOracleOIC) -> int:
+async def _execute_tap_command(tap: TapOracleOIC) -> int:
     """Execute appropriate tap command based on arguments."""
     if "--discover" in sys.argv:
         return _execute_discover_command(tap)
     if "--test" in sys.argv:
-        return _execute_test_command(tap)
+        return await _execute_test_command(tap)
     if "--run" in sys.argv:
         return _execute_run_command(tap)
     return 0
@@ -405,10 +447,10 @@ def _execute_discover_command(tap: TapOracleOIC) -> int:
     return 0
 
 
-def _execute_test_command(tap: TapOracleOIC) -> int:
+async def _execute_test_command(tap: TapOracleOIC) -> int:
     """Execute test command."""
     logger.info("Testing Oracle OIC connection")
-    result = tap.test_connection()
+    result = await tap.test_connection()
     return 0 if result.success else 1
 
 
@@ -419,13 +461,14 @@ def _execute_run_command(_tap: TapOracleOIC) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    import asyncio
+
+    sys.exit(asyncio.run(main()))
 
 
-# Export for backward compatibility and module interface
+# Export for module interface - unified classes only
 __all__: FlextTypes.Core.StringList = [
     "OracleOICClient",
-    "TapOIC",
     "TapOracleOIC",
     "main",
 ]
