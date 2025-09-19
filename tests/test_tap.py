@@ -9,11 +9,11 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError as ConfigValidationError
 
-from flext_tap_oracle_oic import TapOIC
+from flext_tap_oracle_oic import TapOracleOIC
 
 
-class TestTapOIC:
-    """Test cases for TapOIC."""
+class TestTapOracleOIC:
+    """Test cases for TapOracleOIC."""
 
     def test_tap_initialization(self) -> None:
         """Test method."""
@@ -24,7 +24,7 @@ class TestTapOIC:
             "oauth_client_secret": "test_secret",
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
-        tap = TapOIC(config=config, validate_config=False)
+        tap = TapOracleOIC(config=config, validate_config=False)
         if tap.name != "tap-oracle-oic":
             msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
@@ -39,7 +39,7 @@ class TestTapOIC:
             "oauth_client_secret": "test_secret",
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
-        tap = TapOIC(config=config, validate_config=False)
+        tap = TapOracleOIC(config=config, validate_config=False)
         streams = tap.discover_streams()
 
         # Should have at least core streams
@@ -60,7 +60,7 @@ class TestTapOIC:
             "base_url": "https://test.integration.ocp.oraclecloud.com",
         }
         with pytest.raises(ConfigValidationError):
-            TapOIC(config=config, validate_config=True)
+            TapOracleOIC(config=config, validate_config=True)
 
     def test_include_extended_streams(self) -> None:
         """Test method."""
@@ -72,7 +72,7 @@ class TestTapOIC:
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
             "include_extended": True,
         }
-        tap = TapOIC(config=config, validate_config=False)
+        tap = TapOracleOIC(config=config, validate_config=False)
         streams = tap.discover_streams()
 
         # Should include core streams

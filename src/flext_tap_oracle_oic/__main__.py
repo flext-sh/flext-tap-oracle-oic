@@ -16,12 +16,12 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tap_oracle_oic.tap_client import TapOIC
+from flext_tap_oracle_oic.tap_client import TapOracleOIC
 
 
 def main() -> None:
     """Provide entry point for Oracle OIC tap."""
-    TapOIC.cli()
+    TapOracleOIC.cli()
 
 
 if __name__ == "__main__":
