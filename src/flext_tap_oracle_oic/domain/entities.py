@@ -80,7 +80,8 @@ class OICConnection(FlextModels):
     )
     last_tested: datetime | None = Field(None, description="Last test timestamp")
     test_result: FlextTypes.Core.Dict | None = Field(
-        None, description="Last test result",
+        None,
+        description="Last test result",
     )
 
     # Metadata
@@ -194,7 +195,8 @@ class OICLookup(FlextModels):
         description="Column definitions",
     )
     key_columns: FlextTypes.Core.StringList = Field(
-        default_factory=list, description="Key column names",
+        default_factory=list,
+        description="Key column names",
     )
     value_columns: FlextTypes.Core.StringList = Field(
         default_factory=list,

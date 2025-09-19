@@ -46,7 +46,9 @@ class OICHealthChecker:
             # Try to access the integrations endpoint as a health check
             url = f"{self.base_url}/ic/api/integration/v1/integrations?limit=1"
             response = await self._api_client.get(
-                url, headers=self._get_headers(), timeout=30,
+                url,
+                headers=self._get_headers(),
+                timeout=30,
             )
 
             if response.status_code == HTTP_OK:
@@ -56,7 +58,8 @@ class OICHealthChecker:
                     "instance_url": self.base_url,
                     "api_accessible": True,
                     "response_time_ms": getattr(response, "elapsed", {}).get(
-                        "total_seconds", lambda: 0,
+                        "total_seconds",
+                        lambda: 0,
                     )()
                     * 1000,
                 }
@@ -67,7 +70,8 @@ class OICHealthChecker:
                 "api_accessible": False,
                 "error": f"API returned status {response.status_code}",
                 "response_time_ms": getattr(response, "elapsed", {}).get(
-                    "total_seconds", lambda: 0,
+                    "total_seconds",
+                    lambda: 0,
                 )()
                 * 1000,
             }
@@ -86,7 +90,9 @@ class OICHealthChecker:
             # Call the connection test endpoint
             url = f"{self.base_url}/ic/api/integration/v1/connections/{connection_id}/test"
             response = await self._api_client.post(
-                url, headers=self._get_headers(), timeout=60,
+                url,
+                headers=self._get_headers(),
+                timeout=60,
             )
 
             if response.status_code in {200, 202}:
@@ -105,7 +111,8 @@ class OICHealthChecker:
                     ),
                     "details": result.get("details", {}),
                     "response_time_ms": getattr(response, "elapsed", {}).get(
-                        "total_seconds", lambda: 0,
+                        "total_seconds",
+                        lambda: 0,
                     )()
                     * 1000,
                 }
@@ -116,7 +123,8 @@ class OICHealthChecker:
                 "error": f"Test failed with status {response.status_code}",
                 "details": getattr(response, "text", "") or {},
                 "response_time_ms": getattr(response, "elapsed", {}).get(
-                    "total_seconds", lambda: 0,
+                    "total_seconds",
+                    lambda: 0,
                 )()
                 * 1000,
             }
@@ -134,7 +142,9 @@ class OICHealthChecker:
             # Get integration details
             url = f"{self.base_url}/ic/api/integration/v1/integrations/{integration_id}"
             response = await self._api_client.get(
-                url, headers=self._get_headers(), timeout=30,
+                url,
+                headers=self._get_headers(),
+                timeout=30,
             )
 
             if response.status_code == HTTP_OK:
@@ -181,7 +191,9 @@ class OICHealthChecker:
             # Try to access monitoring endpoint
             url = f"{self.base_url}/ic/api/monitoring/v1/instances?limit=1"
             response = await self._api_client.get(
-                url, headers=self._get_headers(), timeout=30,
+                url,
+                headers=self._get_headers(),
+                timeout=30,
             )
 
             if response.status_code == HTTP_OK:
@@ -191,7 +203,8 @@ class OICHealthChecker:
                     "timestamp": datetime.now(UTC).isoformat(),
                     "accessible": True,
                     "response_time_ms": getattr(response, "elapsed", {}).get(
-                        "total_seconds", lambda: 0,
+                        "total_seconds",
+                        lambda: 0,
                     )()
                     * 1000,
                 }
