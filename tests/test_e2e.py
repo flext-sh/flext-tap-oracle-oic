@@ -60,7 +60,7 @@ class TestTapOracleOICE2E:
         return str(config_file)
 
     def test_tap_initialization(
-        self, tap: TapOracleOIC, config: FlextTypes.Core.Dict
+        self, tap: TapOracleOIC, config: FlextTypes.Core.Dict,
     ) -> None:
         """Test TapOracleOIC initialization with configuration."""
         if tap.name != "tap-oracle-oic":

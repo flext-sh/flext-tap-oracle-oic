@@ -56,13 +56,13 @@ class OICExtensionAuthenticator:
 
             if response_result.is_failure:
                 return FlextResult[str].fail(
-                    f"OAuth2 request failed: {response_result.error}"
+                    f"OAuth2 request failed: {response_result.error}",
                 )
 
             response = response_result.unwrap()
             if response.status_code >= HTTP_ERROR_STATUS_THRESHOLD:
                 return FlextResult[str].fail(
-                    f"OAuth2 request failed with status {response.status_code}"
+                    f"OAuth2 request failed with status {response.status_code}",
                 )
 
             # Handle response.body properly - it could be str, dict, or None
@@ -97,7 +97,7 @@ class OracleOICClient:
         self.connection_config = connection_config
         self.authenticator = authenticator
         self._api_client = FlextApiClient(
-            base_url=connection_config.api_base_url, timeout=connection_config.timeout
+            base_url=connection_config.api_base_url, timeout=connection_config.timeout,
         )
 
     async def _get_auth_headers(self) -> FlextResult[FlextTypes.Core.Headers]:
@@ -105,7 +105,7 @@ class OracleOICClient:
         token_result = await self.authenticator.get_access_token()
         if not token_result.success:
             return FlextResult[FlextTypes.Core.Headers].fail(
-                f"Failed to get access token: {token_result.error}"
+                f"Failed to get access token: {token_result.error}",
             )
 
         headers = self.connection_config.get_headers()
@@ -130,13 +130,13 @@ class OracleOICClient:
 
             if response_result.is_failure:
                 return FlextResult[object].fail(
-                    f"OIC API request failed: {response_result.error}"
+                    f"OIC API request failed: {response_result.error}",
                 )
 
             response = response_result.unwrap()
             if response.status_code >= HTTP_ERROR_STATUS_THRESHOLD:
                 return FlextResult[object].fail(
-                    f"OIC API request failed with status {response.status_code}"
+                    f"OIC API request failed with status {response.status_code}",
                 )
 
             return FlextResult[object].ok(response)
@@ -169,13 +169,13 @@ class OracleOICClient:
 
             if response_result.is_failure:
                 return FlextResult[object].fail(
-                    f"OIC API request failed: {response_result.error}"
+                    f"OIC API request failed: {response_result.error}",
                 )
 
             response = response_result.unwrap()
             if response.status_code >= HTTP_ERROR_STATUS_THRESHOLD:
                 return FlextResult[object].fail(
-                    f"OIC API request failed with status {response.status_code}"
+                    f"OIC API request failed with status {response.status_code}",
                 )
 
             return FlextResult[object].ok(response)

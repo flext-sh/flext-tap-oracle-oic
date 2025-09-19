@@ -117,7 +117,7 @@ def create_oic_connection_config(
 
     except (ValueError, TypeError) as e:
         return FlextResult[OICConnectionConfig].fail(
-            f"Failed to create OIC connection config: {e}"
+            f"Failed to create OIC connection config: {e}",
         )
 
 
