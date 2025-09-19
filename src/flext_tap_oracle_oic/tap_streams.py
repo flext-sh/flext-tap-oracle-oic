@@ -339,7 +339,7 @@ class OICBaseStream(FlextTapStream):
             yield from self._process_dict_data(data)
 
     def _process_list_data(
-        self, data: FlextTypes.Core.List
+        self, data: FlextTypes.Core.List,
     ) -> Iterator[FlextTypes.Core.Dict]:
         """Process list-type response data."""
         for item in data:
@@ -363,7 +363,7 @@ class OICBaseStream(FlextTapStream):
             yield data
 
     def _is_empty_result_expected(
-        self, data: FlextTypes.Core.Dict | FlextTypes.Core.List
+        self, data: FlextTypes.Core.Dict | FlextTypes.Core.List,
     ) -> bool:
         """Check if empty result is expected/normal based on OIC response metadata."""
         if isinstance(data, dict):
