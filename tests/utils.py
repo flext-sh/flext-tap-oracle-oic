@@ -448,7 +448,8 @@ class TestRunner:
         self.results: list[FlextTypes.Core.Dict] = []
 
     def run_tests_parallel(
-        self, test_functions: list[Callable[[], object]],
+        self,
+        test_functions: list[Callable[[], object]],
     ) -> FlextTypes.Core.List:
         """Run multiple test functions in parallel."""
         with concurrent.futures.ThreadPoolExecutor() as executor:

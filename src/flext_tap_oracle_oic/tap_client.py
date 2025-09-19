@@ -97,7 +97,8 @@ class OracleOICClient:
         self.connection_config = connection_config
         self.authenticator = authenticator
         self._api_client = FlextApiClient(
-            base_url=connection_config.api_base_url, timeout=connection_config.timeout,
+            base_url=connection_config.api_base_url,
+            timeout=connection_config.timeout,
         )
 
     async def _get_auth_headers(self) -> FlextResult[FlextTypes.Core.Headers]:
