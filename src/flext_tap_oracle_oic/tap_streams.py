@@ -9,7 +9,12 @@ from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
 
 from flext_api import FlextApiClient
-from flext_core import FlextExceptions as FlextServiceError, FlextLogger, FlextTypes
+from flext_core import (
+    FlextExceptions as FlextServiceError,
+    FlextLogger,
+    FlextResult,
+    FlextTypes,
+)
 from flext_meltano import FlextTapStream
 from flext_tap_oracle_oic.constants import (
     OIC_API_BASE_PATH,
@@ -57,7 +62,7 @@ class OICPaginator:
 
         """
         try:
-            data = response.json()
+            data: dict[str, object] = response.json()
 
             # Track response time for adaptive sizing
             if hasattr(response, "elapsed") and self._adaptive_sizing:
@@ -134,7 +139,7 @@ class OICBaseStream(FlextTapStream):
     """
 
     @property
-    def url_base(self) -> str:
+    def url_base(self: object) -> str:
         """Build base URL for Oracle OIC API requests with intelligent discovery.
 
         Returns:
@@ -177,18 +182,20 @@ class OICBaseStream(FlextTapStream):
         return base_url + OIC_API_BASE_PATH
 
     @property
-    def api_client(self) -> FlextApiClient:
+    def api_client(self: object) -> FlextApiClient:
         """Get authenticated API client from parent tap's OIC client."""
         # Access the Tap's OIC client for authenticated API client
         if hasattr(self, "tap") and hasattr(self.tap, "client"):
-            client_result = self.tap.client.get_authenticated_client()
+            client_result: FlextResult[object] = (
+                self.tap.client.get_authenticated_client()
+            )
             if client_result.success and client_result.data is not None:
                 return client_result.data
 
         # Fallback to creating new FlextApiClient
         return FlextApiClient()
 
-    def get_new_paginator(self) -> OICPaginator:
+    def get_new_paginator(self: object) -> OICPaginator:
         """Create new Oracle OIC paginator with configuration.
 
         Returns:
@@ -284,7 +291,7 @@ class OICBaseStream(FlextTapStream):
                 return
 
             try:
-                data = response.json()
+                data: dict[str, object] = response.json()
             except (ValueError, TypeError, KeyError):
                 self.logger.exception("Failed to parse JSON from %s", response.url)
                 if self.config.get("fail_on_parsing_errors", True):
@@ -369,8 +376,8 @@ class OICBaseStream(FlextTapStream):
     ) -> bool:
         """Check if empty result is expected/normal based on OIC response metadata."""
         if isinstance(data, dict):
-            items = data.get("items", [])
-            data_items = data.get("data", [])
+            items: list[object] = data.get("items", [])
+            data_items: dict[str, object] = data.get("data", [])
             return (
                 data.get("totalSize", 0) == 0
                 or data.get("count", 0) == 0
@@ -406,7 +413,7 @@ class OICBaseStream(FlextTapStream):
     def _handle_response_error(self, response: object) -> None:
         """Handle Oracle OIC API response errors with proper categorization."""
         try:
-            error_data = response.json()
+            error_data: dict[str, object] = response.json()
             error_message = error_data.get("message") or error_data.get("error")
         except (ValueError, TypeError, KeyError):
             error_message = response.text or f"HTTP {response.status_code}"

@@ -37,7 +37,7 @@ def setup_oic_tap(
     try:
         if config is None:
             # Create basic configuration dictionary
-            config = {
+            config: dict[str, object] = {
                 "oauth_client_id": os.getenv("OIC_CLIENT_ID", "your-client-id"),
                 "oauth_client_secret": os.getenv("OIC_CLIENT_SECRET", "your-secret"),
                 "oauth_token_url": os.getenv(
@@ -75,7 +75,7 @@ def create_oic_auth_config(
 
     """
     try:
-        config = OICAuthConfig(
+        config: dict[str, object] = OICAuthConfig(
             oauth_client_id=client_id,
             oauth_client_secret=SecretStr(client_secret),
             oauth_token_url=token_url,
@@ -106,7 +106,7 @@ def create_oic_connection_config(
 
     """
     try:
-        config = OICConnectionConfig(
+        config: dict[str, object] = OICConnectionConfig(
             base_url=base_url,
             api_version=cast("str", kwargs.get("api_version", "v1")),
             request_timeout=cast("int", kwargs.get("request_timeout", 30)),

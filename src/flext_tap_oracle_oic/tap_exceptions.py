@@ -47,19 +47,19 @@ class OICExceptionFactory:
 
 
 # Specific Oracle OIC exceptions
-class OICAuthenticationError(FlextExceptions._AuthenticationError):
+class OICAuthenticationError(FlextExceptions.AuthenticationError):
     """Oracle OIC authentication error."""
 
 
-class OICConnectionError(FlextExceptions._ConnectionError):
+class OICConnectionError(FlextExceptions.ConnectionError):
     """Oracle OIC connection error."""
 
 
-class OICValidationError(FlextExceptions._ValidationError):
+class OICValidationError(FlextExceptions.ValidationError):
     """Oracle OIC validation error."""
 
 
-class OICAPIError(FlextExceptions._ProcessingError):
+class OICAPIError(FlextExceptions.ProcessingError):
     """Oracle OIC API error."""
 
 
