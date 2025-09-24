@@ -69,7 +69,7 @@ class OICExtensionAuthenticator:
             if isinstance(response.body, dict):
                 token_data = response.body
             elif isinstance(response.body, str):
-                token_data = json.loads(response.body)
+                token_data: dict[str, object] = json.loads(response.body)
             else:
                 return FlextResult[str].fail("Empty or invalid OAuth response body")
 
@@ -103,7 +103,7 @@ class OracleOICClient:
 
     async def _get_auth_headers(self) -> FlextResult[FlextTypes.Core.Headers]:
         """Get authorization headers with OAuth2 token."""
-        token_result = await self.authenticator.get_access_token()
+        token_result: FlextResult[object] = await self.authenticator.get_access_token()
         if not token_result.success:
             return FlextResult[FlextTypes.Core.Headers].fail(
                 f"Failed to get access token: {token_result.error}",
@@ -115,7 +115,7 @@ class OracleOICClient:
 
     async def get(self, endpoint: str) -> FlextResult[object]:
         """Make authenticated GET request to OIC API."""
-        headers_result = await self._get_auth_headers()
+        headers_result: FlextResult[object] = await self._get_auth_headers()
         if not headers_result.success:
             return FlextResult[object].fail(
                 f"Failed to get auth headers: {headers_result.error}",
@@ -151,7 +151,7 @@ class OracleOICClient:
         data: FlextTypes.Core.Dict | None = None,
     ) -> FlextResult[object]:
         """Make authenticated POST request to OIC API."""
-        headers_result = await self._get_auth_headers()
+        headers_result: FlextResult[object] = await self._get_auth_headers()
         if not headers_result.success:
             return FlextResult[object].fail(
                 f"Failed to get auth headers: {headers_result.error}",
@@ -160,7 +160,9 @@ class OracleOICClient:
         try:
             url = f"{self.connection_config.api_base_url}/{endpoint.lstrip('/')}"
             # Convert data to string dict for FlextApiClient compatibility
-            json_data = {str(k): str(v) for k, v in data.items()} if data else None
+            json_data: dict[str, object] = (
+                {str(k): str(v) for k, v in data.items()} if data else None
+            )
             response_result = await self._api_client.post(
                 url,
                 headers=headers_result.data,
@@ -241,7 +243,7 @@ class TapOracleOIC(Tap):
         self._client: OracleOICClient | None = None
 
     @property
-    def client(self) -> OracleOICClient:
+    def client(self: object) -> OracleOICClient:
         """Get Oracle OIC client instance using flext-oracle-oic-ext."""
         if self._client is None:
             # Create connection config using correct field names
@@ -272,7 +274,7 @@ class TapOracleOIC(Tap):
             )
         return self._client
 
-    def discover_streams(self) -> Sequence[Stream]:
+    def discover_streams(self: object) -> Sequence[Stream]:
         """Discover available streams using consolidated stream registry."""
         logger.info("Discovering Oracle OIC streams using consolidated streams")
 
@@ -337,7 +339,7 @@ class TapOracleOIC(Tap):
             logger.info("Testing Oracle OIC connection")
 
             # Test authentication by making a simple API call
-            test_result = await self.client.get("integrations")
+            test_result: FlextResult[object] = await self.client.get("integrations")
 
             if test_result.success:
                 logger.info("Oracle OIC connection test successful")
@@ -363,7 +365,7 @@ async def main() -> int:
     if exit_code != 0:
         return exit_code
 
-    config = _build_config_from_env()
+    config: dict[str, object] = _build_config_from_env()
     config_typed: FlextTypes.Core.Dict = {
         k: v for k, v in config.items() if v is not None
     }
@@ -394,14 +396,16 @@ def _build_config_from_env() -> dict[str, str | None]:
 
 def _validate_and_setup_config() -> int:
     """Validate required configuration. Returns 0 for success, 1 for error."""
-    config = _build_config_from_env()
+    config: dict[str, object] = _build_config_from_env()
     required_config = [
         "oauth_client_id",
         "oauth_client_secret",
         "oauth_token_url",
         "oic_url",
     ]
-    missing_config = [key for key in required_config if not config.get(key)]
+    missing_config: dict[str, object] = [
+        key for key in required_config if not config.get(key)
+    ]
 
     if missing_config:
         logger.error("Missing required configuration:")
@@ -451,7 +455,7 @@ def _execute_discover_command(tap: TapOracleOIC) -> int:
 async def _execute_test_command(tap: TapOracleOIC) -> int:
     """Execute test command."""
     logger.info("Testing Oracle OIC connection")
-    result = await tap.test_connection()
+    result: FlextResult[object] = await tap.test_connection()
     return 0 if result.success else 1
 
 

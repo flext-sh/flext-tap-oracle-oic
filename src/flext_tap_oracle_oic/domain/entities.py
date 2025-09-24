@@ -13,6 +13,7 @@ from pydantic import ConfigDict, Field
 
 from flext_core import (
     FlextModels,
+    FlextResult,
     FlextTypes,
 )
 
@@ -51,7 +52,7 @@ class ConnectionStatus(StrEnum):
 class OICConnection(FlextModels):
     """OIC connection domain entity using flext-core patterns."""
 
-    model_config = ConfigDict(frozen=False)
+    model_config: dict[str, object] = ConfigDict(frozen=False)
 
     connection_id: str = Field(
         ...,
@@ -91,7 +92,7 @@ class OICConnection(FlextModels):
     created_at: datetime | None = Field(None, description="Creation timestamp")
     updated_at: datetime | None = Field(None, description="Last update timestamp")
 
-    def test_connection(self) -> None:
+    def test_connection(self: object) -> None:
         """Mark connection as tested."""
         self.last_tested = datetime.now(UTC)
         self.connection_status = ConnectionStatus.TESTED
@@ -99,13 +100,16 @@ class OICConnection(FlextModels):
     def mark_failed(self, error: str) -> None:
         """Mark connection as failed with error details."""
         self.connection_status = ConnectionStatus.FAILED
-        self.test_result = {"error": error, "timestamp": datetime.now(UTC).isoformat()}
+        self.test_result: FlextResult[object] = {
+            "error": error,
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
 
 
 class OICIntegration(FlextModels):
     """OIC integration domain entity using flext-core patterns."""
 
-    model_config = ConfigDict(frozen=False)
+    model_config: dict[str, object] = ConfigDict(frozen=False)
 
     integration_id: str = Field(
         ...,
@@ -153,12 +157,12 @@ class OICIntegration(FlextModels):
     created_at: datetime | None = Field(None, description="Creation timestamp")
     updated_at: datetime | None = Field(None, description="Last update timestamp")
 
-    def activate(self) -> None:
+    def activate(self: object) -> None:
         """Activate the integration."""
         self.integration_status = IntegrationStatus.ACTIVATED
         self.activated_at = datetime.now(UTC)
 
-    def deactivate(self) -> None:
+    def deactivate(self: object) -> None:
         """Deactivate the integration."""
         self.integration_status = IntegrationStatus.DEACTIVATED
         self.deactivated_at = datetime.now(UTC)
@@ -169,13 +173,13 @@ class OICIntegration(FlextModels):
         self.locked_at = datetime.now(UTC)
         self.integration_status = IntegrationStatus.LOCKED
 
-    def unlock(self) -> None:
+    def unlock(self: object) -> None:
         """Unlock the integration."""
         self.locked_by = None
         self.locked_at = None
 
     @property
-    def is_active(self) -> bool:
+    def is_active(self: object) -> bool:
         """Check if integration is active."""
         return self.integration_status == IntegrationStatus.ACTIVATED
 
@@ -183,7 +187,7 @@ class OICIntegration(FlextModels):
 class OICLookup(FlextModels):
     """OIC lookup table domain entity using flext-core patterns."""
 
-    model_config = ConfigDict(frozen=False)
+    model_config: dict[str, object] = ConfigDict(frozen=False)
 
     lookup_id: str = Field(..., min_length=1, description="OIC lookup identifier")
     lookup_name: str = Field(..., min_length=1, description="Lookup table name")
@@ -221,12 +225,12 @@ class OICLookup(FlextModels):
         self.row_count = row_count
         self.data_size_bytes = data_size
 
-    def record_import(self) -> None:
+    def record_import(self: object) -> None:
         """Record successful import."""
         self.last_imported = datetime.now(UTC)
 
     @property
-    def is_empty(self) -> bool:
+    def is_empty(self: object) -> bool:
         """Check if lookup is empty."""
         return self.row_count == 0
 
@@ -266,17 +270,17 @@ class OICMonitoringRecord(FlextModels):
     )
 
     @property
-    def successful(self) -> bool:
+    def successful(self: object) -> bool:
         """Check if execution was successful."""
         return self.execution_status.lower() in {"completed", "succeeded"}
 
     @property
-    def is_failed(self) -> bool:
+    def is_failed(self: object) -> bool:
         """Check if execution failed."""
         return self.execution_status.lower() in {"failed", "faulted", "aborted"}
 
     @property
-    def duration_seconds(self) -> float | None:
+    def duration_seconds(self: object) -> float | None:
         """Get duration in seconds."""
         return self.duration_ms / 1000.0 if self.duration_ms is not None else None
 
@@ -284,7 +288,7 @@ class OICMonitoringRecord(FlextModels):
 class OICProject(FlextModels):
     """OIC project domain entity using flext-core patterns."""
 
-    model_config = ConfigDict(frozen=False)
+    model_config: dict[str, object] = ConfigDict(frozen=False)
 
     project_id: str = Field(..., min_length=1, description="OIC project identifier")
     project_code: str = Field(..., min_length=1, description="Project code")
@@ -330,7 +334,7 @@ class OICProject(FlextModels):
         self.deployed_by = user
 
     @property
-    def total_resources(self) -> int:
+    def total_resources(self: object) -> int:
         """Get total number of resources in project."""
         return (
             len(self.integration_ids) + len(self.connection_ids) + len(self.lookup_ids)
@@ -375,14 +379,14 @@ class OICExecutionSummary(FlextModels):
     )
 
     @property
-    def success_rate(self) -> float:
+    def success_rate(self: object) -> float:
         """Calculate success rate percentage."""
         if self.total_executions == 0:
             return 0.0
         return (self.successful_executions / self.total_executions) * 100.0
 
     @property
-    def failure_rate(self) -> float:
+    def failure_rate(self: object) -> float:
         """Calculate failure rate percentage."""
         return 100.0 - self.success_rate
 

@@ -44,7 +44,7 @@ class OICAuthConfig(FlextModels.Config):
     token_url: HttpUrl = Field(..., description="OAuth2 token endpoint URL")
     audience: str = Field(..., description="OAuth2 audience/scope")
 
-    def validate_business_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self: object) -> FlextResult[None]:
         """Validate OAuth2 configuration business rules."""
         if not self.client_id.strip():
             return FlextResult[None].fail("OAuth2 client ID cannot be empty")
@@ -54,7 +54,7 @@ class OICAuthConfig(FlextModels.Config):
             return FlextResult[None].fail("OAuth2 audience cannot be empty")
         return FlextResult[None].ok(None)
 
-    def get_token_request_data(self) -> FlextTypes.Core.Headers:
+    def get_token_request_data(self: object) -> FlextTypes.Core.Headers:
         """Get OAuth2 token request data for client credentials flow."""
         return {
             "grant_type": "client_credentials",
@@ -92,7 +92,7 @@ class OICConnectionConfig(FlextModels.Config):
         description="API pagination size",
     )
 
-    def validate_business_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self: object) -> FlextResult[None]:
         """Validate connection configuration business rules."""
         if not self.api_version.strip():
             return FlextResult[None].fail("API version cannot be empty")
@@ -105,11 +105,11 @@ class OICConnectionConfig(FlextModels.Config):
         return FlextResult[None].ok(None)
 
     @property
-    def api_base_url(self) -> str:
+    def api_base_url(self: object) -> str:
         """Get full API base URL with version."""
         return f"{str(self.base_url).rstrip('/')}/ic/api/integration/{self.api_version}"
 
-    def get_headers(self) -> FlextTypes.Core.Headers:
+    def get_headers(self: object) -> FlextTypes.Core.Headers:
         """Get default headers for OIC API requests."""
         return {
             "Content-Type": "application/json",
@@ -167,7 +167,7 @@ class TapOracleOICConfig(FlextModels.Config):
         description="Start date for incremental extraction",
     )
 
-    def validate_business_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self: object) -> FlextResult[None]:
         """Validate Oracle OIC tap configuration business rules using FlextConfig.BaseModel pattern."""
         # Validate OAuth2 authentication configuration
         auth_validation = self.auth_config.validate_business_rules()
@@ -191,7 +191,7 @@ class TapOracleOICConfig(FlextModels.Config):
 
         return FlextResult[None].ok(None)
 
-    def _validate_stream_configuration(self) -> FlextResult[None]:
+    def _validate_stream_configuration(self: object) -> FlextResult[None]:
         """Validate stream configuration."""
         if not self.start_date:
             return FlextResult[None].ok(None)
@@ -208,7 +208,7 @@ class TapOracleOICConfig(FlextModels.Config):
 
         return FlextResult[None].ok(None)
 
-    def _validate_urls(self) -> FlextResult[None]:
+    def _validate_urls(self: object) -> FlextResult[None]:
         """Validate OAuth token URL and base URL."""
         try:
             token_host = str(self.oauth_token_url).split("//")[1].split("/")[0]
@@ -226,7 +226,7 @@ class TapOracleOICConfig(FlextModels.Config):
         return FlextResult[None].ok(None)
 
     @property
-    def auth_config(self) -> OICAuthConfig:
+    def auth_config(self: object) -> OICAuthConfig:
         """Get authentication configuration."""
         return OICAuthConfig(
             client_id=self.oauth_client_id,
@@ -236,7 +236,7 @@ class TapOracleOICConfig(FlextModels.Config):
         )
 
     @property
-    def connection_config(self) -> OICConnectionConfig:
+    def connection_config(self: object) -> OICConnectionConfig:
         """Get connection configuration."""
         return OICConnectionConfig(
             base_url=self.base_url,
@@ -246,7 +246,7 @@ class TapOracleOICConfig(FlextModels.Config):
             page_size=self.page_size,
         )
 
-    model_config = ConfigDict()
+    model_config: dict[str, object] = ConfigDict()
 
 
 # Main exports
