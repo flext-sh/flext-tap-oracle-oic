@@ -254,7 +254,7 @@ def sample_config_with_extended() -> object:
 class TestTapOracleOICWithFixtures:
     """Tests using fixtures."""
 
-    def test_tap_with_sample_config(self, sample_config: FlextTypes.Core.Dict) -> None:
+    def test_self(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test method."""
         """Test that the tap is initialized correctly with the sample config."""
         tap = TapOracleOIC(config=sample_config, validate_config=False)

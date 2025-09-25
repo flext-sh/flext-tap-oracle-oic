@@ -504,7 +504,7 @@ def mock_rate_limit_response() -> Mock:
 @pytest.fixture
 def large_integration_dataset() -> list[FlextTypes.Core.Dict]:
     """Large integration dataset for performance testing."""
-    integrations = []
+    integrations: list[dict[str, object]] = []
 
     for i in range(1000):
         integration = {
