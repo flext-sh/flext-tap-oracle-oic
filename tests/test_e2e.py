@@ -1,4 +1,4 @@
-# !/usr/bin/env python3
+#!/usr/bin/env python3
 
 """Comprehensive End-to-End tests for tap-oracle-oic.
 
@@ -73,8 +73,8 @@ class TestTapOracleOICE2E:
             msg: str = f"Expected {config['oic_url']}, got {tap.config['oic_url']}"
             raise AssertionError(msg)
 
-    def test_self(self, tap: TapOracleOIC) -> None:
-        """Test method."""
+    def test_stream_discovery_core_streams(self, tap: TapOracleOIC) -> None:
+        """Test discovery of core OIC streams."""
         catalog = tap.discover_streams()
 
         # Check that we discovered streams
@@ -91,8 +91,8 @@ class TestTapOracleOICE2E:
             raise AssertionError(msg)
         assert "lookups" in stream_names
 
-    def test_self(self, tap: TapOracleOIC) -> None:
-        """Test method."""
+    def test_catalog_dict_structure(self, tap: TapOracleOIC) -> None:
+        """Test catalog dictionary structure."""
         catalog_dict = tap.catalog_dict
 
         if "streams" not in catalog_dict:
@@ -110,8 +110,8 @@ class TestTapOracleOICE2E:
                 msg: str = f"Expected {'metadata'} in {stream}"
                 raise AssertionError(msg)
 
-    def test_self(self, tap: TapOracleOIC) -> None:
-        """Test method."""
+    def test_schema_validation_structure(self, tap: TapOracleOIC) -> None:
+        """Test schema validation and structure."""
         catalog = tap.discover_streams()
 
         for stream in catalog:
@@ -132,8 +132,7 @@ class TestTapOracleOICE2E:
                 msg: str = f"Expected {'id' in properties or 'name'} in {properties}"
                 raise AssertionError(msg)
 
-    def test_self(self, tap: TapOracleOIC) -> None:
-        """Test method."""
+    def test_live_connection_validation(self, tap: TapOracleOIC) -> None:
         """Test live connection with proper validation."""
         # Test authentication with proper error handling
         streams = tap.discover_streams()
@@ -188,8 +187,8 @@ class TestTapOracleOICE2E:
                 logger = FlextLogger(__name__)
                 logger.warning(f"Non-critical error in live connection test: {e}")
 
-    def test_self(self, tap: TapOracleOIC) -> None:
-        """Test method."""
+    def test_state_management_functionality(self, tap: TapOracleOIC) -> None:
+        """Test state management functionality."""
         # Create a test state
         test_state = {
             "bookmarks": {
@@ -208,9 +207,8 @@ class TestTapOracleOICE2E:
             msg: str = f"Expected {test_state}, got {tap.state}"
             raise AssertionError(msg)
 
-    def test_self(self, config_path: str) -> None:
-        """Test method."""
-        """Test CLI discovery."""
+    def test_cli_discovery_functionality(self, config_path: str) -> None:
+        """Test CLI discovery functionality."""
         python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
 
         async def _run(
@@ -275,8 +273,8 @@ class TestTapOracleOICE2E:
         with pytest.raises(ConfigValidationError):
             TapOracleOIC(config={"base_url": "not-a-url"})
 
-    def test_self(self, tap: TapOracleOIC) -> None:
-        """Test method."""
+    def test_stream_selection_catalog(self, tap: TapOracleOIC) -> None:
+        """Test stream selection and catalog management."""
         catalog = tap.discover_streams()
 
         # Create a catalog with only selected streams
@@ -323,9 +321,8 @@ class TestTapOracleOICE2E:
         # Should handle gracefully without crashing
         assert isinstance(streams, list)
 
-    def test_self(self, tap: TapOracleOIC) -> None:
-        """Test method."""
-        """Test pagination handling."""
+    def test_pagination_handling_functionality(self, tap: TapOracleOIC) -> None:
+        """Test pagination handling functionality."""
         # Mock a paginated response
         mock_response = Mock()
         mock_response.json.return_value = {
@@ -341,9 +338,8 @@ class TestTapOracleOICE2E:
         streams = tap.discover_streams()
         assert isinstance(streams, list)
 
-    def test_self(self, tap: TapOracleOIC) -> None:
-        """Test method."""
-        """Test data transformation."""
+    def test_data_transformation_handling(self, tap: TapOracleOIC) -> None:
+        """Test data transformation handling."""
         catalog = tap.discover_streams()
 
         for stream in catalog:
@@ -357,9 +353,8 @@ class TestTapOracleOICE2E:
                         msg: str = f"Expected {'type' in prop_schema or 'anyOf'} in {prop_schema}"
                         raise AssertionError(msg)
 
-    def test_self(self, config_path: str, tmp_path: Path) -> None:
-        """Test method."""
-        """Test full extraction flow."""
+    def test_full_extraction_flow_e2e(self, config_path: str, tmp_path: Path) -> None:
+        """Test full extraction flow end-to-end."""
         # 1. Run discovery
         catalog_file = tmp_path / "catalog.json"
         python_exe = shutil.which("python3") or shutil.which("python") or sys.executable

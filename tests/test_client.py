@@ -59,8 +59,7 @@ class TestOracleOICClient:
             msg: str = f"Expected {client_config['oauth_client_secret']}, got {client.oauth_client_secret}"
             raise AssertionError(msg)
 
-    def test_self(self, client: OracleOICClient) -> None:
-        """Test method."""
+    def test_client_session_configuration(self, client: OracleOICClient) -> None:
         """Test client session is properly configured."""
         assert hasattr(client, "session")
         assert isinstance(client.session, requests.Session)
@@ -69,8 +68,7 @@ class TestOracleOICClient:
         adapter = client.session.get_adapter("https://")
         assert adapter is not None
 
-    def test_self(self, client: OracleOICClient) -> None:
-        """Test method."""
+    def test_authentication_headers_structure(self, client: OracleOICClient) -> None:
         """Test authentication headers structure."""
         with contextlib.suppress(Exception):
             # Expected if no valid token available
@@ -170,8 +168,7 @@ class TestOracleOICClient:
             raise AssertionError(msg)
         assert client.base_url == "https://test.example.com"
 
-    def test_self(self, client: OracleOICClient) -> None:
-        """Test method."""
+    def test_session_retry_configuration(self, client: OracleOICClient) -> None:
         """Test session retry configuration."""
         session = client.session
 

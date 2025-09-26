@@ -10,7 +10,7 @@ import json
 import os
 import sys
 from collections.abc import Sequence
-from typing import ClassVar, cast
+from typing import ClassVar, cast, override
 
 from flext_api import FlextApiClient
 from flext_core import FlextLogger, FlextResult, FlextTypes
@@ -38,6 +38,9 @@ logger = FlextLogger(__name__)
 class OICExtensionAuthenticator:
     """Real Oracle OIC OAuth2 authenticator implementation."""
 
+    @override
+    @override
+    @override
     def __init__(self, auth_config: OICAuthConfig) -> None:
         """Initialize authenticator with OAuth2 configuration."""
         self.auth_config = auth_config
@@ -88,6 +91,9 @@ class OICExtensionAuthenticator:
 class OracleOICClient:
     """Real Oracle Integration Cloud API client implementation."""
 
+    @override
+    @override
+    @override
     def __init__(
         self,
         connection_config: OICConnectionConfig,
@@ -205,7 +211,7 @@ class TapOracleOIC(Tap):
             "oauth_client_secret": {
                 "type": "string",
                 "description": "OAuth2 client secret",
-                "secret": True,
+                "secret": "True",
             },
             "oauth_token_url": {"type": "string", "description": "OAuth2 token URL"},
             "oic_url": {"type": "string", "description": "OIC instance URL"},
@@ -223,6 +229,9 @@ class TapOracleOIC(Tap):
         ],
     }
 
+    @override
+    @override
+    @override
     def __init__(
         self,
         *,
@@ -408,9 +417,9 @@ def _validate_and_setup_config() -> int:
     ]
 
     if missing_config:
-        logger.error("Missing required configuration:")
+        logger.error("Missing required configuration: ")
         for key in missing_config:
-            logger.error("  - %s (env var: TAP_ORACLE_OIC_%s)", key, key.upper())
+            logger.error(f"{key} (env var: TAP_ORACLE_OIC_{key.upper()})")
         return 1
 
     return 0

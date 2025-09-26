@@ -1,3 +1,7 @@
+"""Module docstring."""
+
+from __future__ import annotations
+
 """Oracle Integration Cloud stream definitions - PEP8 reorganized.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
@@ -16,12 +20,7 @@ from flext_core import (
     FlextTypes,
 )
 from flext_meltano import FlextTapStream
-from flext_tap_oracle_oic.constants import (
-    OIC_API_BASE_PATH,
-    OIC_B2B_API_PATH,
-    OIC_MONITORING_API_PATH,
-    OIC_PROCESS_API_PATH,
-)
+from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
 
 # Constants for paginator and response tracking
 RESPONSE_TIME_HISTORY_SIZE = 10
@@ -43,6 +42,7 @@ class OICPaginator:
     - Response time tracking and optimization
     """
 
+    @override
     def __init__(self, start_value: int = 0, page_size: int = 100) -> None:
         """Initialize paginator with starting offset and page size."""
         super().__init__(start_value, page_size)
@@ -172,14 +172,16 @@ class OICBaseStream(FlextTapStream):
             return base_url + str(self.api_path)
         if hasattr(self, "api_category"):
             api_paths = {
-                "core": OIC_API_BASE_PATH,
-                "monitoring": OIC_MONITORING_API_PATH,
-                "b2b": OIC_B2B_API_PATH,
-                "process": OIC_PROCESS_API_PATH,
+                "core": FlextTapOracleOicConstants.OIC_API_BASE_PATH,
+                "monitoring": FlextTapOracleOicConstants.OIC_MONITORING_API_PATH,
+                "b2b": FlextTapOracleOicConstants.OIC_B2B_API_PATH,
+                "process": FlextTapOracleOicConstants.OIC_PROCESS_API_PATH,
             }
-            return base_url + api_paths.get(self.api_category, OIC_API_BASE_PATH)
+            return base_url + api_paths.get(
+                self.api_category, FlextTapOracleOicConstants.OIC_API_BASE_PATH
+            )
 
-        return base_url + OIC_API_BASE_PATH
+        return base_url + FlextTapOracleOicConstants.OIC_API_BASE_PATH
 
     @property
     def api_client(self: object) -> FlextApiClient:

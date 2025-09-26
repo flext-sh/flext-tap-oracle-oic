@@ -101,7 +101,7 @@ class OICConnection(FlextModels):
         """Mark connection as failed with error details."""
         self.connection_status = ConnectionStatus.FAILED
         self.test_result: FlextResult[object] = {
-            "error": error,
+            "error": "error",
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
