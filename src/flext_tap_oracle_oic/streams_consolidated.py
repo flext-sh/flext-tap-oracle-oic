@@ -557,19 +557,19 @@ class MetricsStream(OICBaseStream):
 
 ALL_STREAMS = {
     # Core business streams
-    "integrations": IntegrationsStream,
-    "connections": ConnectionsStream,
-    "packages": PackagesStream,
-    "lookups": LookupsStream,
+    "integrations": "IntegrationsStream",
+    "connections": "ConnectionsStream",
+    "packages": "PackagesStream",
+    "lookups": "LookupsStream",
     # Infrastructure streams
-    "libraries": LibrariesStream,
-    "certificates": CertificatesStream,
-    "adapters": AdaptersStream,
+    "libraries": "LibrariesStream",
+    "certificates": "CertificatesStream",
+    "adapters": "AdaptersStream",
     # Extended business streams
-    "projects": ProjectsStream,
+    "projects": "ProjectsStream",
     # Monitoring streams
-    "executions": ExecutionsStream,
-    "metrics": MetricsStream,
+    "executions": "ExecutionsStream",
+    "metrics": "MetricsStream",
 }
 
 CORE_STREAMS = ["integrations", "connections", "packages", "lookups", "libraries"]

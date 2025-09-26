@@ -93,23 +93,6 @@ class FlextOracleOicConstants(FlextConstants):
     }
 
 
-# Legacy constants for backward compatibility
-OIC_API_BASE_PATH = FlextOracleOicConstants.OIC_API_BASE_PATH
-OIC_MONITORING_API_PATH = FlextOracleOicConstants.OIC_MONITORING_API_PATH
-OIC_DESIGNTIME_API_PATH = FlextOracleOicConstants.OIC_DESIGNTIME_API_PATH
-OIC_PROCESS_API_PATH = FlextOracleOicConstants.OIC_PROCESS_API_PATH
-OIC_B2B_API_PATH = FlextOracleOicConstants.OIC_B2B_API_PATH
-OIC_ENVIRONMENT_API_PATH = FlextOracleOicConstants.OIC_ENVIRONMENT_API_PATH
-OIC_ENDPOINTS = FlextOracleOicConstants.OIC_ENDPOINTS
-
-
 __all__: FlextTypes.Core.StringList = [
-    "OIC_API_BASE_PATH",
-    "OIC_B2B_API_PATH",
-    "OIC_DESIGNTIME_API_PATH",
-    "OIC_ENDPOINTS",
-    "OIC_ENVIRONMENT_API_PATH",
-    "OIC_MONITORING_API_PATH",
-    "OIC_PROCESS_API_PATH",
     "FlextOracleOicConstants",
 ]

@@ -130,8 +130,7 @@ class TestOICOAuth2Authenticator:
             msg: str = f"Expected {'client_credentials'}, got {payload['grant_type']}"
             raise AssertionError(msg)
 
-    def test_self(self, mock_stream: Mock) -> None:
-        """Test method."""
+    def test_authenticator_missing_config_handling(self, mock_stream: Mock) -> None:
         """Test authenticator handles missing config properly."""
         # Test with missing oauth_endpoint
         mock_stream.config = {
@@ -178,8 +177,9 @@ class TestOICOAuth2Authenticator:
         with pytest.raises((requests.RequestException, ValueError, AttributeError)):
             authenticator.update_access_token()
 
-    def test_self(self, authenticator: OICOAuth2Authenticator) -> None:
-        """Test method."""
+    def test_oauth_scope_configuration(
+        self, authenticator: OICOAuth2Authenticator
+    ) -> None:
         """Test OAuth scope configuration."""
         payload = authenticator.oauth_request_payload
 

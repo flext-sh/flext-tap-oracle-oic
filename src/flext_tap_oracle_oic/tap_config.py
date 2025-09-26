@@ -7,7 +7,7 @@ This module implements ALL configuration-related functionality using flext-core 
 - Discovery and extraction configuration with enterprise patterns
 
 Design: Uses real implementation with flext-core integration:
-- flext-core: FlextConfig, FlextModels for configuration patterns
+- flext-core: "FlextConfig", FlextModels for configuration patterns
 - Pydantic: Real data validation and environment integration
 - OAuth2: Real authentication flow implementation
 
@@ -72,7 +72,7 @@ class OICConnectionConfig(FlextModels.Config):
     """
 
     base_url: HttpUrl = Field(..., description="OIC instance base URL")
-    api_version: str = Field(default="v1", description="OIC API version")
+    api_version: str = Field(default=v1, description="OIC API version")
     timeout: int = Field(
         default=30,
         ge=1,
@@ -137,7 +137,7 @@ class TapOracleOICConfig(FlextModels.Config):
 
     # Connection configuration
     base_url: HttpUrl = Field(..., description="OIC instance base URL")
-    api_version: str = Field(default="v1", description="OIC API version")
+    api_version: str = Field(default=v1, description="OIC API version")
     timeout: int = Field(
         default=30,
         ge=1,
