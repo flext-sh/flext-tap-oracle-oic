@@ -11,7 +11,9 @@ import importlib.metadata
 
 from flext_core import FlextLogger, FlextModels, FlextResult, FlextTypes
 from flext_meltano import FlextMeltanoBridge, FlextMeltanoConfig, FlextMeltanoService
-from flext_tap_oracle_oic.models import OICIntegration
+
+# Standardized [Project]Models pattern
+from flext_tap_oracle_oic.models import FlextTapOracleOicModels
 from flext_tap_oracle_oic.simple_api import setup_oic_tap as create_oic_tap
 from flext_tap_oracle_oic.tap_client import OracleOICClient, TapOracleOIC
 from flext_tap_oracle_oic.tap_config import OICAuthConfig, OICConnectionConfig
@@ -24,6 +26,9 @@ from flext_tap_oracle_oic.tap_exceptions import (
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
 
 try:
+    # Standardized [Project]Utilities pattern
+    from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
+
     __version__ = importlib.metadata.version("flext-tap-oracle-oic")
 except importlib.metadata.PackageNotFoundError:
     __version__ = "0.9.0"
@@ -31,6 +36,7 @@ except importlib.metadata.PackageNotFoundError:
 __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 
 __all__: FlextTypes.Core.StringList = [
+    # Note: FlextTapOracleOicUtilities should be added to __all__ list above
     # FLEXT ecosystem integration
     "FlextLogger",
     # Meltano integration
@@ -39,6 +45,9 @@ __all__: FlextTypes.Core.StringList = [
     "FlextMeltanoService",
     "FlextModels",
     "FlextResult",
+    # Standardized [Project]Models pattern
+    "FlextTapOracleOicModels",
+    "FlextTapOracleOicUtilities",
     "FlextTypes",
     # Exceptions
     "OICAPIError",
@@ -48,8 +57,6 @@ __all__: FlextTypes.Core.StringList = [
     "OICBaseStream",
     "OICConnectionConfig",
     "OICConnectionError",
-    # Models
-    "OICIntegration",
     "OICValidationError",
     "OracleOICClient",
     # Core tap functionality

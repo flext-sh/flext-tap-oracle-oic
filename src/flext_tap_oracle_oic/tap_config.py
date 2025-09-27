@@ -20,8 +20,8 @@ from __future__ import annotations
 from pydantic import ConfigDict, Field, HttpUrl
 
 from flext_core import (
+    FlextConfig,
     FlextLogger,
-    FlextModels,
     FlextResult,
     FlextTypes,
 )
@@ -32,7 +32,7 @@ logger = FlextLogger(__name__)
 MIN_DATE_LENGTH = 10  # Minimum length for YYYY-MM-DD format
 
 
-class OICAuthConfig(FlextModels.Config):
+class OICAuthConfig(FlextConfig):
     """Oracle Integration Cloud OAuth2 authentication configuration.
 
     Real implementation of OAuth2/IDCS authentication configuration
@@ -64,7 +64,7 @@ class OICAuthConfig(FlextModels.Config):
         }
 
 
-class OICConnectionConfig(FlextModels.Config):
+class OICConnectionConfig(FlextConfig):
     """Oracle Integration Cloud connection configuration.
 
     Real implementation of OIC connection parameters with proper
@@ -72,7 +72,7 @@ class OICConnectionConfig(FlextModels.Config):
     """
 
     base_url: HttpUrl = Field(..., description="OIC instance base URL")
-    api_version: str = Field(default=v1, description="OIC API version")
+    api_version: str = Field(default="v1", description="OIC API version")
     timeout: int = Field(
         default=30,
         ge=1,
@@ -118,7 +118,7 @@ class OICConnectionConfig(FlextModels.Config):
         }
 
 
-class TapOracleOICConfig(FlextModels.Config):
+class TapOracleOICConfig(FlextConfig):
     """Complete Tap Oracle OIC configuration combining auth and connection.
 
     Real configuration implementation using FlextConfig.BaseModel patterns
@@ -137,7 +137,7 @@ class TapOracleOICConfig(FlextModels.Config):
 
     # Connection configuration
     base_url: HttpUrl = Field(..., description="OIC instance base URL")
-    api_version: str = Field(default=v1, description="OIC API version")
+    api_version: str = Field(default="v1", description="OIC API version")
     timeout: int = Field(
         default=30,
         ge=1,
