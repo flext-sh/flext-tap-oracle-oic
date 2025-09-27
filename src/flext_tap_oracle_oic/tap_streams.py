@@ -11,6 +11,7 @@ SPDX-License-Identifier: MIT
 import re
 from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
+from typing import override
 
 from flext_api import FlextApiClient
 from flext_core import (
