@@ -39,8 +39,6 @@ class OICExtensionAuthenticator:
     """Real Oracle OIC OAuth2 authenticator implementation."""
 
     @override
-    @override
-    @override
     def __init__(self, auth_config: OICAuthConfig) -> None:
         """Initialize authenticator with OAuth2 configuration."""
         self.auth_config = auth_config
@@ -91,8 +89,6 @@ class OICExtensionAuthenticator:
 class OracleOICClient:
     """Real Oracle Integration Cloud API client implementation."""
 
-    @override
-    @override
     @override
     def __init__(
         self,
@@ -229,8 +225,6 @@ class TapOracleOIC(Tap):
         ],
     }
 
-    @override
-    @override
     @override
     def __init__(
         self,
