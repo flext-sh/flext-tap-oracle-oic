@@ -16,7 +16,12 @@ from flext_meltano import FlextMeltanoBridge, FlextMeltanoConfig, FlextMeltanoSe
 from flext_tap_oracle_oic.models import FlextTapOracleOicModels
 from flext_tap_oracle_oic.simple_api import setup_oic_tap as create_oic_tap
 from flext_tap_oracle_oic.tap_client import OracleOICClient, TapOracleOIC
-from flext_tap_oracle_oic.tap_config import OICAuthConfig, OICConnectionConfig
+from flext_tap_oracle_oic.tap_config import (
+    FlextTapOracleOicConfig,
+    OICAuthConfig,
+    OICConnectionConfig,
+    TapOracleOICConfig,  # Legacy alias
+)
 from flext_tap_oracle_oic.tap_exceptions import (
     OICAPIError,
     OICAuthenticationError,
@@ -45,13 +50,14 @@ __all__: FlextTypes.Core.StringList = [
     "FlextMeltanoService",
     "FlextModels",
     "FlextResult",
+    # Configuration
+    "FlextTapOracleOicConfig",
     # Standardized [Project]Models pattern
     "FlextTapOracleOicModels",
     "FlextTapOracleOicUtilities",
     "FlextTypes",
     # Exceptions
     "OICAPIError",
-    # Configuration
     "OICAuthConfig",
     "OICAuthenticationError",
     "OICBaseStream",
@@ -61,6 +67,7 @@ __all__: FlextTypes.Core.StringList = [
     "OracleOICClient",
     # Core tap functionality
     "TapOracleOIC",
+    "TapOracleOICConfig",  # Legacy alias
     # Version info
     "__version__",
     "__version_info__",

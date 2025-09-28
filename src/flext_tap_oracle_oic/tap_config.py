@@ -17,7 +17,8 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from pydantic import ConfigDict, Field, HttpUrl
+from pydantic import Field, HttpUrl
+from pydantic_settings import SettingsConfigDict
 
 from flext_core import (
     FlextConfig,
@@ -118,11 +119,12 @@ class OICConnectionConfig(FlextConfig):
         }
 
 
-class TapOracleOICConfig(FlextConfig):
+class FlextTapOracleOicConfig(FlextConfig):
     """Complete Tap Oracle OIC configuration combining auth and connection.
 
     Real configuration implementation using FlextConfig.BaseModel patterns
     with comprehensive validation and business rule enforcement.
+    Enhanced singleton pattern for consistent configuration management.
     """
 
     # Authentication configuration
@@ -166,6 +168,63 @@ class TapOracleOICConfig(FlextConfig):
         default=None,
         description="Start date for incremental extraction",
     )
+
+    model_config = SettingsConfigDict(
+        env_prefix="FLEXT_TAP_ORACLE_OIC_",
+        case_sensitive=False,
+        extra="ignore",
+        str_strip_whitespace=True,
+        validate_assignment=True,
+        arbitrary_types_allowed=True,
+        frozen=False,
+    )
+
+    @classmethod
+    def get_global_instance(cls) -> Self:
+        """Get the global singleton instance using enhanced FlextConfig pattern."""
+        return cls.get_or_create_shared_instance(project_name="flext-tap-oracle-oic")
+
+    @classmethod
+    def create_for_development(cls, **overrides: object) -> Self:
+        """Create configuration for development environment."""
+        dev_overrides: dict[str, object] = {
+            "timeout": 60,  # Longer timeout for development
+            "max_retries": 5,  # More retries for debugging
+            "page_size": 50,  # Smaller pages for easier debugging
+            "include_extended": True,  # Include extended streams for testing
+            **overrides,
+        }
+        return cls.get_or_create_shared_instance(
+            project_name="flext-tap-oracle-oic", **dev_overrides
+        )
+
+    @classmethod
+    def create_for_production(cls, **overrides: object) -> Self:
+        """Create configuration for production environment."""
+        prod_overrides: dict[str, object] = {
+            "timeout": 30,  # Standard timeout for production
+            "max_retries": 3,  # Conservative retries for production
+            "page_size": 100,  # Optimized page size for production
+            "include_extended": False,  # Only core streams in production
+            **overrides,
+        }
+        return cls.get_or_create_shared_instance(
+            project_name="flext-tap-oracle-oic", **prod_overrides
+        )
+
+    @classmethod
+    def create_for_testing(cls, **overrides: object) -> Self:
+        """Create configuration for testing environment."""
+        test_overrides: dict[str, object] = {
+            "timeout": 10,  # Short timeout for tests
+            "max_retries": 1,  # Minimal retries for fast tests
+            "page_size": 10,  # Small pages for test data
+            "include_extended": True,  # Test all streams
+            **overrides,
+        }
+        return cls.get_or_create_shared_instance(
+            project_name="flext-tap-oracle-oic", **test_overrides
+        )
 
     def validate_business_rules(self: object) -> FlextResult[None]:
         """Validate Oracle OIC tap configuration business rules using FlextConfig.BaseModel pattern."""
@@ -246,12 +305,16 @@ class TapOracleOICConfig(FlextConfig):
             page_size=self.page_size,
         )
 
-    model_config: dict[str, object] = ConfigDict()
 
+# Backward compatibility aliases
+TapOracleOICConfig = FlextTapOracleOicConfig
+Config = FlextTapOracleOicConfig
 
 # Main exports
 __all__: FlextTypes.Core.StringList = [
+    "Config",  # Short alias
+    "FlextTapOracleOicConfig",
     "OICAuthConfig",
     "OICConnectionConfig",
-    "TapOracleOICConfig",
+    "TapOracleOICConfig",  # Legacy alias
 ]
