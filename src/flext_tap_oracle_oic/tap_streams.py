@@ -147,12 +147,23 @@ class OICBaseStream(FlextTapStream):
             Base URL with appropriate OIC API endpoint for stream type.
 
         """
+        # ZERO TOLERANCE FIX: Use FlextTapOracleOicUtilities for URL operations
+        from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
+
+        utilities = FlextTapOracleOicUtilities()
+
         base_url = str(
             self.config.get("base_url") or self.config.get("oic_url", ""),
         ).rstrip("/")
 
         if not base_url:
             msg = "Base URL is required but not configured"
+            raise ValueError(msg)
+
+        # ZERO TOLERANCE FIX: Use utilities for endpoint validation
+        validation_result = utilities.OicApiProcessing.validate_oic_endpoint(base_url)
+        if validation_result.is_failure:
+            msg = f"Invalid OIC endpoint: {validation_result.error}"
             raise ValueError(msg)
 
         # Auto-detect region from URL pattern

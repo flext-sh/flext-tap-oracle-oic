@@ -18,6 +18,7 @@ from flext_tap_oracle_oic.config import (
 
 # Standardized [Project]Models pattern
 from flext_tap_oracle_oic.models import FlextTapOracleOicModels
+from flext_tap_oracle_oic.protocols import FlextTapOracleOicProtocols
 from flext_tap_oracle_oic.simple_api import setup_oic_tap as create_oic_tap
 from flext_tap_oracle_oic.tap_client import OracleOICClient, TapOracleOIC
 from flext_tap_oracle_oic.tap_exceptions import (
@@ -51,6 +52,7 @@ __all__: FlextTypes.Core.StringList = [
     "FlextTapOracleOicConfig",
     # Standardized [Project]Models pattern
     "FlextTapOracleOicModels",
+    "FlextTapOracleOicProtocols",
     "FlextTapOracleOicUtilities",
     "FlextTypes",
     # Exceptions

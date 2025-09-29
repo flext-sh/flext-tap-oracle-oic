@@ -130,7 +130,7 @@ class FlextTapOracleOicConfig(FlextConfig):
     )
 
     max_parallel_streams: int = Field(
-        default=3,
+        default=FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
         ge=1,
         le=FlextConstants.Container.MAX_WORKERS,
         description="Maximum parallel streams for extraction",
@@ -284,8 +284,8 @@ class FlextTapOracleOicConfig(FlextConfig):
                 return FlextResult[None].fail("Page size must be positive")
 
             # Validate performance settings
-            max_safe_parallel = 8
-            max_safe_batch = 50000
+            max_safe_parallel = FlextConstants.Container.MAX_WORKERS
+            max_safe_batch = FlextConstants.Performance.BatchProcessing.MAX_ITEMS // 2
             if (
                 self.max_parallel_streams > max_safe_parallel
                 and self.batch_size > max_safe_batch
@@ -369,25 +369,28 @@ class FlextTapOracleOicConfig(FlextConfig):
 
         if environment == "production":
             env_overrides.update({
-                "timeout": 30,
-                "max_retries": 3,
-                "page_size": 100,
+                "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
+                "max_retries": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
+                "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
+                // 10,
                 "include_extended": False,
-                "max_parallel_streams": 3,
+                "max_parallel_streams": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
             })
         elif environment == "development":
             env_overrides.update({
-                "timeout": 60,
+                "timeout": FlextConstants.Network.DEFAULT_TIMEOUT * 2,
                 "max_retries": 1,
-                "page_size": 50,
+                "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
+                // 20,
                 "include_extended": True,
                 "max_parallel_streams": 1,
             })
         elif environment == "staging":
             env_overrides.update({
-                "timeout": 45,
+                "timeout": FlextConstants.Network.DEFAULT_TIMEOUT + 15,
                 "max_retries": 2,
-                "page_size": 75,
+                "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
+                // 13,
                 "include_extended": False,
                 "max_parallel_streams": 2,
             })
@@ -408,9 +411,9 @@ class FlextTapOracleOicConfig(FlextConfig):
     def create_for_development(cls, **overrides: object) -> Self:
         """Create configuration for development environment."""
         dev_overrides: dict[str, object] = {
-            "timeout": 60,
+            "timeout": FlextConstants.Network.DEFAULT_TIMEOUT * 2,
             "max_retries": 1,
-            "page_size": 50,
+            "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 20,
             "include_extended": True,
             "max_parallel_streams": 1,
             **overrides,
@@ -423,11 +426,11 @@ class FlextTapOracleOicConfig(FlextConfig):
     def create_for_production(cls, **overrides: object) -> Self:
         """Create configuration for production environment."""
         prod_overrides: dict[str, object] = {
-            "timeout": 30,
-            "max_retries": 3,
-            "page_size": 100,
+            "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
+            "max_retries": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
+            "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 10,
             "include_extended": False,
-            "max_parallel_streams": 3,
+            "max_parallel_streams": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
             **overrides,
         }
         return cls.get_or_create_shared_instance(
@@ -438,9 +441,9 @@ class FlextTapOracleOicConfig(FlextConfig):
     def create_for_testing(cls, **overrides: object) -> Self:
         """Create configuration for testing environment."""
         test_overrides: dict[str, object] = {
-            "timeout": 10,
+            "timeout": FlextConstants.Network.DEFAULT_TIMEOUT // 3,
             "max_retries": 1,
-            "page_size": 10,
+            "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 100,
             "include_extended": True,
             "max_parallel_streams": 1,
             **overrides,
