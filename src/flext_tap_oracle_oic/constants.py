@@ -14,17 +14,25 @@ from flext_core import FlextConstants, FlextTypes
 
 
 class FlextOracleOicConstants(FlextConstants):
-    """FLEXT Oracle OIC TAP constants extending flext-core platform constants."""
+    """FLEXT Oracle OIC TAP constants extending flext-core platform constants.
 
-    # Oracle OIC API Constants (defined locally as not available in flext-core)
-    OIC_API_BASE_PATH = "/ic/api/integration/v1"
+    Composes with FlextOracleOicExtConstants to avoid duplication and ensure consistency.
+    """
+
+    # Import Oracle OIC Extension constants from flext-oracle-oic-ext (composition pattern)
+    from flext_oracle_oic_ext.constants import FlextOracleOicExtConstants
+
+    # Oracle OIC API Constants using composition
+    OIC_API_BASE_PATH = FlextOracleOicExtConstants.API.ENDPOINT_INTEGRATIONS.replace(
+        "/integrations", ""
+    )
     OIC_MONITORING_API_PATH = "/ic/api/integration/v1/monitoring"
     OIC_DESIGNTIME_API_PATH = "/ic/api/integration/v1/designtime"
     OIC_PROCESS_API_PATH = "/ic/api/integration/v1/processes"
     OIC_B2B_API_PATH = "/ic/api/integration/v1/b2b"
     OIC_ENVIRONMENT_API_PATH = "/ic/api/integration/v1/environments"
 
-    # Official OIC REST API Endpoints
+    # Official OIC REST API Endpoints using composition where appropriate
     OIC_ENDPOINTS: ClassVar[FlextTypes.Core.Headers] = {
         # Core Integration APIs
         "integrations": "/integrations",
@@ -91,6 +99,33 @@ class FlextOracleOicConstants(FlextConstants):
         # Lookup details
         "lookup_usage": "/lookups/{name}/usage",
     }
+
+    class Connection:
+        """OIC connection configuration."""
+
+        DEFAULT_TIMEOUT = FlextOracleOicExtConstants.OIC.DEFAULT_TIMEOUT
+        DEFAULT_MAX_RETRIES = FlextOracleOicExtConstants.OIC.DEFAULT_MAX_RETRIES
+        DEFAULT_VERIFY_SSL = FlextOracleOicExtConstants.OIC.DEFAULT_VERIFY_SSL
+
+    class Processing:
+        """OIC tap processing configuration."""
+
+        DEFAULT_PAGE_SIZE = FlextOracleOicExtConstants.OIC.DEFAULT_PAGE_SIZE
+        MAX_PAGE_SIZE = FlextOracleOicExtConstants.OIC.MAX_PAGE_SIZE
+        MIN_PAGE_SIZE = FlextOracleOicExtConstants.OIC.MIN_PAGE_SIZE
+
+    class Auth:
+        """OIC authentication configuration."""
+
+        DEFAULT_OAUTH_CLIENT_ID = (
+            FlextOracleOicExtConstants.Auth.DEFAULT_OAUTH_CLIENT_ID
+        )
+        DEFAULT_OAUTH_TOKEN_URL = (
+            FlextOracleOicExtConstants.Auth.DEFAULT_OAUTH_TOKEN_URL
+        )
+        DEFAULT_TOKEN_EXPIRY_SECONDS = (
+            FlextOracleOicExtConstants.Auth.DEFAULT_TOKEN_EXPIRY_SECONDS
+        )
 
 
 __all__: FlextTypes.Core.StringList = [

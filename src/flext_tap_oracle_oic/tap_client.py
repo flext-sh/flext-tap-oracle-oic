@@ -100,6 +100,11 @@ class OracleOICClient:
             timeout=config.timeout,
         )
 
+        # ZERO TOLERANCE FIX: Use FlextTapOracleOicUtilities for ALL business operations
+        from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
+
+        self._utilities = FlextTapOracleOicUtilities()
+
     async def _get_auth_headers(self) -> FlextResult[FlextTypes.Core.Headers]:
         """Get authorization headers with OAuth2 token."""
         token_result: FlextResult[object] = await self.authenticator.get_access_token()
@@ -114,6 +119,13 @@ class OracleOICClient:
 
     async def get(self, endpoint: str) -> FlextResult[object]:
         """Make authenticated GET request to OIC API."""
+        # ZERO TOLERANCE FIX: Use utilities for URL validation and building
+        url_result = self._utilities.OicApiProcessing.build_oic_api_url(
+            self.config.get_api_base_url(), endpoint
+        )
+        if url_result.is_failure:
+            return FlextResult[object].fail(f"URL building failed: {url_result.error}")
+
         headers_result: FlextResult[object] = await self._get_auth_headers()
         if not headers_result.success:
             return FlextResult[object].fail(
@@ -121,7 +133,7 @@ class OracleOICClient:
             )
 
         try:
-            url = f"{self.config.get_api_base_url()}/{endpoint.lstrip('/')}"
+            url = url_result.unwrap()
             response_result = await self._api_client.get(
                 url,
                 headers=headers_result.data,
@@ -150,6 +162,13 @@ class OracleOICClient:
         data: FlextTypes.Core.Dict | None = None,
     ) -> FlextResult[object]:
         """Make authenticated POST request to OIC API."""
+        # ZERO TOLERANCE FIX: Use utilities for URL validation and building
+        url_result = self._utilities.OicApiProcessing.build_oic_api_url(
+            self.config.get_api_base_url(), endpoint
+        )
+        if url_result.is_failure:
+            return FlextResult[object].fail(f"URL building failed: {url_result.error}")
+
         headers_result: FlextResult[object] = await self._get_auth_headers()
         if not headers_result.success:
             return FlextResult[object].fail(
@@ -157,7 +176,7 @@ class OracleOICClient:
             )
 
         try:
-            url = f"{self.config.get_api_base_url()}/{endpoint.lstrip('/')}"
+            url = url_result.unwrap()
             # Convert data to string dict for FlextApiClient compatibility
             json_data: dict[str, object] = (
                 {str(k): str(v) for k, v in data.items()} if data else None
@@ -242,10 +261,25 @@ class TapOracleOIC(Tap):
         )
         self._client: OracleOICClient | None = None
 
+        # ZERO TOLERANCE FIX: Use FlextTapOracleOicUtilities for ALL business operations
+        from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
+
+        self._utilities = FlextTapOracleOicUtilities()
+
     @property
     def client(self: object) -> OracleOICClient:
         """Get Oracle OIC client instance using flext-oracle-oic-ext."""
         if self._client is None:
+            # ZERO TOLERANCE FIX: Use utilities for configuration validation
+            config_validation_result = (
+                self._utilities.ConfigValidation.validate_oic_connection_config(
+                    self.config
+                )
+            )
+            if config_validation_result.is_failure:
+                msg = f"Invalid OIC configuration: {config_validation_result.error}"
+                raise ValueError(msg)
+
             # Create unified OIC configuration
             oic_config = FlextTapOracleOicConfig(
                 oauth_client_id=self.config["oauth_client_id"],
