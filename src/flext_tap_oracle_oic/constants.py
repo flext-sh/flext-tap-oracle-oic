@@ -11,6 +11,7 @@ from __future__ import annotations
 from typing import ClassVar
 
 from flext_core import FlextConstants, FlextTypes
+from flext_oracle_oic_ext import FlextOracleOicExtConstants
 
 
 class FlextOracleOicConstants(FlextConstants):
