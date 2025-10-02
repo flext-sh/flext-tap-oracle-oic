@@ -42,10 +42,10 @@ class OICExtensionAuthenticator:
         self._access_token: str | None = None
         self._api_client = FlextApiClient()
 
-    async def get_access_token(self) -> FlextResult[str]:
+    def get_access_token(self) -> FlextResult[str]:
         """Get OAuth2 access token using client credentials flow."""
         try:
-            response_result = await self._api_client.post(
+            response_result = self._api_client.post(
                 str(self.config.oauth_token_url),
                 data=self.config.get_token_request_data(),
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
@@ -105,9 +105,9 @@ class OracleOICClient:
 
         self._utilities = FlextTapOracleOicUtilities()
 
-    async def _get_auth_headers(self) -> FlextResult[FlextTypes.Core.Headers]:
+    def _get_auth_headers(self) -> FlextResult[FlextTypes.Core.Headers]:
         """Get authorization headers with OAuth2 token."""
-        token_result: FlextResult[object] = await self.authenticator.get_access_token()
+        token_result: FlextResult[object] = self.authenticator.get_access_token()
         if not token_result.success:
             return FlextResult[FlextTypes.Core.Headers].fail(
                 f"Failed to get access token: {token_result.error}",
@@ -117,7 +117,7 @@ class OracleOICClient:
         headers["Authorization"] = f"Bearer {token_result.data}"
         return FlextResult[FlextTypes.Core.Headers].ok(headers)
 
-    async def get(self, endpoint: str) -> FlextResult[object]:
+    def get(self, endpoint: str) -> FlextResult[object]:
         """Make authenticated GET request to OIC API."""
         # ZERO TOLERANCE FIX: Use utilities for URL validation and building
         url_result = self._utilities.OicApiProcessing.build_oic_api_url(
@@ -126,7 +126,7 @@ class OracleOICClient:
         if url_result.is_failure:
             return FlextResult[object].fail(f"URL building failed: {url_result.error}")
 
-        headers_result: FlextResult[object] = await self._get_auth_headers()
+        headers_result: FlextResult[object] = self._get_auth_headers()
         if not headers_result.success:
             return FlextResult[object].fail(
                 f"Failed to get auth headers: {headers_result.error}",
@@ -134,7 +134,7 @@ class OracleOICClient:
 
         try:
             url = url_result.unwrap()
-            response_result = await self._api_client.get(
+            response_result = self._api_client.get(
                 url,
                 headers=headers_result.data,
                 timeout=self.config.timeout,
@@ -156,7 +156,7 @@ class OracleOICClient:
         except Exception as e:
             return FlextResult[object].fail(f"OIC API request failed: {e}")
 
-    async def post(
+    def post(
         self,
         endpoint: str,
         data: FlextTypes.Core.Dict | None = None,
@@ -169,7 +169,7 @@ class OracleOICClient:
         if url_result.is_failure:
             return FlextResult[object].fail(f"URL building failed: {url_result.error}")
 
-        headers_result: FlextResult[object] = await self._get_auth_headers()
+        headers_result: FlextResult[object] = self._get_auth_headers()
         if not headers_result.success:
             return FlextResult[object].fail(
                 f"Failed to get auth headers: {headers_result.error}",
@@ -181,7 +181,7 @@ class OracleOICClient:
             json_data: dict[str, object] = (
                 {str(k): str(v) for k, v in data.items()} if data else None
             )
-            response_result = await self._api_client.post(
+            response_result = self._api_client.post(
                 url,
                 headers=headers_result.data,
                 timeout=self.config.timeout,
@@ -363,13 +363,13 @@ class TapOracleOIC(Tap):
 
         return cast("Stream", stream_class(tap=self))
 
-    async def test_connection(self) -> FlextResult[bool]:
+    def test_connection(self) -> FlextResult[bool]:
         """Test connection to Oracle OIC using real API client."""
         try:
             logger.info("Testing Oracle OIC connection")
 
             # Test authentication by making a simple API call
-            test_result: FlextResult[object] = await self.client.get("integrations")
+            test_result: FlextResult[object] = self.client.get("integrations")
 
             if test_result.success:
                 logger.info("Oracle OIC connection test successful")
@@ -389,7 +389,7 @@ class TapOracleOIC(Tap):
 # Use TapOracleOIC directly instead
 
 
-async def main() -> int:
+def main() -> int:
     """Run Oracle OIC tap with proper error handling."""
     exit_code = _validate_and_setup_config()
     if exit_code != 0:
@@ -402,7 +402,7 @@ async def main() -> int:
     tap = TapOracleOIC(config=config_typed)
 
     try:
-        return await _execute_tap_command(tap)
+        return _execute_tap_command(tap)
     except (RuntimeError, ValueError, TypeError) as e:
         logger.exception("Oracle OIC tap execution failed")
         logger.warning(f"Tap execution failed with error: {type(e).__name__}: {e}")
@@ -446,12 +446,12 @@ def _validate_and_setup_config() -> int:
     return 0
 
 
-async def _execute_tap_command(tap: TapOracleOIC) -> int:
+def _execute_tap_command(tap: TapOracleOIC) -> int:
     """Execute appropriate tap command based on arguments."""
     if "--discover" in sys.argv:
         return _execute_discover_command(tap)
     if "--test" in sys.argv:
-        return await _execute_test_command(tap)
+        return _execute_test_command(tap)
     if "--run" in sys.argv:
         return _execute_run_command(tap)
     return 0
@@ -482,10 +482,10 @@ def _execute_discover_command(tap: TapOracleOIC) -> int:
     return 0
 
 
-async def _execute_test_command(tap: TapOracleOIC) -> int:
+def _execute_test_command(tap: TapOracleOIC) -> int:
     """Execute test command."""
     logger.info("Testing Oracle OIC connection")
-    result: FlextResult[object] = await tap.test_connection()
+    result: FlextResult[object] = tap.test_connection()
     return 0 if result.success else 1
 
 
@@ -496,9 +496,7 @@ def _execute_run_command(_tap: TapOracleOIC) -> int:
 
 
 if __name__ == "__main__":
-    import asyncio
-
-    sys.exit(asyncio.run(main()))
+    sys.exit(run(main()))
 
 
 # Export for module interface - unified classes only
