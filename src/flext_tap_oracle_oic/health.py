@@ -42,12 +42,12 @@ class OICHealthChecker:
             headers.update(auth_headers)
         return headers
 
-    async def check_health(self) -> FlextTypes.Core.Dict:
+    def check_health(self) -> FlextTypes.Core.Dict:
         """Check OIC instance health."""
         try:
             # Try to access the integrations endpoint as a health check
             url = f"{self.base_url}/ic/api/integration/v1/integrations?limit=1"
-            response = await self._api_client.get(
+            response = self._api_client.get(
                 url,
                 headers=self._get_headers(),
                 timeout=30,
@@ -86,12 +86,12 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    async def test_connection(self, connection_id: str) -> FlextTypes.Core.Dict:
+    def test_connection(self, connection_id: str) -> FlextTypes.Core.Dict:
         """Test specific OIC connection."""
         try:
             # Call the connection test endpoint
             url = f"{self.base_url}/ic/api/integration/v1/connections/{connection_id}/test"
-            response = await self._api_client.post(
+            response = self._api_client.post(
                 url,
                 headers=self._get_headers(),
                 timeout=60,
@@ -138,12 +138,12 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    async def test_integration(self, integration_id: str) -> FlextTypes.Core.Dict:
+    def test_integration(self, integration_id: str) -> FlextTypes.Core.Dict:
         """Test specific OIC integration."""
         try:
             # Get integration details
             url = f"{self.base_url}/ic/api/integration/v1/integrations/{integration_id}"
-            response = await self._api_client.get(
+            response = self._api_client.get(
                 url,
                 headers=self._get_headers(),
                 timeout=30,
@@ -185,12 +185,12 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    async def check_monitoring_health(self) -> FlextTypes.Core.Dict:
+    def check_monitoring_health(self) -> FlextTypes.Core.Dict:
         """Check OIC monitoring service health."""
         try:
             # Try to access monitoring endpoint
             url = f"{self.base_url}/ic/api/monitoring/v1/instances?limit=1"
-            response = await self._api_client.get(
+            response = self._api_client.get(
                 url,
                 headers=self._get_headers(),
                 timeout=30,

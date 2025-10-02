@@ -150,7 +150,7 @@ def sample_integration_data() -> list[FlextTypes.Core.Dict]:
         },
         {
             "id": "DATA_SYNC_02",
-            "name": "DataSyncFlow",
+            "name": "DatFlow",
             "version": "02.01.0000",
             "status": "CONFIGURED",
             "description": "Database synchronization flow",
@@ -272,7 +272,7 @@ def sample_package_data() -> list[FlextTypes.Core.Dict]:
         },
         {
             "id": "PACKAGE_02",
-            "name": "DataSyncPackage",
+            "name": "DatPackage",
             "version": "2.1",
             "description": "Package containing data sync flows",
             "packageType": "INTEGRATION",
@@ -562,11 +562,11 @@ def mock_oic_client() -> type[object]:
             self.authenticated = False
             self.call_count: dict[str, int] = {}
 
-        async def authenticate(self) -> bool:
+        def authenticate(self) -> bool:
             self.authenticated = True
             return True
 
-        async def get_integrations(self, **_kwargs: object) -> FlextTypes.Core.Dict:
+        def get_integrations(self, **_kwargs: object) -> FlextTypes.Core.Dict:
             self.call_count["get_integrations"] = (
                 self.call_count.get("get_integrations", 0) + 1
             )
@@ -577,7 +577,7 @@ def mock_oic_client() -> type[object]:
                 "count": 0,
             }
 
-        async def get_connections(self, **_kwargs: object) -> FlextTypes.Core.Dict:
+        def get_connections(self, **_kwargs: object) -> FlextTypes.Core.Dict:
             self.call_count["get_connections"] = (
                 self.call_count.get("get_connections", 0) + 1
             )
@@ -610,7 +610,7 @@ def mock_oauth_authenticator() -> type[object]:
             self.token = None
             self.token_expires_at = None
 
-        async def get_access_token(self) -> FlextTypes.Core.Dict:
+        def get_access_token(self) -> FlextTypes.Core.Dict:
             return {
                 "success": True,
                 "value": "mock_access_token_12345",
@@ -619,7 +619,7 @@ def mock_oauth_authenticator() -> type[object]:
         def is_token_valid(self) -> bool:
             return True
 
-        async def refresh_token(self) -> FlextTypes.Core.Dict:
-            return await self.get_access_token()
+        def refresh_token(self) -> FlextTypes.Core.Dict:
+            return self.get_access_token()
 
     return MockOAuthAuthenticator
