@@ -7,17 +7,57 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Any, Literal, Self
+from typing import Literal, Self
 
+from flext_core import FlextModels
 from pydantic import (
     ConfigDict,
     Field,
     FieldSerializationInfo,
     computed_field,
+    field_serializer,
     model_validator,
 )
 
-from flext_core import FlextModels
+# Oracle Integration Cloud status constants
+ACTIVE = "ACTIVE"
+INACTIVE = "INACTIVE"
+DRAFT = "DRAFT"
+ERROR = "ERROR"
+TESTING = "TESTING"
+DEPRECATED = "DEPRECATED"
+
+# Status constants
+RUNNING = "RUNNING"
+COMPLETED = "COMPLETED"
+FAILED = "FAILED"
+ABORTED = "ABORTED"
+SUSPENDED = "SUSPENDED"
+
+# Integration constants
+INTEGRATION = "INTEGRATION"
+LIBRARY = "LIBRARY"
+TEMPLATE = "TEMPLATE"
+RECIPE = "RECIPE"
+CONNECTIVITY_AGENT = "CONNECTIVITY_AGENT"
+
+# Agent type constants
+ON_PREMISES_AGENT = "ON_PREMISES_AGENT"
+FILE_AGENT = "FILE_AGENT"
+
+# Status constants
+ONLINE = "ONLINE"
+OFFLINE = "OFFLINE"
+MAINTENANCE = "MAINTENANCE"
+
+# Replication method constants
+FULL_TABLE = "FULL_TABLE"
+INCREMENTAL = "INCREMENTAL"
+
+# Error type constants
+AUTHENTICATION = "AUTHENTICATION"
+AUTHORIZATION = "AUTHORIZATION"
+RATE_LIMIT = "RATE_LIMIT"
 
 
 class FlextTapOracleOicModels(FlextModels):
@@ -85,7 +125,7 @@ class FlextTapOracleOicModels(FlextModels):
 
     @computed_field
     @property
-    def oic_tap_system_summary(self) -> dict[str, Any]:
+    def oic_tap_system_summary(self) -> dict[str, object]:
         """Comprehensive Singer Oracle OIC tap system summary with API extraction capabilities."""
         return {
             "total_models": self.active_oic_tap_models_count,
@@ -141,8 +181,8 @@ class FlextTapOracleOicModels(FlextModels):
 
     @field_serializer("*", when_used="json")
     def serialize_with_oic_metadata(
-        self, value: Any, _info: FieldSerializationInfo
-    ) -> Any:
+        self, value: object, _info: FieldSerializationInfo
+    ) -> object:
         """Add Singer Oracle OIC tap metadata to all serialized fields."""
         if isinstance(value, dict):
             return {
@@ -203,7 +243,7 @@ class FlextTapOracleOicModels(FlextModels):
 
         @computed_field
         @property
-        def auth_config_summary(self) -> dict[str, Any]:
+        def auth_config_summary(self) -> dict[str, object]:
             """OAuth2 authentication configuration summary."""
             return {
                 "oauth_setup": {
@@ -265,7 +305,7 @@ class FlextTapOracleOicModels(FlextModels):
         name: str = Field(..., description="Integration name")
         description: str | None = Field(None, description="Integration description")
         version: str = Field(..., description="Integration version")
-        status: Literal["ACTIVE", "INACTIVE", "DRAFT", "ERROR"] = Field(
+        status: Literal[ACTIVE, INACTIVE, DRAFT, ERROR] = Field(
             ..., description="Integration status"
         )
 
@@ -292,7 +332,7 @@ class FlextTapOracleOicModels(FlextModels):
 
         @computed_field
         @property
-        def integration_health_summary(self) -> dict[str, Any]:
+        def integration_health_summary(self) -> dict[str, object]:
             """OIC integration health and performance summary."""
             error_rate = 0.0
             if self.execution_count and self.execution_count > 0:
@@ -375,7 +415,7 @@ class FlextTapOracleOicModels(FlextModels):
         )
 
         # Status and health
-        status: Literal["ACTIVE", "INACTIVE", "ERROR", "TESTING"] = Field(
+        status: Literal[ACTIVE, INACTIVE, ERROR, TESTING] = Field(
             ..., description="Connection status"
         )
         last_tested: datetime | None = Field(
@@ -393,7 +433,7 @@ class FlextTapOracleOicModels(FlextModels):
 
         @computed_field
         @property
-        def connection_security_summary(self) -> dict[str, Any]:
+        def connection_security_summary(self) -> dict[str, object]:
             """OIC connection security and health summary."""
             return {
                 "connection_identity": {
@@ -468,8 +508,8 @@ class FlextTapOracleOicModels(FlextModels):
         )
 
         # Status and results
-        status: Literal["RUNNING", "COMPLETED", "FAILED", "ABORTED", "SUSPENDED"] = (
-            Field(..., description="Activity status")
+        status: Literal[RUNNING, COMPLETED, FAILED, ABORTED, SUSPENDED] = Field(
+            ..., description="Activity status"
         )
         result: str | None = Field(None, description="Activity result")
         error_message: str | None = Field(None, description="Error message if failed")
@@ -485,7 +525,7 @@ class FlextTapOracleOicModels(FlextModels):
 
         @computed_field
         @property
-        def activity_performance_summary(self) -> dict[str, Any]:
+        def activity_performance_summary(self) -> dict[str, object]:
             """OIC activity performance summary."""
             duration_seconds = 0.0
             if self.duration_ms:
@@ -558,7 +598,7 @@ class FlextTapOracleOicModels(FlextModels):
         version: str = Field(..., description="Package version")
 
         # Package metadata
-        package_type: Literal["INTEGRATION", "LIBRARY", "TEMPLATE", "RECIPE"] = Field(
+        package_type: Literal[INTEGRATION, LIBRARY, TEMPLATE, RECIPE] = Field(
             ..., description="Package type"
         )
         created_by: str | None = Field(None, description="Package creator")
@@ -573,14 +613,14 @@ class FlextTapOracleOicModels(FlextModels):
         )
 
         # Status
-        status: Literal["ACTIVE", "INACTIVE", "DEPRECATED"] = Field(
+        status: Literal[ACTIVE, INACTIVE, DEPRECATED] = Field(
             ..., description="Package status"
         )
         download_count: int | None = Field(None, description="Package download count")
 
         @computed_field
         @property
-        def package_composition_summary(self) -> dict[str, Any]:
+        def package_composition_summary(self) -> dict[str, object]:
             """OIC package composition and usage summary."""
             return {
                 "package_identity": {
@@ -668,7 +708,7 @@ class FlextTapOracleOicModels(FlextModels):
 
         @computed_field
         @property
-        def metrics_analysis_summary(self) -> dict[str, Any]:
+        def metrics_analysis_summary(self) -> dict[str, object]:
             """OIC metrics comprehensive analysis summary."""
             total_messages = (self.success_count or 0) + (self.error_count or 0)
             error_rate = 0.0
@@ -740,12 +780,12 @@ class FlextTapOracleOicModels(FlextModels):
 
         agent_id: str = Field(..., description="Unique agent identifier")
         agent_name: str = Field(..., description="Agent display name")
-        agent_type: Literal["CONNECTIVITY_AGENT", "ON_PREMISES_AGENT", "FILE_AGENT"] = (
-            Field(..., description="Agent type")
+        agent_type: Literal[CONNECTIVITY_AGENT, ON_PREMISES_AGENT, FILE_AGENT] = Field(
+            ..., description="Agent type"
         )
 
         # Agent status and health
-        status: Literal["ONLINE", "OFFLINE", "ERROR", "MAINTENANCE"] = Field(
+        status: Literal[ONLINE, OFFLINE, ERROR, MAINTENANCE] = Field(
             ..., description="Agent status"
         )
         last_heartbeat: datetime | None = Field(
@@ -769,7 +809,7 @@ class FlextTapOracleOicModels(FlextModels):
 
         @computed_field
         @property
-        def agent_health_summary(self) -> dict[str, Any]:
+        def agent_health_summary(self) -> dict[str, object]:
             """OIC agent health and connectivity summary."""
             health_status = "healthy"
             if self.status in {"ERROR", "OFFLINE"}:
@@ -838,7 +878,7 @@ class FlextTapOracleOicModels(FlextModels):
         )
 
         stream_name: str = Field(..., description="Singer stream name")
-        replication_method: Literal["FULL_TABLE", "INCREMENTAL"] = Field(
+        replication_method: Literal[FULL_TABLE, INCREMENTAL] = Field(
             default="FULL_TABLE", description="Replication method"
         )
         replication_key: str | None = Field(
@@ -871,7 +911,7 @@ class FlextTapOracleOicModels(FlextModels):
 
         @computed_field
         @property
-        def stream_config_summary(self) -> dict[str, Any]:
+        def stream_config_summary(self) -> dict[str, object]:
             """OIC stream configuration summary."""
             return {
                 "stream_identity": {
@@ -930,7 +970,7 @@ class FlextTapOracleOicModels(FlextModels):
         )
 
         success: bool = Field(..., description="Response success indicator")
-        data: Any | None = Field(None, description="Response data payload")
+        data: object | None = Field(None, description="Response data payload")
         total_count: int | None = Field(
             None, description="Total entity count (for pagination)"
         )
@@ -940,7 +980,7 @@ class FlextTapOracleOicModels(FlextModels):
         # Error information
         error_code: str | None = Field(None, description="Error code if failed")
         error_message: str | None = Field(None, description="Error message if failed")
-        error_details: dict[str, Any] | None = Field(
+        error_details: dict[str, object] | None = Field(
             None, description="Detailed error information"
         )
 
@@ -953,7 +993,7 @@ class FlextTapOracleOicModels(FlextModels):
 
         @computed_field
         @property
-        def api_response_summary(self) -> dict[str, Any]:
+        def api_response_summary(self) -> dict[str, object]:
             """OIC API response summary."""
             return {
                 "response_status": {
@@ -1019,12 +1059,12 @@ class FlextTapOracleOicModels(FlextModels):
         )
 
         error_type: Literal[
-            "AUTHENTICATION",
-            "AUTHORIZATION",
-            "RATE_LIMIT",
-            "SERVER_ERROR",
-            "NETWORK",
-            "VALIDATION",
+            AUTHENTICATION,
+            AUTHORIZATION,
+            RATE_LIMIT,
+            SERVER_ERROR,
+            NETWORK,
+            VALIDATION,
         ] = Field(..., description="Error category")
         http_status_code: int | None = Field(None, description="HTTP status code")
         retry_after_seconds: int | None = Field(
@@ -1034,7 +1074,7 @@ class FlextTapOracleOicModels(FlextModels):
         # Context information
         endpoint: str | None = Field(None, description="API endpoint that failed")
         request_method: str | None = Field(None, description="HTTP method used")
-        request_params: dict[str, Any] | None = Field(
+        request_params: dict[str, object] | None = Field(
             None, description="Request parameters"
         )
 
@@ -1051,7 +1091,7 @@ class FlextTapOracleOicModels(FlextModels):
 
         @computed_field
         @property
-        def error_context_summary(self) -> dict[str, Any]:
+        def error_context_summary(self) -> dict[str, object]:
             """OIC error context summary."""
             return {
                 "error_classification": {

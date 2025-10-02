@@ -8,6 +8,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import importlib.metadata
+from typing import Final
 
 from flext_core import FlextLogger, FlextModels, FlextResult, FlextTypes
 from flext_meltano import FlextMeltanoBridge, FlextMeltanoConfig, FlextMeltanoService
@@ -15,8 +16,6 @@ from flext_tap_oracle_oic.config import (
     FlextTapOracleOicConfig,
     create_oracle_oic_tap_config,
 )
-
-# Standardized [Project]Models pattern
 from flext_tap_oracle_oic.models import FlextTapOracleOicModels
 from flext_tap_oracle_oic.protocols import FlextTapOracleOicProtocols
 from flext_tap_oracle_oic.simple_api import setup_oic_tap as create_oic_tap
@@ -28,45 +27,44 @@ from flext_tap_oracle_oic.tap_exceptions import (
     OICValidationError,
 )
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
+from flext_tap_oracle_oic.version import VERSION, FlextTapOracleOicVersion
 
 try:
-    # Standardized [Project]Utilities pattern
     from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
     __version__ = importlib.metadata.version("flext-tap-oracle-oic")
 except importlib.metadata.PackageNotFoundError:
     __version__ = "0.9.0"
 
-__version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
+PROJECT_VERSION: Final[FlextTapOracleOicVersion] = VERSION
 
-__all__: FlextTypes.Core.StringList = [
-    # FLEXT ecosystem integration
+__version__: str = VERSION.version
+__version_info__: tuple[int | str, ...] = VERSION.version_info
+
+__all__ = [
+    "PROJECT_VERSION",
+    "VERSION",
     "FlextLogger",
-    # Meltano integration
     "FlextMeltanoBridge",
     "FlextMeltanoConfig",
     "FlextMeltanoService",
     "FlextModels",
     "FlextResult",
-    # Configuration
     "FlextTapOracleOicConfig",
-    # Standardized [Project]Models pattern
     "FlextTapOracleOicModels",
     "FlextTapOracleOicProtocols",
     "FlextTapOracleOicUtilities",
+    "FlextTapOracleOicVersion",
     "FlextTypes",
-    # Exceptions
     "OICAPIError",
     "OICAuthenticationError",
     "OICBaseStream",
     "OICConnectionError",
     "OICValidationError",
     "OracleOICClient",
-    # Core tap functionality
     "TapOracleOIC",
-    # Version info
     "__version__",
-    # API functions
+    "__version_info__",
     "create_oic_tap",
     "create_oracle_oic_tap_config",
 ]

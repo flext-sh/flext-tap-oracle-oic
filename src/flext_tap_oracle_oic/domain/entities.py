@@ -9,13 +9,12 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from enum import StrEnum
 
-from pydantic import ConfigDict, Field
-
 from flext_core import (
     FlextModels,
     FlextResult,
     FlextTypes,
 )
+from pydantic import ConfigDict, Field
 
 
 class OICResourceType(StrEnum):
