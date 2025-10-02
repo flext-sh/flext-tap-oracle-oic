@@ -7,7 +7,6 @@ from __future__ import annotations
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
-
 import re
 from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
@@ -21,6 +20,7 @@ from flext_core import (
     FlextTypes,
 )
 from flext_meltano import FlextTapStream
+
 from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
 
 # Constants for paginator and response tracking

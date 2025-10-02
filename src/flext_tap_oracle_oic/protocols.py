@@ -29,7 +29,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Connection details or error
 
             """
-            ...
 
         def test_oic_connectivity(
             self, connection_config: dict[str, object]
@@ -43,7 +42,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[bool]: Connection test result or error
 
             """
-            ...
 
         def authenticate_oauth(
             self, auth_config: dict[str, object]
@@ -57,7 +55,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Authentication tokens or error
 
             """
-            ...
 
         def validate_oic_credentials(
             self, connection_config: dict[str, object]
@@ -71,7 +68,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Validation results or error
 
             """
-            ...
 
     @runtime_checkable
     class IntegrationDiscoveryProtocol(FlextProtocols.Domain.Service, Protocol):
@@ -89,7 +85,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[list[dict[str, object]]]: Discovered integrations or error
 
             """
-            ...
 
         def discover_connections(
             self, discovery_config: dict[str, object]
@@ -103,7 +98,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[list[dict[str, object]]]: Discovered connections or error
 
             """
-            ...
 
         def discover_packages(
             self, discovery_config: dict[str, object]
@@ -117,7 +111,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[list[dict[str, object]]]: Discovered packages or error
 
             """
-            ...
 
         def discover_lookups(
             self, discovery_config: dict[str, object]
@@ -131,7 +124,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[list[dict[str, object]]]: Discovered lookups or error
 
             """
-            ...
 
     @runtime_checkable
     class DataExtractionProtocol(FlextProtocols.Domain.Service, Protocol):
@@ -152,7 +144,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[list[dict[str, object]]]: Extracted integration data or error
 
             """
-            ...
 
         def extract_monitoring_data(
             self,
@@ -167,7 +158,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[list[dict[str, object]]]: Monitoring data or error
 
             """
-            ...
 
         def extract_audit_logs(
             self,
@@ -182,7 +172,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[list[dict[str, object]]]: Audit log data or error
 
             """
-            ...
 
         def extract_error_messages(
             self,
@@ -197,7 +186,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[list[dict[str, object]]]: Error message data or error
 
             """
-            ...
 
     @runtime_checkable
     class CloudApiProtocol(FlextProtocols.Domain.Service, Protocol):
@@ -220,7 +208,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: API response or error
 
             """
-            ...
 
         def call_monitoring_api(
             self,
@@ -237,7 +224,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[list[dict[str, object]]]: Monitoring data or error
 
             """
-            ...
 
         def handle_rate_limiting(
             self, request_config: dict[str, object]
@@ -251,7 +237,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Rate limiting status or error
 
             """
-            ...
 
         def manage_pagination(
             self,
@@ -266,7 +251,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[list[dict[str, object]]]: Paginated results or error
 
             """
-            ...
 
     @runtime_checkable
     class StreamGenerationProtocol(FlextProtocols.Domain.Service, Protocol):
@@ -287,7 +271,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Stream definition or error
 
             """
-            ...
 
         def generate_monitoring_stream(
             self,
@@ -304,7 +287,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Stream definition or error
 
             """
-            ...
 
         def generate_audit_stream(
             self,
@@ -319,7 +301,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Stream definition or error
 
             """
-            ...
 
         def determine_extraction_method(
             self,
@@ -336,7 +317,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[str]: Extraction method (API, BULK, STREAMING) or error
 
             """
-            ...
 
     @runtime_checkable
     class PerformanceProtocol(FlextProtocols.Domain.Service, Protocol):
@@ -354,7 +334,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Optimization results or error
 
             """
-            ...
 
         def configure_connection_pooling(
             self, pool_config: dict[str, object]
@@ -368,7 +347,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Pool configuration result or error
 
             """
-            ...
 
         def monitor_cloud_performance(
             self, performance_metrics: dict[str, object]
@@ -382,7 +360,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Performance analysis or error
 
             """
-            ...
 
         def optimize_data_transfer(
             self, transfer_config: dict[str, object]
@@ -396,7 +373,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Optimization results or error
 
             """
-            ...
 
     @runtime_checkable
     class ValidationProtocol(FlextProtocols.Domain.Service, Protocol):
@@ -417,7 +393,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Validation results or error
 
             """
-            ...
 
         def check_data_consistency(
             self,
@@ -434,7 +409,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Consistency check results or error
 
             """
-            ...
 
         def detect_schema_changes(
             self,
@@ -451,7 +425,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[list[dict[str, object]]]: Detected schema changes or error
 
             """
-            ...
 
         def validate_cloud_connectivity(
             self, connectivity_config: dict[str, object]
@@ -465,7 +438,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Connectivity validation results or error
 
             """
-            ...
 
     @runtime_checkable
     class MonitoringProtocol(FlextProtocols.Domain.Service, Protocol):
@@ -484,7 +456,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[bool]: Metric tracking success status
 
             """
-            ...
 
         def monitor_integration_health(
             self, integration_id: str
@@ -498,7 +469,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Health status or error
 
             """
-            ...
 
         def get_cloud_status(
             self, status_config: dict[str, object]
@@ -512,7 +482,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Cloud status or error
 
             """
-            ...
 
         def create_monitoring_dashboard(
             self, dashboard_config: dict[str, object]
@@ -526,7 +495,6 @@ class FlextTapOracleOicProtocols(FlextProtocols):
                 FlextResult[dict[str, object]]: Dashboard creation result or error
 
             """
-            ...
 
     # Convenience aliases for easier downstream usage
     TapOracleOicConnectionProtocol = OicConnectionProtocol
