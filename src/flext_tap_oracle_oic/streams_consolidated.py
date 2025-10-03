@@ -10,9 +10,10 @@ from __future__ import annotations
 
 from typing import ClassVar, cast
 
+from flext_meltano import FlextSingerTypes
 from singer_sdk import typing as th
 
-from flext_meltano import FlextSingerTypes
+from flext_core import FlextTypes
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
 
 # Initialize FlextSingerTypes for compatibility
@@ -35,8 +36,8 @@ class IntegrationsStream(OICBaseStream):
     default_sort = "lastUpdated:desc"
     default_expand = "connections,endpoints"
 
-    schema: dict[str, object] = cast(
-        "dict[str, object]",
+    schema: FlextTypes.Dict = cast(
+        "FlextTypes.Dict",
         th.PropertiesList(
             th.Property("id", th.StringType(), description="Integration ID"),
             th.Property("name", th.StringType(), description="Integration name"),
@@ -105,8 +106,8 @@ class ConnectionsStream(OICBaseStream):
     requires_design_api = True
     default_sort = "name:asc"
 
-    schema: dict[str, object] = cast(
-        "dict[str, object]",
+    schema: FlextTypes.Dict = cast(
+        "FlextTypes.Dict",
         th.PropertiesList(
             th.Property("id", th.StringType(), description="Connection ID"),
             th.Property("name", th.StringType(), description="Connection name"),
@@ -168,8 +169,8 @@ class PackagesStream(OICBaseStream):
     api_category = "core"
     default_sort = "lastUpdated:desc"
 
-    schema: dict[str, object] = cast(
-        "dict[str, object]",
+    schema: FlextTypes.Dict = cast(
+        "FlextTypes.Dict",
         th.PropertiesList(
             th.Property("id", th.StringType(), description="Package ID"),
             th.Property("name", th.StringType(), description="Package name"),
@@ -219,8 +220,8 @@ class LookupsStream(OICBaseStream):
     replication_key = "lastUpdated"
     api_category = "core"
 
-    schema: dict[str, object] = cast(
-        "dict[str, object]",
+    schema: FlextTypes.Dict = cast(
+        "FlextTypes.Dict",
         th.PropertiesList(
             th.Property("name", th.StringType(), description="Lookup name"),
             th.Property(
@@ -272,8 +273,8 @@ class LibrariesStream(OICBaseStream):
     replication_key = "lastUpdated"
     api_category = "infrastructure"
 
-    schema: dict[str, object] = cast(
-        "dict[str, object]",
+    schema: FlextTypes.Dict = cast(
+        "FlextTypes.Dict",
         th.PropertiesList(
             th.Property("id", th.StringType(), description="Library ID"),
             th.Property("name", th.StringType(), description="Library name"),
@@ -319,8 +320,8 @@ class CertificatesStream(OICBaseStream):
     replication_key = "lastUpdated"
     api_category = "security"
 
-    schema: dict[str, object] = cast(
-        "dict[str, object]",
+    schema: FlextTypes.Dict = cast(
+        "FlextTypes.Dict",
         th.PropertiesList(
             th.Property("name", th.StringType(), description="Certificate name"),
             th.Property(
@@ -366,8 +367,8 @@ class AdaptersStream(OICBaseStream):
     replication_key = None  # Static metadata
     api_category = "infrastructure"
 
-    schema: dict[str, object] = cast(
-        "dict[str, object]",
+    schema: FlextTypes.Dict = cast(
+        "FlextTypes.Dict",
         th.PropertiesList(
             th.Property("id", th.StringType(), description="Adapter ID"),
             th.Property("name", th.StringType(), description="Adapter name"),
@@ -418,8 +419,8 @@ class ProjectsStream(OICBaseStream):
     api_category = "extended"
     requires_design_api = True
 
-    schema: dict[str, object] = cast(
-        "dict[str, object]",
+    schema: FlextTypes.Dict = cast(
+        "FlextTypes.Dict",
         th.PropertiesList(
             th.Property("id", th.StringType(), description="Project ID"),
             th.Property("name", th.StringType(), description="Project name"),
@@ -480,8 +481,8 @@ class ExecutionsStream(OICBaseStream):
     api_category = "monitoring"
     requires_monitoring_api = True
 
-    schema: dict[str, object] = cast(
-        "dict[str, object]",
+    schema: FlextTypes.Dict = cast(
+        "FlextTypes.Dict",
         th.PropertiesList(
             th.Property(
                 "instanceId", th.StringType(), description="Execution instance ID"
@@ -530,8 +531,8 @@ class MetricsStream(OICBaseStream):
     api_category = "monitoring"
     requires_monitoring_api = True
 
-    schema: dict[str, object] = cast(
-        "dict[str, object]",
+    schema: FlextTypes.Dict = cast(
+        "FlextTypes.Dict",
         th.PropertiesList(
             th.Property("metricId", th.StringType(), description="Metric ID"),
             th.Property("metricName", th.StringType(), description="Metric name"),

@@ -12,9 +12,10 @@ from __future__ import annotations
 import re
 from typing import Self
 
-from flext_core import FlextConfig, FlextConstants, FlextResult, FlextTypes
 from pydantic import Field, HttpUrl, SecretStr, field_validator, model_validator
 from pydantic_settings import SettingsConfigDict
+
+from flext_core import FlextConfig, FlextConstants, FlextResult, FlextTypes
 
 
 class FlextTapOracleOicConfig(FlextConfig):
@@ -303,7 +304,7 @@ class FlextTapOracleOicConfig(FlextConfig):
         """Get full API base URL with version."""
         return f"{str(self.base_url).rstrip('/')}/ic/api/integration/{self.api_version}"
 
-    def get_auth_config(self) -> dict[str, object]:
+    def get_auth_config(self) -> FlextTypes.Dict:
         """Get authentication configuration dictionary."""
         return {
             "client_id": self.oauth_client_id,
@@ -312,7 +313,7 @@ class FlextTapOracleOicConfig(FlextConfig):
             "audience": self.oauth_audience,
         }
 
-    def get_connection_config(self) -> dict[str, object]:
+    def get_connection_config(self) -> FlextTypes.Dict:
         """Get connection configuration dictionary."""
         return {
             "base_url": str(self.base_url),
@@ -322,7 +323,7 @@ class FlextTapOracleOicConfig(FlextConfig):
             "page_size": self.page_size,
         }
 
-    def get_tap_config(self) -> dict[str, object]:
+    def get_tap_config(self) -> FlextTypes.Dict:
         """Get tap-specific configuration dictionary."""
         return {
             "stream_prefix": self.stream_prefix,
@@ -332,7 +333,7 @@ class FlextTapOracleOicConfig(FlextConfig):
             "max_parallel_streams": self.max_parallel_streams,
         }
 
-    def get_performance_config(self) -> dict[str, object]:
+    def get_performance_config(self) -> FlextTypes.Dict:
         """Get performance configuration dictionary."""
         return {
             "batch_size": self.batch_size,
@@ -342,7 +343,7 @@ class FlextTapOracleOicConfig(FlextConfig):
             "max_retries": self.max_retries,
         }
 
-    def get_token_request_data(self) -> dict[str, str]:
+    def get_token_request_data(self) -> FlextTypes.StringDict:
         """Get OAuth2 token request data for client credentials flow."""
         return {
             "grant_type": "client_credentials",
@@ -351,7 +352,7 @@ class FlextTapOracleOicConfig(FlextConfig):
             "audience": self.oauth_audience,
         }
 
-    def get_headers(self) -> dict[str, str]:
+    def get_headers(self) -> FlextTypes.StringDict:
         """Get default headers for OIC API requests."""
         return {
             "Content-Type": "application/json",
@@ -364,7 +365,7 @@ class FlextTapOracleOicConfig(FlextConfig):
         cls, environment: str, **overrides: object
     ) -> FlextTapOracleOicConfig:
         """Create configuration for specific environment using enhanced singleton pattern."""
-        env_overrides: dict[str, object] = {}
+        env_overrides: FlextTypes.Dict = {}
 
         if environment == "production":
             env_overrides.update({
@@ -409,7 +410,7 @@ class FlextTapOracleOicConfig(FlextConfig):
     @classmethod
     def create_for_development(cls, **overrides: object) -> Self:
         """Create configuration for development environment."""
-        dev_overrides: dict[str, object] = {
+        dev_overrides: FlextTypes.Dict = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT * 2,
             "max_retries": 1,
             "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 20,
@@ -424,7 +425,7 @@ class FlextTapOracleOicConfig(FlextConfig):
     @classmethod
     def create_for_production(cls, **overrides: object) -> Self:
         """Create configuration for production environment."""
-        prod_overrides: dict[str, object] = {
+        prod_overrides: FlextTypes.Dict = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
             "max_retries": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
             "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 10,
@@ -439,7 +440,7 @@ class FlextTapOracleOicConfig(FlextConfig):
     @classmethod
     def create_for_testing(cls, **overrides: object) -> Self:
         """Create configuration for testing environment."""
-        test_overrides: dict[str, object] = {
+        test_overrides: FlextTypes.Dict = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT // 3,
             "max_retries": 1,
             "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 100,
@@ -459,9 +460,9 @@ class FlextTapOracleOicConfig(FlextConfig):
 
 # Factory function for backward compatibility (will be removed in future versions)
 def create_oracle_oic_tap_config(
-    oauth_params: dict[str, object],
-    connection_params: dict[str, object],
-    tap_params: dict[str, object] | None = None,
+    oauth_params: FlextTypes.Dict,
+    connection_params: FlextTypes.Dict,
+    tap_params: FlextTypes.Dict | None = None,
 ) -> FlextResult[FlextTapOracleOicConfig]:
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
@@ -537,7 +538,7 @@ def validate_oracle_oic_tap_configuration(
     return FlextResult[None].ok(None)
 
 
-__all__: FlextTypes.Core.StringList = [
+__all__: FlextTypes.StringList = [
     "FlextTapOracleOicConfig",
     "create_oracle_oic_tap_config",
     "validate_oracle_oic_tap_configuration",

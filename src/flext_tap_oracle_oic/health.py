@@ -13,6 +13,7 @@ from datetime import UTC, datetime
 from typing import override
 
 from flext_api import FlextApiClient
+
 from flext_core import FlextTypes
 from flext_tap_oracle_oic import OAuthAuthenticator
 
@@ -31,7 +32,7 @@ class OICHealthChecker:
         self.authenticator = authenticator
         self._api_client = FlextApiClient(base_url=base_url)
 
-    def _get_headers(self: object) -> FlextTypes.Core.Headers:
+    def _get_headers(self: object) -> FlextTypes.StringDict:
         headers = {
             "Accept": "JSON_MIME",
             "Content-Type": "JSON_MIME",
@@ -42,7 +43,7 @@ class OICHealthChecker:
             headers.update(auth_headers)
         return headers
 
-    def check_health(self) -> FlextTypes.Core.Dict:
+    def check_health(self) -> FlextTypes.Dict:
         """Check OIC instance health."""
         try:
             # Try to access the integrations endpoint as a health check
@@ -86,7 +87,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_connection(self, connection_id: str) -> FlextTypes.Core.Dict:
+    def test_connection(self, connection_id: str) -> FlextTypes.Dict:
         """Test specific OIC connection."""
         try:
             # Call the connection test endpoint
@@ -138,7 +139,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_integration(self, integration_id: str) -> FlextTypes.Core.Dict:
+    def test_integration(self, integration_id: str) -> FlextTypes.Dict:
         """Test specific OIC integration."""
         try:
             # Get integration details
@@ -185,7 +186,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def check_monitoring_health(self) -> FlextTypes.Core.Dict:
+    def check_monitoring_health(self) -> FlextTypes.Dict:
         """Check OIC monitoring service health."""
         try:
             # Try to access monitoring endpoint

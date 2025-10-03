@@ -10,8 +10,9 @@ from __future__ import annotations
 
 from typing import ClassVar
 
+from flext_oracle_oic import FlextOracleOicExtConstants
+
 from flext_core import FlextConstants, FlextTypes
-from flext_oracle_oic_ext import FlextOracleOicExtConstants
 
 
 class FlextOracleOicConstants(FlextConstants):
@@ -20,8 +21,8 @@ class FlextOracleOicConstants(FlextConstants):
     Composes with FlextOracleOicExtConstants to avoid duplication and ensure consistency.
     """
 
-    # Import Oracle OIC Extension constants from flext-oracle-oic-ext (composition pattern)
-    from flext_oracle_oic_ext.constants import FlextOracleOicExtConstants
+    # Import Oracle OIC Extension constants from flext-oracle-oic (composition pattern)
+    from flext_oracle_oic.constants import FlextOracleOicExtConstants
 
     # Oracle OIC API Constants using composition
     OIC_API_BASE_PATH = FlextOracleOicExtConstants.API.ENDPOINT_INTEGRATIONS.replace(
@@ -34,7 +35,7 @@ class FlextOracleOicConstants(FlextConstants):
     OIC_ENVIRONMENT_API_PATH = "/ic/api/integration/v1/environments"
 
     # Official OIC REST API Endpoints using composition where appropriate
-    OIC_ENDPOINTS: ClassVar[FlextTypes.Core.Headers] = {
+    OIC_ENDPOINTS: ClassVar[FlextTypes.StringDict] = {
         # Core Integration APIs
         "integrations": "/integrations",
         "integrations_detail": "/integrations/{id}",
@@ -129,6 +130,6 @@ class FlextOracleOicConstants(FlextConstants):
         )
 
 
-__all__: FlextTypes.Core.StringList = [
+__all__: FlextTypes.StringList = [
     "FlextOracleOicConstants",
 ]
