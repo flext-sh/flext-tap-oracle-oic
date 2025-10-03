@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+from asyncio import run
 from collections.abc import Sequence
 from typing import ClassVar, cast, override
 
