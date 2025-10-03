@@ -17,7 +17,7 @@ from flext_tap_oracle_oic.domain.entities import (
     OICResourceType,
 )
 
-__all__: FlextTypes.Core.StringList = [
+__all__: FlextTypes.StringList = [
     "OICConnection",
     "OICIntegration",
     "OICLookup",

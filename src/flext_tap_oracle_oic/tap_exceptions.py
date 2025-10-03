@@ -64,7 +64,7 @@ class OICAPIError(FlextExceptions.ProcessingError):
 
 
 # Export for backward compatibility and module interface
-__all__: FlextTypes.Core.StringList = [
+__all__: FlextTypes.StringList = [
     "FlextExceptions",
     "FlextExceptions",
     "FlextExceptions",

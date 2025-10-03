@@ -254,7 +254,7 @@ def sample_config_with_extended() -> object:
 class TestTapOracleOICWithFixtures:
     """Tests using fixtures."""
 
-    def test_self(self, sample_config: FlextTypes.Core.Dict) -> None:
+    def test_self(self, sample_config: FlextTypes.Dict) -> None:
         """Test method."""
         """Test that the tap is initialized correctly with the sample config."""
         tap = TapOracleOIC(config=sample_config, validate_config=False)
@@ -270,7 +270,7 @@ class TestTapOracleOICWithFixtures:
 
     def test_streams_count_with_extended_config(
         self,
-        sample_config_with_extended: FlextTypes.Core.Dict,
+        sample_config_with_extended: FlextTypes.Dict,
     ) -> None:
         """Test that the number of streams is correct with the extended config."""
         tap = TapOracleOIC(config=sample_config_with_extended, validate_config=False)

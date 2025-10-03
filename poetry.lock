@@ -1568,7 +1568,7 @@ type = "directory"
 url = "../flext-observability"
 
 [[package]]
-name = "flext-oracle-oic-ext"
+name = "flext-oracle-oic"
 version = "0.9.0"
 description = "FLEXT Oracle OIC Extension - Advanced Oracle Integration Cloud Extensions"
 optional = false
@@ -1589,7 +1589,7 @@ urllib3 = ">=2.0.0"
 
 [package.source]
 type = "directory"
-url = "../flext-oracle-oic-ext"
+url = "../flext-oracle-oic"
 
 [[package]]
 name = "frozenlist"

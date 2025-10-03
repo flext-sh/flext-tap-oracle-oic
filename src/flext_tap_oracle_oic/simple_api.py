@@ -1,8 +1,8 @@
 """Simple API for Oracle Integration Cloud tap setup and operations.
 
 SIMPLIFIED FOR PEP8 REORGANIZATION:
-Provides basic setup utilities using flext-oracle-oic-ext patterns.
-Complex configuration has been moved to flext-oracle-oic-ext library.
+Provides basic setup utilities using flext-oracle-oic patterns.
+Complex configuration has been moved to flext-oracle-oic library.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -13,13 +13,13 @@ from __future__ import annotations
 import os
 from typing import cast
 
-from pydantic import SecretStr
-
-from flext_core import FlextResult, FlextTypes
-from flext_oracle_oic_ext import (
+from flext_oracle_oic import (
     OICAuthConfig,
     OICConnectionConfig,
 )
+from pydantic import SecretStr
+
+from flext_core import FlextResult, FlextTypes
 
 
 def setup_oic_tap(
@@ -37,7 +37,7 @@ def setup_oic_tap(
     try:
         if config is None:
             # Create basic configuration dictionary
-            config: dict[str, object] = {
+            config: FlextTypes.Dict = {
                 "oauth_client_id": os.getenv("OIC_CLIENT_ID", "your-client-id"),
                 "oauth_client_secret": os.getenv("OIC_CLIENT_SECRET", "your-secret"),
                 "oauth_token_url": os.getenv(
@@ -75,7 +75,7 @@ def create_oic_auth_config(
 
     """
     try:
-        config: dict[str, object] = OICAuthConfig(
+        config: FlextTypes.Dict = OICAuthConfig(
             oauth_client_id=client_id,
             oauth_client_secret=SecretStr(client_secret),
             oauth_token_url=token_url,
@@ -106,7 +106,7 @@ def create_oic_connection_config(
 
     """
     try:
-        config: dict[str, object] = OICConnectionConfig(
+        config: FlextTypes.Dict = OICConnectionConfig(
             base_url=base_url,
             api_version=cast("str", kwargs.get("api_version", "v1")),
             request_timeout=cast("int", kwargs.get("request_timeout", 30)),
@@ -154,7 +154,7 @@ def validate_oic_config(config: object) -> FlextResult[bool]:
 
 
 # Export simplified API
-__all__: FlextTypes.Core.StringList = [
+__all__: FlextTypes.StringList = [
     "create_oic_auth_config",
     "create_oic_connection_config",
     "setup_oic_tap",
