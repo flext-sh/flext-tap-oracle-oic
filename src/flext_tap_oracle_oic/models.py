@@ -1060,12 +1060,12 @@ class FlextTapOracleOicModels(FlextModels):
         )
 
         error_type: Literal[
-            AUTHENTICATION,
-            AUTHORIZATION,
-            RATE_LIMIT,
-            SERVER_ERROR,
-            NETWORK,
-            VALIDATION,
+            "AUTHENTICATION",
+            "AUTHORIZATION",
+            "RATE_LIMIT",
+            "SERVER_ERROR",
+            "NETWORK",
+            "VALIDATION",
         ] = Field(..., description="Error category")
         http_status_code: int | None = Field(None, description="HTTP status code")
         retry_after_seconds: int | None = Field(
