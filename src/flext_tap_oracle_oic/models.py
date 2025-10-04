@@ -9,6 +9,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Literal, Self
 
+from flext_core import FlextModels, FlextTypes
 from pydantic import (
     ConfigDict,
     Field,
@@ -17,8 +18,6 @@ from pydantic import (
     field_serializer,
     model_validator,
 )
-
-from flext_core import FlextModels, FlextTypes
 
 # Oracle Integration Cloud status constants
 ACTIVE = "ACTIVE"

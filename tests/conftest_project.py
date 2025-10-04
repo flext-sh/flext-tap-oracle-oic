@@ -15,7 +15,6 @@ from collections.abc import Generator, Iterator
 from unittest.mock import Mock
 
 import pytest
-
 from flext_core import FlextTypes
 
 

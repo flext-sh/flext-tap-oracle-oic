@@ -12,10 +12,9 @@ from __future__ import annotations
 import re
 from typing import Self
 
+from flext_core import FlextConfig, FlextConstants, FlextResult, FlextTypes
 from pydantic import Field, HttpUrl, SecretStr, field_validator, model_validator
 from pydantic_settings import SettingsConfigDict
-
-from flext_core import FlextConfig, FlextConstants, FlextResult, FlextTypes
 
 
 class FlextTapOracleOicConfig(FlextConfig):

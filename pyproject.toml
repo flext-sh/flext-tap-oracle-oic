@@ -80,6 +80,17 @@
         from    = "src"
         include = "flext_tap_oracle_oic"
 
+[tool.pyrefly]
+    python-version = "3.13"
+    search-path = [
+        "../flext-core/src",
+        "../flext-meltano/src",
+        "../flext-observability/src",
+        "../flext-oracle-oic/src",
+        "src",
+        "tests",
+    ]
+
 [tool.deptry]
     known_first_party = [
         "flext_tap_oracle_oic",
