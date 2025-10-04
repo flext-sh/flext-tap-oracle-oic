@@ -10,14 +10,13 @@ from __future__ import annotations
 
 from typing import ClassVar, cast
 
-from flext_meltano import FlextSingerTypes
-from singer_sdk import typing as th
-
 from flext_core import FlextTypes
+from flext_meltano import FlextSingerTypes
+
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
 
 # Initialize FlextSingerTypes for compatibility
-flext_singer_types = FlextSingerTypes()
+th = FlextSingerTypes()
 
 
 class IntegrationsStream(OICBaseStream):
@@ -27,14 +26,14 @@ class IntegrationsStream(OICBaseStream):
     endpoints, triggers, connections, and execution statistics.
     """
 
-    name = "integrations"
-    path = "/integrations"
-    primary_keys: ClassVar = ["id"]
-    replication_key = "lastUpdated"
-    api_category = "core"
-    requires_design_api = True
-    default_sort = "lastUpdated:desc"
-    default_expand = "connections,endpoints"
+    name: ClassVar[str] = "integrations"
+    path: ClassVar[str] = "/integrations"
+    primary_keys: ClassVar[list[str]] = ["id"]
+    replication_key: ClassVar[str] = "lastUpdated"
+    api_category: ClassVar[str] = "core"
+    requires_design_api: ClassVar[bool] = True
+    default_sort: ClassVar[str] = "lastUpdated:desc"
+    default_expand: ClassVar[str] = "connections,endpoints"
 
     schema: FlextTypes.Dict = cast(
         "FlextTypes.Dict",
@@ -50,7 +49,11 @@ class IntegrationsStream(OICBaseStream):
             th.Property("status", th.StringType(), description="Integration status"),
             th.Property("pattern", th.StringType(), description="Integration pattern"),
             th.Property("style", th.StringType(), description="Integration style"),
-            th.Property("created", th.DateTimeType(), description="Creation timestamp"),
+            th.Property(
+                "created",
+                th.DateTimeType(),
+                description="Creation timestamp",
+            ),
             th.Property(
                 "lastUpdated",
                 th.DateTimeType(),
@@ -98,13 +101,13 @@ class ConnectionsStream(OICBaseStream):
     and connection properties for integrations.
     """
 
-    name = "connections"
-    path = "/connections"
-    primary_keys: ClassVar = ["id"]
-    replication_key = "lastUpdated"
-    api_category = "core"
-    requires_design_api = True
-    default_sort = "name:asc"
+    name: ClassVar[str] = "connections"
+    path: ClassVar[str] = "/connections"
+    primary_keys: ClassVar[list[str]] = ["id"]
+    replication_key: ClassVar[str] = "lastUpdated"
+    api_category: ClassVar[str] = "core"
+    requires_design_api: ClassVar[bool] = True
+    default_sort: ClassVar[str] = "name:asc"
 
     schema: FlextTypes.Dict = cast(
         "FlextTypes.Dict",
@@ -126,7 +129,11 @@ class ConnectionsStream(OICBaseStream):
                 "adapterVersion", th.StringType(), description="Adapter version"
             ),
             th.Property("status", th.StringType(), description="Connection status"),
-            th.Property("created", th.DateTimeType(), description="Creation timestamp"),
+            th.Property(
+                "created",
+                th.DateTimeType(),
+                description="Creation timestamp",
+            ),
             th.Property(
                 "lastUpdated",
                 th.DateTimeType(),
@@ -162,12 +169,12 @@ class PackagesStream(OICBaseStream):
     including package metadata and content information.
     """
 
-    name = "packages"
-    path = "/packages"
-    primary_keys: ClassVar = ["id"]
-    replication_key = "lastUpdated"
-    api_category = "core"
-    default_sort = "lastUpdated:desc"
+    name: ClassVar[str] = "packages"
+    path: ClassVar[str] = "/packages"
+    primary_keys: ClassVar[list[str]] = ["id"]
+    replication_key: ClassVar[str] = "lastUpdated"
+    api_category: ClassVar[str] = "core"
+    default_sort: ClassVar[str] = "lastUpdated:desc"
 
     schema: FlextTypes.Dict = cast(
         "FlextTypes.Dict",
@@ -179,7 +186,11 @@ class PackagesStream(OICBaseStream):
             ),
             th.Property("version", th.StringType(), description="Package version"),
             th.Property("status", th.StringType(), description="Package status"),
-            th.Property("created", th.DateTimeType(), description="Creation timestamp"),
+            th.Property(
+                "created",
+                th.DateTimeType(),
+                description="Creation timestamp",
+            ),
             th.Property(
                 "lastUpdated",
                 th.DateTimeType(),
@@ -214,11 +225,11 @@ class LookupsStream(OICBaseStream):
     and transformations across integrations.
     """
 
-    name = "lookups"
-    path = "/lookups"
-    primary_keys: ClassVar = ["name"]
-    replication_key = "lastUpdated"
-    api_category = "core"
+    name: ClassVar[str] = "lookups"
+    path: ClassVar[str] = "/lookups"
+    primary_keys: ClassVar[list[str]] = ["name"]
+    replication_key: ClassVar[str] = "lastUpdated"
+    api_category: ClassVar[str] = "core"
 
     schema: FlextTypes.Dict = cast(
         "FlextTypes.Dict",
@@ -229,7 +240,11 @@ class LookupsStream(OICBaseStream):
             ),
             th.Property("type", th.StringType(), description="Lookup type"),
             th.Property("status", th.StringType(), description="Lookup status"),
-            th.Property("created", th.DateTimeType(), description="Creation timestamp"),
+            th.Property(
+                "created",
+                th.DateTimeType(),
+                description="Creation timestamp",
+            ),
             th.Property(
                 "lastUpdated",
                 th.DateTimeType(),
@@ -267,11 +282,11 @@ class LibrariesStream(OICBaseStream):
     XSLT stylesheets, and custom functions.
     """
 
-    name = "libraries"
-    path = "/libraries"
-    primary_keys: ClassVar = ["id"]
-    replication_key = "lastUpdated"
-    api_category = "infrastructure"
+    name: ClassVar[str] = "libraries"
+    path: ClassVar[str] = "/libraries"
+    primary_keys: ClassVar[list[str]] = ["id"]
+    replication_key: ClassVar[str] = "lastUpdated"
+    api_category: ClassVar[str] = "infrastructure"
 
     schema: FlextTypes.Dict = cast(
         "FlextTypes.Dict",
@@ -283,7 +298,11 @@ class LibrariesStream(OICBaseStream):
             ),
             th.Property("type", th.StringType(), description="Library type"),
             th.Property("status", th.StringType(), description="Library status"),
-            th.Property("created", th.DateTimeType(), description="Creation timestamp"),
+            th.Property(
+                "created",
+                th.DateTimeType(),
+                description="Creation timestamp",
+            ),
             th.Property(
                 "lastUpdated",
                 th.DateTimeType(),
@@ -314,11 +333,11 @@ class CertificatesStream(OICBaseStream):
     message encryption, and digital signatures.
     """
 
-    name = "certificates"
-    path = "/certificates"
-    primary_keys: ClassVar = ["name"]
-    replication_key = "lastUpdated"
-    api_category = "security"
+    name: ClassVar[str] = "certificates"
+    path: ClassVar[str] = "/certificates"
+    primary_keys: ClassVar[list[str]] = ["name"]
+    replication_key: ClassVar[str] = "lastUpdated"
+    api_category: ClassVar[str] = "security"
 
     schema: FlextTypes.Dict = cast(
         "FlextTypes.Dict",
@@ -331,7 +350,11 @@ class CertificatesStream(OICBaseStream):
             ),
             th.Property("type", th.StringType(), description="Certificate type"),
             th.Property("status", th.StringType(), description="Certificate status"),
-            th.Property("created", th.DateTimeType(), description="Creation timestamp"),
+            th.Property(
+                "created",
+                th.DateTimeType(),
+                description="Creation timestamp",
+            ),
             th.Property(
                 "lastUpdated",
                 th.DateTimeType(),
@@ -339,7 +362,9 @@ class CertificatesStream(OICBaseStream):
             ),
             th.Property("createdBy", th.StringType(), description="Created by user"),
             th.Property(
-                "expirationDate", th.DateTimeType(), description="Expiration date"
+                "expirationDate",
+                th.DateTimeType(),
+                description="Expiration date",
             ),
             th.Property("issuer", th.StringType(), description="Certificate issuer"),
             th.Property("subject", th.StringType(), description="Certificate subject"),
@@ -361,11 +386,11 @@ class AdaptersStream(OICBaseStream):
     capabilities, and configuration options.
     """
 
-    name = "adapters"
-    path = "/adapters"
-    primary_keys: ClassVar = ["id"]
-    replication_key = None  # Static metadata
-    api_category = "infrastructure"
+    name: ClassVar[str] = "adapters"
+    path: ClassVar[str] = "/adapters"
+    primary_keys: ClassVar[list[str]] = ["id"]
+    replication_key: ClassVar[str | None] = None  # Static metadata
+    api_category: ClassVar[str] = "infrastructure"
 
     schema: FlextTypes.Dict = cast(
         "FlextTypes.Dict",
@@ -412,12 +437,12 @@ class ProjectsStream(OICBaseStream):
     permissions, and resource grouping.
     """
 
-    name = "projects"
-    path = "/projects"
-    primary_keys: ClassVar = ["id"]
-    replication_key = "lastUpdated"
-    api_category = "extended"
-    requires_design_api = True
+    name: ClassVar[str] = "projects"
+    path: ClassVar[str] = "/projects"
+    primary_keys: ClassVar[list[str]] = ["id"]
+    replication_key: ClassVar[str] = "lastUpdated"
+    api_category: ClassVar[str] = "extended"
+    requires_design_api: ClassVar[bool] = True
 
     schema: FlextTypes.Dict = cast(
         "FlextTypes.Dict",
@@ -428,7 +453,11 @@ class ProjectsStream(OICBaseStream):
                 "description", th.StringType(), description="Project description"
             ),
             th.Property("status", th.StringType(), description="Project status"),
-            th.Property("created", th.DateTimeType(), description="Creation timestamp"),
+            th.Property(
+                "created",
+                th.DateTimeType(),
+                description="Creation timestamp",
+            ),
             th.Property(
                 "lastUpdated",
                 th.DateTimeType(),
@@ -474,12 +503,12 @@ class ExecutionsStream(OICBaseStream):
     performance metrics, and error information.
     """
 
-    name = "executions"
-    path = "/monitoring/v1/integrations"
-    primary_keys: ClassVar = ["instanceId"]
-    replication_key = "startTime"
-    api_category = "monitoring"
-    requires_monitoring_api = True
+    name: ClassVar[str] = "executions"
+    path: ClassVar[str] = "/monitoring/v1/integrations"
+    primary_keys: ClassVar[list[str]] = ["instanceId"]
+    replication_key: ClassVar[str] = "startTime"
+    api_category: ClassVar[str] = "monitoring"
+    requires_monitoring_api: ClassVar[bool] = True
 
     schema: FlextTypes.Dict = cast(
         "FlextTypes.Dict",
@@ -497,9 +526,15 @@ class ExecutionsStream(OICBaseStream):
             ),
             th.Property("status", th.StringType(), description="Execution status"),
             th.Property(
-                "startTime", th.DateTimeType(), description="Execution start time"
+                "startTime",
+                th.DateTimeType(),
+                description="Execution start time",
             ),
-            th.Property("endTime", th.DateTimeType(), description="Execution end time"),
+            th.Property(
+                "endTime",
+                th.DateTimeType(),
+                description="Execution end time",
+            ),
             th.Property(
                 "duration",
                 th.IntegerType(),
@@ -524,19 +559,23 @@ class MetricsStream(OICBaseStream):
     connections, and overall system health.
     """
 
-    name = "metrics"
-    path = "/monitoring/v1/metrics"
-    primary_keys: ClassVar = ["metricId", "timestamp"]
-    replication_key = "timestamp"
-    api_category = "monitoring"
-    requires_monitoring_api = True
+    name: ClassVar[str] = "metrics"
+    path: ClassVar[str] = "/monitoring/v1/metrics"
+    primary_keys: ClassVar[list[str]] = ["metricId", "timestamp"]
+    replication_key: ClassVar[str] = "timestamp"
+    api_category: ClassVar[str] = "monitoring"
+    requires_monitoring_api: ClassVar[bool] = True
 
     schema: FlextTypes.Dict = cast(
         "FlextTypes.Dict",
         th.PropertiesList(
             th.Property("metricId", th.StringType(), description="Metric ID"),
             th.Property("metricName", th.StringType(), description="Metric name"),
-            th.Property("timestamp", th.DateTimeType(), description="Metric timestamp"),
+            th.Property(
+                "timestamp",
+                th.DateTimeType(),
+                description="Metric timestamp",
+            ),
             th.Property("value", th.NumberType(), description="Metric value"),
             th.Property("unit", th.StringType(), description="Metric unit"),
             th.Property("tags", th.ObjectType(), description="Metric tags"),
@@ -555,6 +594,7 @@ class MetricsStream(OICBaseStream):
 
 
 # CONSOLIDATED STREAM REGISTRY
+
 
 ALL_STREAMS = {
     # Core business streams

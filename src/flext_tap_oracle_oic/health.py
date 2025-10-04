@@ -13,8 +13,8 @@ from datetime import UTC, datetime
 from typing import override
 
 from flext_api import FlextApiClient
-
 from flext_core import FlextTypes
+
 from flext_tap_oracle_oic import OAuthAuthenticator
 
 JSON_MIME = "application/json"

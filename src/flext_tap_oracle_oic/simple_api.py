@@ -13,13 +13,12 @@ from __future__ import annotations
 import os
 from typing import cast
 
+from flext_core import FlextResult, FlextTypes
 from flext_oracle_oic import (
     OICAuthConfig,
     OICConnectionConfig,
 )
 from pydantic import SecretStr
-
-from flext_core import FlextResult, FlextTypes
 
 
 def setup_oic_tap(

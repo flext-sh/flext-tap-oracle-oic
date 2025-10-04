@@ -10,9 +10,9 @@ from __future__ import annotations
 import importlib.metadata
 from typing import Final
 
+from flext_core import FlextLogger, FlextModels, FlextResult, FlextTypes
 from flext_meltano import FlextMeltanoBridge, FlextMeltanoConfig, FlextMeltanoService
 
-from flext_core import FlextLogger, FlextModels, FlextResult, FlextTypes
 from flext_tap_oracle_oic.config import (
     FlextTapOracleOicConfig,
     create_oracle_oic_tap_config,

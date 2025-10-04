@@ -13,15 +13,17 @@ from datetime import UTC, datetime
 from typing import override
 
 from flext_api import FlextApiClient
-from flext_meltano import FlextTapStream
-
 from flext_core import (
     FlextExceptions as FlextServiceError,
     FlextLogger,
     FlextResult,
     FlextTypes,
 )
-from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
+from flext_meltano import StreamDefinition as FlextTapStream
+
+from flext_tap_oracle_oic.constants import (
+    FlextOracleOicConstants as FlextTapOracleOicConstants,
+)
 
 # Constants for paginator and response tracking
 RESPONSE_TIME_HISTORY_SIZE = 10
