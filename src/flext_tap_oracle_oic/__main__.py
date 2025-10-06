@@ -1,14 +1,21 @@
-"""Entry point for Oracle Integration Cloud Singer Tap.
+"""Python module execution entry point for FLEXT Tap Oracle OIC.
 
-This module provides the main command-line interface for the tap-oic Singer tap.
-It can be executed as a module using:
-          python -m tap_oic
+Enables execution via `python -m flext_tap_oracle_oic` with full Singer SDK
+CLI support and flext-meltano SingerCliTranslator compatibility.
+
+This module provides the main command-line interface for the Oracle Integration
+Cloud Singer tap with complete Singer protocol compliance and orchestration
+integration through flext-meltano.
+
+Usage:
+    python -m flext_tap_oracle_oic --config config.json --discover
+    python -m flext_tap_oracle_oic --config config.json --catalog catalog.json
+    python -m flext_tap_oracle_oic --config config.json --catalog catalog.json --state state.json
 
 Architecture:
-    Improved CLI with 100% Singer SDK compatibility and organized subcommands
-- Default: Standard Singer TAP protocol (--discover, --catalog, etc.)
-- Extended: Well-organized subcommands (extract, lifecycle, monitor, admin)
-
+    - Standard Singer TAP protocol (--discover, --catalog, --state)
+    - Singer SDK CLI integration for full protocol compliance
+    - flext-meltano SingerCliTranslator compatibility for orchestration
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -16,13 +23,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tap_oracle_oic.tap_client import TapOracleOIC
-
-
-def main() -> None:
-    """Provide entry point for Oracle OIC tap."""
-    TapOracleOIC.cli()
-
+from flext_tap_oracle_oic.cli import main
 
 if __name__ == "__main__":
     main()
