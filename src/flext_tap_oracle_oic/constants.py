@@ -11,20 +11,20 @@ from __future__ import annotations
 from typing import ClassVar
 
 from flext_core import FlextConstants, FlextTypes
-from flext_oracle_oic import FlextOracleOicExtConstants
+from flext_oracle_oic import FlextOracleOicConstants
 
 
 class FlextOracleOicConstants(FlextConstants):
     """FLEXT Oracle OIC TAP constants extending flext-core platform constants.
 
-    Composes with FlextOracleOicExtConstants to avoid duplication and ensure consistency.
+    Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
     """
 
     # Import Oracle OIC Extension constants from flext-oracle-oic (composition pattern)
-    from flext_oracle_oic.constants import FlextOracleOicExtConstants
+    from flext_oracle_oic.constants import FlextOracleOicConstants
 
     # Oracle OIC API Constants using composition
-    OIC_API_BASE_PATH = FlextOracleOicExtConstants.API.ENDPOINT_INTEGRATIONS.replace(
+    OIC_API_BASE_PATH = FlextOracleOicConstants.API.ENDPOINT_INTEGRATIONS.replace(
         "/integrations", ""
     )
     OIC_MONITORING_API_PATH = "/ic/api/integration/v1/monitoring"
@@ -104,28 +104,24 @@ class FlextOracleOicConstants(FlextConstants):
     class Connection:
         """OIC connection configuration."""
 
-        DEFAULT_TIMEOUT = FlextOracleOicExtConstants.OIC.DEFAULT_TIMEOUT
-        DEFAULT_MAX_RETRIES = FlextOracleOicExtConstants.OIC.DEFAULT_MAX_RETRIES
-        DEFAULT_VERIFY_SSL = FlextOracleOicExtConstants.OIC.DEFAULT_VERIFY_SSL
+        DEFAULT_TIMEOUT = FlextOracleOicConstants.OIC.DEFAULT_TIMEOUT
+        DEFAULT_MAX_RETRIES = FlextOracleOicConstants.OIC.DEFAULT_MAX_RETRIES
+        DEFAULT_VERIFY_SSL = FlextOracleOicConstants.OIC.DEFAULT_VERIFY_SSL
 
     class Processing:
         """OIC tap processing configuration."""
 
-        DEFAULT_PAGE_SIZE = FlextOracleOicExtConstants.OIC.DEFAULT_PAGE_SIZE
-        MAX_PAGE_SIZE = FlextOracleOicExtConstants.OIC.MAX_PAGE_SIZE
-        MIN_PAGE_SIZE = FlextOracleOicExtConstants.OIC.MIN_PAGE_SIZE
+        DEFAULT_PAGE_SIZE = FlextOracleOicConstants.OIC.DEFAULT_PAGE_SIZE
+        MAX_PAGE_SIZE = FlextOracleOicConstants.OIC.MAX_PAGE_SIZE
+        MIN_PAGE_SIZE = FlextOracleOicConstants.OIC.MIN_PAGE_SIZE
 
     class Auth:
         """OIC authentication configuration."""
 
-        DEFAULT_OAUTH_CLIENT_ID = (
-            FlextOracleOicExtConstants.Auth.DEFAULT_OAUTH_CLIENT_ID
-        )
-        DEFAULT_OAUTH_TOKEN_URL = (
-            FlextOracleOicExtConstants.Auth.DEFAULT_OAUTH_TOKEN_URL
-        )
+        DEFAULT_OAUTH_CLIENT_ID = FlextOracleOicConstants.Auth.DEFAULT_OAUTH_CLIENT_ID
+        DEFAULT_OAUTH_TOKEN_URL = FlextOracleOicConstants.Auth.DEFAULT_OAUTH_TOKEN_URL
         DEFAULT_TOKEN_EXPIRY_SECONDS = (
-            FlextOracleOicExtConstants.Auth.DEFAULT_TOKEN_EXPIRY_SECONDS
+            FlextOracleOicConstants.Auth.DEFAULT_TOKEN_EXPIRY_SECONDS
         )
 
 
