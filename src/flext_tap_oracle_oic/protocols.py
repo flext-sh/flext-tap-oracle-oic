@@ -5,7 +5,7 @@ from typing import Protocol, runtime_checkable
 from flext_core import FlextProtocols, FlextResult, FlextTypes
 
 
-class FlextTapOracleOicProtocols:
+class FlextMeltanoTapOracleOicProtocols:
     """Singer Tap Oracle OIC protocols with explicit re-exports from FlextProtocols foundation.
 
     Domain Extension Pattern (Phase 3):
@@ -76,5 +76,5 @@ class FlextTapOracleOicProtocols:
 
 
 __all__ = [
-    "FlextTapOracleOicProtocols",
+    "FlextMeltanoTapOracleOicProtocols",
 ]

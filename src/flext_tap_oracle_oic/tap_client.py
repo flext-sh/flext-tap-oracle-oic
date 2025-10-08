@@ -15,9 +15,9 @@ from typing import ClassVar, cast, override
 
 from flext_api import FlextApiClient
 from flext_core import FlextLogger, FlextResult, FlextTypes
-from flext_meltano import FlextStream as Stream, FlextTap as Tap
+from flext_meltano import FlextMeltanoStream as Stream, FlextMeltanoTap as Tap
 
-from flext_tap_oracle_oic.config import FlextTapOracleOicConfig
+from flext_tap_oracle_oic.config import FlextMeltanoTapOracleOicConfig
 from flext_tap_oracle_oic.streams_consolidated import (
     ALL_STREAMS,
     CORE_STREAMS,
@@ -38,7 +38,7 @@ class OICExtensionAuthenticator:
     """Real Oracle OIC OAuth2 authenticator implementation."""
 
     @override
-    def __init__(self, config: FlextTapOracleOicConfig) -> None:
+    def __init__(self, config: FlextMeltanoTapOracleOicConfig) -> None:
         """Initialize authenticator with OAuth2 configuration."""
         self.config = config
         self._access_token: str | None = None
@@ -91,7 +91,7 @@ class OracleOICClient:
     @override
     def __init__(
         self,
-        config: FlextTapOracleOicConfig,
+        config: FlextMeltanoTapOracleOicConfig,
         authenticator: OICExtensionAuthenticator,
     ) -> None:
         """Initialize OIC API client."""
@@ -102,10 +102,10 @@ class OracleOICClient:
             timeout=config.timeout,
         )
 
-        # ZERO TOLERANCE FIX: Use FlextTapOracleOicUtilities for ALL business operations
-        from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
+        # ZERO TOLERANCE FIX: Use FlextMeltanoTapOracleOicUtilities for ALL business operations
+        from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
 
-        self._utilities = FlextTapOracleOicUtilities()
+        self._utilities = FlextMeltanoTapOracleOicUtilities()
 
     def _get_auth_headers(self) -> FlextResult[FlextTypes.StringDict]:
         """Get authorization headers with OAuth2 token."""
@@ -263,10 +263,10 @@ class TapOracleOIC(Tap):
         )
         self._client: OracleOICClient | None = None
 
-        # ZERO TOLERANCE FIX: Use FlextTapOracleOicUtilities for ALL business operations
-        from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
+        # ZERO TOLERANCE FIX: Use FlextMeltanoTapOracleOicUtilities for ALL business operations
+        from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
 
-        self._utilities = FlextTapOracleOicUtilities()
+        self._utilities = FlextMeltanoTapOracleOicUtilities()
 
     @property
     def client(self: object) -> OracleOICClient:
@@ -283,7 +283,7 @@ class TapOracleOIC(Tap):
                 raise ValueError(msg)
 
             # Create unified OIC configuration
-            oic_config = FlextTapOracleOicConfig(
+            oic_config = FlextMeltanoTapOracleOicConfig(
                 oauth_client_id=self.config["oauth_client_id"],
                 oauth_client_secret=self.config["oauth_client_secret"],
                 oauth_token_url=self.config["oauth_token_url"],

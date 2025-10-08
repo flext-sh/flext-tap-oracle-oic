@@ -9,7 +9,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Literal, Self
 
-from flext_core import FlextModels, FlextTypes
+from flext_core import FlextConstants, FlextModels, FlextTypes
 from pydantic import (
     ConfigDict,
     Field,
@@ -60,7 +60,7 @@ AUTHORIZATION = "AUTHORIZATION"
 RATE_LIMIT = "RATE_LIMIT"
 
 
-class FlextTapOracleOicModels(FlextModels):
+class FlextMeltanoTapOracleOicModels(FlextModels):
     """Oracle Integration Cloud tap models extending flext-core FlextModels.
 
     Provides comprehensive models for OIC entity extraction, authentication,
@@ -275,7 +275,7 @@ class FlextTapOracleOicModels(FlextModels):
             if not self.base_url.startswith("https://"):
                 msg = "OIC base URL must use HTTPS"
                 raise ValueError(msg)
-            if self.token_expiry_buffer < 60:
+            if self.token_expiry_buffer < FlextConstants.Config.MIN_TOKEN_EXPIRY_BUFFER:
                 msg = "Token expiry buffer must be at least 60 seconds"
                 raise ValueError(msg)
             return self
@@ -1141,5 +1141,5 @@ class FlextTapOracleOicModels(FlextModels):
 
 
 __all__ = [
-    "FlextTapOracleOicModels",
+    "FlextMeltanoTapOracleOicModels",
 ]

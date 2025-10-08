@@ -23,7 +23,7 @@ from flext_core import FlextTypes
 
 
 # Singer Oracle OIC tap domain TypeVars
-class FlextTapOracleOicTypes(FlextTypes):
+class FlextMeltanoTapOracleOicTypes(FlextTypes):
     """Singer Oracle OIC tap-specific type definitions extending FlextTypes.
 
     Domain-specific type system for Singer Oracle OIC tap operations.
@@ -226,5 +226,5 @@ class FlextTapOracleOicTypes(FlextTypes):
 # =============================================================================
 
 __all__: FlextTypes.StringList = [
-    "FlextTapOracleOicTypes",
+    "FlextMeltanoTapOracleOicTypes",
 ]

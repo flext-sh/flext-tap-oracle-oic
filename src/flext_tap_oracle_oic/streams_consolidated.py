@@ -11,12 +11,12 @@ from __future__ import annotations
 from typing import ClassVar, cast
 
 from flext_core import FlextTypes
-from flext_meltano import FlextSingerTypes
+from flext_meltano import FlextMeltanoTypes
 
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
 
-# Initialize FlextSingerTypes for compatibility
-th = FlextSingerTypes()
+# Initialize FlextMeltanoTypes for compatibility
+th = FlextMeltanoTypes()
 
 
 class IntegrationsStream(OICBaseStream):
