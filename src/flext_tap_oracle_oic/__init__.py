@@ -14,11 +14,11 @@ from flext_core import FlextLogger, FlextModels, FlextResult, FlextTypes
 from flext_meltano import FlextMeltanoBridge, FlextMeltanoConfig, FlextMeltanoService
 
 from flext_tap_oracle_oic.config import (
-    FlextTapOracleOicConfig,
+    FlextMeltanoTapOracleOicConfig,
     create_oracle_oic_tap_config,
 )
-from flext_tap_oracle_oic.models import FlextTapOracleOicModels
-from flext_tap_oracle_oic.protocols import FlextTapOracleOicProtocols
+from flext_tap_oracle_oic.models import FlextMeltanoTapOracleOicModels
+from flext_tap_oracle_oic.protocols import FlextMeltanoTapOracleOicProtocols
 from flext_tap_oracle_oic.simple_api import setup_oic_tap as create_oic_tap
 from flext_tap_oracle_oic.tap_client import OracleOICClient, TapOracleOIC
 from flext_tap_oracle_oic.tap_exceptions import (
@@ -28,16 +28,16 @@ from flext_tap_oracle_oic.tap_exceptions import (
     OICValidationError,
 )
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
-from flext_tap_oracle_oic.version import VERSION, FlextTapOracleOicVersion
+from flext_tap_oracle_oic.version import VERSION, FlextMeltanoTapOracleOicVersion
 
 try:
-    from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
+    from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
 
     __version__ = importlib.metadata.version("flext-tap-oracle-oic")
 except importlib.metadata.PackageNotFoundError:
     __version__ = "0.9.0"
 
-PROJECT_VERSION: Final[FlextTapOracleOicVersion] = VERSION
+PROJECT_VERSION: Final[FlextMeltanoTapOracleOicVersion] = VERSION
 
 __version__: str = VERSION.version
 __version_info__: tuple[int | str, ...] = VERSION.version_info
@@ -49,13 +49,13 @@ __all__ = [
     "FlextMeltanoBridge",
     "FlextMeltanoConfig",
     "FlextMeltanoService",
+    "FlextMeltanoTapOracleOicConfig",
+    "FlextMeltanoTapOracleOicModels",
+    "FlextMeltanoTapOracleOicProtocols",
+    "FlextMeltanoTapOracleOicUtilities",
+    "FlextMeltanoTapOracleOicVersion",
     "FlextModels",
     "FlextResult",
-    "FlextTapOracleOicConfig",
-    "FlextTapOracleOicModels",
-    "FlextTapOracleOicProtocols",
-    "FlextTapOracleOicUtilities",
-    "FlextTapOracleOicVersion",
     "FlextTypes",
     "OICAPIError",
     "OICAuthenticationError",

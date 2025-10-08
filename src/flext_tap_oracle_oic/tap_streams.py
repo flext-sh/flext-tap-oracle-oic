@@ -1,12 +1,11 @@
-"""Module docstring."""
-
-from __future__ import annotations
-
 """Oracle Integration Cloud stream definitions - PEP8 reorganized.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
+
+from __future__ import annotations
+
 import re
 from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
@@ -19,11 +18,10 @@ from flext_core import (
     FlextResult,
     FlextTypes,
 )
-from flext_meltano import StreamDefinition as FlextTapStream
+from flext_meltano import FlextMeltanoStream
 
-from flext_tap_oracle_oic.constants import (
-    FlextOracleOicConstants as FlextTapOracleOicConstants,
-)
+from flext_tap_oracle_oic.constants import FlextOracleOicConstants
+from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
 
 # Constants for paginator and response tracking
 RESPONSE_TIME_HISTORY_SIZE = 10
@@ -127,7 +125,7 @@ class OICPaginator:
                 self._page_size = min(self._max_page_size, int(self._page_size * 1.2))
 
 
-class OICBaseStream(FlextTapStream):
+class OICBaseStream(FlextMeltanoStream):
     """Professional base stream class for Oracle Integration Cloud APIs.
 
     Enterprise-grade stream implementation with:
@@ -149,10 +147,8 @@ class OICBaseStream(FlextTapStream):
             Base URL with appropriate OIC API endpoint for stream type.
 
         """
-        # ZERO TOLERANCE FIX: Use FlextTapOracleOicUtilities for URL operations
-        from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
-
-        utilities = FlextTapOracleOicUtilities()
+        # ZERO TOLERANCE FIX: Use FlextMeltanoTapOracleOicUtilities for URL operations
+        utilities = FlextMeltanoTapOracleOicUtilities()
 
         base_url = str(
             self.config.get("base_url") or self.config.get("oic_url", ""),
@@ -186,16 +182,16 @@ class OICBaseStream(FlextTapStream):
             return base_url + str(self.api_path)
         if hasattr(self, "api_category"):
             api_paths = {
-                "core": FlextTapOracleOicConstants.OIC_API_BASE_PATH,
-                "monitoring": FlextTapOracleOicConstants.OIC_MONITORING_API_PATH,
-                "b2b": FlextTapOracleOicConstants.OIC_B2B_API_PATH,
-                "process": FlextTapOracleOicConstants.OIC_PROCESS_API_PATH,
+                "core": FlextOracleOicConstants.OIC_API_BASE_PATH,
+                "monitoring": FlextOracleOicConstants.OIC_MONITORING_API_PATH,
+                "b2b": FlextOracleOicConstants.OIC_B2B_API_PATH,
+                "process": FlextOracleOicConstants.OIC_PROCESS_API_PATH,
             }
             return base_url + api_paths.get(
-                self.api_category, FlextTapOracleOicConstants.OIC_API_BASE_PATH
+                self.api_category, FlextOracleOicConstants.OIC_API_BASE_PATH
             )
 
-        return base_url + FlextTapOracleOicConstants.OIC_API_BASE_PATH
+        return base_url + FlextOracleOicConstants.OIC_API_BASE_PATH
 
     @property
     def api_client(self: object) -> FlextApiClient:

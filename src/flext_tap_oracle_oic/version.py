@@ -14,10 +14,11 @@ __version__: Final[str] = f"{MAJOR}.{MINOR}.{PATCH}"
 __version_info__: Final[tuple[int, int, int]] = (MAJOR, MINOR, PATCH)
 
 
-class FlextTapOracleOicVersion:
+class FlextMeltanoTapOracleOicVersion:
     """Version information container for flext-tap-oracle-oic."""
 
     def __init__(self) -> None:
+        """Initialize version information."""
         self.major = MAJOR
         self.minor = MINOR
         self.patch = PATCH
@@ -25,11 +26,18 @@ class FlextTapOracleOicVersion:
         self.version_info = __version_info__
 
     @classmethod
-    def current(cls) -> FlextTapOracleOicVersion:
+    def current(cls) -> FlextMeltanoTapOracleOicVersion:
         """Return current version information."""
         return cls()
 
 
-VERSION: Final[FlextTapOracleOicVersion] = FlextTapOracleOicVersion.current()
+VERSION: Final[FlextMeltanoTapOracleOicVersion] = (
+    FlextMeltanoTapOracleOicVersion.current()
+)
 
-__all__ = ["VERSION", "FlextTapOracleOicVersion", "__version__", "__version_info__"]
+__all__ = [
+    "VERSION",
+    "FlextMeltanoTapOracleOicVersion",
+    "__version__",
+    "__version_info__",
+]

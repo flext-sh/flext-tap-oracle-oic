@@ -14,7 +14,7 @@ from urllib.parse import urljoin, urlparse
 from flext_core import FlextResult, FlextTypes, FlextUtilities
 
 
-class FlextTapOracleOicUtilities(FlextUtilities):
+class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
     """Single unified utilities class for Singer tap Oracle OIC operations.
 
     Follows FLEXT unified class pattern with nested helper classes for
@@ -162,10 +162,8 @@ class FlextTapOracleOicUtilities(FlextUtilities):
             """
             try:
                 # Validate base URL
-                validation_result = (
-                    FlextTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
-                        base_url
-                    )
+                validation_result = FlextMeltanoTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
+                    base_url
                 )
                 if validation_result.is_failure:
                     return FlextResult[str].fail(
@@ -243,7 +241,7 @@ class FlextTapOracleOicUtilities(FlextUtilities):
             return {
                 "has_more": response.get("hasMore", False),
                 "limit": response.get(
-                    "limit", FlextTapOracleOicUtilities.DEFAULT_PAGE_SIZE
+                    "limit", FlextMeltanoTapOracleOicUtilities.DEFAULT_PAGE_SIZE
                 ),
                 "offset": response.get("offset", 0),
                 "total_count": response.get("count", 0),
@@ -404,10 +402,8 @@ class FlextTapOracleOicUtilities(FlextUtilities):
                 )
 
             # Validate OIC base URL
-            url_validation = (
-                FlextTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
-                    config["oic_base_url"]
-                )
+            url_validation = FlextMeltanoTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
+                config["oic_base_url"]
             )
             if url_validation.is_failure:
                 return FlextResult[FlextTypes.Dict].fail(
@@ -541,8 +537,10 @@ class FlextTapOracleOicUtilities(FlextUtilities):
                 object: Bookmark value or None
 
             """
-            stream_state = FlextTapOracleOicUtilities.StateManagement.get_stream_state(
-                state, stream_name
+            stream_state = (
+                FlextMeltanoTapOracleOicUtilities.StateManagement.get_stream_state(
+                    state, stream_name
+                )
             )
             return stream_state.get(bookmark_key)
 
@@ -590,7 +588,7 @@ class FlextTapOracleOicUtilities(FlextUtilities):
                 FlextTypes.Dict: Updated state
 
             """
-            return FlextTapOracleOicUtilities.StateManagement.set_bookmark(
+            return FlextMeltanoTapOracleOicUtilities.StateManagement.set_bookmark(
                 state,
                 stream_name,
                 "pagination_offset",
@@ -617,7 +615,7 @@ class FlextTapOracleOicUtilities(FlextUtilities):
 
             """
             if total_records <= 0:
-                return FlextTapOracleOicUtilities.DEFAULT_PAGE_SIZE
+                return FlextMeltanoTapOracleOicUtilities.DEFAULT_PAGE_SIZE
 
             calculated_size = max(1, total_records // target_requests)
             return min(calculated_size, 1000)  # OIC API limit
@@ -731,5 +729,5 @@ class FlextTapOracleOicUtilities(FlextUtilities):
 
 
 __all__ = [
-    "FlextTapOracleOicUtilities",
+    "FlextMeltanoTapOracleOicUtilities",
 ]

@@ -8,7 +8,7 @@ The tap supports standard Singer protocol operations:
 - Discovery: Generate catalog with `--discover`
 - Extraction: Run data extraction with `--config`, `--catalog`, `--state`
 
-Integration with flext-meltano's SingerCliTranslator enables automated
+Integration with flext-meltano's FlextMeltanoSingerCliTranslator enables automated
 command generation and pipeline orchestration.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
@@ -44,13 +44,16 @@ def main() -> None:
         tap-oracle-oic --config config.json --catalog catalog.json --state state.json
 
     Integration:
-        Compatible with flext-meltano SingerCliTranslator for orchestration:
+        Compatible with flext-meltano FlextMeltanoSingerCliTranslator for orchestration:
 
-        >>> from flext_meltano import SingerCliTranslator, FlextMeltanoModels
+        >>> from flext_meltano import (
+        ...     FlextMeltanoSingerCliTranslator,
+        ...     FlextMeltanoModels,
+        ... )
         >>> params = FlextMeltanoModels.TapRunParams(
         ...     tap_name="tap-oracle-oic", config_file="config.json", discover=True
         ... )
-        >>> command = SingerCliTranslator.translate_tap_run(params)
+        >>> command = FlextMeltanoSingerCliTranslator.translate_tap_run(params)
         >>> # Executes: ["tap-oracle-oic", "--config", "config.json", "--discover"]
 
     Raises:
