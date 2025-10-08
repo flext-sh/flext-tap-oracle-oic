@@ -20,9 +20,6 @@ class FlextOracleOicConstants(FlextConstants):
     Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
     """
 
-    # Import Oracle OIC Extension constants from flext-oracle-oic (composition pattern)
-    from flext_oracle_oic.constants import FlextOracleOicConstants
-
     # Oracle OIC API Constants using composition
     OIC_API_BASE_PATH = FlextOracleOicConstants.API.ENDPOINT_INTEGRATIONS.replace(
         "/integrations", ""

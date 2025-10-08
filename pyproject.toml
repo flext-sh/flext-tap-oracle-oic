@@ -18,17 +18,16 @@
         "Typing :: Typed",
     ]
     dependencies = [
-        "flext-core @ file:///home/marlonsc/flext/flext-core",
-        "flext-meltano @ file:///home/marlonsc/flext/flext-meltano",
-        "flext-observability @ file:///home/marlonsc/flext/flext-observability",
-        "flext-oracle-oic @ file:///home/marlonsc/flext/flext-oracle-oic",
+        "flext-core @ file:../flext-core",
+        "flext-meltano @ file:../flext-meltano",
+        "flext-observability @ file:../flext-observability",
+        "flext-oracle-oic @ file:../flext-oracle-oic",
         "pydantic-settings>=2.10.1",
         "pydantic>=2.11.7",
         "requests>=2.31.0",
     ]
     description = "FLEXT Tap Oracle OIC - Singer Tap for Oracle Integration Cloud"
     keywords = [
-        "",
         "data-extraction",
         "enterprise",
         "etl",

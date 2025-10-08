@@ -255,7 +255,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
 
         except (IndexError, AttributeError) as e:
             msg = f"URL validation failed: {e}"
-            raise ValueError(msg)
+            raise ValueError(msg) from e
 
         return self
 

@@ -24,6 +24,7 @@ from flext_tap_oracle_oic.streams_consolidated import (
     INFRASTRUCTURE_STREAMS,
 )
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
+from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
 
 # Constants
 HTTP_ERROR_STATUS_THRESHOLD = 400
@@ -103,8 +104,6 @@ class OracleOICClient:
         )
 
         # ZERO TOLERANCE FIX: Use FlextMeltanoTapOracleOicUtilities for ALL business operations
-        from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
-
         self._utilities = FlextMeltanoTapOracleOicUtilities()
 
     def _get_auth_headers(self) -> FlextResult[FlextTypes.StringDict]:
@@ -264,8 +263,6 @@ class TapOracleOIC(Tap):
         self._client: OracleOICClient | None = None
 
         # ZERO TOLERANCE FIX: Use FlextMeltanoTapOracleOicUtilities for ALL business operations
-        from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
-
         self._utilities = FlextMeltanoTapOracleOicUtilities()
 
     @property

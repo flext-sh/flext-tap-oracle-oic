@@ -158,16 +158,22 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
     def validate_oic_tap_system_consistency(self) -> Self:
         """Validate Singer Oracle OIC tap system consistency and configuration."""
         # Singer OIC tap authentication validation
-        if hasattr(self, "_oic_authentication") and self._oic_authentication:
-            if not hasattr(self, "OicAuthenticationConfig"):
-                msg = "OicAuthenticationConfig required when OIC authentication configured"
-                raise ValueError(msg)
+        if (
+            hasattr(self, "_oic_authentication")
+            and self._oic_authentication
+            and not hasattr(self, "OicAuthenticationConfig")
+        ):
+            msg = "OicAuthenticationConfig required when OIC authentication configured"
+            raise ValueError(msg)
 
         # Stream configuration validation
-        if hasattr(self, "_stream_configurations") and self._stream_configurations:
-            if not hasattr(self, "OicStreamConfiguration"):
-                msg = "OicStreamConfiguration required for stream configurations"
-                raise ValueError(msg)
+        if (
+            hasattr(self, "_stream_configurations")
+            and self._stream_configurations
+            and not hasattr(self, "OicStreamConfiguration")
+        ):
+            msg = "OicStreamConfiguration required for stream configurations"
+            raise ValueError(msg)
 
         # Singer protocol compliance validation
         if hasattr(self, "_singer_mode") and self._singer_mode:
@@ -247,8 +253,12 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             """OAuth2 authentication configuration summary."""
             return {
                 "oauth_setup": {
-                    "client_id": self.oauth_client_id[:8] + "..."
-                    if len(self.oauth_client_id) > 8
+                    "client_id": self.oauth_client_id[
+                        : FlextConstants.Validation.MIN_NAME_LENGTH
+                    ]
+                    + "..."
+                    if len(self.oauth_client_id)
+                    > FlextConstants.Validation.MIN_NAME_LENGTH
                     else self.oauth_client_id,
                     "token_endpoint": self.oauth_token_url,
                     "audience": self.oauth_client_aud,
@@ -349,7 +359,9 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                     "total_executions": self.execution_count or 0,
                     "total_errors": self.error_count or 0,
                     "error_rate": error_rate,
-                    "health_status": "healthy" if error_rate < 0.05 else "degraded",
+                    "health_status": "healthy"
+                    if error_rate < FlextConstants.Validation.MIN_PERCENTAGE / 20
+                    else "degraded",
                 },
                 "metadata": {
                     "pattern": self.pattern,
@@ -470,7 +482,11 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             if not self.name:
                 msg = "Connection name is required"
                 raise ValueError(msg)
-            if self.port is not None and not (1 <= self.port <= 65535):
+            if self.port is not None and not (
+                FlextConstants.Network.MIN_PORT
+                <= self.port
+                <= FlextConstants.Network.MAX_PORT
+            ):
                 msg = "Port must be between 1 and 65535"
                 raise ValueError(msg)
             return self
@@ -751,7 +767,9 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                 msg = "Integration ID is required"
                 raise ValueError(msg)
             if self.cpu_usage_percent is not None and not (
-                0 <= self.cpu_usage_percent <= 100
+                FlextConstants.Validation.MIN_PERCENTAGE
+                <= self.cpu_usage_percent
+                <= FlextConstants.Validation.MAX_PERCENTAGE
             ):
                 msg = "CPU usage must be between 0 and 100 percent"
                 raise ValueError(msg)
@@ -851,7 +869,11 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             if not self.agent_name:
                 msg = "Agent name is required"
                 raise ValueError(msg)
-            if self.port is not None and not (1 <= self.port <= 65535):
+            if self.port is not None and not (
+                FlextConstants.Network.MIN_PORT
+                <= self.port
+                <= FlextConstants.Network.MAX_PORT
+            ):
                 msg = "Port must be between 1 and 65535"
                 raise ValueError(msg)
             return self
@@ -943,7 +965,10 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             if self.replication_method == "INCREMENTAL" and not self.replication_key:
                 msg = "Incremental replication requires a replication key"
                 raise ValueError(msg)
-            if self.page_size <= 0 or self.page_size > 1000:
+            if (
+                self.page_size <= 0
+                or self.page_size > FlextConstants.Processing.MAX_BATCH_SIZE
+            ):
                 msg = "Page size must be between 1 and 1000"
                 raise ValueError(msg)
             return self
@@ -1130,7 +1155,9 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         def validate_error_context(self) -> Self:
             """Validate OIC error context."""
             if self.http_status_code is not None and not (
-                100 <= self.http_status_code <= 599
+                FlextConstants.Http.HTTP_STATUS_MIN
+                <= self.http_status_code
+                <= FlextConstants.Http.HTTP_STATUS_MAX
             ):
                 msg = "HTTP status code must be between 100 and 599"
                 raise ValueError(msg)
