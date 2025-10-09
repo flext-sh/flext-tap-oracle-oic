@@ -30,23 +30,9 @@ from flext_tap_oracle_oic.tap_exceptions import (
     OICValidationError,
 )
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
-from flext_tap_oracle_oic.version import VERSION, FlextMeltanoTapOracleOicVersion
-
-try:
-    from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
-
-    __version__ = importlib.metadata.version("flext-tap-oracle-oic")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "0.9.0"
-
-PROJECT_VERSION: Final[FlextMeltanoTapOracleOicVersion] = VERSION
-
-__version__: str = VERSION.version
-__version_info__: tuple[int | str, ...] = VERSION.version_info
+from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
 
 __all__ = [
-    "PROJECT_VERSION",
-    "VERSION",
     "FlextLogger",
     "FlextMeltanoBridge",
     "FlextMeltanoConfig",
@@ -55,7 +41,6 @@ __all__ = [
     "FlextMeltanoTapOracleOicModels",
     "FlextMeltanoTapOracleOicProtocols",
     "FlextMeltanoTapOracleOicUtilities",
-    "FlextMeltanoTapOracleOicVersion",
     "FlextModels",
     "FlextResult",
     "FlextTypes",
