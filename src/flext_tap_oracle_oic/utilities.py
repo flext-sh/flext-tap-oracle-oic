@@ -11,15 +11,15 @@ from datetime import UTC, datetime
 from typing import ClassVar, override
 from urllib.parse import urljoin, urlparse
 
-from flext_core import FlextResult, FlextTypes, FlextUtilities
+from flext_core import FlextCore
 
 
-class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
+class FlextMeltanoTapOracleOicUtilities(FlextCore.Utilities):
     """Single unified utilities class for Singer tap Oracle OIC operations.
 
     Follows FLEXT unified class pattern with nested helper classes for
     domain-specific Singer tap functionality with Oracle Integration Cloud.
-    Extends FlextUtilities with OIC-specific operations.
+    Extends FlextCore.Utilities with OIC-specific operations.
     """
 
     # Configuration constants
@@ -39,9 +39,9 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
         @staticmethod
         def create_schema_message(
             stream_name: str,
-            schema: FlextTypes.Dict,
-            key_properties: FlextTypes.StringList | None = None,
-        ) -> FlextTypes.Dict:
+            schema: FlextCore.Types.Dict,
+            key_properties: FlextCore.Types.StringList | None = None,
+        ) -> FlextCore.Types.Dict:
             """Create Singer schema message.
 
             Args:
@@ -50,7 +50,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 key_properties: List of key property names
 
             Returns:
-                FlextTypes.Dict: Singer schema message
+                FlextCore.Types.Dict: Singer schema message
 
             """
             return {
@@ -63,9 +63,9 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
         @staticmethod
         def create_record_message(
             stream_name: str,
-            record: FlextTypes.Dict,
+            record: FlextCore.Types.Dict,
             time_extracted: datetime | None = None,
-        ) -> FlextTypes.Dict:
+        ) -> FlextCore.Types.Dict:
             """Create Singer record message.
 
             Args:
@@ -74,7 +74,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 time_extracted: Timestamp when record was extracted
 
             Returns:
-                FlextTypes.Dict: Singer record message
+                FlextCore.Types.Dict: Singer record message
 
             """
             extracted_time = time_extracted or datetime.now(UTC)
@@ -86,14 +86,14 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             }
 
         @staticmethod
-        def create_state_message(state: FlextTypes.Dict) -> FlextTypes.Dict:
+        def create_state_message(state: FlextCore.Types.Dict) -> FlextCore.Types.Dict:
             """Create Singer state message.
 
             Args:
                 state: State data
 
             Returns:
-                FlextTypes.Dict: Singer state message
+                FlextCore.Types.Dict: Singer state message
 
             """
             return {
@@ -102,7 +102,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             }
 
         @staticmethod
-        def write_message(message: FlextTypes.Dict) -> None:
+        def write_message(message: FlextCore.Types.Dict) -> None:
             """Write Singer message to stdout.
 
             Args:
@@ -114,41 +114,41 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
         """Oracle OIC API processing utilities."""
 
         @staticmethod
-        def validate_oic_endpoint(endpoint_url: str) -> FlextResult[str]:
+        def validate_oic_endpoint(endpoint_url: str) -> FlextCore.Result[str]:
             """Validate Oracle OIC endpoint URL.
 
             Args:
                 endpoint_url: OIC endpoint URL
 
             Returns:
-                FlextResult[str]: Validated URL or error
+                FlextCore.Result[str]: Validated URL or error
 
             """
             if not endpoint_url:
-                return FlextResult[str].fail("OIC endpoint URL cannot be empty")
+                return FlextCore.Result[str].fail("OIC endpoint URL cannot be empty")
 
             try:
                 parsed = urlparse(endpoint_url)
                 if not parsed.scheme or not parsed.netloc:
-                    return FlextResult[str].fail("Invalid URL format")
+                    return FlextCore.Result[str].fail("Invalid URL format")
 
                 # Validate OIC-specific URL patterns
                 if "oic" not in parsed.netloc.lower():
-                    return FlextResult[str].fail(
+                    return FlextCore.Result[str].fail(
                         "URL does not appear to be an OIC endpoint"
                     )
 
-                return FlextResult[str].ok(endpoint_url)
+                return FlextCore.Result[str].ok(endpoint_url)
 
             except Exception as e:
-                return FlextResult[str].fail(f"URL validation error: {e}")
+                return FlextCore.Result[str].fail(f"URL validation error: {e}")
 
         @staticmethod
         def build_oic_api_url(
             base_url: str,
             resource_path: str,
-            query_params: FlextTypes.StringDict | None = None,
-        ) -> FlextResult[str]:
+            query_params: FlextCore.Types.StringDict | None = None,
+        ) -> FlextCore.Result[str]:
             """Build Oracle OIC API URL with proper formatting.
 
             Args:
@@ -157,7 +157,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 query_params: Optional query parameters
 
             Returns:
-                FlextResult[str]: Complete API URL or error
+                FlextCore.Result[str]: Complete API URL or error
 
             """
             try:
@@ -166,7 +166,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                     base_url
                 )
                 if validation_result.is_failure:
-                    return FlextResult[str].fail(
+                    return FlextCore.Result[str].fail(
                         f"Base URL validation failed: {validation_result.error}"
                     )
 
@@ -182,26 +182,26 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                     query_string = "&".join(f"{k}={v}" for k, v in query_params.items())
                     api_url = f"{api_url}?{query_string}"
 
-                return FlextResult[str].ok(api_url)
+                return FlextCore.Result[str].ok(api_url)
 
             except Exception as e:
-                return FlextResult[str].fail(f"URL building error: {e}")
+                return FlextCore.Result[str].fail(f"URL building error: {e}")
 
         @staticmethod
         def parse_oic_response(
-            response_data: FlextTypes.Dict,
-        ) -> FlextResult[FlextTypes.Dict]:
+            response_data: FlextCore.Types.Dict,
+        ) -> FlextCore.Result[FlextCore.Types.Dict]:
             """Parse Oracle OIC API response.
 
             Args:
                 response_data: Raw API response data
 
             Returns:
-                FlextResult[FlextTypes.Dict]: Parsed response or error
+                FlextCore.Result[FlextCore.Types.Dict]: Parsed response or error
 
             """
             if not response_data:
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextCore.Result[FlextCore.Types.Dict].fail(
                     "Response data cannot be empty"
                 )
 
@@ -222,20 +222,24 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                     parsed_response["items"] = response_data
                     parsed_response["count"] = len(response_data)
 
-                return FlextResult[FlextTypes.Dict].ok(parsed_response)
+                return FlextCore.Result[FlextCore.Types.Dict].ok(parsed_response)
 
             except Exception as e:
-                return FlextResult[FlextTypes.Dict].fail(f"Response parsing error: {e}")
+                return FlextCore.Result[FlextCore.Types.Dict].fail(
+                    f"Response parsing error: {e}"
+                )
 
         @staticmethod
-        def extract_pagination_info(response: FlextTypes.Dict) -> FlextTypes.Dict:
+        def extract_pagination_info(
+            response: FlextCore.Types.Dict,
+        ) -> FlextCore.Types.Dict:
             """Extract pagination information from OIC response.
 
             Args:
                 response: OIC API response
 
             Returns:
-                FlextTypes.Dict: Pagination information
+                FlextCore.Types.Dict: Pagination information
 
             """
             return {
@@ -276,15 +280,15 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
         @staticmethod
         def extract_integration_metadata(
-            integration_data: FlextTypes.Dict,
-        ) -> FlextTypes.Dict:
+            integration_data: FlextCore.Types.Dict,
+        ) -> FlextCore.Types.Dict:
             """Extract metadata from Oracle OIC integration data.
 
             Args:
                 integration_data: Raw integration data
 
             Returns:
-                FlextTypes.Dict: Extracted metadata
+                FlextCore.Types.Dict: Extracted metadata
 
             """
             if not integration_data:
@@ -311,18 +315,18 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             return metadata
 
         @staticmethod
-        def format_oic_timestamp(timestamp_str: str) -> FlextResult[str]:
+        def format_oic_timestamp(timestamp_str: str) -> FlextCore.Result[str]:
             """Format Oracle OIC timestamp to ISO format.
 
             Args:
                 timestamp_str: OIC timestamp string
 
             Returns:
-                FlextResult[str]: ISO formatted timestamp or error
+                FlextCore.Result[str]: ISO formatted timestamp or error
 
             """
             if not timestamp_str:
-                return FlextResult[str].fail("Timestamp string cannot be empty")
+                return FlextCore.Result[str].fail("Timestamp string cannot be empty")
 
             try:
                 # Handle common OIC timestamp formats
@@ -337,16 +341,16 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                     try:
                         dt = datetime.strptime(timestamp_str, fmt)
                         dt = dt.replace(tzinfo=UTC)
-                        return FlextResult[str].ok(dt.isoformat())
+                        return FlextCore.Result[str].ok(dt.isoformat())
                     except ValueError:
                         continue
 
-                return FlextResult[str].fail(
+                return FlextCore.Result[str].fail(
                     f"Unsupported timestamp format: {timestamp_str}"
                 )
 
             except Exception as e:
-                return FlextResult[str].fail(f"Timestamp formatting error: {e}")
+                return FlextCore.Result[str].fail(f"Timestamp formatting error: {e}")
 
         @staticmethod
         def sanitize_oic_field_name(field_name: str) -> str:
@@ -382,22 +386,22 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
         @staticmethod
         def validate_oic_connection_config(
-            config: FlextTypes.Dict,
-        ) -> FlextResult[FlextTypes.Dict]:
+            config: FlextCore.Types.Dict,
+        ) -> FlextCore.Result[FlextCore.Types.Dict]:
             """Validate Oracle OIC connection configuration.
 
             Args:
                 config: Configuration dictionary
 
             Returns:
-                FlextResult[FlextTypes.Dict]: Validated config or error
+                FlextCore.Result[FlextCore.Types.Dict]: Validated config or error
 
             """
             required_fields = ["oic_base_url", "username", "password"]
             missing_fields = [field for field in required_fields if field not in config]
 
             if missing_fields:
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextCore.Result[FlextCore.Types.Dict].fail(
                     f"Missing required fields: {', '.join(missing_fields)}"
                 )
 
@@ -406,61 +410,65 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 config["oic_base_url"]
             )
             if url_validation.is_failure:
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextCore.Result[FlextCore.Types.Dict].fail(
                     f"Invalid OIC URL: {url_validation.error}"
                 )
 
             # Validate credentials
             if not config["username"].strip():
-                return FlextResult[FlextTypes.Dict].fail("Username cannot be empty")
+                return FlextCore.Result[FlextCore.Types.Dict].fail(
+                    "Username cannot be empty"
+                )
 
             if not config["password"].strip():
-                return FlextResult[FlextTypes.Dict].fail("Password cannot be empty")
+                return FlextCore.Result[FlextCore.Types.Dict].fail(
+                    "Password cannot be empty"
+                )
 
             # Validate optional timeout
             if "timeout" in config:
                 timeout = config["timeout"]
                 if not isinstance(timeout, int) or timeout <= 0:
-                    return FlextResult[FlextTypes.Dict].fail(
+                    return FlextCore.Result[FlextCore.Types.Dict].fail(
                         "Timeout must be a positive integer"
                     )
 
-            return FlextResult[FlextTypes.Dict].ok(config)
+            return FlextCore.Result[FlextCore.Types.Dict].ok(config)
 
         @staticmethod
         def validate_stream_config(
-            config: FlextTypes.Dict,
-        ) -> FlextResult[FlextTypes.Dict]:
+            config: FlextCore.Types.Dict,
+        ) -> FlextCore.Result[FlextCore.Types.Dict]:
             """Validate OIC tap stream configuration.
 
             Args:
                 config: Stream configuration
 
             Returns:
-                FlextResult[FlextTypes.Dict]: Validated config or error
+                FlextCore.Result[FlextCore.Types.Dict]: Validated config or error
 
             """
             if "streams" not in config:
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextCore.Result[FlextCore.Types.Dict].fail(
                     "Configuration must include 'streams' section"
                 )
 
             streams = config["streams"]
             if not isinstance(streams, dict):
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextCore.Result[FlextCore.Types.Dict].fail(
                     "Streams configuration must be a dictionary"
                 )
 
             # Validate each stream
             for stream_name, stream_config in streams.items():
                 if not isinstance(stream_config, dict):
-                    return FlextResult[FlextTypes.Dict].fail(
+                    return FlextCore.Result[FlextCore.Types.Dict].fail(
                         f"Stream '{stream_name}' configuration must be a dictionary"
                     )
 
                 # Check for required stream fields
                 if "selected" not in stream_config:
-                    return FlextResult[FlextTypes.Dict].fail(
+                    return FlextCore.Result[FlextCore.Types.Dict].fail(
                         f"Stream '{stream_name}' must have 'selected' field"
                     )
 
@@ -472,19 +480,19 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                         or page_size <= 0
                         or page_size > 1000
                     ):
-                        return FlextResult[FlextTypes.Dict].fail(
+                        return FlextCore.Result[FlextCore.Types.Dict].fail(
                             f"Stream '{stream_name}' page_size must be between 1 and 1000"
                         )
 
-            return FlextResult[FlextTypes.Dict].ok(config)
+            return FlextCore.Result[FlextCore.Types.Dict].ok(config)
 
     class StateManagement:
         """State management utilities for incremental syncs."""
 
         @staticmethod
         def get_stream_state(
-            state: FlextTypes.Dict, stream_name: str
-        ) -> FlextTypes.Dict:
+            state: FlextCore.Types.Dict, stream_name: str
+        ) -> FlextCore.Types.Dict:
             """Get state for a specific stream.
 
             Args:
@@ -492,17 +500,17 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 stream_name: Name of the stream
 
             Returns:
-                FlextTypes.Dict: Stream state
+                FlextCore.Types.Dict: Stream state
 
             """
             return state.get("bookmarks", {}).get(stream_name, {})
 
         @staticmethod
         def set_stream_state(
-            state: FlextTypes.Dict,
+            state: FlextCore.Types.Dict,
             stream_name: str,
-            stream_state: FlextTypes.Dict,
-        ) -> FlextTypes.Dict:
+            stream_state: FlextCore.Types.Dict,
+        ) -> FlextCore.Types.Dict:
             """Set state for a specific stream.
 
             Args:
@@ -511,7 +519,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 stream_state: State data for the stream
 
             Returns:
-                FlextTypes.Dict: Updated state
+                FlextCore.Types.Dict: Updated state
 
             """
             if "bookmarks" not in state:
@@ -522,7 +530,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
         @staticmethod
         def get_bookmark(
-            state: FlextTypes.Dict,
+            state: FlextCore.Types.Dict,
             stream_name: str,
             bookmark_key: str,
         ) -> object:
@@ -546,11 +554,11 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
         @staticmethod
         def set_bookmark(
-            state: FlextTypes.Dict,
+            state: FlextCore.Types.Dict,
             stream_name: str,
             bookmark_key: str,
             bookmark_value: object,
-        ) -> FlextTypes.Dict:
+        ) -> FlextCore.Types.Dict:
             """Set bookmark value for a stream.
 
             Args:
@@ -560,7 +568,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 bookmark_value: Bookmark value
 
             Returns:
-                FlextTypes.Dict: Updated state
+                FlextCore.Types.Dict: Updated state
 
             """
             if "bookmarks" not in state:
@@ -573,10 +581,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
         @staticmethod
         def update_pagination_bookmark(
-            state: FlextTypes.Dict,
+            state: FlextCore.Types.Dict,
             stream_name: str,
-            pagination_info: FlextTypes.Dict,
-        ) -> FlextTypes.Dict:
+            pagination_info: FlextCore.Types.Dict,
+        ) -> FlextCore.Types.Dict:
             """Update pagination bookmark for stream.
 
             Args:
@@ -585,7 +593,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 pagination_info: Pagination information
 
             Returns:
-                FlextTypes.Dict: Updated state
+                FlextCore.Types.Dict: Updated state
 
             """
             return FlextMeltanoTapOracleOicUtilities.StateManagement.set_bookmark(
@@ -624,7 +632,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
         def estimate_extraction_time(
             record_count: int,
             records_per_second: float = 10.0,
-        ) -> FlextTypes.Dict:
+        ) -> FlextCore.Types.Dict:
             """Estimate extraction time for OIC data.
 
             Args:
@@ -632,7 +640,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 records_per_second: Processing rate
 
             Returns:
-                FlextTypes.Dict: Time estimation
+                FlextCore.Types.Dict: Time estimation
 
             """
             if record_count <= 0:
@@ -653,9 +661,9 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
     def create_schema_message(
         cls,
         stream_name: str,
-        schema: FlextTypes.Dict,
-        key_properties: FlextTypes.StringList | None = None,
-    ) -> FlextTypes.Dict:
+        schema: FlextCore.Types.Dict,
+        key_properties: FlextCore.Types.StringList | None = None,
+    ) -> FlextCore.Types.Dict:
         """Proxy method for SingerUtilities.create_schema_message()."""
         return cls.SingerUtilities.create_schema_message(
             stream_name, schema, key_properties
@@ -665,16 +673,16 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
     def create_record_message(
         cls,
         stream_name: str,
-        record: FlextTypes.Dict,
+        record: FlextCore.Types.Dict,
         time_extracted: datetime | None = None,
-    ) -> FlextTypes.Dict:
+    ) -> FlextCore.Types.Dict:
         """Proxy method for SingerUtilities.create_record_message()."""
         return cls.SingerUtilities.create_record_message(
             stream_name, record, time_extracted
         )
 
     @classmethod
-    def validate_oic_endpoint(cls, endpoint_url: str) -> FlextResult[str]:
+    def validate_oic_endpoint(cls, endpoint_url: str) -> FlextCore.Result[str]:
         """Proxy method for OicApiProcessing.validate_oic_endpoint()."""
         return cls.OicApiProcessing.validate_oic_endpoint(endpoint_url)
 
@@ -683,8 +691,8 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
         cls,
         base_url: str,
         resource_path: str,
-        query_params: FlextTypes.StringDict | None = None,
-    ) -> FlextResult[str]:
+        query_params: FlextCore.Types.StringDict | None = None,
+    ) -> FlextCore.Result[str]:
         """Proxy method for OicApiProcessing.build_oic_api_url()."""
         return cls.OicApiProcessing.build_oic_api_url(
             base_url, resource_path, query_params
@@ -696,32 +704,32 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
         return cls.OicDataProcessing.normalize_integration_name(integration_name)
 
     @classmethod
-    def format_oic_timestamp(cls, timestamp_str: str) -> FlextResult[str]:
+    def format_oic_timestamp(cls, timestamp_str: str) -> FlextCore.Result[str]:
         """Proxy method for OicDataProcessing.format_oic_timestamp()."""
         return cls.OicDataProcessing.format_oic_timestamp(timestamp_str)
 
     @classmethod
     def validate_oic_connection_config(
-        cls, config: FlextTypes.Dict
-    ) -> FlextResult[FlextTypes.Dict]:
+        cls, config: FlextCore.Types.Dict
+    ) -> FlextCore.Result[FlextCore.Types.Dict]:
         """Proxy method for ConfigValidation.validate_oic_connection_config()."""
         return cls.ConfigValidation.validate_oic_connection_config(config)
 
     @classmethod
     def get_stream_state(
-        cls, state: FlextTypes.Dict, stream_name: str
-    ) -> FlextTypes.Dict:
+        cls, state: FlextCore.Types.Dict, stream_name: str
+    ) -> FlextCore.Types.Dict:
         """Proxy method for StateManagement.get_stream_state()."""
         return cls.StateManagement.get_stream_state(state, stream_name)
 
     @classmethod
     def set_bookmark(
         cls,
-        state: FlextTypes.Dict,
+        state: FlextCore.Types.Dict,
         stream_name: str,
         bookmark_key: str,
         bookmark_value: object,
-    ) -> FlextTypes.Dict:
+    ) -> FlextCore.Types.Dict:
         """Proxy method for StateManagement.set_bookmark()."""
         return cls.StateManagement.set_bookmark(
             state, stream_name, bookmark_key, bookmark_value

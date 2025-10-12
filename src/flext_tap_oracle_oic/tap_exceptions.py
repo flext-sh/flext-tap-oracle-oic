@@ -18,7 +18,7 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from flext_core import FlextExceptions, FlextTypes
+from flext_core import FlextCore
 
 
 # Oracle OIC exception factory using standard pattern
@@ -47,28 +47,28 @@ class OICExceptionFactory:
 
 
 # Specific Oracle OIC exceptions
-class OICAuthenticationError(FlextExceptions.AuthenticationError):
+class OICAuthenticationError(FlextCore.Exceptions.AuthenticationError):
     """Oracle OIC authentication error."""
 
 
-class OICConnectionError(FlextExceptions.ConnectionError):
+class OICConnectionError(FlextCore.Exceptions.ConnectionError):
     """Oracle OIC connection error."""
 
 
-class OICValidationError(FlextExceptions.ValidationError):
+class OICValidationError(FlextCore.Exceptions.ValidationError):
     """Oracle OIC validation error."""
 
 
-class OICAPIError(FlextExceptions.ProcessingError):
+class OICAPIError(FlextCore.Exceptions.ProcessingError):
     """Oracle OIC API error."""
 
 
 # Export for backward compatibility and module interface
-__all__: FlextTypes.StringList = [
-    "FlextExceptions",
-    "FlextExceptions",
-    "FlextExceptions",
-    "FlextExceptions",
+__all__: FlextCore.Types.StringList = [
+    "FlextCore.Exceptions",
+    "FlextCore.Exceptions",
+    "FlextCore.Exceptions",
+    "FlextCore.Exceptions",
     "OICAPIError",
     "OICAuthenticationError",
     "OICConnectionError",

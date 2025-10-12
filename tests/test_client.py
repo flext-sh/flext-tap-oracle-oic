@@ -15,16 +15,16 @@ from urllib.parse import urljoin
 
 import pytest
 import requests
-from flext_core import FlextResult, FlextTypes
+from flext_core import FlextCore
 
-from flext_tap_oracle_oic import OracleOICClient
+from flext_tap_oracle_oic import OracleOicClient
 
 
-class TestOracleOICClient:
+class TestOracleOicClient:
     """Test OIC client with real functionality."""
 
     @pytest.fixture
-    def client_config(self) -> FlextTypes.Dict:
+    def client_config(self) -> FlextCore.Types.Dict:
         """Create test client configuration."""
         return {
             "oauth_client_id": "test_client_id",
@@ -35,9 +35,9 @@ class TestOracleOICClient:
         }
 
     @pytest.fixture
-    def client(self, client_config: FlextTypes.Dict) -> OracleOICClient:
+    def client(self, client_config: FlextCore.Types.Dict) -> OracleOicClient:
         """Create a client instance."""
-        return OracleOICClient(
+        return OracleOicClient(
             base_url=client_config["oic_url"],
             oauth_client_id=client_config["oauth_client_id"],
             oauth_client_secret=client_config["oauth_client_secret"],
@@ -47,8 +47,8 @@ class TestOracleOICClient:
 
     def test_client_initialization(
         self,
-        client: OracleOICClient,
-        client_config: FlextTypes.Dict,
+        client: OracleOicClient,
+        client_config: FlextCore.Types.Dict,
     ) -> None:
         """Test client initialization."""
         if client.base_url != client_config["oic_url"]:
@@ -59,7 +59,7 @@ class TestOracleOICClient:
             msg: str = f"Expected {client_config['oauth_client_secret']}, got {client.oauth_client_secret}"
             raise AssertionError(msg)
 
-    def test_client_session_configuration(self, client: OracleOICClient) -> None:
+    def test_client_session_configuration(self, client: OracleOicClient) -> None:
         """Test client session is properly configured."""
         assert hasattr(client, "session")
         assert isinstance(client.session, requests.Session)
@@ -68,7 +68,7 @@ class TestOracleOICClient:
         adapter = client.session.get_adapter("https://")
         assert adapter is not None
 
-    def test_authentication_headers_structure(self, client: OracleOICClient) -> None:
+    def test_authentication_headers_structure(self, client: OracleOicClient) -> None:
         """Test authentication headers structure."""
         with contextlib.suppress(Exception):
             # Expected if no valid token available
@@ -84,7 +84,7 @@ class TestOracleOICClient:
     def test_oauth_token_request(
         self,
         mock_post: Mock,
-        client: OracleOICClient,
+        client: OracleOicClient,
     ) -> None:
         """Test OAuth token request functionality."""
         # Mock successful token response
@@ -101,14 +101,14 @@ class TestOracleOICClient:
         with contextlib.suppress(Exception):
             # May fail due to implementation details, but should not crash
             result = client.get_access_token()
-            if isinstance(result, FlextResult) and result.success:
+            if isinstance(result, FlextCore.Result) and result.success:
                 assert result.data is not None
 
     @patch("requests.Session.get")
     def test_api_request_handling(
         self,
         mock_get: Mock,
-        client: OracleOICClient,
+        client: OracleOicClient,
     ) -> None:
         """Test API request handling."""
         # Mock successful API response
@@ -121,7 +121,7 @@ class TestOracleOICClient:
         with contextlib.suppress(Exception):
             # May fail but should handle gracefully
             result = client.get("/ic/api/integration/v1/integrations")
-            if isinstance(result, FlextResult):
+            if isinstance(result, FlextCore.Result):
                 assert result is not None
 
     def test_url_construction(self) -> None:
@@ -143,7 +143,7 @@ class TestOracleOICClient:
         """Test method."""
         """Test client error handling."""
         # Test with invalid configuration
-        invalid_client = OracleOICClient(
+        invalid_client = OracleOicClient(
             base_url="",
             oauth_client_id="",
             oauth_client_secret="",
@@ -157,7 +157,7 @@ class TestOracleOICClient:
         """Test method."""
         """Test client configuration validation."""
         # Test with minimal config
-        client = OracleOICClient(
+        client = OracleOicClient(
             base_url="https://test.example.com",
             oauth_client_id="test",
             oauth_client_secret="secret",
@@ -168,7 +168,7 @@ class TestOracleOICClient:
             raise AssertionError(msg)
         assert client.base_url == "https://test.example.com"
 
-    def test_session_retry_configuration(self, client: OracleOICClient) -> None:
+    def test_session_retry_configuration(self, client: OracleOicClient) -> None:
         """Test session retry configuration."""
         session = client.session
 
@@ -191,7 +191,7 @@ class TestOracleOICClient:
     def test_request_timeout_handling(
         self,
         mock_request: Mock,
-        client: OracleOICClient,
+        client: OracleOicClient,
     ) -> None:
         """Test request timeout handling."""
         # Mock timeout error
@@ -203,9 +203,9 @@ class TestOracleOICClient:
 
     def test_service_result_pattern(self) -> None:
         """Test method."""
-        """Test FlextResult pattern usage."""
-        # Test FlextResult creation
-        success_result = FlextResult[None].ok({"test": "data"})
+        """Test FlextCore.Result pattern usage."""
+        # Test FlextCore.Result creation
+        success_result = FlextCore.Result[None].ok({"test": "data"})
         if not (success_result.success):
             msg: str = f"Expected True, got {success_result.success}"
             raise AssertionError(msg)
@@ -214,7 +214,9 @@ class TestOracleOICClient:
             msg: str = f"Expected {expected_data}, got {success_result.data}"
             raise AssertionError(msg)
 
-        failure_result: FlextResult[object] = FlextResult[None].fail("Test error")
+        failure_result: FlextCore.Result[object] = FlextCore.Result[None].fail(
+            "Test error"
+        )
         if failure_result.success:
             msg: str = f"Expected False, got {failure_result.success}"
             raise AssertionError(msg)
