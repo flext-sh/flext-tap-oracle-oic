@@ -9,11 +9,11 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError as ConfigValidationError
 
-from flext_tap_oracle_oic import TapOracleOIC
+from flext_tap_oracle_oic import TapOracleOic
 
 
-class TestTapOracleOIC:
-    """Test cases for TapOracleOIC."""
+class TestTapOracleOic:
+    """Test cases for TapOracleOic."""
 
     def test_tap_initialization(self) -> None:
         """Test method."""
@@ -24,7 +24,7 @@ class TestTapOracleOIC:
             "oauth_client_secret": "test_secret",
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
-        tap = TapOracleOIC(config=config, validate_config=False)
+        tap = TapOracleOic(config=config, validate_config=False)
         if tap.name != "tap-oracle-oic":
             msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
@@ -39,7 +39,7 @@ class TestTapOracleOIC:
             "oauth_client_secret": "test_secret",
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
-        tap = TapOracleOIC(config=config, validate_config=False)
+        tap = TapOracleOic(config=config, validate_config=False)
         streams = tap.discover_streams()
 
         # Should have at least core streams
@@ -60,7 +60,7 @@ class TestTapOracleOIC:
             "base_url": "https://test.integration.ocp.oraclecloud.com",
         }
         with pytest.raises(ConfigValidationError):
-            TapOracleOIC(config=config, validate_config=True)
+            TapOracleOic(config=config, validate_config=True)
 
     def test_include_extended_streams(self) -> None:
         """Test method."""
@@ -72,7 +72,7 @@ class TestTapOracleOIC:
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
             "include_extended": True,
         }
-        tap = TapOracleOIC(config=config, validate_config=False)
+        tap = TapOracleOic(config=config, validate_config=False)
         streams = tap.discover_streams()
 
         # Should include core streams

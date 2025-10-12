@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from flext_core import FlextTypes
+from flext_core import FlextCore
 
 from flext_tap_oracle_oic.domain.entities import OICIntegration
 
@@ -19,7 +19,7 @@ This module consolidates ALL model and entity definitions:
 - Value objects following DDD patterns with flext-core integration
 
 Design: Pure domain modeling using:
-- flext-core: "FlextModels", FlextModels patterns
+- flext-core: "FlextCore.Models", FlextCore.Models patterns
 - pydantic: Validation and serialization
 - typing: Complete type safety and documentation
 - Domain-driven design: Rich domain models with behavior
@@ -35,6 +35,6 @@ SPDX-License-Identifier: MIT
 
 
 # Export for backward compatibility and module interface
-__all__: FlextTypes.StringList = [
+__all__: FlextCore.Types.StringList = [
     "OICIntegration",
 ]
