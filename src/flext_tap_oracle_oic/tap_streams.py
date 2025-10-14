@@ -394,7 +394,7 @@ class OICBaseStream(FlextMeltanoStream):
         return len(data) == 0
 
     def _is_single_record(self, data: FlextCore.Types.Dict) -> bool:
-        """Check if dict represents a single record vs OIC metadata container."""
+        """Check if dict[str, object] represents a single record vs OIC metadata container."""
         metadata_keys = {
             "totalSize",
             "count",
@@ -412,7 +412,7 @@ class OICBaseStream(FlextMeltanoStream):
 
     def _enrich_record(self, record: FlextCore.Types.Dict) -> FlextCore.Types.Dict:
         """Enrich record with tap metadata for traceability."""
-        enriched = dict(record)
+        enriched = dict[str, object](record)
         enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
         enriched["_tap_stream_name"] = self.name
         return enriched

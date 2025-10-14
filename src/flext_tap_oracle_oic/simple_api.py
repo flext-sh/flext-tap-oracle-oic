@@ -30,7 +30,7 @@ def setup_oic_tap(
       config: Optional configuration override
 
     Returns:
-      FlextCore.Result with basic config dict or error message.
+      FlextCore.Result with basic config dict[str, object] or error message.
 
     """
     try:
