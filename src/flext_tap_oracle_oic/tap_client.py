@@ -184,7 +184,7 @@ class OracleOicClient:
 
         try:
             url = url_result.unwrap()
-            # Convert data to string dict for FlextApiClient compatibility
+            # Convert data to string dict[str, object] for FlextApiClient compatibility
             json_data: FlextCore.Types.Dict = (
                 {str(k): str(v) for k, v in data.items()} if data else None
             )
