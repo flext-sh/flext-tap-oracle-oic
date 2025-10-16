@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from enum import StrEnum
 
-from flext_core import FlextCore
+from flext_core import FlextModels, FlextResult, FlextTypes
 from pydantic import ConfigDict, Field
 
 
@@ -45,10 +45,10 @@ class ConnectionStatus(StrEnum):
     FAILED = "failed"
 
 
-class OICConnection(FlextCore.Models):
+class OICConnection(FlextModels):
     """OIC connection domain entity using flext-core patterns."""
 
-    model_config: FlextCore.Types.Dict = ConfigDict(frozen=False)
+    model_config: FlextTypes.Dict = ConfigDict(frozen=False)
 
     connection_id: str = Field(
         ...,
@@ -64,7 +64,7 @@ class OICConnection(FlextCore.Models):
 
     # Connection properties
     connection_url: str | None = Field(None, description="Connection endpoint URL")
-    connection_properties: FlextCore.Types.Dict = Field(
+    connection_properties: FlextTypes.Dict = Field(
         default_factory=dict,
         description="Connection properties",
     )
@@ -76,7 +76,7 @@ class OICConnection(FlextCore.Models):
         description="Connection status",
     )
     last_tested: datetime | None = Field(None, description="Last test timestamp")
-    test_result: FlextCore.Types.Dict | None = Field(
+    test_result: FlextTypes.Dict | None = Field(
         None,
         description="Last test result",
     )
@@ -96,16 +96,16 @@ class OICConnection(FlextCore.Models):
     def mark_failed(self, _error: str) -> None:
         """Mark connection as failed with error details."""
         self.connection_status = ConnectionStatus.FAILED
-        self.test_result: FlextCore.Result[object] = {
+        self.test_result: FlextResult[object] = {
             "error": "error",
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
 
-class OICIntegration(FlextCore.Models):
+class OICIntegration(FlextModels):
     """OIC integration domain entity using flext-core patterns."""
 
-    model_config: FlextCore.Types.Dict = ConfigDict(frozen=False)
+    model_config: FlextTypes.Dict = ConfigDict(frozen=False)
 
     integration_id: str = Field(
         ...,
@@ -144,7 +144,7 @@ class OICIntegration(FlextCore.Models):
     locked_at: datetime | None = Field(None, description="Lock timestamp")
 
     # Connections
-    connection_ids: FlextCore.Types.StringList = Field(
+    connection_ids: FlextTypes.StringList = Field(
         default_factory=list,
         description="Associated connection IDs",
     )
@@ -180,25 +180,25 @@ class OICIntegration(FlextCore.Models):
         return self.integration_status == IntegrationStatus.ACTIVATED
 
 
-class OICLookup(FlextCore.Models):
+class OICLookup(FlextModels):
     """OIC lookup table domain entity using flext-core patterns."""
 
-    model_config: FlextCore.Types.Dict = ConfigDict(frozen=False)
+    model_config: FlextTypes.Dict = ConfigDict(frozen=False)
 
     lookup_id: str = Field(..., min_length=1, description="OIC lookup identifier")
     lookup_name: str = Field(..., min_length=1, description="Lookup table name")
     domain_name: str | None = Field(None, description="Domain name")
 
     # Lookup structure
-    columns: list[FlextCore.Types.Dict] = Field(
+    columns: list[FlextTypes.Dict] = Field(
         default_factory=list,
         description="Column definitions",
     )
-    key_columns: FlextCore.Types.StringList = Field(
+    key_columns: FlextTypes.StringList = Field(
         default_factory=list,
         description="Key column names",
     )
-    value_columns: FlextCore.Types.StringList = Field(
+    value_columns: FlextTypes.StringList = Field(
         default_factory=list,
         description="Value column names",
     )
@@ -231,7 +231,7 @@ class OICLookup(FlextCore.Models):
         return self.row_count == 0
 
 
-class OICMonitoringRecord(FlextCore.Models):
+class OICMonitoringRecord(FlextModels):
     """OIC monitoring record domain entity using flext-core patterns."""
 
     instance_id: str = Field(..., min_length=1, description="Flow instance ID")
@@ -260,7 +260,7 @@ class OICMonitoringRecord(FlextCore.Models):
     error_count: int = Field(default=0, ge=0, description="Number of errors")
 
     # Tracking
-    business_identifiers: FlextCore.Types.Dict = Field(
+    business_identifiers: FlextTypes.Dict = Field(
         default_factory=dict,
         description="Business tracking identifiers",
     )
@@ -281,25 +281,25 @@ class OICMonitoringRecord(FlextCore.Models):
         return self.duration_ms / 1000.0 if self.duration_ms is not None else None
 
 
-class OICProject(FlextCore.Models):
+class OICProject(FlextModels):
     """OIC project domain entity using flext-core patterns."""
 
-    model_config: FlextCore.Types.Dict = ConfigDict(frozen=False)
+    model_config: FlextTypes.Dict = ConfigDict(frozen=False)
 
     project_id: str = Field(..., min_length=1, description="OIC project identifier")
     project_code: str = Field(..., min_length=1, description="Project code")
     name: str = Field(..., min_length=1, description="Project name")
 
     # Project resources
-    integration_ids: FlextCore.Types.StringList = Field(
+    integration_ids: FlextTypes.StringList = Field(
         default_factory=list,
         description="Integration IDs in project",
     )
-    connection_ids: FlextCore.Types.StringList = Field(
+    connection_ids: FlextTypes.StringList = Field(
         default_factory=list,
         description="Connection IDs in project",
     )
-    lookup_ids: FlextCore.Types.StringList = Field(
+    lookup_ids: FlextTypes.StringList = Field(
         default_factory=list,
         description="Lookup IDs in project",
     )
@@ -338,7 +338,7 @@ class OICProject(FlextCore.Models):
 
 
 # Value Objects for configuration and metadata
-class OICResourceMetadata(FlextCore.Models):
+class OICResourceMetadata(FlextModels):
     """OIC resource metadata value object."""
 
     resource_type: OICResourceType = Field(..., description="Resource type")
@@ -349,7 +349,7 @@ class OICResourceMetadata(FlextCore.Models):
     updated_at: datetime | None = Field(None, description="Last update timestamp")
 
 
-class OICExecutionSummary(FlextCore.Models):
+class OICExecutionSummary(FlextModels):
     """OIC execution summary value object."""
 
     integration_id: str = Field(..., description="Integration ID")
@@ -388,7 +388,7 @@ class OICExecutionSummary(FlextCore.Models):
 
 
 # Export main entities and value objects
-__all__: FlextCore.Types.StringList = [
+__all__: FlextTypes.StringList = [
     "ConnectionStatus",
     "IntegrationStatus",
     "OICConnection",

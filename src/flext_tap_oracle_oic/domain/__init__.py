@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextCore
+from flext_core import FlextTypes
 
 from flext_tap_oracle_oic.domain.entities import (
     OICConnection,
@@ -19,7 +19,7 @@ from flext_tap_oracle_oic.domain.entities import (
     OICResourceType,
 )
 
-__all__: FlextCore.Types.StringList = [
+__all__: FlextTypes.StringList = [
     "OICConnection",
     "OICIntegration",
     "OICLookup",

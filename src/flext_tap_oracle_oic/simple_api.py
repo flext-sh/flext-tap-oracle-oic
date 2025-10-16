@@ -14,7 +14,7 @@ from __future__ import annotations
 import os
 from typing import cast
 
-from flext_core import FlextCore
+from flext_core import FlextResult, FlextTypes
 from flext_oracle_oic import (
     OICAuthConfig,
     OICConnectionConfig,
@@ -24,20 +24,20 @@ from pydantic import SecretStr
 
 def setup_oic_tap(
     config: object | None = None,
-) -> FlextCore.Result[object]:
+) -> FlextResult[object]:
     """Set up Oracle Integration Cloud tap with basic configuration.
 
     Args:
       config: Optional configuration override
 
     Returns:
-      FlextCore.Result with basic config dict[str, object] or error message.
+      FlextResult with basic config dict[str, object] or error message.
 
     """
     try:
         if config is None:
             # Create basic configuration dictionary
-            config: FlextCore.Types.Dict = {
+            config: FlextTypes.Dict = {
                 "oauth_client_id": os.getenv("OIC_CLIENT_ID", "your-client-id"),
                 "oauth_client_secret": os.getenv("OIC_CLIENT_SECRET", "your-secret"),
                 "oauth_token_url": os.getenv(
@@ -50,10 +50,10 @@ def setup_oic_tap(
                 ),
             }
 
-        return FlextCore.Result[object].ok(config)
+        return FlextResult[object].ok(config)
 
     except (ValueError, TypeError) as e:
-        return FlextCore.Result[object].fail(f"Failed to setup OIC tap: {e}")
+        return FlextResult[object].fail(f"Failed to setup OIC tap: {e}")
 
 
 def create_oic_auth_config(
@@ -61,7 +61,7 @@ def create_oic_auth_config(
     client_secret: str,
     token_url: str,
     **kwargs: object,
-) -> FlextCore.Result[OICAuthConfig]:
+) -> FlextResult[OICAuthConfig]:
     """Create OIC authentication configuration.
 
     Args:
@@ -71,11 +71,11 @@ def create_oic_auth_config(
       **kwargs: Additional configuration parameters
 
     Returns:
-      FlextCore.Result with OICAuthConfig or error message.
+      FlextResult with OICAuthConfig or error message.
 
     """
     try:
-        config: FlextCore.Types.Dict = OICAuthConfig(
+        config: FlextTypes.Dict = OICAuthConfig(
             oauth_client_id=client_id,
             oauth_client_secret=SecretStr(client_secret),
             oauth_token_url=token_url,
@@ -85,18 +85,16 @@ def create_oic_auth_config(
             ),
         )
 
-        return FlextCore.Result[OICAuthConfig].ok(config)
+        return FlextResult[OICAuthConfig].ok(config)
 
     except (ValueError, TypeError) as e:
-        return FlextCore.Result[OICAuthConfig].fail(
-            f"Failed to create OIC auth config: {e}"
-        )
+        return FlextResult[OICAuthConfig].fail(f"Failed to create OIC auth config: {e}")
 
 
 def create_oic_connection_config(
     base_url: str,
     **kwargs: object,
-) -> FlextCore.Result[OICConnectionConfig]:
+) -> FlextResult[OICConnectionConfig]:
     """Create OIC connection configuration.
 
     Args:
@@ -104,33 +102,33 @@ def create_oic_connection_config(
       **kwargs: Additional configuration parameters
 
     Returns:
-      FlextCore.Result with OICConnectionConfig or error message.
+      FlextResult with OICConnectionConfig or error message.
 
     """
     try:
-        config: FlextCore.Types.Dict = OICConnectionConfig(
+        config: FlextTypes.Dict = OICConnectionConfig(
             base_url=base_url,
             api_version=cast("str", kwargs.get("api_version", "v1")),
             request_timeout=cast("int", kwargs.get("request_timeout", 30)),
             max_retries=cast("int", kwargs.get("max_retries", 3)),
         )
 
-        return FlextCore.Result[OICConnectionConfig].ok(config)
+        return FlextResult[OICConnectionConfig].ok(config)
 
     except (ValueError, TypeError) as e:
-        return FlextCore.Result[OICConnectionConfig].fail(
+        return FlextResult[OICConnectionConfig].fail(
             f"Failed to create OIC connection config: {e}",
         )
 
 
-def validate_oic_config(config: object) -> FlextCore.Result[bool]:
+def validate_oic_config(config: object) -> FlextResult[bool]:
     """Validate OIC tap configuration.
 
     Args:
       config: Configuration to validate
 
     Returns:
-      FlextCore.Result with validation success or error message.
+      FlextResult with validation success or error message.
 
     """
     try:
@@ -145,18 +143,18 @@ def validate_oic_config(config: object) -> FlextCore.Result[bool]:
             missing_keys = [key for key in required_keys if not config.get(key)]
 
             if missing_keys:
-                return FlextCore.Result[bool].fail(
+                return FlextResult[bool].fail(
                     f"Missing required configuration keys: {missing_keys}",
                 )
 
-        return FlextCore.Result[bool].ok(data=True)
+        return FlextResult[bool].ok(data=True)
 
     except (ValueError, TypeError) as e:
-        return FlextCore.Result[bool].fail(f"Failed to validate OIC config: {e}")
+        return FlextResult[bool].fail(f"Failed to validate OIC config: {e}")
 
 
 # Export simplified API
-__all__: FlextCore.Types.StringList = [
+__all__: FlextTypes.StringList = [
     "create_oic_auth_config",
     "create_oic_connection_config",
     "setup_oic_tap",

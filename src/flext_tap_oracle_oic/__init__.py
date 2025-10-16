@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from flext_core import FlextLogger, FlextModels, FlextResult, FlextTypes
 from flext_meltano import FlextMeltanoBridge, FlextMeltanoConfig, FlextMeltanoService
 
 from flext_tap_oracle_oic.__version__ import __version__, __version_info__
@@ -28,10 +29,7 @@ from flext_tap_oracle_oic.tap_streams import OICBaseStream
 from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
 
 __all__ = [
-    "FlextCore.Logger",
-    "FlextCore.Models",
-    "FlextCore.Result",
-    "FlextCore.Types",
+    "FlextLogger",
     "FlextMeltanoBridge",
     "FlextMeltanoConfig",
     "FlextMeltanoService",
@@ -39,6 +37,9 @@ __all__ = [
     "FlextMeltanoTapOracleOicModels",
     "FlextMeltanoTapOracleOicProtocols",
     "FlextMeltanoTapOracleOicUtilities",
+    "FlextModels",
+    "FlextResult",
+    "FlextTypes",
     "OICAPIError",
     "OICAuthenticationError",
     "OICBaseStream",

@@ -11,11 +11,11 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_core import FlextCore
+from flext_core import FlextConstants, FlextTypes
 from flext_oracle_oic import FlextOracleOicConstants
 
 
-class FlextOracleOicConstants(FlextCore.Constants):
+class FlextOracleOicConstants(FlextConstants):
     """FLEXT Oracle OIC TAP constants extending flext-core platform constants.
 
     Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
@@ -32,7 +32,7 @@ class FlextOracleOicConstants(FlextCore.Constants):
     OIC_ENVIRONMENT_API_PATH = "/ic/api/integration/v1/environments"
 
     # Official OIC REST API Endpoints using composition where appropriate
-    OIC_ENDPOINTS: ClassVar[FlextCore.Types.StringDict] = {
+    OIC_ENDPOINTS: ClassVar[FlextTypes.StringDict] = {
         # Core Integration APIs
         "integrations": "/integrations",
         "integrations_detail": "/integrations/{id}",
@@ -123,6 +123,6 @@ class FlextOracleOicConstants(FlextCore.Constants):
         )
 
 
-__all__: FlextCore.Types.StringList = [
+__all__: FlextTypes.StringList = [
     "FlextOracleOicConstants",
 ]

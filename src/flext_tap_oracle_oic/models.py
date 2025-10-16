@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Literal, Self
 
-from flext_core import FlextCore
+from flext_core import FlextConstants, FlextModels, FlextTypes
 from pydantic import (
     ConfigDict,
     Field,
@@ -61,8 +61,8 @@ AUTHORIZATION = "AUTHORIZATION"
 RATE_LIMIT = "RATE_LIMIT"
 
 
-class FlextMeltanoTapOracleOicModels(FlextCore.Models):
-    """Oracle Integration Cloud tap models extending flext-core FlextCore.Models.
+class FlextMeltanoTapOracleOicModels(FlextModels):
+    """Oracle Integration Cloud tap models extending flext-core FlextModels.
 
     Provides comprehensive models for OIC entity extraction, authentication,
     monitoring, and Singer protocol compliance following standardized patterns.
@@ -97,7 +97,6 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
     # Advanced Pydantic 2.11 Features - Singer Oracle OIC Tap Domain
 
     @computed_field
-    @property
     def active_oic_tap_models_count(self) -> int:
         """Count of active Oracle OIC tap models with API extraction capabilities."""
         count = 0
@@ -125,8 +124,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         return count
 
     @computed_field
-    @property
-    def oic_tap_system_summary(self) -> FlextCore.Types.Dict:
+    def oic_tap_system_summary(self) -> FlextTypes.Dict:
         """Comprehensive Singer Oracle OIC tap system summary with API extraction capabilities."""
         return {
             "total_models": self.active_oic_tap_models_count,
@@ -213,7 +211,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
             }
         return value
 
-    class OicAuthenticationConfig(FlextCore.Models.BaseConfig):
+    class OicAuthenticationConfig(FlextModels.BaseConfig):
         """OAuth2/IDCS authentication configuration for OIC API access."""
 
         # Pydantic 2.11 Configuration - Authentication Features
@@ -249,17 +247,16 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         timeout_seconds: int = Field(default=30, description="Authentication timeout")
 
         @computed_field
-        @property
-        def auth_config_summary(self) -> FlextCore.Types.Dict:
+        def auth_config_summary(self) -> FlextTypes.Dict:
             """OAuth2 authentication configuration summary."""
             return {
                 "oauth_setup": {
                     "client_id": self.oauth_client_id[
-                        : FlextCore.Constants.Validation.MIN_NAME_LENGTH
+                        : FlextConstants.Validation.MIN_NAME_LENGTH
                     ]
                     + "..."
                     if len(self.oauth_client_id)
-                    > FlextCore.Constants.Validation.MIN_NAME_LENGTH
+                    > FlextConstants.Validation.MIN_NAME_LENGTH
                     else self.oauth_client_id,
                     "token_endpoint": self.oauth_token_url,
                     "audience": self.oauth_client_aud,
@@ -286,15 +283,12 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
             if not self.base_url.startswith("https://"):
                 msg = "OIC base URL must use HTTPS"
                 raise ValueError(msg)
-            if (
-                self.token_expiry_buffer
-                < FlextCore.Constants.Config.MIN_TOKEN_EXPIRY_BUFFER
-            ):
+            if self.token_expiry_buffer < FlextConstants.Config.MIN_TOKEN_EXPIRY_BUFFER:
                 msg = "Token expiry buffer must be at least 60 seconds"
                 raise ValueError(msg)
             return self
 
-    class OicIntegrationEntity(FlextCore.Models.Entity):
+    class OicIntegrationEntity(FlextModels.Entity):
         """OIC Integration entity with comprehensive metadata."""
 
         # Pydantic 2.11 Configuration - Integration Features
@@ -345,8 +339,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         )
 
         @computed_field
-        @property
-        def integration_health_summary(self) -> FlextCore.Types.Dict:
+        def integration_health_summary(self) -> FlextTypes.Dict:
             """OIC integration health and performance summary."""
             error_rate = 0.0
             if self.execution_count and self.execution_count > 0:
@@ -364,7 +357,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
                     "total_errors": self.error_count or 0,
                     "error_rate": error_rate,
                     "health_status": "healthy"
-                    if error_rate < FlextCore.Constants.Validation.MIN_PERCENTAGE / 20
+                    if error_rate < FlextConstants.Validation.MIN_PERCENTAGE / 20
                     else "degraded",
                 },
                 "metadata": {
@@ -391,7 +384,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
                 raise ValueError(msg)
             return self
 
-    class OicConnectionEntity(FlextCore.Models.Entity):
+    class OicConnectionEntity(FlextModels.Entity):
         """OIC Connection entity with security sanitization."""
 
         # Pydantic 2.11 Configuration - Connection Features
@@ -448,8 +441,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         )
 
         @computed_field
-        @property
-        def connection_security_summary(self) -> FlextCore.Types.Dict:
+        def connection_security_summary(self) -> FlextTypes.Dict:
             """OIC connection security and health summary."""
             return {
                 "connection_identity": {
@@ -487,15 +479,15 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
                 msg = "Connection name is required"
                 raise ValueError(msg)
             if self.port is not None and not (
-                FlextCore.Constants.Network.MIN_PORT
+                FlextConstants.Network.MIN_PORT
                 <= self.port
-                <= FlextCore.Constants.Network.MAX_PORT
+                <= FlextConstants.Network.MAX_PORT
             ):
                 msg = "Port must be between 1 and 65535"
                 raise ValueError(msg)
             return self
 
-    class OicActivityRecord(FlextCore.Models.Entity):
+    class OicActivityRecord(FlextModels.Entity):
         """OIC Activity monitoring record for incremental replication."""
 
         # Pydantic 2.11 Configuration - Activity Features
@@ -544,8 +536,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         )
 
         @computed_field
-        @property
-        def activity_performance_summary(self) -> FlextCore.Types.Dict:
+        def activity_performance_summary(self) -> FlextTypes.Dict:
             """OIC activity performance summary."""
             duration_seconds = 0.0
             if self.duration_ms:
@@ -591,7 +582,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
                 raise ValueError(msg)
             return self
 
-    class OicPackageEntity(FlextCore.Models.Entity):
+    class OicPackageEntity(FlextModels.Entity):
         """OIC Package entity for integration packages."""
 
         # Pydantic 2.11 Configuration - Package Features
@@ -625,7 +616,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         created_date: datetime | None = Field(None, description="Package creation date")
 
         # Dependencies and relationships
-        dependencies: FlextCore.Types.StringList = Field(
+        dependencies: FlextTypes.StringList = Field(
             default_factory=list, description="List of dependent package IDs"
         )
         integration_count: int | None = Field(
@@ -639,8 +630,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         download_count: int | None = Field(None, description="Package download count")
 
         @computed_field
-        @property
-        def package_composition_summary(self) -> FlextCore.Types.Dict:
+        def package_composition_summary(self) -> FlextTypes.Dict:
             """OIC package composition and usage summary."""
             return {
                 "package_identity": {
@@ -679,7 +669,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
                 raise ValueError(msg)
             return self
 
-    class OicMetricsRecord(FlextCore.Models.Entity):
+    class OicMetricsRecord(FlextModels.Entity):
         """OIC Metrics record for performance monitoring."""
 
         # Pydantic 2.11 Configuration - Metrics Features
@@ -727,8 +717,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         queue_depth: int | None = Field(None, description="Message queue depth")
 
         @computed_field
-        @property
-        def metrics_analysis_summary(self) -> FlextCore.Types.Dict:
+        def metrics_analysis_summary(self) -> FlextTypes.Dict:
             """OIC metrics comprehensive analysis summary."""
             total_messages = (self.success_count or 0) + (self.error_count or 0)
             error_rate = 0.0
@@ -771,15 +760,15 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
                 msg = "Integration ID is required"
                 raise ValueError(msg)
             if self.cpu_usage_percent is not None and not (
-                FlextCore.Constants.Validation.MIN_PERCENTAGE
+                FlextConstants.Validation.MIN_PERCENTAGE
                 <= self.cpu_usage_percent
-                <= FlextCore.Constants.Validation.MAX_PERCENTAGE
+                <= FlextConstants.Validation.MAX_PERCENTAGE
             ):
                 msg = "CPU usage must be between 0 and 100 percent"
                 raise ValueError(msg)
             return self
 
-    class OicAgentEntity(FlextCore.Models.Entity):
+    class OicAgentEntity(FlextModels.Entity):
         """OIC Agent entity for connectivity agents."""
 
         # Pydantic 2.11 Configuration - Agent Features
@@ -830,8 +819,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         last_error: str | None = Field(None, description="Last error message")
 
         @computed_field
-        @property
-        def agent_health_summary(self) -> FlextCore.Types.Dict:
+        def agent_health_summary(self) -> FlextTypes.Dict:
             """OIC agent health and connectivity summary."""
             health_status = "healthy"
             if self.status in {"ERROR", "OFFLINE"}:
@@ -874,15 +862,15 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
                 msg = "Agent name is required"
                 raise ValueError(msg)
             if self.port is not None and not (
-                FlextCore.Constants.Network.MIN_PORT
+                FlextConstants.Network.MIN_PORT
                 <= self.port
-                <= FlextCore.Constants.Network.MAX_PORT
+                <= FlextConstants.Network.MAX_PORT
             ):
                 msg = "Port must be between 1 and 65535"
                 raise ValueError(msg)
             return self
 
-    class OicStreamConfiguration(FlextCore.Models.BaseConfig):
+    class OicStreamConfiguration(FlextModels.BaseConfig):
         """Configuration for OIC tap streams."""
 
         # Pydantic 2.11 Configuration - Stream Features
@@ -920,7 +908,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         )
 
         # Filtering
-        status_filter: FlextCore.Types.StringList | None = Field(
+        status_filter: FlextTypes.StringList | None = Field(
             None, description="Filter by entity status values"
         )
         date_range_filter: str | None = Field(
@@ -936,8 +924,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         )
 
         @computed_field
-        @property
-        def stream_config_summary(self) -> FlextCore.Types.Dict:
+        def stream_config_summary(self) -> FlextTypes.Dict:
             """OIC stream configuration summary."""
             return {
                 "stream_identity": {
@@ -971,13 +958,13 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
                 raise ValueError(msg)
             if (
                 self.page_size <= 0
-                or self.page_size > FlextCore.Constants.Processing.MAX_BATCH_SIZE
+                or self.page_size > FlextConstants.Processing.MAX_BATCH_SIZE
             ):
                 msg = "Page size must be between 1 and 1000"
                 raise ValueError(msg)
             return self
 
-    class OicApiResponse(FlextCore.Models.BaseModel):
+    class OicApiResponse(FlextModels.BaseModel):
         """Standardized OIC API response wrapper."""
 
         # Pydantic 2.11 Configuration - API Response Features
@@ -1009,7 +996,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         # Error information
         error_code: str | None = Field(None, description="Error code if failed")
         error_message: str | None = Field(None, description="Error message if failed")
-        error_details: FlextCore.Types.Dict | None = Field(
+        error_details: FlextTypes.Dict | None = Field(
             None, description="Detailed error information"
         )
 
@@ -1021,8 +1008,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         request_id: str | None = Field(None, description="Request correlation ID")
 
         @computed_field
-        @property
-        def api_response_summary(self) -> FlextCore.Types.Dict:
+        def api_response_summary(self) -> FlextTypes.Dict:
             """OIC API response summary."""
             return {
                 "response_status": {
@@ -1066,7 +1052,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
                 raise ValueError(msg)
             return self
 
-    class OicErrorContext(FlextCore.Models.BaseModel):
+    class OicErrorContext(FlextModels.BaseModel):
         """Error context for OIC API error handling."""
 
         # Pydantic 2.11 Configuration - Error Context Features
@@ -1103,7 +1089,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         # Context information
         endpoint: str | None = Field(None, description="API endpoint that failed")
         request_method: str | None = Field(None, description="HTTP method used")
-        request_params: FlextCore.Types.Dict | None = Field(
+        request_params: FlextTypes.Dict | None = Field(
             None, description="Request parameters"
         )
 
@@ -1119,8 +1105,7 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         )
 
         @computed_field
-        @property
-        def error_context_summary(self) -> FlextCore.Types.Dict:
+        def error_context_summary(self) -> FlextTypes.Dict:
             """OIC error context summary."""
             return {
                 "error_classification": {
@@ -1159,9 +1144,9 @@ class FlextMeltanoTapOracleOicModels(FlextCore.Models):
         def validate_error_context(self) -> Self:
             """Validate OIC error context."""
             if self.http_status_code is not None and not (
-                FlextCore.Constants.Http.HTTP_STATUS_MIN
+                FlextConstants.Http.HTTP_STATUS_MIN
                 <= self.http_status_code
-                <= FlextCore.Constants.Http.HTTP_STATUS_MAX
+                <= FlextConstants.Http.HTTP_STATUS_MAX
             ):
                 msg = "HTTP status code must be between 100 and 599"
                 raise ValueError(msg)
