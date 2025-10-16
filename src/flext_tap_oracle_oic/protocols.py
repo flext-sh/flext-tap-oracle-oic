@@ -14,7 +14,6 @@ class FlextMeltanoTapOracleOicProtocols:
     - 100% backward compatibility through aliases
     """
 
-
     class TapOracleOic:
         """Singer Tap Oracle OIC domain protocols."""
 
@@ -22,13 +21,13 @@ class FlextMeltanoTapOracleOicProtocols:
         class OicConnectionProtocol(FlextProtocols.Service, Protocol):
             """Protocol for Oracle OIC connection."""
 
-            def connect(self, config: FlextTypes.Dict) -> FlextResult[object]: ...  # noqa: D102
+            def connect(self, config: FlextTypes.Dict) -> FlextResult[object]: ...
 
         @runtime_checkable
         class IntegrationDiscoveryProtocol(FlextProtocols.Service, Protocol):
             """Protocol for OIC integration discovery."""
 
-            def discover_integrations(  # noqa: D102
+            def discover_integrations(
                 self, config: FlextTypes.Dict
             ) -> FlextResult[list[FlextTypes.Dict]]: ...
 
@@ -36,7 +35,7 @@ class FlextMeltanoTapOracleOicProtocols:
         class DataExtractionProtocol(FlextProtocols.Service, Protocol):
             """Protocol for OIC data extraction."""
 
-            def extract_integration_data(  # noqa: D102
+            def extract_integration_data(
                 self, integration: str
             ) -> FlextResult[list[FlextTypes.Dict]]: ...
 
@@ -44,7 +43,7 @@ class FlextMeltanoTapOracleOicProtocols:
         class StreamGenerationProtocol(FlextProtocols.Service, Protocol):
             """Protocol for Singer stream generation."""
 
-            def generate_catalog(  # noqa: D102
+            def generate_catalog(
                 self, config: FlextTypes.Dict
             ) -> FlextResult[FlextTypes.Dict]: ...
 
@@ -52,7 +51,7 @@ class FlextMeltanoTapOracleOicProtocols:
         class MonitoringProtocol(FlextProtocols.Service, Protocol):
             """Protocol for OIC extraction monitoring."""
 
-            def track_progress(  # noqa: D102
+            def track_progress(
                 self, integration: str, records: int
             ) -> FlextResult[None]: ...
 

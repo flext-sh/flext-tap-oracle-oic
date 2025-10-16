@@ -338,7 +338,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
                 for fmt in formats:
                     try:
-                        dt = datetime.strptime(timestamp_str, fmt)  # noqa: DTZ007
+                        dt = datetime.strptime(timestamp_str, fmt)
                         dt = dt.replace(tzinfo=UTC)
                         return FlextResult[str].ok(dt.isoformat())
                     except ValueError:
