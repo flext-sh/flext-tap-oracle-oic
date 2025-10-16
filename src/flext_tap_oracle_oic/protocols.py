@@ -2,11 +2,11 @@
 
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextCore
+from flext_core import FlextProtocols, FlextResult, FlextTypes
 
 
 class FlextMeltanoTapOracleOicProtocols:
-    """Singer Tap Oracle OIC protocols with explicit re-exports from FlextCore.Protocols foundation.
+    """Singer Tap Oracle OIC protocols with explicit re-exports from FlextProtocols foundation.
 
     Domain Extension Pattern (Phase 3):
     - Explicit re-export of foundation protocols (not inheritance)
@@ -14,57 +14,47 @@ class FlextMeltanoTapOracleOicProtocols:
     - 100% backward compatibility through aliases
     """
 
-    Foundation = FlextCore.Protocols.Foundation
-    Domain = FlextCore.Protocols.Domain
-    Application = FlextCore.Protocols.Application
-    Infrastructure = FlextCore.Protocols.Infrastructure
-    Extensions = FlextCore.Protocols.Extensions
-    Commands = FlextCore.Protocols.Commands
 
     class TapOracleOic:
         """Singer Tap Oracle OIC domain protocols."""
 
         @runtime_checkable
-        class OicConnectionProtocol(FlextCore.Protocols.Domain.Service, Protocol):
+        class OicConnectionProtocol(FlextProtocols.Service, Protocol):
             """Protocol for Oracle OIC connection."""
 
-            def connect(
-                self, config: FlextCore.Types.Dict
-            ) -> FlextCore.Result[object]: ...
+            def connect(self, config: FlextTypes.Dict) -> FlextResult[object]: ...  # noqa: D102
 
         @runtime_checkable
-        class IntegrationDiscoveryProtocol(
-            FlextCore.Protocols.Domain.Service, Protocol
-        ):
+        class IntegrationDiscoveryProtocol(FlextProtocols.Service, Protocol):
             """Protocol for OIC integration discovery."""
 
-            def discover_integrations(
-                self, config: FlextCore.Types.Dict
-            ) -> FlextCore.Result[list[FlextCore.Types.Dict]]: ...
+            def discover_integrations(  # noqa: D102
+                self, config: FlextTypes.Dict
+            ) -> FlextResult[list[FlextTypes.Dict]]: ...
 
         @runtime_checkable
-        class DataExtractionProtocol(FlextCore.Protocols.Domain.Service, Protocol):
+        class DataExtractionProtocol(FlextProtocols.Service, Protocol):
             """Protocol for OIC data extraction."""
 
-            def extract_integration_data(
+            def extract_integration_data(  # noqa: D102
                 self, integration: str
-            ) -> FlextCore.Result[list[FlextCore.Types.Dict]]: ...
+            ) -> FlextResult[list[FlextTypes.Dict]]: ...
 
         @runtime_checkable
-        class StreamGenerationProtocol(FlextCore.Protocols.Domain.Service, Protocol):
+        class StreamGenerationProtocol(FlextProtocols.Service, Protocol):
             """Protocol for Singer stream generation."""
 
-            def generate_catalog(
-                self, config: FlextCore.Types.Dict
-            ) -> FlextCore.Result[FlextCore.Types.Dict]: ...
+            def generate_catalog(  # noqa: D102
+                self, config: FlextTypes.Dict
+            ) -> FlextResult[FlextTypes.Dict]: ...
 
         @runtime_checkable
-        class MonitoringProtocol(FlextCore.Protocols.Domain.Service, Protocol):
+        class MonitoringProtocol(FlextProtocols.Service, Protocol):
             """Protocol for OIC extraction monitoring."""
 
-            def track_progress(
+            def track_progress(  # noqa: D102
                 self, integration: str, records: int
-            ) -> FlextCore.Result[None]: ...
+            ) -> FlextResult[None]: ...
 
     OicConnectionProtocol = TapOracleOic.OicConnectionProtocol
     IntegrationDiscoveryProtocol = TapOracleOic.IntegrationDiscoveryProtocol

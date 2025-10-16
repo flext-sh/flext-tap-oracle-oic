@@ -16,7 +16,7 @@ from urllib.parse import urljoin
 
 import pytest
 import requests
-from flext_core import FlextCore
+from flext_core import FlextResult, FlextTypes
 
 from flext_tap_oracle_oic import OracleOicClient
 
@@ -25,7 +25,7 @@ class TestOracleOicClient:
     """Test OIC client with real functionality."""
 
     @pytest.fixture
-    def client_config(self) -> FlextCore.Types.Dict:
+    def client_config(self) -> FlextTypes.Dict:
         """Create test client configuration."""
         return {
             "oauth_client_id": "test_client_id",
@@ -36,7 +36,7 @@ class TestOracleOicClient:
         }
 
     @pytest.fixture
-    def client(self, client_config: FlextCore.Types.Dict) -> OracleOicClient:
+    def client(self, client_config: FlextTypes.Dict) -> OracleOicClient:
         """Create a client instance."""
         return OracleOicClient(
             base_url=client_config["oic_url"],
@@ -49,7 +49,7 @@ class TestOracleOicClient:
     def test_client_initialization(
         self,
         client: OracleOicClient,
-        client_config: FlextCore.Types.Dict,
+        client_config: FlextTypes.Dict,
     ) -> None:
         """Test client initialization."""
         if client.base_url != client_config["oic_url"]:
@@ -102,7 +102,7 @@ class TestOracleOicClient:
         with contextlib.suppress(Exception):
             # May fail due to implementation details, but should not crash
             result = client.get_access_token()
-            if isinstance(result, FlextCore.Result) and result.success:
+            if isinstance(result, FlextResult) and result.success:
                 assert result.data is not None
 
     @patch("requests.Session.get")
@@ -122,7 +122,7 @@ class TestOracleOicClient:
         with contextlib.suppress(Exception):
             # May fail but should handle gracefully
             result = client.get("/ic/api/integration/v1/integrations")
-            if isinstance(result, FlextCore.Result):
+            if isinstance(result, FlextResult):
                 assert result is not None
 
     def test_url_construction(self) -> None:
@@ -204,9 +204,9 @@ class TestOracleOicClient:
 
     def test_service_result_pattern(self) -> None:
         """Test method."""
-        """Test FlextCore.Result pattern usage."""
-        # Test FlextCore.Result creation
-        success_result = FlextCore.Result[None].ok({"test": "data"})
+        """Test FlextResult pattern usage."""
+        # Test FlextResult creation
+        success_result = FlextResult[None].ok({"test": "data"})
         if not (success_result.success):
             msg: str = f"Expected True, got {success_result.success}"
             raise AssertionError(msg)
@@ -215,9 +215,7 @@ class TestOracleOicClient:
             msg: str = f"Expected {expected_data}, got {success_result.data}"
             raise AssertionError(msg)
 
-        failure_result: FlextCore.Result[object] = FlextCore.Result[None].fail(
-            "Test error"
-        )
+        failure_result: FlextResult[object] = FlextResult[None].fail("Test error")
         if failure_result.success:
             msg: str = f"Expected False, got {failure_result.success}"
             raise AssertionError(msg)
