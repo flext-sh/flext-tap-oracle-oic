@@ -18,7 +18,7 @@ from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
-from flext_core import FlextLogger, FlextTypes
+from flext_core import FlextLogger
 from singer_sdk import ConfigValidationError
 
 from flext_tap_oracle_oic import TapOracleOic
@@ -37,7 +37,7 @@ class TestTapOracleOicE2E:
     """End-to-end tests for tap-oracle-oic."""
 
     @pytest.fixture
-    def config(self) -> FlextTypes.Dict:
+    def config(self) -> dict[str, object]:
         """Mock configuration that matches the required schema."""
         return {
             "oauth_client_id": "test_client_id",
@@ -49,12 +49,12 @@ class TestTapOracleOicE2E:
         }
 
     @pytest.fixture
-    def tap(self, config: FlextTypes.Dict) -> object:
+    def tap(self, config: dict[str, object]) -> object:
         """Create TapOracleOic instance for testing."""
         return TapOracleOic(config=config)
 
     @pytest.fixture
-    def config_path(self, tmp_path: Path, config: FlextTypes.Dict) -> str:
+    def config_path(self, tmp_path: Path, config: dict[str, object]) -> str:
         """Create a temporary config file for CLI tests."""
         config_file = tmp_path / "test_config.json"
         with config_file.open("w", encoding="utf-8") as f:
@@ -64,7 +64,7 @@ class TestTapOracleOicE2E:
     def test_tap_initialization(
         self,
         tap: TapOracleOic,
-        config: FlextTypes.Dict,
+        config: dict[str, object],
     ) -> None:
         """Test TapOracleOic initialization with configuration."""
         if tap.name != "tap-oracle-oic":
@@ -214,7 +214,7 @@ class TestTapOracleOicE2E:
         python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
 
         def _run(
-            cmd_list: FlextTypes.StringList,
+            cmd_list: list[str],
             cwd: str | None = None,
         ) -> tuple[int, str, str]:
             process = create_subprocess_exec(
@@ -246,7 +246,7 @@ class TestTapOracleOicE2E:
 
         # Extract JSON from output (skip log lines)
         output_lines = out.strip().split("\n")
-        json_lines: FlextTypes.StringList = []
+        json_lines: list[str] = []
         in_json = False
 
         for line in output_lines:
@@ -362,7 +362,7 @@ class TestTapOracleOicE2E:
         python_exe = shutil.which("python3") or shutil.which("python") or sys.executable
 
         def _run(
-            cmd_list: FlextTypes.StringList,
+            cmd_list: list[str],
             cwd: str | None = None,
         ) -> tuple[int, str, str]:
             process = create_subprocess_exec(
@@ -394,7 +394,7 @@ class TestTapOracleOicE2E:
 
         # Extract JSON from stdout (skip log lines)
         output_lines = out1.strip().split("\n")
-        json_lines: FlextTypes.StringList = []
+        json_lines: list[str] = []
         in_json = False
 
         for line in output_lines:
@@ -462,7 +462,7 @@ class TestTapOracleOicE2E:
             )
 
             def _run_input(
-                cmd_list: FlextTypes.StringList,
+                cmd_list: list[str],
                 cwd: str | None = None,
                 input_text: str = "",
             ) -> tuple[int, str, str]:

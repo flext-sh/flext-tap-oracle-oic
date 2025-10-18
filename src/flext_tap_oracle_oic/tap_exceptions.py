@@ -18,7 +18,7 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from flext_core import FlextExceptions, FlextTypes
+from flext_core import FlextExceptions
 
 
 # Oracle OIC exception factory using standard pattern
@@ -64,7 +64,7 @@ class OICAPIError(FlextExceptions.ProcessingError):
 
 
 # Export for backward compatibility and module interface
-__all__: FlextTypes.StringList = [
+__all__: list[str] = [
     "OICAPIError",
     "OICAuthenticationError",
     "OICConnectionError",

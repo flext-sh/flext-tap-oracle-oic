@@ -39,7 +39,6 @@ __all__ = [
     "FlextMeltanoTapOracleOicUtilities",
     "FlextModels",
     "FlextResult",
-    "FlextTypes.Dict",
     "OICAPIError",
     "OICAuthenticationError",
     "OICBaseStream",
@@ -51,4 +50,5 @@ __all__ = [
     "__version_info__",
     "create_oic_tap",
     "create_oracle_oic_tap_config",
+    "dict[str, object]",
 ]

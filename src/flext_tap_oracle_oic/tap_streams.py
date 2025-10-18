@@ -59,7 +59,7 @@ class OICPaginator:
 
         """
         try:
-            data: FlextTypes.Dict = response.json()
+            data: dict[str, object] = response.json()
 
             # Track response time for adaptive sizing
             if hasattr(response, "elapsed") and self._adaptive_sizing:
@@ -76,7 +76,7 @@ class OICPaginator:
 
     def _calculate_next_offset(
         self,
-        data: FlextTypes.Dict | FlextTypes.List,
+        data: dict[str, object] | list[object],
     ) -> int | None:
         """Calculate next offset based on OIC response format."""
         items = self._extract_items_from_response(data)
@@ -86,8 +86,8 @@ class OICPaginator:
 
     def _extract_items_from_response(
         self,
-        data: FlextTypes.Dict | FlextTypes.List,
-    ) -> FlextTypes.List | None:
+        data: dict[str, object] | list[object],
+    ) -> list[object] | None:
         """Extract items from various OIC response formats."""
         if isinstance(data, list):
             return data
@@ -216,7 +216,7 @@ class OICBaseStream(FlextMeltanoStream):
         self,
         context: Mapping[str, object] | None,
         next_page_token: object | None,
-    ) -> FlextTypes.Dict:
+    ) -> dict[str, object]:
         """Build URL parameters for Oracle OIC API requests.
 
         Args:
@@ -227,7 +227,7 @@ class OICBaseStream(FlextMeltanoStream):
             Dictionary of URL parameters optimized for OIC API.
 
         """
-        params: FlextTypes.Dict = {}
+        params: dict[str, object] = {}
 
         # Pagination parameters
         page_size = self.config.get("page_size", 100)
@@ -282,7 +282,7 @@ class OICBaseStream(FlextMeltanoStream):
     def parse_response(
         self,
         response: object,
-    ) -> Iterator[FlextTypes.Dict]:
+    ) -> Iterator[dict[str, object]]:
         """Parse Oracle OIC API response and yield records with validation.
 
         Args:
@@ -299,7 +299,7 @@ class OICBaseStream(FlextMeltanoStream):
                 return
 
             try:
-                data: FlextTypes.Dict = response.json()
+                data: dict[str, object] = response.json()
             except (ValueError, TypeError, KeyError):
                 self.logger.exception("Failed to parse JSON from %s", response.url)
                 if self.config.get("fail_on_parsing_errors", True):
@@ -319,9 +319,9 @@ class OICBaseStream(FlextMeltanoStream):
 
     def _extract_and_yield_records(
         self,
-        data: FlextTypes.Dict | FlextTypes.List,
+        data: dict[str, object] | list[object],
         url: str,
-    ) -> Iterator[FlextTypes.Dict]:
+    ) -> Iterator[dict[str, object]]:
         """Extract and yield records with validation and enrichment."""
         records_yielded = 0
 
@@ -345,8 +345,8 @@ class OICBaseStream(FlextMeltanoStream):
 
     def _extract_items_for_processing(
         self,
-        data: FlextTypes.Dict | FlextTypes.List,
-    ) -> Iterator[FlextTypes.Dict]:
+        data: dict[str, object] | list[object],
+    ) -> Iterator[dict[str, object]]:
         """Extract items from various OIC response formats for processing."""
         if isinstance(data, list):
             yield from self._process_list_data(data)
@@ -355,8 +355,8 @@ class OICBaseStream(FlextMeltanoStream):
 
     def _process_list_data(
         self,
-        data: FlextTypes.List,
-    ) -> Iterator[FlextTypes.Dict]:
+        data: list[object],
+    ) -> Iterator[dict[str, object]]:
         """Process list-type response data."""
         for item in data:
             if isinstance(item, dict):
@@ -364,8 +364,8 @@ class OICBaseStream(FlextMeltanoStream):
 
     def _process_dict_data(
         self,
-        data: FlextTypes.Dict,
-    ) -> Iterator[FlextTypes.Dict]:
+        data: dict[str, object],
+    ) -> Iterator[dict[str, object]]:
         """Process dict-type response data with OIC format detection."""
         if "items" in data:
             items = data["items"]
@@ -380,12 +380,12 @@ class OICBaseStream(FlextMeltanoStream):
 
     def _is_empty_result_expected(
         self,
-        data: FlextTypes.Dict | FlextTypes.List,
+        data: dict[str, object] | list[object],
     ) -> bool:
         """Check if empty result is expected/normal based on OIC response metadata."""
         if isinstance(data, dict):
-            items: FlextTypes.List = data.get("items", [])
-            data_items: FlextTypes.Dict = data.get("data", [])
+            items: list[object] = data.get("items", [])
+            data_items: dict[str, object] = data.get("data", [])
             return (
                 data.get("totalSize", 0) == 0
                 or data.get("count", 0) == 0
@@ -394,7 +394,7 @@ class OICBaseStream(FlextMeltanoStream):
             )
         return len(data) == 0
 
-    def _is_single_record(self, data: FlextTypes.Dict) -> bool:
+    def _is_single_record(self, data: dict[str, object]) -> bool:
         """Check if dict[str, object] represents a single record vs OIC metadata container."""
         metadata_keys = {
             "totalSize",
@@ -407,11 +407,11 @@ class OICBaseStream(FlextMeltanoStream):
         }
         return not any(key in data for key in metadata_keys)
 
-    def _validate_record(self, record: FlextTypes.Dict) -> bool:
+    def _validate_record(self, record: dict[str, object]) -> bool:
         """Validate record meets basic requirements for processing."""
         return isinstance(record, dict)
 
-    def _enrich_record(self, record: FlextTypes.Dict) -> FlextTypes.Dict:
+    def _enrich_record(self, record: dict[str, object]) -> dict[str, object]:
         """Enrich record with tap metadata for traceability."""
         enriched = dict[str, object](record)
         enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
@@ -421,7 +421,7 @@ class OICBaseStream(FlextMeltanoStream):
     def _handle_response_error(self, response: object) -> None:
         """Handle Oracle OIC API response errors with proper categorization."""
         try:
-            error_data: FlextTypes.Dict = response.json()
+            error_data: dict[str, object] = response.json()
             error_message = error_data.get("message") or error_data.get("error")
         except (ValueError, TypeError, KeyError):
             error_message = response.text or f"HTTP {response.status_code}"
@@ -442,7 +442,7 @@ class OICBaseStream(FlextMeltanoStream):
     def _track_response_metrics(
         self,
         response: object,
-        data: FlextTypes.Dict | FlextTypes.List,
+        data: dict[str, object] | list[object],
     ) -> None:
         """Track response metrics for monitoring and optimization."""
         # Log response time and size for monitoring
@@ -464,7 +464,7 @@ class OICBaseStream(FlextMeltanoStream):
 
 
 # Export for module interface
-__all__: FlextTypes.StringList = [
+__all__: list[str] = [
     "OICBaseStream",
     "OICPaginator",
 ]

@@ -16,7 +16,7 @@ from urllib.parse import urljoin
 
 import pytest
 import requests
-from flext_core import FlextResult, FlextTypes
+from flext_core import FlextResult
 
 from flext_tap_oracle_oic import OracleOicClient
 
@@ -25,7 +25,7 @@ class TestOracleOicClient:
     """Test OIC client with real functionality."""
 
     @pytest.fixture
-    def client_config(self) -> FlextTypes.Dict:
+    def client_config(self) -> dict[str, object]:
         """Create test client configuration."""
         return {
             "oauth_client_id": "test_client_id",
@@ -36,7 +36,7 @@ class TestOracleOicClient:
         }
 
     @pytest.fixture
-    def client(self, client_config: FlextTypes.Dict) -> OracleOicClient:
+    def client(self, client_config: dict[str, object]) -> OracleOicClient:
         """Create a client instance."""
         return OracleOicClient(
             base_url=client_config["oic_url"],
@@ -49,7 +49,7 @@ class TestOracleOicClient:
     def test_client_initialization(
         self,
         client: OracleOicClient,
-        client_config: FlextTypes.Dict,
+        client_config: dict[str, object],
     ) -> None:
         """Test client initialization."""
         if client.base_url != client_config["oic_url"]:

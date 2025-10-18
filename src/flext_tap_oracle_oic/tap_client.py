@@ -14,7 +14,7 @@ from collections.abc import Sequence
 from typing import ClassVar, cast, override
 
 from flext_api import FlextApiClient
-from flext_core import FlextLogger, FlextResult, FlextTypes
+from flext_core import FlextLogger, FlextResult
 from flext_meltano import FlextMeltanoStream as Stream, FlextMeltanoTap as Tap
 
 from flext_tap_oracle_oic.config import FlextMeltanoTapOracleOicConfig
@@ -70,7 +70,7 @@ class FlextOracleOicAuthenticator:
             if isinstance(response.body, dict):
                 token_data = response.body
             elif isinstance(response.body, str):
-                token_data: FlextTypes.Dict = json.loads(response.body)
+                token_data: dict[str, object] = json.loads(response.body)
             else:
                 return FlextResult[str].fail("Empty or invalid OAuth response body")
 
@@ -106,17 +106,17 @@ class OracleOicClient:
         # ZERO TOLERANCE FIX: Use FlextMeltanoTapOracleOicUtilities for ALL business operations
         self._utilities = FlextMeltanoTapOracleOicUtilities()
 
-    def _get_auth_headers(self) -> FlextResult[FlextTypes.StringDict]:
+    def _get_auth_headers(self) -> FlextResult[dict[str, str]]:
         """Get authorization headers with OAuth2 token."""
         token_result: FlextResult[object] = self.authenticator.get_access_token()
         if not token_result.success:
-            return FlextResult[FlextTypes.StringDict].fail(
+            return FlextResult[dict[str, str]].fail(
                 f"Failed to get access token: {token_result.error}",
             )
 
         headers = self.config.get_headers()
         headers["Authorization"] = f"Bearer {token_result.data}"
-        return FlextResult[FlextTypes.StringDict].ok(headers)
+        return FlextResult[dict[str, str]].ok(headers)
 
     def get(self, endpoint: str) -> FlextResult[object]:
         """Make authenticated GET request to OIC API."""
@@ -160,7 +160,7 @@ class OracleOicClient:
     def post(
         self,
         endpoint: str,
-        data: FlextTypes.Dict | None = None,
+        data: dict[str, object] | None = None,
     ) -> FlextResult[object]:
         """Make authenticated POST request to OIC API."""
         # ZERO TOLERANCE FIX: Use utilities for URL validation and building
@@ -179,7 +179,7 @@ class OracleOicClient:
         try:
             url = url_result.unwrap()
             # Convert data to string dict[str, object] for FlextApiClient compatibility
-            json_data: FlextTypes.Dict = (
+            json_data: dict[str, object] = (
                 {str(k): str(v) for k, v in data.items()} if data else None
             )
             response_result = self._api_client.post(
@@ -246,9 +246,9 @@ class TapOracleOic(Tap):
     def __init__(
         self,
         *,
-        config: FlextTypes.Dict | None = None,
-        catalog: FlextTypes.Dict | None = None,
-        state: FlextTypes.Dict | None = None,
+        config: dict[str, object] | None = None,
+        catalog: dict[str, object] | None = None,
+        state: dict[str, object] | None = None,
         parse_env_config: bool = False,
         validate_config: bool = True,
     ) -> None:
@@ -394,8 +394,8 @@ def main() -> int:
     if exit_code != 0:
         return exit_code
 
-    config: FlextTypes.Dict = _build_config_from_env()
-    config_typed: FlextTypes.Dict = {k: v for k, v in config.items() if v is not None}
+    config: dict[str, object] = _build_config_from_env()
+    config_typed: dict[str, object] = {k: v for k, v in config.items() if v is not None}
     tap = TapOracleOic(config=config_typed)
 
     try:
@@ -423,14 +423,14 @@ def _build_config_from_env() -> dict[str, str | None]:
 
 def _validate_and_setup_config() -> int:
     """Validate required configuration. Returns 0 for success, 1 for error."""
-    config: FlextTypes.Dict = _build_config_from_env()
+    config: dict[str, object] = _build_config_from_env()
     required_config = [
         "oauth_client_id",
         "oauth_client_secret",
         "oauth_token_url",
         "oic_url",
     ]
-    missing_config: FlextTypes.Dict = [
+    missing_config: dict[str, object] = [
         key for key in required_config if not config.get(key)
     ]
 
@@ -497,7 +497,7 @@ if __name__ == "__main__":
 
 
 # Export for module interface - unified classes only
-__all__: FlextTypes.StringList = [
+__all__: list[str] = [
     "OracleOicClient",
     "TapOracleOic",
     "main",

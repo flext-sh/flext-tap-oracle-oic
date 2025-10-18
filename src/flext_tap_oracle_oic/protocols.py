@@ -2,7 +2,7 @@
 
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextProtocols, FlextResult, FlextTypes
+from flext_core import FlextProtocols, FlextResult
 
 
 class FlextMeltanoTapOracleOicProtocols:
@@ -21,15 +21,15 @@ class FlextMeltanoTapOracleOicProtocols:
         class OicConnectionProtocol(FlextProtocols.Service, Protocol):
             """Protocol for Oracle OIC connection."""
 
-            def connect(self, config: FlextTypes.Dict) -> FlextResult[object]: ...
+            def connect(self, config: dict[str, object]) -> FlextResult[object]: ...
 
         @runtime_checkable
         class IntegrationDiscoveryProtocol(FlextProtocols.Service, Protocol):
             """Protocol for OIC integration discovery."""
 
             def discover_integrations(
-                self, config: FlextTypes.Dict
-            ) -> FlextResult[list[FlextTypes.Dict]]: ...
+                self, config: dict[str, object]
+            ) -> FlextResult[list[dict[str, object]]]: ...
 
         @runtime_checkable
         class DataExtractionProtocol(FlextProtocols.Service, Protocol):
@@ -37,15 +37,15 @@ class FlextMeltanoTapOracleOicProtocols:
 
             def extract_integration_data(
                 self, integration: str
-            ) -> FlextResult[list[FlextTypes.Dict]]: ...
+            ) -> FlextResult[list[dict[str, object]]]: ...
 
         @runtime_checkable
         class StreamGenerationProtocol(FlextProtocols.Service, Protocol):
             """Protocol for Singer stream generation."""
 
             def generate_catalog(
-                self, config: FlextTypes.Dict
-            ) -> FlextResult[FlextTypes.Dict]: ...
+                self, config: dict[str, object]
+            ) -> FlextResult[dict[str, object]]: ...
 
         @runtime_checkable
         class MonitoringProtocol(FlextProtocols.Service, Protocol):

@@ -13,8 +13,8 @@ from __future__ import annotations
 import re
 from typing import Self
 
-from flext_core import FlextConfig, FlextConstants, FlextResult, FlextTypes
-from pydantic import Field, HttpUrl, SecretStr, field_validator, model_validator
+from flext_core import FlextConfig, FlextConstants, FlextResult
+from pydantic import Field, FlextWebUrl, SecretStr, field_validator, model_validator
 from pydantic_settings import SettingsConfigDict
 
 
@@ -64,7 +64,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
         description="OAuth2 client secret for IDCS authentication (sensitive)",
     )
 
-    oauth_token_url: HttpUrl = Field(
+    oauth_token_url: FlextWebUrl = Field(
         default="https://idcs-tenant.identity.oraclecloud.com/oauth2/v1/token",
         description="OAuth2 token endpoint URL",
     )
@@ -75,7 +75,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
     )
 
     # OIC Connection Configuration
-    base_url: HttpUrl = Field(
+    base_url: FlextWebUrl = Field(
         default="https://instance.integration.ocp.oraclecloud.com",
         description="OIC instance base URL",
     )
@@ -304,7 +304,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
         """Get full API base URL with version."""
         return f"{str(self.base_url).rstrip('/')}/ic/api/integration/{self.api_version}"
 
-    def get_auth_config(self) -> FlextTypes.Dict:
+    def get_auth_config(self) -> dict[str, object]:
         """Get authentication configuration dictionary."""
         return {
             "client_id": self.oauth_client_id,
@@ -313,7 +313,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
             "audience": self.oauth_audience,
         }
 
-    def get_connection_config(self) -> FlextTypes.Dict:
+    def get_connection_config(self) -> dict[str, object]:
         """Get connection configuration dictionary."""
         return {
             "base_url": str(self.base_url),
@@ -323,7 +323,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
             "page_size": self.page_size,
         }
 
-    def get_tap_config(self) -> FlextTypes.Dict:
+    def get_tap_config(self) -> dict[str, object]:
         """Get tap-specific configuration dictionary."""
         return {
             "stream_prefix": self.stream_prefix,
@@ -333,7 +333,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
             "max_parallel_streams": self.max_parallel_streams,
         }
 
-    def get_performance_config(self) -> FlextTypes.Dict:
+    def get_performance_config(self) -> dict[str, object]:
         """Get performance configuration dictionary."""
         return {
             "batch_size": self.batch_size,
@@ -343,7 +343,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
             "max_retries": self.max_retries,
         }
 
-    def get_token_request_data(self) -> FlextTypes.StringDict:
+    def get_token_request_data(self) -> dict[str, str]:
         """Get OAuth2 token request data for client credentials flow."""
         return {
             "grant_type": "client_credentials",
@@ -352,7 +352,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
             "audience": self.oauth_audience,
         }
 
-    def get_headers(self) -> FlextTypes.StringDict:
+    def get_headers(self) -> dict[str, str]:
         """Get default headers for OIC API requests."""
         return {
             "Content-Type": "application/json",
@@ -365,7 +365,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
         cls, environment: str, **overrides: object
     ) -> FlextMeltanoTapOracleOicConfig:
         """Create configuration for specific environment using enhanced singleton pattern."""
-        env_overrides: FlextTypes.Dict = {}
+        env_overrides: dict[str, object] = {}
 
         if environment == "production":
             env_overrides.update({
@@ -410,7 +410,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
     @classmethod
     def create_for_development(cls, **overrides: object) -> Self:
         """Create configuration for development environment."""
-        dev_overrides: FlextTypes.Dict = {
+        dev_overrides: dict[str, object] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT * 2,
             "max_retries": 1,
             "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 20,
@@ -425,7 +425,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
     @classmethod
     def create_for_production(cls, **overrides: object) -> Self:
         """Create configuration for production environment."""
-        prod_overrides: FlextTypes.Dict = {
+        prod_overrides: dict[str, object] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
             "max_retries": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
             "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 10,
@@ -440,7 +440,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
     @classmethod
     def create_for_testing(cls, **overrides: object) -> Self:
         """Create configuration for testing environment."""
-        test_overrides: FlextTypes.Dict = {
+        test_overrides: dict[str, object] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT // 3,
             "max_retries": 1,
             "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 100,
@@ -460,9 +460,9 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
 
 # Factory function for backward compatibility (will be removed in future versions)
 def create_oracle_oic_tap_config(
-    oauth_params: FlextTypes.Dict,
-    connection_params: FlextTypes.Dict,
-    tap_params: FlextTypes.Dict | None = None,
+    oauth_params: dict[str, object],
+    connection_params: dict[str, object],
+    tap_params: dict[str, object] | None = None,
 ) -> FlextResult[FlextMeltanoTapOracleOicConfig]:
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
@@ -540,7 +540,7 @@ def validate_oracle_oic_tap_configuration(
     return FlextResult[None].ok(None)
 
 
-__all__: FlextTypes.StringList = [
+__all__: list[str] = [
     "FlextMeltanoTapOracleOicConfig",
     "create_oracle_oic_tap_config",
     "validate_oracle_oic_tap_configuration",
