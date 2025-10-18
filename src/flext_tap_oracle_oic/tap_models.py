@@ -6,8 +6,6 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from flext_core import FlextTypes
-
 from flext_tap_oracle_oic.domain.entities import OICIntegration
 
 """Oracle Integration Cloud data models - PEP8 reorganized.
@@ -37,6 +35,6 @@ SPDX-License-Identifier: MIT
 
 
 # Export for backward compatibility and module interface
-__all__: FlextTypes.StringList = [
+__all__: list[str] = [
     "OICIntegration",
 ]

@@ -14,7 +14,7 @@ from __future__ import annotations
 import os
 from typing import cast
 
-from flext_core import FlextResult, FlextTypes
+from flext_core import FlextResult
 from flext_oracle_oic import (
     OICAuthConfig,
     OICConnectionConfig,
@@ -37,7 +37,7 @@ def setup_oic_tap(
     try:
         if config is None:
             # Create basic configuration dictionary
-            config: FlextTypes.Dict = {
+            config: dict[str, object] = {
                 "oauth_client_id": os.getenv("OIC_CLIENT_ID", "your-client-id"),
                 "oauth_client_secret": os.getenv("OIC_CLIENT_SECRET", "your-secret"),
                 "oauth_token_url": os.getenv(
@@ -75,7 +75,7 @@ def create_oic_auth_config(
 
     """
     try:
-        config: FlextTypes.Dict = OICAuthConfig(
+        config: dict[str, object] = OICAuthConfig(
             oauth_client_id=client_id,
             oauth_client_secret=SecretStr(client_secret),
             oauth_token_url=token_url,
@@ -106,7 +106,7 @@ def create_oic_connection_config(
 
     """
     try:
-        config: FlextTypes.Dict = OICConnectionConfig(
+        config: dict[str, object] = OICConnectionConfig(
             base_url=base_url,
             api_version=cast("str", kwargs.get("api_version", "v1")),
             request_timeout=cast("int", kwargs.get("request_timeout", 30)),
@@ -154,7 +154,7 @@ def validate_oic_config(config: object) -> FlextResult[bool]:
 
 
 # Export simplified API
-__all__: FlextTypes.StringList = [
+__all__: list[str] = [
     "create_oic_auth_config",
     "create_oic_connection_config",
     "setup_oic_tap",
