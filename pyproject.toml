@@ -63,53 +63,11 @@
 [tool.ruff]
     extend = "../ruff-shared.toml"
 
-[tool.bandit]
-    exclude_dirs = [
-        "build",
-        "dist",
-        "tests",
-    ]
-    skips = [
-        "B101",
-        "B601",
-    ]
 
 [tool.poetry]
     [[tool.poetry.packages]]
         from    = "src"
         include = "flext_tap_oracle_oic"
-
-
-	[tool.pyrefly]
-		# NOTE: Pyrefly (MyPy successor) with Pydantic plugin properly handles:
-		#   - @computed_field + @property pattern (Pydantic 2.11+)
-		#   - dict[str, object] type annotations (legitimate generic usage)
-		#   - Field validators and serializers with proper type inference
-		permissive-ignores = true
-		project-excludes = [
-		    "**/.git",
-		    "**/.cache",
-		    "**/.claude",
-		    "**/__pycache__",
-		    "**/*.venv",
-		    "**/*dist",
-		    "**/*mypy_cache",
-		    "**/*pytest_cache",
-		    "**/*ruff_cache",
-		    "**/*venv/**",
-		    "**/node_modules/**",
-		    "**/*.pb2.py",
-		    "**/*.pb2_grpc.py",
-		    "**/build/**",
-		]
-		python-version = "3.13"
-
-		# SubConfig: Disable unknown-name error for all models.py files
-		# This handles forward references to classes defined later in the same file
-		[[tool.pyrefly.sub-config]]
-			matches = "**/*models.py"
-			[tool.pyrefly.sub-config.errors]
-				unknown-name = false
 
 
 [tool.deptry]
@@ -148,39 +106,6 @@
     testpaths = [
         "tests",
     ]
-
-[tool.coverage.run]
-    branch = true
-    omit = [
-        "*/.venv/*",
-        "*/__pycache__/*",
-        "*/test_*",
-        "*/tests/*",
-        "*/venv/*",
-    ]
-    source = [
-        "src",
-    ]
-
-[tool.coverage.report]
-    exclude_lines = [
-        "@(abc\\.)?abstractmethod",
-        "class .*\\bProtocol\\):",
-        "def __repr__",
-        "if 0:",
-        "if __name__ == .__main__.:",
-        "if self.debug:",
-        "if settings.DEBUG",
-        "pragma: no cover",
-        "raise AssertionError",
-        "raise NotImplementedError",
-    ]
-
-[tool.coverage.html]
-    directory = "reports/coverage"
-
-[tool.coverage.xml]
-    output = "reports/coverage.xml"
 
     [tool.ruff.lint.isort]
         known-first-party = [

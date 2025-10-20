@@ -43,7 +43,10 @@ class FlextOracleOicAuthenticator:
         """Initialize authenticator with OAuth2 configuration."""
         self.config = config
         self._access_token: str | None = None
-        self._api_client = FlextApiClient()
+        from flext_api.config import FlextApiConfig
+
+        api_config = FlextApiConfig()
+        self._api_client = FlextApiClient(api_config)
 
     def get_access_token(self) -> FlextResult[str]:
         """Get OAuth2 access token using client credentials flow."""
@@ -98,10 +101,13 @@ class OracleOicClient:
         """Initialize OIC API client."""
         self.config = config
         self.authenticator = authenticator
-        self._api_client = FlextApiClient(
+        from flext_api.config import FlextApiConfig
+
+        api_config = FlextApiConfig(
             base_url=config.get_api_base_url(),
             timeout=config.timeout,
         )
+        self._api_client = FlextApiClient(api_config)
 
         # ZERO TOLERANCE FIX: Use FlextMeltanoTapOracleOicUtilities for ALL business operations
         self._utilities = FlextMeltanoTapOracleOicUtilities()

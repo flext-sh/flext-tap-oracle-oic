@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import re
 from datetime import UTC, datetime
-from typing import ClassVar, override
+from typing import Any, ClassVar, override
 from urllib.parse import urljoin, urlparse
 
 from flext_core import FlextResult, FlextUtilities
@@ -234,7 +234,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
         @staticmethod
         def extract_pagination_info(
-            response: dict[str, object],
+            response: dict[str, Any] | None,
         ) -> dict[str, object]:
             """Extract pagination information from OIC response.
 
@@ -245,6 +245,19 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 dict[str, object]: Pagination information
 
             """
+            if not response or not isinstance(response, dict):
+                return {
+                    "has_more": False,
+                    "limit": FlextMeltanoTapOracleOicUtilities.DEFAULT_PAGE_SIZE,
+                    "offset": 0,
+                    "total_count": 0,
+                    "current_page_size": 0,
+                }
+
+            items = response.get("items", [])
+            if not isinstance(items, list):
+                items = []
+
             return {
                 "has_more": response.get("hasMore", False),
                 "limit": response.get(
@@ -252,7 +265,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 ),
                 "offset": response.get("offset", 0),
                 "total_count": response.get("count", 0),
-                "current_page_size": len(response.get("items", [])),
+                "current_page_size": len(items),
             }
 
     class OicDataProcessing:
@@ -283,7 +296,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
         @staticmethod
         def extract_integration_metadata(
-            integration_data: dict[str, object],
+            integration_data: dict[str, Any] | None,
         ) -> dict[str, object]:
             """Extract metadata from Oracle OIC integration data.
 
@@ -294,7 +307,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 dict[str, object]: Extracted metadata
 
             """
-            if not integration_data:
+            if not integration_data or not isinstance(integration_data, dict):
                 return {}
 
             metadata = {
@@ -310,9 +323,13 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
             # Extract connection information
             connections = integration_data.get("connectionInstances", [])
+            if not isinstance(connections, list):
+                connections = []
+
             metadata["connection_count"] = len(connections)
             metadata["connection_types"] = [
-                conn.get("connectionType") for conn in connections
+                conn.get("connectionType") if isinstance(conn, dict) else None
+                for conn in connections
             ]
 
             return metadata
@@ -345,7 +362,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 for fmt in formats:
                     try:
                         # Use timezone-aware parsing where possible
-                        dt = datetime.strptime(timestamp_str, fmt)  # noqa: DTZ007
+                        dt = datetime.strptime(timestamp_str, fmt)
                         # Assume UTC for naive datetime objects
                         if dt.tzinfo is None:
                             dt = dt.replace(tzinfo=UTC)
@@ -415,7 +432,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
             # Validate OIC base URL
             url_validation = FlextMeltanoTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
-                config["oic_base_url"]
+                str(config["oic_base_url"])
             )
             if url_validation.is_failure:
                 return FlextResult[dict[str, object]].fail(
@@ -423,10 +440,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 )
 
             # Validate credentials
-            if not config["username"].strip():
+            if not str(config["username"]).strip():
                 return FlextResult[dict[str, object]].fail("Username cannot be empty")
 
-            if not config["password"].strip():
+            if not str(config["password"]).strip():
                 return FlextResult[dict[str, object]].fail("Password cannot be empty")
 
             # Validate optional timeout
@@ -480,7 +497,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 if "page_size" in stream_config:
                     page_size = stream_config["page_size"]
 
-                    max_page_size = FlextOracleOicConstants.OIC.MAX_PAGE_SIZE
+                    max_page_size = FlextOracleOicConstants.Processing.MAX_PAGE_SIZE
                     if (
                         not isinstance(page_size, int)
                         or page_size <= 0
@@ -509,7 +526,12 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 dict[str, object]: Stream state
 
             """
-            return state.get("bookmarks", {}).get(stream_name, {})
+            if not isinstance(state, dict):
+                return {}
+            bookmarks = state.get("bookmarks", {})
+            if not isinstance(bookmarks, dict):
+                return {}
+            return bookmarks.get(stream_name, {})
 
         @staticmethod
         def set_stream_state(
@@ -528,10 +550,16 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 dict[str, object]: Updated state
 
             """
+            if not isinstance(state, dict):
+                return {}
+
             if "bookmarks" not in state:
                 state["bookmarks"] = {}
 
-            state["bookmarks"][stream_name] = stream_state
+            bookmarks = state["bookmarks"]
+            if isinstance(bookmarks, dict):
+                bookmarks[stream_name] = stream_state
+
             return state
 
         @staticmethod
@@ -556,7 +584,9 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                     state, stream_name
                 )
             )
-            return stream_state.get(bookmark_key)
+            if isinstance(stream_state, dict):
+                return stream_state.get(bookmark_key)
+            return None
 
         @staticmethod
         def set_bookmark(
@@ -577,12 +607,19 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 dict[str, object]: Updated state
 
             """
+            if not isinstance(state, dict):
+                return {}
+
             if "bookmarks" not in state:
                 state["bookmarks"] = {}
-            if stream_name not in state["bookmarks"]:
-                state["bookmarks"][stream_name] = {}
+            bookmarks = state["bookmarks"]
+            if isinstance(bookmarks, dict):
+                if stream_name not in bookmarks:
+                    bookmarks[stream_name] = {}
+                stream_bookmarks = bookmarks[stream_name]
+                if isinstance(stream_bookmarks, dict):
+                    stream_bookmarks[bookmark_key] = bookmark_value
 
-            state["bookmarks"][stream_name][bookmark_key] = bookmark_value
             return state
 
         @staticmethod
@@ -602,12 +639,25 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 dict[str, object]: Updated state
 
             """
+            if not isinstance(pagination_info, dict):
+                return state
+
+            offset = pagination_info.get("offset", 0)
+            page_size = pagination_info.get("current_page_size", 0)
+
+            # Ensure values are numeric
+            try:
+                offset_val = int(offset) if offset is not None else 0
+                page_size_val = int(page_size) if page_size is not None else 0
+            except (ValueError, TypeError):
+                offset_val = 0
+                page_size_val = 0
+
             return FlextMeltanoTapOracleOicUtilities.StateManagement.set_bookmark(
                 state,
                 stream_name,
                 "pagination_offset",
-                pagination_info.get("offset", 0)
-                + pagination_info.get("current_page_size", 0),
+                offset_val + page_size_val,
             )
 
     class PerformanceUtilities:
