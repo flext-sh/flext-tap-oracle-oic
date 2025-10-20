@@ -201,7 +201,10 @@ class OICBaseStream(FlextMeltanoStream):
                 return client_result.data
 
         # Fallback to creating new FlextApiClient
-        return FlextApiClient()
+        from flext_api.config import FlextApiConfig
+
+        api_config = FlextApiConfig()
+        return FlextApiClient(api_config)
 
     def get_new_paginator(self: object) -> OICPaginator:
         """Create new Oracle OIC paginator with configuration.
