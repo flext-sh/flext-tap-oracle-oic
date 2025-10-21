@@ -48,12 +48,12 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Create Singer schema message.
 
             Args:
-                stream_name: Name of the stream
-                schema: JSON schema for the stream
-                key_properties: List of key property names
+            stream_name: Name of the stream
+            schema: JSON schema for the stream
+            key_properties: List of key property names
 
             Returns:
-                dict[str, object]: Singer schema message
+            dict[str, object]: Singer schema message
 
             """
             return {
@@ -72,12 +72,12 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Create Singer record message.
 
             Args:
-                stream_name: Name of the stream
-                record: Record data
-                time_extracted: Timestamp when record was extracted
+            stream_name: Name of the stream
+            record: Record data
+            time_extracted: Timestamp when record was extracted
 
             Returns:
-                dict[str, object]: Singer record message
+            dict[str, object]: Singer record message
 
             """
             extracted_time = time_extracted or datetime.now(UTC)
@@ -93,10 +93,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Create Singer state message.
 
             Args:
-                state: State data
+            state: State data
 
             Returns:
-                dict[str, object]: Singer state message
+            dict[str, object]: Singer state message
 
             """
             return {
@@ -109,7 +109,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Write Singer message to stdout.
 
             Args:
-                message: Singer message to write
+            message: Singer message to write
 
             """
 
@@ -121,10 +121,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Validate Oracle OIC endpoint URL.
 
             Args:
-                endpoint_url: OIC endpoint URL
+            endpoint_url: OIC endpoint URL
 
             Returns:
-                FlextResult[str]: Validated URL or error
+            FlextResult[str]: Validated URL or error
 
             """
             if not endpoint_url:
@@ -155,12 +155,12 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Build Oracle OIC API URL with proper formatting.
 
             Args:
-                base_url: Base OIC URL
-                resource_path: API resource path
-                query_params: Optional query parameters
+            base_url: Base OIC URL
+            resource_path: API resource path
+            query_params: Optional query parameters
 
             Returns:
-                FlextResult[str]: Complete API URL or error
+            FlextResult[str]: Complete API URL or error
 
             """
             try:
@@ -197,10 +197,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Parse Oracle OIC API response.
 
             Args:
-                response_data: Raw API response data
+            response_data: Raw API response data
 
             Returns:
-                FlextResult[dict[str, object]]: Parsed response or error
+            FlextResult[dict[str, object]]: Parsed response or error
 
             """
             if not response_data:
@@ -239,10 +239,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Extract pagination information from OIC response.
 
             Args:
-                response: OIC API response
+            response: OIC API response
 
             Returns:
-                dict[str, object]: Pagination information
+            dict[str, object]: Pagination information
 
             """
             if not response or not isinstance(response, dict):
@@ -276,10 +276,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Normalize Oracle OIC integration name.
 
             Args:
-                integration_name: Raw integration name
+            integration_name: Raw integration name
 
             Returns:
-                str: Normalized integration name
+            str: Normalized integration name
 
             """
             if not integration_name:
@@ -301,10 +301,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Extract metadata from Oracle OIC integration data.
 
             Args:
-                integration_data: Raw integration data
+            integration_data: Raw integration data
 
             Returns:
-                dict[str, object]: Extracted metadata
+            dict[str, object]: Extracted metadata
 
             """
             if not integration_data or not isinstance(integration_data, dict):
@@ -339,10 +339,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Format Oracle OIC timestamp to ISO format.
 
             Args:
-                timestamp_str: OIC timestamp string
+            timestamp_str: OIC timestamp string
 
             Returns:
-                FlextResult[str]: ISO formatted timestamp or error
+            FlextResult[str]: ISO formatted timestamp or error
 
             """
             if not timestamp_str:
@@ -382,10 +382,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Sanitize OIC field name for JSON schema.
 
             Args:
-                field_name: Raw field name
+            field_name: Raw field name
 
             Returns:
-                str: Sanitized field name
+            str: Sanitized field name
 
             """
             if not field_name:
@@ -416,10 +416,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Validate Oracle OIC connection configuration.
 
             Args:
-                config: Configuration dictionary
+            config: Configuration dictionary
 
             Returns:
-                FlextResult[dict[str, object]]: Validated config or error
+            FlextResult[dict[str, object]]: Validated config or error
 
             """
             required_fields = ["oic_base_url", "username", "password"]
@@ -463,10 +463,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Validate OIC tap stream configuration.
 
             Args:
-                config: Stream configuration
+            config: Stream configuration
 
             Returns:
-                FlextResult[dict[str, object]]: Validated config or error
+            FlextResult[dict[str, object]]: Validated config or error
 
             """
             if "streams" not in config:
@@ -519,11 +519,11 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Get state for a specific stream.
 
             Args:
-                state: Complete state dictionary
-                stream_name: Name of the stream
+            state: Complete state dictionary
+            stream_name: Name of the stream
 
             Returns:
-                dict[str, object]: Stream state
+            dict[str, object]: Stream state
 
             """
             if not isinstance(state, dict):
@@ -542,12 +542,12 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Set state for a specific stream.
 
             Args:
-                state: Complete state dictionary
-                stream_name: Name of the stream
-                stream_state: State data for the stream
+            state: Complete state dictionary
+            stream_name: Name of the stream
+            stream_state: State data for the stream
 
             Returns:
-                dict[str, object]: Updated state
+            dict[str, object]: Updated state
 
             """
             if not isinstance(state, dict):
@@ -571,12 +571,12 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Get bookmark value for a stream.
 
             Args:
-                state: Complete state dictionary
-                stream_name: Name of the stream
-                bookmark_key: Bookmark key
+            state: Complete state dictionary
+            stream_name: Name of the stream
+            bookmark_key: Bookmark key
 
             Returns:
-                object: Bookmark value or None
+            object: Bookmark value or None
 
             """
             stream_state = (
@@ -598,13 +598,13 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Set bookmark value for a stream.
 
             Args:
-                state: Complete state dictionary
-                stream_name: Name of the stream
-                bookmark_key: Bookmark key
-                bookmark_value: Bookmark value
+            state: Complete state dictionary
+            stream_name: Name of the stream
+            bookmark_key: Bookmark key
+            bookmark_value: Bookmark value
 
             Returns:
-                dict[str, object]: Updated state
+            dict[str, object]: Updated state
 
             """
             if not isinstance(state, dict):
@@ -631,12 +631,12 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Update pagination bookmark for stream.
 
             Args:
-                state: Complete state dictionary
-                stream_name: Name of the stream
-                pagination_info: Pagination information
+            state: Complete state dictionary
+            stream_name: Name of the stream
+            pagination_info: Pagination information
 
             Returns:
-                dict[str, object]: Updated state
+            dict[str, object]: Updated state
 
             """
             if not isinstance(pagination_info, dict):
@@ -671,11 +671,11 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Calculate optimal page size for OIC API requests.
 
             Args:
-                total_records: Total number of records to fetch
-                target_requests: Target number of API requests
+            total_records: Total number of records to fetch
+            target_requests: Target number of API requests
 
             Returns:
-                int: Optimal page size
+            int: Optimal page size
 
             """
             if total_records <= 0:
@@ -692,11 +692,11 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """Estimate extraction time for OIC data.
 
             Args:
-                record_count: Number of records to extract
-                records_per_second: Processing rate
+            record_count: Number of records to extract
+            records_per_second: Processing rate
 
             Returns:
-                dict[str, object]: Time estimation
+            dict[str, object]: Time estimation
 
             """
             if record_count <= 0:

@@ -64,7 +64,7 @@ RATE_LIMIT = "RATE_LIMIT"
 class FlextMeltanoTapOracleOicModels(FlextModels):
     """Oracle Integration Cloud tap models extending flext-core FlextModels.
 
-    Provides comprehensive models for OIC entity extraction, authentication,
+    Provides complete models for OIC entity extraction, authentication,
     monitoring, and Singer protocol compliance following standardized patterns.
     """
 
@@ -125,7 +125,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
 
     @computed_field
     def oic_tap_system_summary(self) -> dict[str, object]:
-        """Comprehensive Singer Oracle OIC tap system summary with API extraction capabilities."""
+        """Complete Singer Oracle OIC tap system summary with API extraction capabilities."""
         return {
             "total_models": self.active_oic_tap_models_count,
             "tap_type": "singer_oracle_oic_api_extractor",
@@ -283,13 +283,16 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             if not self.base_url.startswith("https://"):
                 msg = "OIC base URL must use HTTPS"
                 raise ValueError(msg)
-            if self.token_expiry_buffer < FlextConstants.Config.MIN_TOKEN_EXPIRY_BUFFER:
+            if (
+                self.token_expiry_buffer
+                < FlextConstants.Configuration.MIN_TOKEN_EXPIRY_BUFFER
+            ):
                 msg = "Token expiry buffer must be at least 60 seconds"
                 raise ValueError(msg)
             return self
 
     class OicIntegrationEntity(FlextModels.Entity):
-        """OIC Integration entity with comprehensive metadata."""
+        """OIC Integration entity with complete metadata."""
 
         # Pydantic 2.11 Configuration - Integration Features
         model_config = ConfigDict(
@@ -297,7 +300,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             extra="forbid",
             frozen=False,
             json_schema_extra={
-                "description": "Oracle OIC integration with comprehensive metadata",
+                "description": "Oracle OIC integration with complete metadata",
                 "examples": [
                     {
                         "integration_id": "CUSTOMER_SYNC_01.00.0000",
@@ -718,7 +721,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
 
         @computed_field
         def metrics_analysis_summary(self) -> dict[str, object]:
-            """OIC metrics comprehensive analysis summary."""
+            """OIC metrics complete analysis summary."""
             total_messages = (self.success_count or 0) + (self.error_count or 0)
             error_rate = 0.0
             if total_messages > 0:

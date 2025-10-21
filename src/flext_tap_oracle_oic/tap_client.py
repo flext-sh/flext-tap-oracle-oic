@@ -109,7 +109,7 @@ class OracleOicClient:
         )
         self._api_client = FlextApiClient(api_config)
 
-        # ZERO TOLERANCE FIX: Use FlextMeltanoTapOracleOicUtilities for ALL business operations
+        # Zero Tolerance FIX: Use FlextMeltanoTapOracleOicUtilities for ALL business operations
         self._utilities = FlextMeltanoTapOracleOicUtilities()
 
     def _get_auth_headers(self) -> FlextResult[dict[str, str]]:
@@ -126,7 +126,7 @@ class OracleOicClient:
 
     def get(self, endpoint: str) -> FlextResult[object]:
         """Make authenticated GET request to OIC API."""
-        # ZERO TOLERANCE FIX: Use utilities for URL validation and building
+        # Zero Tolerance FIX: Use utilities for URL validation and building
         url_result = self._utilities.OicApiProcessing.build_oic_api_url(
             self.config.get_api_base_url(), endpoint
         )
@@ -169,7 +169,7 @@ class OracleOicClient:
         data: dict[str, object] | None = None,
     ) -> FlextResult[object]:
         """Make authenticated POST request to OIC API."""
-        # ZERO TOLERANCE FIX: Use utilities for URL validation and building
+        # Zero Tolerance FIX: Use utilities for URL validation and building
         url_result = self._utilities.OicApiProcessing.build_oic_api_url(
             self.config.get_api_base_url(), endpoint
         )
@@ -215,7 +215,7 @@ class OracleOicClient:
 class TapOracleOic(Tap):
     """Oracle Integration Cloud tap implementation using flext-oracle-oic.
 
-    Enterprise-grade Singer tap with complete flext ecosystem integration:
+    Singer tap with complete flext ecosystem integration:
     - OAuth2/IDCS authentication via flext-oracle-oic
     - Stream discovery using consolidated stream registry
     - Real Oracle OIC API connectivity with error handling
@@ -268,14 +268,14 @@ class TapOracleOic(Tap):
         )
         self._client: OracleOicClient | None = None
 
-        # ZERO TOLERANCE FIX: Use FlextMeltanoTapOracleOicUtilities for ALL business operations
+        # Zero Tolerance FIX: Use FlextMeltanoTapOracleOicUtilities for ALL business operations
         self._utilities = FlextMeltanoTapOracleOicUtilities()
 
     @property
     def client(self: object) -> OracleOicClient:
         """Get Oracle OIC client instance using flext-oracle-oic."""
         if self._client is None:
-            # ZERO TOLERANCE FIX: Use utilities for configuration validation
+            # Zero Tolerance FIX: Use utilities for configuration validation
             config_validation_result = (
                 self._utilities.ConfigValidation.validate_oic_connection_config(
                     self.config
@@ -390,7 +390,7 @@ class TapOracleOic(Tap):
             return FlextResult[bool].fail(exception_msg)
 
 
-# ZERO TOLERANCE: All legacy exception aliases removed
+# Zero Tolerance: All legacy exception aliases removed
 # Use TapOracleOic directly instead
 
 
