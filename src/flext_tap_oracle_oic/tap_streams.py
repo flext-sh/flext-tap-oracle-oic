@@ -31,7 +31,7 @@ HTTP_RATE_LIMITED = 429
 class OICPaginator:
     """Intelligent Oracle OIC API paginator with adaptive optimization.
 
-    Enterprise-grade pagination features:
+    pagination features:
     - Automatic detection of OIC pagination patterns
     - Dynamic page size adjustment based on response performance
     - Error recovery with exponential backoff
@@ -52,10 +52,10 @@ class OICPaginator:
         """Calculate next offset for Oracle OIC pagination.
 
         Args:
-            response: HTTP response from OIC API.
+        response: HTTP response from OIC API.
 
         Returns:
-            Next offset value or None if no more pages.
+        Next offset value or None if no more pages.
 
         """
         try:
@@ -124,11 +124,11 @@ class OICPaginator:
 class OICBaseStream(FlextMeltanoStream):
     """Professional base stream class for Oracle Integration Cloud APIs.
 
-    Enterprise-grade stream implementation with:
+    stream implementation with:
     - Intelligent endpoint discovery and URL construction
     - OAuth2/IDCS authentication with automatic token refresh
     - Adaptive pagination with performance optimization
-    - Comprehensive error handling with exponential backoff
+    - Complete error handling with exponential backoff
     - Data quality validation and metrics collection
     - Rate limiting and request optimization
     - Incremental extraction with state management
@@ -140,10 +140,10 @@ class OICBaseStream(FlextMeltanoStream):
         """Build base URL for Oracle OIC API requests with intelligent discovery.
 
         Returns:
-            Base URL with appropriate OIC API endpoint for stream type.
+        Base URL with appropriate OIC API endpoint for stream type.
 
         """
-        # ZERO TOLERANCE FIX: Use FlextMeltanoTapOracleOicUtilities for URL operations
+        # Zero Tolerance FIX: Use FlextMeltanoTapOracleOicUtilities for URL operations
         utilities = FlextMeltanoTapOracleOicUtilities()
 
         base_url = str(
@@ -154,7 +154,7 @@ class OICBaseStream(FlextMeltanoStream):
             msg = "Base URL is required but not configured"
             raise ValueError(msg)
 
-        # ZERO TOLERANCE FIX: Use utilities for endpoint validation
+        # Zero Tolerance FIX: Use utilities for endpoint validation
         validation_result = utilities.OicApiProcessing.validate_oic_endpoint(base_url)
         if validation_result.is_failure:
             msg = f"Invalid OIC endpoint: {validation_result.error}"
@@ -210,7 +210,7 @@ class OICBaseStream(FlextMeltanoStream):
         """Create new Oracle OIC paginator with configuration.
 
         Returns:
-            OICPaginator instance configured with settings from tap config.
+        OICPaginator instance configured with settings from tap config.
 
         """
         return OICPaginator(start_value=0, page_size=self.config.get("page_size", 100))
@@ -223,11 +223,11 @@ class OICBaseStream(FlextMeltanoStream):
         """Build URL parameters for Oracle OIC API requests.
 
         Args:
-            context: Stream context with replication values.
-            next_page_token: Token for pagination (offset value).
+        context: Stream context with replication values.
+        next_page_token: Token for pagination (offset value).
 
         Returns:
-            Dictionary of URL parameters optimized for OIC API.
+        Dictionary of URL parameters optimized for OIC API.
 
         """
         params: dict[str, object] = {}
@@ -289,10 +289,10 @@ class OICBaseStream(FlextMeltanoStream):
         """Parse Oracle OIC API response and yield records with validation.
 
         Args:
-            response: HTTP response from OIC API.
+        response: HTTP response from OIC API.
 
         Yields:
-            Individual records from the API response with tap metadata.
+        Individual records from the API response with tap metadata.
 
         """
         try:

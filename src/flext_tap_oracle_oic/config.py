@@ -214,7 +214,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
             return None
 
         # Minimum length check for YYYY-MM-DD format
-        if len(v) < FlextConstants.Config.MIN_DATE_LENGTH:
+        if len(v) < FlextConstants.Configuration.MIN_DATE_LENGTH:
             msg = "Start date must be in YYYY-MM-DD format or ISO 8601"
             raise ValueError(msg)
 
@@ -467,12 +467,12 @@ def create_oracle_oic_tap_config(
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
     Args:
-        oauth_params: OAuth2/IDCS authentication parameters
-        connection_params: OIC connection parameters
-        tap_params: Optional tap-specific parameters
+    oauth_params: OAuth2/IDCS authentication parameters
+    connection_params: OIC connection parameters
+    tap_params: Optional tap-specific parameters
 
     Returns:
-        FlextResult containing validated Oracle OIC tap configuration
+    FlextResult containing validated Oracle OIC tap configuration
 
     """
     try:

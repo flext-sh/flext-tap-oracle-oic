@@ -21,7 +21,7 @@ th = FlextMeltanoTypes()
 class IntegrationsStream(OICBaseStream):
     """Oracle Integration Cloud Integrations Stream.
 
-    Extracts comprehensive integration metadata including configurations,
+    Extracts complete integration metadata including configurations,
     endpoints, triggers, connections, and execution statistics.
     """
 

@@ -28,10 +28,10 @@ def setup_oic_tap(
     """Set up Oracle Integration Cloud tap with basic configuration.
 
     Args:
-      config: Optional configuration override
+    config: Optional configuration override
 
     Returns:
-      FlextResult with basic config dict[str, object] or error message.
+    FlextResult with basic config dict[str, object] or error message.
 
     """
     try:
@@ -65,13 +65,13 @@ def create_oic_auth_config(
     """Create OIC authentication configuration.
 
     Args:
-      client_id: OAuth2 client ID
-      client_secret: OAuth2 client secret
-      token_url: IDCS token endpoint URL
-      **kwargs: Additional configuration parameters
+    client_id: OAuth2 client ID
+    client_secret: OAuth2 client secret
+    token_url: IDCS token endpoint URL
+    **kwargs: Additional configuration parameters
 
     Returns:
-      FlextResult with OICAuthConfig or error message.
+    FlextResult with OICAuthConfig or error message.
 
     """
     try:
@@ -98,11 +98,11 @@ def create_oic_connection_config(
     """Create OIC connection configuration.
 
     Args:
-      base_url: OIC instance base URL
-      **kwargs: Additional configuration parameters
+    base_url: OIC instance base URL
+    **kwargs: Additional configuration parameters
 
     Returns:
-      FlextResult with OICConnectionConfig or error message.
+    FlextResult with OICConnectionConfig or error message.
 
     """
     try:
@@ -125,10 +125,10 @@ def validate_oic_config(config: object) -> FlextResult[bool]:
     """Validate OIC tap configuration.
 
     Args:
-      config: Configuration to validate
+    config: Configuration to validate
 
     Returns:
-      FlextResult with validation success or error message.
+    FlextResult with validation success or error message.
 
     """
     try:
