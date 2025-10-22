@@ -1,7 +1,8 @@
 """FLEXT Tap Oracle OIC Configuration - Enhanced FlextConfig Implementation.
 
-Single unified configuration class for Oracle Integration Cloud Singer tap operations following
-FLEXT 1.0.0 patterns with enhanced singleton, SecretStr, and Pydantic 2.11+ features.
+Single unified configuration class for Oracle Integration Cloud Singer tap
+operations following FLEXT 1.0.0 patterns with enhanced singleton, SecretStr,
+and Pydantic 2.11+ features.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -14,7 +15,7 @@ import re
 from typing import Self
 
 from flext_core import FlextConfig, FlextConstants, FlextResult
-from pydantic import Field, FlextWebUrl, SecretStr, field_validator, model_validator
+from pydantic import Field, HttpUrl, SecretStr, field_validator, model_validator
 from pydantic_settings import SettingsConfigDict
 
 
@@ -55,33 +56,36 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
 
     # OAuth2/IDCS Authentication Configuration using SecretStr
     oauth_client_id: str = Field(
-        default="",
+        ...,
+        min_length=1,
         description="OAuth2 client ID for IDCS authentication",
     )
 
     oauth_client_secret: SecretStr = Field(
-        default_factory=lambda: SecretStr(""),
+        ...,
         description="OAuth2 client secret for IDCS authentication (sensitive)",
     )
 
-    oauth_token_url: FlextWebUrl = Field(
+    oauth_token_url: HttpUrl = Field(
         default="https://idcs-tenant.identity.oraclecloud.com/oauth2/v1/token",
         description="OAuth2 token endpoint URL",
     )
 
     oauth_audience: str = Field(
-        default="",
+        ...,
+        min_length=1,
         description="OAuth2 audience/scope for OIC API access",
     )
 
     # OIC Connection Configuration
-    base_url: FlextWebUrl = Field(
+    base_url: HttpUrl = Field(
         default="https://instance.integration.ocp.oraclecloud.com",
         description="OIC instance base URL",
     )
 
     api_version: str = Field(
         default="v1",
+        min_length=1,
         description="OIC API version",
     )
 
@@ -109,6 +113,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
     # Tap-specific Configuration using FlextConstants where applicable
     stream_prefix: str = Field(
         default="oic",
+        min_length=1,
         description="Prefix for Singer stream names",
     )
 
@@ -152,10 +157,6 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
     @classmethod
     def validate_stream_prefix(cls, v: str) -> str:
         """Validate stream prefix follows naming conventions."""
-        if not v or not v.strip():
-            msg = "Stream prefix cannot be empty"
-            raise ValueError(msg)
-
         # Valid identifier: start with letter, contain letters/digits/underscore
         if not re.match(r"^[a-zA-Z][a-zA-Z0-9_]*$", v):
             msg = f"Invalid stream prefix: {v}. Must start with letter and contain only letters, digits, and underscores"
@@ -167,32 +168,10 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
 
         return v.lower()
 
-    @field_validator("oauth_client_id")
-    @classmethod
-    def validate_oauth_client_id(cls, v: str) -> str:
-        """Validate OAuth client ID is not empty."""
-        if not v or not v.strip():
-            msg = "OAuth client ID cannot be empty"
-            raise ValueError(msg)
-        return v.strip()
-
-    @field_validator("oauth_audience")
-    @classmethod
-    def validate_oauth_audience(cls, v: str) -> str:
-        """Validate OAuth audience is not empty."""
-        if not v or not v.strip():
-            msg = "OAuth audience cannot be empty"
-            raise ValueError(msg)
-        return v.strip()
-
     @field_validator("api_version")
     @classmethod
     def validate_api_version(cls, v: str) -> str:
         """Validate API version format."""
-        if not v or not v.strip():
-            msg = "API version cannot be empty"
-            raise ValueError(msg)
-
         # API version should be like v1, v2, etc.
         if not re.match(r"^v\d+(\.\d+)*$", v):
             msg = (

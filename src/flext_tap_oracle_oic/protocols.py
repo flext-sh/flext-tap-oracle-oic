@@ -21,7 +21,8 @@ class FlextMeltanoTapOracleOicProtocols:
         class OicConnectionProtocol(FlextProtocols.Service, Protocol):
             """Protocol for Oracle OIC connection."""
 
-            def connect(self, config: dict[str, object]) -> FlextResult[object]: ...
+            def connect(self, config: dict[str, object]) -> FlextResult[object]:
+                """Connect to Oracle OIC with provided configuration."""
 
         @runtime_checkable
         class IntegrationDiscoveryProtocol(FlextProtocols.Service, Protocol):
@@ -29,7 +30,8 @@ class FlextMeltanoTapOracleOicProtocols:
 
             def discover_integrations(
                 self, config: dict[str, object]
-            ) -> FlextResult[list[dict[str, object]]]: ...
+            ) -> FlextResult[list[dict[str, object]]]:
+                """Discover available integrations in Oracle OIC."""
 
         @runtime_checkable
         class DataExtractionProtocol(FlextProtocols.Service, Protocol):
@@ -37,7 +39,8 @@ class FlextMeltanoTapOracleOicProtocols:
 
             def extract_integration_data(
                 self, integration: str
-            ) -> FlextResult[list[dict[str, object]]]: ...
+            ) -> FlextResult[list[dict[str, object]]]:
+                """Extract data from an Oracle OIC integration."""
 
         @runtime_checkable
         class StreamGenerationProtocol(FlextProtocols.Service, Protocol):
@@ -45,7 +48,8 @@ class FlextMeltanoTapOracleOicProtocols:
 
             def generate_catalog(
                 self, config: dict[str, object]
-            ) -> FlextResult[dict[str, object]]: ...
+            ) -> FlextResult[dict[str, object]]:
+                """Generate Singer catalog for OIC entities."""
 
         @runtime_checkable
         class MonitoringProtocol(FlextProtocols.Service, Protocol):
@@ -53,7 +57,8 @@ class FlextMeltanoTapOracleOicProtocols:
 
             def track_progress(
                 self, integration: str, records: int
-            ) -> FlextResult[None]: ...
+            ) -> FlextResult[None]:
+                """Track OIC integration data extraction progress."""
 
     OicConnectionProtocol = TapOracleOic.OicConnectionProtocol
     IntegrationDiscoveryProtocol = TapOracleOic.IntegrationDiscoveryProtocol
