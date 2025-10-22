@@ -14,6 +14,7 @@ from collections.abc import Sequence
 from typing import ClassVar, cast, override
 
 from flext_api import FlextApiClient
+from flext_api.config import FlextApiConfig
 from flext_core import FlextLogger, FlextResult
 from flext_meltano import FlextMeltanoStream as Stream, FlextMeltanoTap as Tap
 
@@ -43,8 +44,6 @@ class FlextOracleOicAuthenticator:
         """Initialize authenticator with OAuth2 configuration."""
         self.config = config
         self._access_token: str | None = None
-        from flext_api.config import FlextApiConfig
-
         api_config = FlextApiConfig()
         self._api_client = FlextApiClient(api_config)
 
@@ -101,8 +100,6 @@ class OracleOicClient:
         """Initialize OIC API client."""
         self.config = config
         self.authenticator = authenticator
-        from flext_api.config import FlextApiConfig
-
         api_config = FlextApiConfig(
             base_url=config.get_api_base_url(),
             timeout=config.timeout,

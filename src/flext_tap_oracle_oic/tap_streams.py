@@ -13,6 +13,7 @@ from datetime import UTC, datetime
 from typing import override
 
 from flext_api import FlextApiClient
+from flext_api.config import FlextApiConfig
 from flext_core import FlextExceptions, FlextLogger, FlextResult, FlextTypes
 from flext_meltano import FlextMeltanoStream
 
@@ -201,8 +202,6 @@ class OICBaseStream(FlextMeltanoStream):
                 return client_result.data
 
         # Fallback to creating new FlextApiClient
-        from flext_api.config import FlextApiConfig
-
         api_config = FlextApiConfig()
         return FlextApiClient(api_config)
 
