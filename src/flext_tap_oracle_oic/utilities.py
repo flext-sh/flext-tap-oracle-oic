@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import re
 from datetime import UTC, datetime
-from typing import Any, ClassVar, override
+from typing import ClassVar, override
 from urllib.parse import urljoin, urlparse
 
 from flext_core import FlextResult, FlextUtilities
@@ -234,7 +234,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
         @staticmethod
         def extract_pagination_info(
-            response: dict[str, Any] | None,
+            response: dict[str, object] | None,
         ) -> dict[str, object]:
             """Extract pagination information from OIC response.
 
@@ -296,7 +296,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
         @staticmethod
         def extract_integration_metadata(
-            integration_data: dict[str, Any] | None,
+            integration_data: dict[str, object] | None,
         ) -> dict[str, object]:
             """Extract metadata from Oracle OIC integration data.
 
