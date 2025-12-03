@@ -14,7 +14,7 @@ from typing import override
 
 from flext_api import FlextApiClient
 from flext_api.config import FlextApiConfig
-from flext_core import FlextExceptions, FlextLogger, FlextResult, FlextTypes
+from flext_core import FlextExceptions, FlextLogger, FlextResult, t
 from flext_meltano import FlextMeltanoStream
 
 from flext_tap_oracle_oic.constants import FlextOracleOicConstants
@@ -47,7 +47,7 @@ class OICPaginator:
         self._max_page_size = 1000
         self._min_page_size = 10
         self._adaptive_sizing = True
-        self._response_times: FlextTypes.FloatList = []
+        self._response_times: t.FloatList = []
 
     def get_next(self, response: object) -> int | None:
         """Calculate next offset for Oracle OIC pagination.

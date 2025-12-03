@@ -2,11 +2,11 @@
 
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextProtocols, FlextResult
+from flext_core import FlextResult, p
 
 
 class FlextMeltanoTapOracleOicProtocols:
-    """Singer Tap Oracle OIC protocols with explicit re-exports from FlextProtocols foundation.
+    """Singer Tap Oracle OIC protocols with explicit re-exports from p foundation.
 
     Domain Extension Pattern (Phase 3):
     - Explicit re-export of foundation protocols (not inheritance)
@@ -18,14 +18,14 @@ class FlextMeltanoTapOracleOicProtocols:
         """Singer Tap Oracle OIC domain protocols."""
 
         @runtime_checkable
-        class OicConnectionProtocol(FlextProtocols.Service, Protocol):
+        class OicConnectionProtocol(p.Service, Protocol):
             """Protocol for Oracle OIC connection."""
 
             def connect(self, config: dict[str, object]) -> FlextResult[object]:
                 """Connect to Oracle OIC with provided configuration."""
 
         @runtime_checkable
-        class IntegrationDiscoveryProtocol(FlextProtocols.Service, Protocol):
+        class IntegrationDiscoveryProtocol(p.Service, Protocol):
             """Protocol for OIC integration discovery."""
 
             def discover_integrations(
@@ -34,7 +34,7 @@ class FlextMeltanoTapOracleOicProtocols:
                 """Discover available integrations in Oracle OIC."""
 
         @runtime_checkable
-        class DataExtractionProtocol(FlextProtocols.Service, Protocol):
+        class DataExtractionProtocol(p.Service, Protocol):
             """Protocol for OIC data extraction."""
 
             def extract_integration_data(
@@ -43,7 +43,7 @@ class FlextMeltanoTapOracleOicProtocols:
                 """Extract data from an Oracle OIC integration."""
 
         @runtime_checkable
-        class StreamGenerationProtocol(FlextProtocols.Service, Protocol):
+        class StreamGenerationProtocol(p.Service, Protocol):
             """Protocol for Singer stream generation."""
 
             def generate_catalog(
@@ -52,7 +52,7 @@ class FlextMeltanoTapOracleOicProtocols:
                 """Generate Singer catalog for OIC entities."""
 
         @runtime_checkable
-        class MonitoringProtocol(FlextProtocols.Service, Protocol):
+        class MonitoringProtocol(p.Service, Protocol):
             """Protocol for OIC extraction monitoring."""
 
             def track_progress(
