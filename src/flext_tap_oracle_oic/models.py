@@ -99,29 +99,19 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
     @computed_field
     def active_oic_tap_models_count(self) -> int:
         """Count of active Oracle OIC tap models with API extraction capabilities."""
-        count = 0
-        # Count core Singer Oracle OIC tap models
-        if hasattr(self, "OicAuthenticationConfig"):
-            count += 1
-        if hasattr(self, "OicIntegrationEntity"):
-            count += 1
-        if hasattr(self, "OicConnectionEntity"):
-            count += 1
-        if hasattr(self, "OicActivityRecord"):
-            count += 1
-        if hasattr(self, "OicPackageEntity"):
-            count += 1
-        if hasattr(self, "OicMetricsRecord"):
-            count += 1
-        if hasattr(self, "OicAgentEntity"):
-            count += 1
-        if hasattr(self, "OicStreamConfiguration"):
-            count += 1
-        if hasattr(self, "OicApiResponse"):
-            count += 1
-        if hasattr(self, "OicErrorContext"):
-            count += 1
-        return count
+        model_names = [
+            "OicAuthenticationConfig",
+            "OicIntegrationEntity",
+            "OicConnectionEntity",
+            "OicActivityRecord",
+            "OicPackageEntity",
+            "OicMetricsRecord",
+            "OicAgentEntity",
+            "OicStreamConfiguration",
+            "OicApiResponse",
+            "OicErrorContext",
+        ]
+        return sum(1 for name in model_names if hasattr(self, name))
 
     @computed_field
     def oic_tap_system_summary(self) -> dict[str, object]:
