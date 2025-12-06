@@ -187,7 +187,7 @@ class TestTapOracleOicE2E:
                 # Log warning but don't fail test
 
                 logger = FlextLogger(__name__)
-                logger.warning(f"Non-critical error in live connection test: {e}")
+                logger.warning("Non-critical error in live connection test: %s", e)
 
     def test_state_management_functionality(self, tap: TapOracleOic) -> None:
         """Test state management functionality."""

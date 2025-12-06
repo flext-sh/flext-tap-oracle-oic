@@ -29,7 +29,8 @@ class FlextMeltanoTapOracleOicProtocols:
             """Protocol for OIC integration discovery."""
 
             def discover_integrations(
-                self, config: dict[str, object]
+                self,
+                config: dict[str, object],
             ) -> FlextResult[list[dict[str, object]]]:
                 """Discover available integrations in Oracle OIC."""
 
@@ -38,7 +39,8 @@ class FlextMeltanoTapOracleOicProtocols:
             """Protocol for OIC data extraction."""
 
             def extract_integration_data(
-                self, integration: str
+                self,
+                integration: str,
             ) -> FlextResult[list[dict[str, object]]]:
                 """Extract data from an Oracle OIC integration."""
 
@@ -47,7 +49,8 @@ class FlextMeltanoTapOracleOicProtocols:
             """Protocol for Singer stream generation."""
 
             def generate_catalog(
-                self, config: dict[str, object]
+                self,
+                config: dict[str, object],
             ) -> FlextResult[dict[str, object]]:
                 """Generate Singer catalog for OIC entities."""
 
@@ -56,21 +59,53 @@ class FlextMeltanoTapOracleOicProtocols:
             """Protocol for OIC extraction monitoring."""
 
             def track_progress(
-                self, integration: str, records: int
+                self,
+                integration: str,
+                records: int,
             ) -> FlextResult[None]:
                 """Track OIC integration data extraction progress."""
 
-    OicConnectionProtocol = TapOracleOic.OicConnectionProtocol
-    IntegrationDiscoveryProtocol = TapOracleOic.IntegrationDiscoveryProtocol
-    DataExtractionProtocol = TapOracleOic.DataExtractionProtocol
-    StreamGenerationProtocol = TapOracleOic.StreamGenerationProtocol
-    MonitoringProtocol = TapOracleOic.MonitoringProtocol
+    @runtime_checkable
+    class OicConnectionProtocol(TapOracleOic.OicConnectionProtocol):
+        """OicConnectionProtocol - real inheritance."""
 
-    TapOracleOicConnectionProtocol = TapOracleOic.OicConnectionProtocol
-    TapOracleOicIntegrationDiscoveryProtocol = TapOracleOic.IntegrationDiscoveryProtocol
-    TapOracleOicDataExtractionProtocol = TapOracleOic.DataExtractionProtocol
-    TapOracleOicStreamGenerationProtocol = TapOracleOic.StreamGenerationProtocol
-    TapOracleOicMonitoringProtocol = TapOracleOic.MonitoringProtocol
+    @runtime_checkable
+    class IntegrationDiscoveryProtocol(TapOracleOic.IntegrationDiscoveryProtocol):
+        """IntegrationDiscoveryProtocol - real inheritance."""
+
+    @runtime_checkable
+    class DataExtractionProtocol(TapOracleOic.DataExtractionProtocol):
+        """DataExtractionProtocol - real inheritance."""
+
+    @runtime_checkable
+    class StreamGenerationProtocol(TapOracleOic.StreamGenerationProtocol):
+        """StreamGenerationProtocol - real inheritance."""
+
+    @runtime_checkable
+    class MonitoringProtocol(TapOracleOic.MonitoringProtocol):
+        """MonitoringProtocol - real inheritance."""
+
+    @runtime_checkable
+    class TapOracleOicConnectionProtocol(TapOracleOic.OicConnectionProtocol):
+        """TapOracleOicConnectionProtocol - real inheritance."""
+
+    @runtime_checkable
+    class TapOracleOicIntegrationDiscoveryProtocol(
+        TapOracleOic.IntegrationDiscoveryProtocol,
+    ):
+        """TapOracleOicIntegrationDiscoveryProtocol - real inheritance."""
+
+    @runtime_checkable
+    class TapOracleOicDataExtractionProtocol(TapOracleOic.DataExtractionProtocol):
+        """TapOracleOicDataExtractionProtocol - real inheritance."""
+
+    @runtime_checkable
+    class TapOracleOicStreamGenerationProtocol(TapOracleOic.StreamGenerationProtocol):
+        """TapOracleOicStreamGenerationProtocol - real inheritance."""
+
+    @runtime_checkable
+    class TapOracleOicMonitoringProtocol(TapOracleOic.MonitoringProtocol):
+        """TapOracleOicMonitoringProtocol - real inheritance."""
 
 
 __all__ = [

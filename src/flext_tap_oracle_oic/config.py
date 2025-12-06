@@ -270,7 +270,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
                 and self.batch_size > max_safe_batch
             ):
                 return FlextResult[None].fail(
-                    "High parallelism with large batch sizes may cause memory issues"
+                    "High parallelism with large batch sizes may cause memory issues",
                 )
 
             return FlextResult[None].ok(None)
@@ -341,7 +341,9 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
 
     @classmethod
     def create_for_environment(
-        cls, environment: str, **overrides: object
+        cls,
+        environment: str,
+        **overrides: object,
     ) -> FlextMeltanoTapOracleOicConfig:
         """Create configuration for specific environment using enhanced singleton pattern."""
         env_overrides: dict[str, object] = {}
@@ -398,7 +400,8 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
             **overrides,
         }
         return cls.get_or_create_shared_instance(
-            project_name="flext-tap-oracle-oic", **dev_overrides
+            project_name="flext-tap-oracle-oic",
+            **dev_overrides,
         )
 
     @classmethod
@@ -413,7 +416,8 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
             **overrides,
         }
         return cls.get_or_create_shared_instance(
-            project_name="flext-tap-oracle-oic", **prod_overrides
+            project_name="flext-tap-oracle-oic",
+            **prod_overrides,
         )
 
     @classmethod
@@ -428,7 +432,8 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
             **overrides,
         }
         return cls.get_or_create_shared_instance(
-            project_name="flext-tap-oracle-oic", **test_overrides
+            project_name="flext-tap-oracle-oic",
+            **test_overrides,
         )
 
     @classmethod
@@ -474,7 +479,7 @@ def create_oracle_oic_tap_config(
 
         config_instance = (
             FlextMeltanoTapOracleOicConfig.get_global_instance().model_validate(
-                config_data
+                config_data,
             )
         )
         return FlextResult[FlextMeltanoTapOracleOicConfig].ok(config_instance)

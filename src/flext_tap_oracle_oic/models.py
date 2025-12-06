@@ -87,7 +87,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                     "tap_name": "tap-oracle-oic",
                     "extraction_mode": "api_incremental_replication",
                     "oic_instance": "https://mycompany-oic.integration.ocp.oraclecloud.com",
-                }
+                },
             ],
             "tags": ["singer", "oracle-oic", "tap", "extraction", "integration-cloud"],
             "version": "2.11.0",
@@ -186,7 +186,9 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
 
     @field_serializer("*", when_used="json")
     def serialize_with_oic_metadata(
-        self, value: object, _info: FieldSerializationInfo
+        self,
+        value: object,
+        _info: FieldSerializationInfo,
     ) -> object:
         """Add Singer Oracle OIC tap metadata to all serialized fields."""
         if isinstance(value, dict):
@@ -200,7 +202,8 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                 },
             }
         if isinstance(value, (str, int, float, bool)) and hasattr(
-            self, "_include_oic_metadata"
+            self,
+            "_include_oic_metadata",
         ):
             return {
                 "value": value,
@@ -226,7 +229,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                         "oauth_client_id": "my-client-id",
                         "oauth_token_url": "https://idcs-instance.identity.oraclecloud.com/oauth2/v1/token",
                         "base_url": "https://mycompany-oic.integration.ocp.oraclecloud.com",
-                    }
+                    },
                 ],
             },
         )
@@ -239,10 +242,12 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
 
         # Optional authentication settings
         token_expiry_buffer: int = Field(
-            default=300, description="Token refresh buffer in seconds"
+            default=300,
+            description="Token refresh buffer in seconds",
         )
         max_retry_attempts: int = Field(
-            default=3, description="Maximum authentication retry attempts"
+            default=3,
+            description="Maximum authentication retry attempts",
         )
         timeout_seconds: int = Field(default=30, description="Authentication timeout")
 
@@ -307,7 +312,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                         "name": "Customer Synchronization",
                         "status": "ACTIVE",
                         "version": "01.00.0000",
-                    }
+                    },
                 ],
             },
         )
@@ -317,16 +322,19 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         description: str | None = Field(None, description="Integration description")
         version: str = Field(..., description="Integration version")
         status: Literal[ACTIVE, INACTIVE, DRAFT, ERROR] = Field(
-            ..., description="Integration status"
+            ...,
+            description="Integration status",
         )
 
         # Temporal information
         created_date: datetime | None = Field(
-            None, description="Integration creation date"
+            None,
+            description="Integration creation date",
         )
         last_updated: datetime | None = Field(None, description="Last update timestamp")
         last_activated: datetime | None = Field(
-            None, description="Last activation timestamp"
+            None,
+            description="Last activation timestamp",
         )
 
         # Metadata
@@ -338,7 +346,8 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         execution_count: int | None = Field(None, description="Total execution count")
         error_count: int | None = Field(None, description="Total error count")
         last_execution_time: datetime | None = Field(
-            None, description="Last execution timestamp"
+            None,
+            description="Last execution timestamp",
         )
 
         @computed_field
@@ -403,7 +412,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                         "name": "Salesforce Production",
                         "connection_type": "SALESFORCE_ADAPTER",
                         "status": "ACTIVE",
-                    }
+                    },
                 ],
             },
         )
@@ -419,28 +428,34 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
 
         # Security metadata (credentials removed)
         authentication_type: str | None = Field(
-            None, description="Authentication method used"
+            None,
+            description="Authentication method used",
         )
         security_policy: str | None = Field(None, description="Security policy name")
         certificate_alias: str | None = Field(
-            None, description="Certificate alias (if used)"
+            None,
+            description="Certificate alias (if used)",
         )
 
         # Status and health
         status: Literal[ACTIVE, INACTIVE, ERROR, TESTING] = Field(
-            ..., description="Connection status"
+            ...,
+            description="Connection status",
         )
         last_tested: datetime | None = Field(
-            None, description="Last connection test timestamp"
+            None,
+            description="Last connection test timestamp",
         )
         test_result: str | None = Field(None, description="Last test result")
 
         # Sanitization markers
         data_sanitized: bool = Field(
-            default=True, description="Indicates if sensitive data was removed"
+            default=True,
+            description="Indicates if sensitive data was removed",
         )
         sanitization_timestamp: datetime | None = Field(
-            default_factory=datetime.utcnow, description="When sanitization occurred"
+            default_factory=datetime.utcnow,
+            description="When sanitization occurred",
         )
 
         @computed_field
@@ -506,7 +521,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                         "integration_id": "CUSTOMER_SYNC_01.00.0000",
                         "status": "COMPLETED",
                         "messages_processed": 1500,
-                    }
+                    },
                 ],
             },
         )
@@ -519,23 +534,27 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         start_time: datetime = Field(..., description="Activity start timestamp")
         end_time: datetime | None = Field(None, description="Activity end timestamp")
         duration_ms: int | None = Field(
-            None, description="Activity duration in milliseconds"
+            None,
+            description="Activity duration in milliseconds",
         )
 
         # Status and results
         status: Literal[RUNNING, COMPLETED, FAILED, ABORTED, SUSPENDED] = Field(
-            ..., description="Activity status"
+            ...,
+            description="Activity status",
         )
         result: str | None = Field(None, description="Activity result")
         error_message: str | None = Field(None, description="Error message if failed")
 
         # Metrics
         messages_processed: int | None = Field(
-            None, description="Number of messages processed"
+            None,
+            description="Number of messages processed",
         )
         bytes_processed: int | None = Field(None, description="Bytes processed")
         throughput_mps: float | None = Field(
-            None, description="Messages per second throughput"
+            None,
+            description="Messages per second throughput",
         )
 
         @computed_field
@@ -601,7 +620,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                         "name": "Customer Management Suite",
                         "package_type": "INTEGRATION",
                         "status": "ACTIVE",
-                    }
+                    },
                 ],
             },
         )
@@ -613,22 +632,26 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
 
         # Package metadata
         package_type: Literal[INTEGRATION, LIBRARY, TEMPLATE, RECIPE] = Field(
-            ..., description="Package type"
+            ...,
+            description="Package type",
         )
         created_by: str | None = Field(None, description="Package creator")
         created_date: datetime | None = Field(None, description="Package creation date")
 
         # Dependencies and relationships
         dependencies: list[str] = Field(
-            default_factory=list, description="List of dependent package IDs"
+            default_factory=list,
+            description="List of dependent package IDs",
         )
         integration_count: int | None = Field(
-            None, description="Number of integrations in package"
+            None,
+            description="Number of integrations in package",
         )
 
         # Status
         status: Literal[ACTIVE, INACTIVE, DEPRECATED] = Field(
-            ..., description="Package status"
+            ...,
+            description="Package status",
         )
         download_count: int | None = Field(None, description="Package download count")
 
@@ -688,7 +711,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                         "integration_id": "CUSTOMER_SYNC_01.00.0000",
                         "throughput_mps": 125.5,
                         "cpu_usage_percent": 45.2,
-                    }
+                    },
                 ],
             },
         )
@@ -699,12 +722,14 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
 
         # Performance metrics
         cpu_usage_percent: float | None = Field(
-            None, description="CPU usage percentage"
+            None,
+            description="CPU usage percentage",
         )
         memory_usage_mb: float | None = Field(None, description="Memory usage in MB")
         throughput_mps: float | None = Field(None, description="Messages per second")
         latency_ms: float | None = Field(
-            None, description="Average latency in milliseconds"
+            None,
+            description="Average latency in milliseconds",
         )
 
         # Business metrics
@@ -714,7 +739,8 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
 
         # Resource utilization
         database_connections: int | None = Field(
-            None, description="Active database connections"
+            None,
+            description="Active database connections",
         )
         thread_count: int | None = Field(None, description="Active thread count")
         queue_depth: int | None = Field(None, description="Message queue depth")
@@ -787,7 +813,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                         "agent_name": "On-Premises Agent 01",
                         "agent_type": "CONNECTIVITY_AGENT",
                         "status": "ONLINE",
-                    }
+                    },
                 ],
             },
         )
@@ -795,29 +821,34 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         agent_id: str = Field(..., description="Unique agent identifier")
         agent_name: str = Field(..., description="Agent display name")
         agent_type: Literal[CONNECTIVITY_AGENT, ON_PREMISES_AGENT, FILE_AGENT] = Field(
-            ..., description="Agent type"
+            ...,
+            description="Agent type",
         )
 
         # Agent status and health
         status: Literal[ONLINE, OFFLINE, ERROR, MAINTENANCE] = Field(
-            ..., description="Agent status"
+            ...,
+            description="Agent status",
         )
         last_heartbeat: datetime | None = Field(
-            None, description="Last heartbeat timestamp"
+            None,
+            description="Last heartbeat timestamp",
         )
         version: str | None = Field(None, description="Agent version")
 
         # Configuration
         host_machine: str | None = Field(None, description="Host machine name")
         installation_path: str | None = Field(
-            None, description="Agent installation path"
+            None,
+            description="Agent installation path",
         )
         port: int | None = Field(None, description="Agent communication port")
 
         # Health metrics
         uptime_hours: float | None = Field(None, description="Agent uptime in hours")
         connection_count: int | None = Field(
-            None, description="Active connection count"
+            None,
+            description="Active connection count",
         )
         last_error: str | None = Field(None, description="Last error message")
 
@@ -889,41 +920,51 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                         "replication_method": "INCREMENTAL",
                         "replication_key": "last_updated",
                         "page_size": 100,
-                    }
+                    },
                 ],
             },
         )
 
         stream_name: str = Field(..., description="Singer stream name")
         replication_method: Literal[FULL_TABLE, INCREMENTAL] = Field(
-            default="FULL_TABLE", description="Replication method"
+            default="FULL_TABLE",
+            description="Replication method",
         )
         replication_key: str | None = Field(
-            None, description="Replication key field name"
+            None,
+            description="Replication key field name",
         )
 
         # Pagination and performance
         page_size: int = Field(
-            default=100, ge=1, le=1000, description="API pagination size"
+            default=100,
+            ge=1,
+            le=1000,
+            description="API pagination size",
         )
         include_extended: bool = Field(
-            default=False, description="Include extended entity metadata"
+            default=False,
+            description="Include extended entity metadata",
         )
 
         # Filtering
         status_filter: list[str] | None = Field(
-            None, description="Filter by entity status values"
+            None,
+            description="Filter by entity status values",
         )
         date_range_filter: str | None = Field(
-            None, description="Date range filter for incremental streams"
+            None,
+            description="Date range filter for incremental streams",
         )
 
         # Security
         sanitize_sensitive_data: bool = Field(
-            default=True, description="Enable data sanitization"
+            default=True,
+            description="Enable data sanitization",
         )
         exclude_test_entities: bool = Field(
-            default=True, description="Exclude test/demo entities"
+            default=True,
+            description="Exclude test/demo entities",
         )
 
         @computed_field
@@ -983,7 +1024,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                         "total_count": 150,
                         "page_size": 50,
                         "page_number": 1,
-                    }
+                    },
                 ],
             },
         )
@@ -991,7 +1032,8 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         success: bool = Field(..., description="Response success indicator")
         data: object | None = Field(None, description="Response data payload")
         total_count: int | None = Field(
-            None, description="Total entity count (for pagination)"
+            None,
+            description="Total entity count (for pagination)",
         )
         page_size: int | None = Field(None, description="Current page size")
         page_number: int | None = Field(None, description="Current page number")
@@ -1000,12 +1042,14 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         error_code: str | None = Field(None, description="Error code if failed")
         error_message: str | None = Field(None, description="Error message if failed")
         error_details: dict[str, object] | None = Field(
-            None, description="Detailed error information"
+            None,
+            description="Detailed error information",
         )
 
         # Metadata
         timestamp: datetime = Field(
-            default_factory=datetime.utcnow, description="Response timestamp"
+            default_factory=datetime.utcnow,
+            description="Response timestamp",
         )
         api_version: str | None = Field(None, description="OIC API version")
         request_id: str | None = Field(None, description="Request correlation ID")
@@ -1027,7 +1071,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                     "has_more": bool(
                         self.total_count
                         and self.page_size
-                        and (self.page_number or 1) * self.page_size < self.total_count
+                        and (self.page_number or 1) * self.page_size < self.total_count,
                     ),
                 },
                 "error_info": {
@@ -1071,7 +1115,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                         "http_status_code": 429,
                         "retry_after_seconds": 60,
                         "is_retryable": True,
-                    }
+                    },
                 ],
             },
         )
@@ -1086,25 +1130,30 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         ] = Field(..., description="Error category")
         http_status_code: int | None = Field(None, description="HTTP status code")
         retry_after_seconds: int | None = Field(
-            None, description="Retry after duration"
+            None,
+            description="Retry after duration",
         )
 
         # Context information
         endpoint: str | None = Field(None, description="API endpoint that failed")
         request_method: str | None = Field(None, description="HTTP method used")
         request_params: dict[str, object] | None = Field(
-            None, description="Request parameters"
+            None,
+            description="Request parameters",
         )
 
         # Recovery information
         is_retryable: bool = Field(
-            default=False, description="Whether error is retryable"
+            default=False,
+            description="Whether error is retryable",
         )
         suggested_action: str | None = Field(
-            None, description="Suggested recovery action"
+            None,
+            description="Suggested recovery action",
         )
         max_retry_attempts: int | None = Field(
-            None, description="Maximum retry attempts for this error"
+            None,
+            description="Maximum retry attempts for this error",
         )
 
         @computed_field

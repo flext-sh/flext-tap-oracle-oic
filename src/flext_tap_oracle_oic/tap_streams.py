@@ -185,7 +185,8 @@ class OICBaseStream(FlextMeltanoStream):
                 "process": FlextOracleOicConstants.OIC_PROCESS_API_PATH,
             }
             return base_url + api_paths.get(
-                self.api_category, FlextOracleOicConstants.OIC_API_BASE_PATH
+                self.api_category,
+                FlextOracleOicConstants.OIC_API_BASE_PATH,
             )
 
         return base_url + FlextOracleOicConstants.OIC_API_BASE_PATH

@@ -178,7 +178,8 @@ class TestOICOAuth2Authenticator:
             authenticator.update_access_token()
 
     def test_oauth_scope_configuration(
-        self, authenticator: OICOAuth2Authenticator
+        self,
+        authenticator: OICOAuth2Authenticator,
     ) -> None:
         """Test OAuth scope configuration."""
         payload = authenticator.oauth_request_payload
