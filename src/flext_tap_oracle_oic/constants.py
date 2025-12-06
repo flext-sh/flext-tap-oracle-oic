@@ -23,7 +23,8 @@ class FlextOracleOicConstants(FlextConstants):
 
     # Oracle OIC API Constants using composition
     OIC_API_BASE_PATH = FlextOracleOicConstants.API.ENDPOINT_INTEGRATIONS.replace(
-        "/integrations", ""
+        "/integrations",
+        "",
     )
     OIC_MONITORING_API_PATH = "/ic/api/integration/v1/monitoring"
     OIC_DESIGNTIME_API_PATH = "/ic/api/integration/v1/designtime"

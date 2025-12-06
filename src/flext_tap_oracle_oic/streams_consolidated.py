@@ -125,7 +125,9 @@ class ConnectionsStream(OICBaseStream):
                 description="Adapter display name",
             ),
             th.Property(
-                "adapterVersion", th.StringType(), description="Adapter version"
+                "adapterVersion",
+                th.StringType(),
+                description="Adapter version",
             ),
             th.Property("status", th.StringType(), description="Connection status"),
             th.Property(
@@ -146,7 +148,9 @@ class ConnectionsStream(OICBaseStream):
             ),
             th.Property("connectionUrl", th.StringType(), description="Connection URL"),
             th.Property(
-                "securityPolicy", th.StringType(), description="Security policy"
+                "securityPolicy",
+                th.StringType(),
+                description="Security policy",
             ),
             th.Property(
                 "connectionProperties",
@@ -181,7 +185,9 @@ class PackagesStream(OICBaseStream):
             th.Property("id", th.StringType(), description="Package ID"),
             th.Property("name", th.StringType(), description="Package name"),
             th.Property(
-                "description", th.StringType(), description="Package description"
+                "description",
+                th.StringType(),
+                description="Package description",
             ),
             th.Property("version", th.StringType(), description="Package version"),
             th.Property("status", th.StringType(), description="Package status"),
@@ -235,7 +241,9 @@ class LookupsStream(OICBaseStream):
         th.PropertiesList(
             th.Property("name", th.StringType(), description="Lookup name"),
             th.Property(
-                "description", th.StringType(), description="Lookup description"
+                "description",
+                th.StringType(),
+                description="Lookup description",
             ),
             th.Property("type", th.StringType(), description="Lookup type"),
             th.Property("status", th.StringType(), description="Lookup status"),
@@ -293,7 +301,9 @@ class LibrariesStream(OICBaseStream):
             th.Property("id", th.StringType(), description="Library ID"),
             th.Property("name", th.StringType(), description="Library name"),
             th.Property(
-                "description", th.StringType(), description="Library description"
+                "description",
+                th.StringType(),
+                description="Library description",
             ),
             th.Property("type", th.StringType(), description="Library type"),
             th.Property("status", th.StringType(), description="Library status"),
@@ -397,10 +407,14 @@ class AdaptersStream(OICBaseStream):
             th.Property("id", th.StringType(), description="Adapter ID"),
             th.Property("name", th.StringType(), description="Adapter name"),
             th.Property(
-                "displayName", th.StringType(), description="Adapter display name"
+                "displayName",
+                th.StringType(),
+                description="Adapter display name",
             ),
             th.Property(
-                "description", th.StringType(), description="Adapter description"
+                "description",
+                th.StringType(),
+                description="Adapter description",
             ),
             th.Property("version", th.StringType(), description="Adapter version"),
             th.Property("vendor", th.StringType(), description="Adapter vendor"),
@@ -449,7 +463,9 @@ class ProjectsStream(OICBaseStream):
             th.Property("id", th.StringType(), description="Project ID"),
             th.Property("name", th.StringType(), description="Project name"),
             th.Property(
-                "description", th.StringType(), description="Project description"
+                "description",
+                th.StringType(),
+                description="Project description",
             ),
             th.Property("status", th.StringType(), description="Project status"),
             th.Property(
@@ -513,10 +529,14 @@ class ExecutionsStream(OICBaseStream):
         "dict[str, object]",
         th.PropertiesList(
             th.Property(
-                "instanceId", th.StringType(), description="Execution instance ID"
+                "instanceId",
+                th.StringType(),
+                description="Execution instance ID",
             ),
             th.Property(
-                "integrationName", th.StringType(), description="Integration name"
+                "integrationName",
+                th.StringType(),
+                description="Integration name",
             ),
             th.Property(
                 "integrationVersion",

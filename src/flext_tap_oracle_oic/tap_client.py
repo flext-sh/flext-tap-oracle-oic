@@ -125,7 +125,8 @@ class OracleOicClient:
         """Make authenticated GET request to OIC API."""
         # Zero Tolerance FIX: Use utilities for URL validation and building
         url_result = self._utilities.OicApiProcessing.build_oic_api_url(
-            self.config.get_api_base_url(), endpoint
+            self.config.get_api_base_url(),
+            endpoint,
         )
         if url_result.is_failure:
             return FlextResult[object].fail(f"URL building failed: {url_result.error}")
@@ -168,7 +169,8 @@ class OracleOicClient:
         """Make authenticated POST request to OIC API."""
         # Zero Tolerance FIX: Use utilities for URL validation and building
         url_result = self._utilities.OicApiProcessing.build_oic_api_url(
-            self.config.get_api_base_url(), endpoint
+            self.config.get_api_base_url(),
+            endpoint,
         )
         if url_result.is_failure:
             return FlextResult[object].fail(f"URL building failed: {url_result.error}")
@@ -275,7 +277,7 @@ class TapOracleOic(Tap):
             # Zero Tolerance FIX: Use utilities for configuration validation
             config_validation_result = (
                 self._utilities.ConfigValidation.validate_oic_connection_config(
-                    self.config
+                    self.config,
                 )
             )
             if config_validation_result.is_failure:
