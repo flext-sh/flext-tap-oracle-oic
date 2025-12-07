@@ -2,112 +2,84 @@
 
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextResult, p
+from flext_db_oracle.protocols import FlextDbOracleProtocols as p_db_oracle
+from flext_meltano.protocols import FlextMeltanoProtocols as p_meltano
 
 
-class FlextMeltanoTapOracleOicProtocols:
-    """Singer Tap Oracle OIC protocols with explicit re-exports from p foundation.
+class FlextMeltanoTapOracleOicProtocols(p_meltano, p_db_oracle):
+    """Singer Tap Oracle OIC protocols extending Oracle and Meltano protocols.
 
-    Domain Extension Pattern (Phase 3):
-    - Explicit re-export of foundation protocols (not inheritance)
-    - Domain-specific protocols organized in TapOracleOic namespace
-    - 100% backward compatibility through aliases
+    Extends both FlextDbOracleProtocols and FlextMeltanoProtocols via multiple inheritance
+    to inherit all Oracle protocols, Meltano protocols, and foundation protocols.
+
+    Architecture:
+    - EXTENDS: FlextDbOracleProtocols (inherits .Database.* protocols)
+    - EXTENDS: FlextMeltanoProtocols (inherits .Meltano.* protocols)
+    - ADDS: Tap Oracle OIC-specific protocols in TapOracleOic namespace
+    - PROVIDES: Root-level alias `p` for convenient access
     """
 
     class TapOracleOic:
         """Singer Tap Oracle OIC domain protocols."""
 
         @runtime_checkable
-        class OicConnectionProtocol(p.Service, Protocol):
+        class OicConnectionProtocol(p_db_oracle.Service[object], Protocol):
             """Protocol for Oracle OIC connection."""
 
-            def connect(self, config: dict[str, object]) -> FlextResult[object]:
+            def connect(self, config: dict[str, object]) -> p_meltano.Result[object]:
                 """Connect to Oracle OIC with provided configuration."""
+                ...
 
         @runtime_checkable
-        class IntegrationDiscoveryProtocol(p.Service, Protocol):
+        class IntegrationDiscoveryProtocol(p_db_oracle.Service[object], Protocol):
             """Protocol for OIC integration discovery."""
 
             def discover_integrations(
                 self,
                 config: dict[str, object],
-            ) -> FlextResult[list[dict[str, object]]]:
+            ) -> p_meltano.Result[list[dict[str, object]]]:
                 """Discover available integrations in Oracle OIC."""
+                ...
 
         @runtime_checkable
-        class DataExtractionProtocol(p.Service, Protocol):
+        class DataExtractionProtocol(p_db_oracle.Service[object], Protocol):
             """Protocol for OIC data extraction."""
 
             def extract_integration_data(
                 self,
                 integration: str,
-            ) -> FlextResult[list[dict[str, object]]]:
+            ) -> p_meltano.Result[list[dict[str, object]]]:
                 """Extract data from an Oracle OIC integration."""
+                ...
 
         @runtime_checkable
-        class StreamGenerationProtocol(p.Service, Protocol):
+        class StreamGenerationProtocol(p_db_oracle.Service[object], Protocol):
             """Protocol for Singer stream generation."""
 
             def generate_catalog(
                 self,
                 config: dict[str, object],
-            ) -> FlextResult[dict[str, object]]:
+            ) -> p_meltano.Result[dict[str, object]]:
                 """Generate Singer catalog for OIC entities."""
+                ...
 
         @runtime_checkable
-        class MonitoringProtocol(p.Service, Protocol):
+        class MonitoringProtocol(p_db_oracle.Service[object], Protocol):
             """Protocol for OIC extraction monitoring."""
 
             def track_progress(
                 self,
                 integration: str,
                 records: int,
-            ) -> FlextResult[None]:
+            ) -> p_meltano.Result[bool]:
                 """Track OIC integration data extraction progress."""
+                ...
 
-    @runtime_checkable
-    class OicConnectionProtocol(TapOracleOic.OicConnectionProtocol):
-        """OicConnectionProtocol - real inheritance."""
 
-    @runtime_checkable
-    class IntegrationDiscoveryProtocol(TapOracleOic.IntegrationDiscoveryProtocol):
-        """IntegrationDiscoveryProtocol - real inheritance."""
-
-    @runtime_checkable
-    class DataExtractionProtocol(TapOracleOic.DataExtractionProtocol):
-        """DataExtractionProtocol - real inheritance."""
-
-    @runtime_checkable
-    class StreamGenerationProtocol(TapOracleOic.StreamGenerationProtocol):
-        """StreamGenerationProtocol - real inheritance."""
-
-    @runtime_checkable
-    class MonitoringProtocol(TapOracleOic.MonitoringProtocol):
-        """MonitoringProtocol - real inheritance."""
-
-    @runtime_checkable
-    class TapOracleOicConnectionProtocol(TapOracleOic.OicConnectionProtocol):
-        """TapOracleOicConnectionProtocol - real inheritance."""
-
-    @runtime_checkable
-    class TapOracleOicIntegrationDiscoveryProtocol(
-        TapOracleOic.IntegrationDiscoveryProtocol,
-    ):
-        """TapOracleOicIntegrationDiscoveryProtocol - real inheritance."""
-
-    @runtime_checkable
-    class TapOracleOicDataExtractionProtocol(TapOracleOic.DataExtractionProtocol):
-        """TapOracleOicDataExtractionProtocol - real inheritance."""
-
-    @runtime_checkable
-    class TapOracleOicStreamGenerationProtocol(TapOracleOic.StreamGenerationProtocol):
-        """TapOracleOicStreamGenerationProtocol - real inheritance."""
-
-    @runtime_checkable
-    class TapOracleOicMonitoringProtocol(TapOracleOic.MonitoringProtocol):
-        """TapOracleOicMonitoringProtocol - real inheritance."""
-
+# Runtime alias for simplified usage
+p = FlextMeltanoTapOracleOicProtocols
 
 __all__ = [
     "FlextMeltanoTapOracleOicProtocols",
+    "p",
 ]
