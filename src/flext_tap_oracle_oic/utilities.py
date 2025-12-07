@@ -363,7 +363,7 @@ class FlextMeltanoTapOracleOicUtilities(u):
                 for fmt in formats:
                     try:
                         # Use timezone-aware parsing where possible
-                        dt = datetime.strptime(timestamp_str, fmt)  # noqa: DTZ007
+                        dt = datetime.strptime(timestamp_str, fmt)
                         # Ensure timezone-aware (assume UTC if not specified)
                         dt = dt.replace(tzinfo=dt.tzinfo or UTC)
                         return FlextResult[str].ok(dt.isoformat())
