@@ -9,31 +9,30 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import ClassVar
+from typing import Final
 
 from flext_core import FlextConstants
-from flext_oracle_oic import FlextOracleOicConstants
+from flext_oracle_oic.constants import FlextOracleOicConstants as ParentOicConstants
 
 
-class FlextOracleOicConstants(FlextConstants):
+class FlextTapOracleOicConstants(FlextConstants):
     """FLEXT Oracle OIC TAP constants extending flext-core platform constants.
 
     Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
     """
 
     # Oracle OIC API Constants using composition
-    OIC_API_BASE_PATH = FlextOracleOicConstants.API.ENDPOINT_INTEGRATIONS.replace(
-        "/integrations",
-        "",
+    OIC_API_BASE_PATH: Final[str] = (
+        ParentOicConstants.API.ENDPOINT_INTEGRATIONS.replace("/integrations", "")
     )
-    OIC_MONITORING_API_PATH = "/ic/api/integration/v1/monitoring"
-    OIC_DESIGNTIME_API_PATH = "/ic/api/integration/v1/designtime"
-    OIC_PROCESS_API_PATH = "/ic/api/integration/v1/processes"
-    OIC_B2B_API_PATH = "/ic/api/integration/v1/b2b"
-    OIC_ENVIRONMENT_API_PATH = "/ic/api/integration/v1/environments"
+    OIC_MONITORING_API_PATH: Final[str] = "/ic/api/integration/v1/monitoring"
+    OIC_DESIGNTIME_API_PATH: Final[str] = "/ic/api/integration/v1/designtime"
+    OIC_PROCESS_API_PATH: Final[str] = "/ic/api/integration/v1/processes"
+    OIC_B2B_API_PATH: Final[str] = "/ic/api/integration/v1/b2b"
+    OIC_ENVIRONMENT_API_PATH: Final[str] = "/ic/api/integration/v1/environments"
 
     # Official OIC REST API Endpoints using composition where appropriate
-    OIC_ENDPOINTS: ClassVar[dict[str, str]] = {
+    OIC_ENDPOINTS: Final[dict[str, str]] = {
         # Core Integration APIs
         "integrations": "/integrations",
         "integrations_detail": "/integrations/{id}",
@@ -103,27 +102,46 @@ class FlextOracleOicConstants(FlextConstants):
     class Connection:
         """OIC connection configuration."""
 
-        DEFAULT_TIMEOUT = FlextOracleOicConstants.OIC.DEFAULT_TIMEOUT
-        DEFAULT_MAX_RETRIES = FlextOracleOicConstants.OIC.DEFAULT_MAX_RETRIES
-        DEFAULT_VERIFY_SSL = FlextOracleOicConstants.OIC.DEFAULT_VERIFY_SSL
+        DEFAULT_TIMEOUT: Final[int] = ParentOicConstants.OIC.DEFAULT_TIMEOUT
+        DEFAULT_MAX_RETRIES: Final[int] = (
+            ParentOicConstants.OIC.DEFAULT_MAX_RETRIES
+        )
+        DEFAULT_VERIFY_SSL: Final[bool] = (
+            ParentOicConstants.OIC.DEFAULT_VERIFY_SSL
+        )
 
-    class Processing:
-        """OIC tap processing configuration."""
+    class TapOicProcessing:
+        """OIC tap processing configuration.
 
-        DEFAULT_PAGE_SIZE = FlextOracleOicConstants.OIC.DEFAULT_PAGE_SIZE
-        MAX_PAGE_SIZE = FlextOracleOicConstants.OIC.MAX_PAGE_SIZE
-        MIN_PAGE_SIZE = FlextOracleOicConstants.OIC.MIN_PAGE_SIZE
+        Note: Does not override parent Processing class to avoid inheritance conflicts.
+        """
 
-    class Auth:
-        """OIC authentication configuration."""
+        DEFAULT_PAGE_SIZE: Final[int] = (
+            ParentOicConstants.OIC.DEFAULT_PAGE_SIZE
+        )
+        MAX_PAGE_SIZE: Final[int] = ParentOicConstants.OIC.MAX_PAGE_SIZE
+        MIN_PAGE_SIZE: Final[int] = ParentOicConstants.OIC.MIN_PAGE_SIZE
 
-        DEFAULT_OAUTH_CLIENT_ID = FlextOracleOicConstants.Auth.DEFAULT_OAUTH_CLIENT_ID
-        DEFAULT_OAUTH_TOKEN_URL = FlextOracleOicConstants.Auth.DEFAULT_OAUTH_TOKEN_URL
-        DEFAULT_TOKEN_EXPIRY_SECONDS = (
-            FlextOracleOicConstants.Auth.DEFAULT_TOKEN_EXPIRY_SECONDS
+    class TapOicAuth:
+        """OIC authentication configuration.
+
+        Note: Does not override parent Auth class to avoid inheritance conflicts.
+        """
+
+        DEFAULT_OAUTH_CLIENT_ID: Final[str] = (
+            ParentOicConstants.Auth.DEFAULT_OAUTH_CLIENT_ID
+        )
+        DEFAULT_OAUTH_TOKEN_URL: Final[str] = (
+            ParentOicConstants.Auth.DEFAULT_OAUTH_TOKEN_URL
+        )
+        DEFAULT_TOKEN_EXPIRY_SECONDS: Final[int] = (
+            ParentOicConstants.Auth.DEFAULT_TOKEN_EXPIRY_SECONDS
         )
 
 
+c = FlextTapOracleOicConstants
+
 __all__: list[str] = [
-    "FlextOracleOicConstants",
+    "FlextTapOracleOicConstants",
+    "c",
 ]
