@@ -349,32 +349,38 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
         env_overrides: dict[str, object] = {}
 
         if environment == "production":
-            env_overrides.update({
-                "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
-                "max_retries": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
-                "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
-                // 10,
-                "include_extended": False,
-                "max_parallel_streams": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
-            })
+            env_overrides.update(
+                {
+                    "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
+                    "max_retries": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
+                    "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
+                    // 10,
+                    "include_extended": False,
+                    "max_parallel_streams": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
+                }
+            )
         elif environment == "development":
-            env_overrides.update({
-                "timeout": FlextConstants.Network.DEFAULT_TIMEOUT * 2,
-                "max_retries": 1,
-                "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
-                // 20,
-                "include_extended": True,
-                "max_parallel_streams": 1,
-            })
+            env_overrides.update(
+                {
+                    "timeout": FlextConstants.Network.DEFAULT_TIMEOUT * 2,
+                    "max_retries": 1,
+                    "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
+                    // 20,
+                    "include_extended": True,
+                    "max_parallel_streams": 1,
+                }
+            )
         elif environment == "staging":
-            env_overrides.update({
-                "timeout": FlextConstants.Network.DEFAULT_TIMEOUT + 15,
-                "max_retries": 2,
-                "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
-                // 13,
-                "include_extended": False,
-                "max_parallel_streams": 2,
-            })
+            env_overrides.update(
+                {
+                    "timeout": FlextConstants.Network.DEFAULT_TIMEOUT + 15,
+                    "max_retries": 2,
+                    "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
+                    // 13,
+                    "include_extended": False,
+                    "max_parallel_streams": 2,
+                }
+            )
 
         all_overrides = {**env_overrides, **overrides}
         return cls.get_or_create_shared_instance(
