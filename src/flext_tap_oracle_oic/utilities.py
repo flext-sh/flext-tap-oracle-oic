@@ -12,12 +12,13 @@ from datetime import UTC, datetime
 from typing import ClassVar, override
 from urllib.parse import urljoin, urlparse
 
-from flext_core import FlextResult, u
+from flext_core import FlextResult
+from flext_core.utilities import FlextUtilities as u_core
 
 from flext_tap_oracle_oic.constants import FlextOracleOicConstants
 
 
-class FlextMeltanoTapOracleOicUtilities(u):
+class FlextMeltanoTapOracleOicUtilities(u_core):
     """Single unified utilities class for Singer tap Oracle OIC operations.
 
     Follows FLEXT unified class pattern with nested helper classes for

@@ -11,6 +11,7 @@ from datetime import UTC, datetime
 from typing import Literal, Self
 
 from flext_core import FlextConstants, FlextModels
+from flext_core.utilities import u
 from pydantic import (
     ConfigDict,
     Field,
@@ -67,6 +68,14 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
     Provides complete models for OIC entity extraction, authentication,
     monitoring, and Singer protocol compliance following standardized patterns.
     """
+
+    def __init_subclass__(cls, **kwargs: object) -> None:
+        """Warn when FlextMeltanoTapOracleOicModels is subclassed directly."""
+        super().__init_subclass__(**kwargs)
+        u.Deprecation.warn_once(
+            f"subclass:{cls.__name__}",
+            "Subclassing FlextMeltanoTapOracleOicModels is deprecated. Use FlextModels.TapOracleOic instead.",
+        )
 
     # Pydantic 2.11 Configuration - Enterprise Singer Oracle OIC Tap Features
     model_config = ConfigDict(
@@ -1198,6 +1207,12 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             return self
 
 
+# Short aliases
+m = FlextMeltanoTapOracleOicModels
+m_tap_oracle_oic = FlextMeltanoTapOracleOicModels
+
 __all__ = [
     "FlextMeltanoTapOracleOicModels",
+    "m",
+    "m_tap_oracle_oic",
 ]
