@@ -62,7 +62,7 @@ class FlextOracleOicAuthenticator:
                     f"OAuth2 request failed: {response_result.error}",
                 )
 
-            response = response_result.unwrap()
+            response = response_result.value
             if response.status_code >= HTTP_ERROR_STATUS_THRESHOLD:
                 return FlextResult[str].fail(
                     f"OAuth2 request failed with status {response.status_code}",
@@ -138,7 +138,7 @@ class OracleOicClient:
             )
 
         try:
-            url = url_result.unwrap()
+            url = url_result.value
             response_result = self._api_client.get(
                 url,
                 headers=headers_result.data,
@@ -150,7 +150,7 @@ class OracleOicClient:
                     f"OIC API request failed: {response_result.error}",
                 )
 
-            response = response_result.unwrap()
+            response = response_result.value
             if response.status_code >= HTTP_ERROR_STATUS_THRESHOLD:
                 return FlextResult[object].fail(
                     f"OIC API request failed with status {response.status_code}",
@@ -182,7 +182,7 @@ class OracleOicClient:
             )
 
         try:
-            url = url_result.unwrap()
+            url = url_result.value
             # Convert data to string dict[str, object] for FlextApiClient compatibility
             json_data: dict[str, object] = (
                 {str(k): str(v) for k, v in data.items()} if data else None
@@ -199,7 +199,7 @@ class OracleOicClient:
                     f"OIC API request failed: {response_result.error}",
                 )
 
-            response = response_result.unwrap()
+            response = response_result.value
             if response.status_code >= HTTP_ERROR_STATUS_THRESHOLD:
                 return FlextResult[object].fail(
                     f"OIC API request failed with status {response.status_code}",

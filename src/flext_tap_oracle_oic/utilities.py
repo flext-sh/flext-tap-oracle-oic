@@ -366,7 +366,11 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
                         # Use timezone-aware parsing where possible
                         dt_naive = datetime.strptime(timestamp_str, fmt)
                         # Ensure timezone-aware (assume UTC if not specified)
-                        dt = dt_naive.replace(tzinfo=UTC) if dt_naive.tzinfo is None else dt_naive
+                        dt = (
+                            dt_naive.replace(tzinfo=UTC)
+                            if dt_naive.tzinfo is None
+                            else dt_naive
+                        )
                         return FlextResult[str].ok(dt.isoformat())
                     except ValueError:
                         continue
