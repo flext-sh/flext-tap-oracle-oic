@@ -13,7 +13,7 @@ from datetime import UTC, datetime
 from typing import override
 
 from flext_api import FlextApiClient
-from flext_api.config import FlextApiConfig
+from flext_api.settings import FlextApiSettings
 from flext_core import FlextExceptions, FlextLogger, FlextResult, t
 from flext_meltano import FlextMeltanoStream
 
@@ -203,7 +203,7 @@ class OICBaseStream(FlextMeltanoStream):
                 return client_result.data
 
         # Fallback to creating new FlextApiClient
-        api_config = FlextApiConfig()
+        api_config = FlextApiSettings()
         return FlextApiClient(api_config)
 
     def get_new_paginator(self: object) -> OICPaginator:

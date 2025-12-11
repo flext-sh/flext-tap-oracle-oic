@@ -1,4 +1,4 @@
-"""FLEXT Tap Oracle OIC Configuration - Enhanced FlextConfig Implementation.
+"""FLEXT Tap Oracle OIC Configuration - Enhanced FlextSettings Implementation.
 
 Single unified configuration class for Oracle Integration Cloud Singer tap
 operations following FLEXT 1.0.0 patterns with enhanced singleton, SecretStr,
@@ -14,20 +14,20 @@ from __future__ import annotations
 import re
 from typing import Self
 
-from flext_core import FlextConfig, FlextConstants, FlextResult
+from flext_core import FlextConstants, FlextResult, FlextSettings
 from pydantic import Field, HttpUrl, SecretStr, field_validator, model_validator
 from pydantic_settings import SettingsConfigDict
 
 
-class FlextMeltanoTapOracleOicConfig(FlextConfig):
-    """Oracle Integration Cloud Tap Configuration using enhanced FlextConfig patterns.
+class FlextMeltanoTapOracleOicSettings(FlextSettings):
+    """Oracle Integration Cloud Tap Configuration using enhanced FlextSettings patterns.
 
-    This class extends FlextConfig and includes all the configuration fields
+    This class extends FlextSettings and includes all the configuration fields
     needed for Oracle Integration Cloud tap operations. Uses the enhanced singleton pattern
     with get_or_create_shared_instance for thread-safe configuration management.
 
     Follows standardized pattern:
-    - Extends FlextConfig from flext-core
+    - Extends FlextSettings from flext-core
     - Uses SecretStr for sensitive data (oauth_client_secret)
     - All defaults from FlextConstants where possible
     - Uses enhanced singleton pattern with inverse dependency injection
@@ -50,7 +50,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
         validate_return=True,
         json_schema_extra={
             "title": "FLEXT Tap Oracle OIC Configuration",
-            "description": "Oracle Integration Cloud Singer tap configuration extending FlextConfig",
+            "description": "Oracle Integration Cloud Singer tap configuration extending FlextSettings",
         },
     )
 
@@ -344,7 +344,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
         cls,
         environment: str,
         **overrides: object,
-    ) -> FlextMeltanoTapOracleOicConfig:
+    ) -> FlextMeltanoTapOracleOicSettings:
         """Create configuration for specific environment using enhanced singleton pattern."""
         env_overrides: dict[str, object] = {}
 
@@ -385,7 +385,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
 
     @classmethod
     def get_global_instance(cls) -> Self:
-        """Get the global singleton instance using enhanced FlextConfig pattern."""
+        """Get the global singleton instance using enhanced FlextSettings pattern."""
         return cls.get_or_create_shared_instance(project_name="flext-tap-oracle-oic")
 
     @classmethod
@@ -438,7 +438,7 @@ class FlextMeltanoTapOracleOicConfig(FlextConfig):
 
     @classmethod
     def reset_global_instance(cls) -> None:
-        """Reset the global FlextMeltanoTapOracleOicConfig instance (mainly for testing)."""
+        """Reset the global FlextMeltanoTapOracleOicSettings instance (mainly for testing)."""
         cls.reset_shared_instance()
 
 
@@ -447,7 +447,7 @@ def create_oracle_oic_tap_config(
     oauth_params: dict[str, object],
     connection_params: dict[str, object],
     tap_params: dict[str, object] | None = None,
-) -> FlextResult[FlextMeltanoTapOracleOicConfig]:
+) -> FlextResult[FlextMeltanoTapOracleOicSettings]:
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
     Args:
@@ -478,22 +478,22 @@ def create_oracle_oic_tap_config(
         }
 
         config_instance = (
-            FlextMeltanoTapOracleOicConfig.get_global_instance().model_validate(
+            FlextMeltanoTapOracleOicSettings.get_global_instance().model_validate(
                 config_data,
             )
         )
-        return FlextResult[FlextMeltanoTapOracleOicConfig].ok(config_instance)
+        return FlextResult[FlextMeltanoTapOracleOicSettings].ok(config_instance)
 
     except Exception as e:
-        return FlextResult[FlextMeltanoTapOracleOicConfig].fail(
+        return FlextResult[FlextMeltanoTapOracleOicSettings].fail(
             f"Oracle OIC tap configuration creation failed: {e}",
         )
 
 
 def validate_oracle_oic_tap_configuration(
-    config: FlextMeltanoTapOracleOicConfig,
+    config: FlextMeltanoTapOracleOicSettings,
 ) -> FlextResult[None]:
-    """Validate Oracle Integration Cloud tap configuration using FlextConfig patterns - ZERO DUPLICATION."""
+    """Validate Oracle Integration Cloud tap configuration using FlextSettings patterns - ZERO DUPLICATION."""
     # Required string fields validation
     required_fields = [
         (config.oauth_client_id, "OAuth client ID is required"),
@@ -525,7 +525,7 @@ def validate_oracle_oic_tap_configuration(
 
 
 __all__: list[str] = [
-    "FlextMeltanoTapOracleOicConfig",
+    "FlextMeltanoTapOracleOicSettings",
     "create_oracle_oic_tap_config",
     "validate_oracle_oic_tap_configuration",
 ]
