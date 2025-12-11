@@ -14,7 +14,7 @@ from datetime import UTC, datetime
 from typing import override
 
 from flext_api import FlextApiClient
-from flext_api.config import FlextApiConfig
+from flext_api.settings import FlextApiSettings
 
 from flext_tap_oracle_oic import OAuthAuthenticator
 
@@ -31,7 +31,7 @@ class OICHealthChecker:
         """Initialize health checker with base URL and authenticator."""
         self.base_url = base_url.rstrip("/")
         self.authenticator = authenticator
-        api_config = FlextApiConfig(base_url=base_url)
+        api_config = FlextApiSettings(base_url=base_url)
         self._api_client = FlextApiClient(api_config)
 
     def _get_headers(self: object) -> dict[str, str]:

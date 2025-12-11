@@ -14,11 +14,11 @@ from collections.abc import Sequence
 from typing import ClassVar, cast, override
 
 from flext_api import FlextApiClient
-from flext_api.config import FlextApiConfig
+from flext_api.settings import FlextApiSettings
 from flext_core import FlextLogger, FlextResult
 from flext_meltano import FlextMeltanoStream as Stream, FlextMeltanoTap as Tap
 
-from flext_tap_oracle_oic.config import FlextMeltanoTapOracleOicConfig
+from flext_tap_oracle_oic.config import FlextMeltanoTapOracleOicSettings
 from flext_tap_oracle_oic.streams_consolidated import (
     ALL_STREAMS,
     CORE_STREAMS,
@@ -40,11 +40,11 @@ class FlextOracleOicAuthenticator:
     """Real Oracle OIC OAuth2 authenticator implementation."""
 
     @override
-    def __init__(self, config: FlextMeltanoTapOracleOicConfig) -> None:
+    def __init__(self, config: FlextMeltanoTapOracleOicSettings) -> None:
         """Initialize authenticator with OAuth2 configuration."""
         self.config = config
         self._access_token: str | None = None
-        api_config = FlextApiConfig()
+        api_config = FlextApiSettings()
         self._api_client = FlextApiClient(api_config)
 
     def get_access_token(self) -> FlextResult[str]:
@@ -94,13 +94,13 @@ class OracleOicClient:
     @override
     def __init__(
         self,
-        config: FlextMeltanoTapOracleOicConfig,
+        config: FlextMeltanoTapOracleOicSettings,
         authenticator: FlextOracleOicAuthenticator,
     ) -> None:
         """Initialize OIC API client."""
         self.config = config
         self.authenticator = authenticator
-        api_config = FlextApiConfig(
+        api_config = FlextApiSettings(
             base_url=config.get_api_base_url(),
             timeout=config.timeout,
         )
@@ -285,7 +285,7 @@ class TapOracleOic(Tap):
                 raise ValueError(msg)
 
             # Create unified OIC configuration
-            oic_config = FlextMeltanoTapOracleOicConfig(
+            oic_config = FlextMeltanoTapOracleOicSettings(
                 oauth_client_id=self.config["oauth_client_id"],
                 oauth_client_secret=self.config["oauth_client_secret"],
                 oauth_token_url=self.config["oauth_token_url"],
