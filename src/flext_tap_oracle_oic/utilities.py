@@ -13,7 +13,7 @@ from typing import ClassVar, override
 from urllib.parse import urljoin, urlparse
 
 from flext_core import FlextResult
-from flext_core.utilities import FlextUtilities as u_core
+from flext_core.utilities import u_core
 
 from flext_tap_oracle_oic.constants import FlextOracleOicConstants
 
