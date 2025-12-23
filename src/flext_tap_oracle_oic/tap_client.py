@@ -18,7 +18,7 @@ from flext_api.settings import FlextApiSettings
 from flext_core import FlextLogger, FlextResult
 from flext_meltano import FlextMeltanoStream as Stream, FlextMeltanoTap as Tap
 
-from flext_tap_oracle_oic.settings import FlextMeltanoTapOracleOicSettings
+from flext_tap_oracle_oic.config import FlextMeltanoTapOracleOicSettings
 from flext_tap_oracle_oic.streams_consolidated import (
     ALL_STREAMS,
     CORE_STREAMS,
