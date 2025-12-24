@@ -9,9 +9,9 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
+from flext_core import FlextModels, FlextResult
 from pydantic import ConfigDict, Field
 
-from flext import FlextModels, FlextResult
 from flext_tap_oracle_oic.constants import c
 
 # Aliases from constants.py (single source of truth)

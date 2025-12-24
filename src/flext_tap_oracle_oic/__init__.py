@@ -7,9 +7,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from flext_core import FlextLogger, FlextModels, FlextResult
 from flext_meltano import FlextMeltanoBridge, FlextMeltanoService, FlextMeltanoSettings
 
-from flext import FlextLogger, FlextModels, FlextResult
 from flext_tap_oracle_oic.__version__ import __version__, __version_info__
 from flext_tap_oracle_oic.config import (
     FlextMeltanoTapOracleOicSettings,

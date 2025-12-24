@@ -12,9 +12,8 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Final
 
+from flext_core import FlextConstants
 from flext_oracle_oic.constants import FlextOracleOicConstants as ParentOicConstants
-
-from flext import FlextConstants
 
 
 class FlextTapOracleOicConstants(FlextConstants):
