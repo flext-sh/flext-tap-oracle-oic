@@ -46,7 +46,7 @@ class FlextMeltanoTapOracleOicProtocols(p_meltano, p_db_oracle):
                 """Protocol for Oracle OIC connection."""
 
                 def connect(
-                    self, config: dict[str, object]
+                    self, config: dict[str, object],
                 ) -> p_meltano.Result[object]:
                     """Connect to Oracle OIC with provided configuration."""
                     ...

@@ -14,9 +14,11 @@ from __future__ import annotations
 import re
 from typing import Self
 
-from flext_core import FlextConstants, FlextResult, FlextSettings
 from pydantic import Field, HttpUrl, SecretStr, field_validator, model_validator
 from pydantic_settings import SettingsConfigDict
+
+from flext import FlextConstants, FlextResult, FlextSettings
+from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
 
 
 class FlextMeltanoTapOracleOicSettings(FlextSettings):
@@ -459,35 +461,11 @@ def create_oracle_oic_tap_config(
     FlextResult containing validated Oracle OIC tap configuration
 
     """
-    try:
-        # Apply defaults
-        tap_config = tap_params or {}
-
-        # Set default values using semantic constants
-        tap_config.setdefault(
-            "batch_size",
-            FlextConstants.Performance.DEFAULT_BATCH_SIZE,
-        )
-        tap_config.setdefault("stream_prefix", "oic")
-
-        # Merge OAuth, connection, and tap parameters
-        config_data = {
-            **oauth_params,
-            **connection_params,
-            **tap_config,
-        }
-
-        config_instance = (
-            FlextMeltanoTapOracleOicSettings.get_global_instance().model_validate(
-                config_data,
-            )
-        )
-        return FlextResult[FlextMeltanoTapOracleOicSettings].ok(config_instance)
-
-    except Exception as e:
-        return FlextResult[FlextMeltanoTapOracleOicSettings].fail(
-            f"Oracle OIC tap configuration creation failed: {e}",
-        )
+    return FlextMeltanoTapOracleOicUtilities.ConfigurationFactory.create_oracle_oic_tap_config(
+        oauth_params=oauth_params,
+        connection_params=connection_params,
+        tap_params=tap_params,
+    )
 
 
 def validate_oracle_oic_tap_configuration(
