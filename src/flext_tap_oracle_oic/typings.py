@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from flext import FlextTypes
+from flext_core import FlextTypes
 
 # =============================================================================
 # TAP ORACLE OIC-SPECIFIC TYPE VARIABLES - Domain-specific TypeVars for Singer Oracle OIC operations
@@ -41,7 +41,8 @@ class FlextMeltanoTapOracleOicTypes(FlextTypes):
 
         type TapConfiguration = dict[str, str | int | bool | dict[str, object]]
         type StreamConfiguration = dict[
-            str, str | bool | dict[str, FlextTypes.JsonValue],
+            str,
+            str | bool | dict[str, FlextTypes.JsonValue],
         ]
         type CatalogDefinition = dict[str, str | list[dict[str, FlextTypes.JsonValue]]]
         type SchemaDefinition = dict[str, str | dict[str, FlextTypes.JsonValue] | bool]
@@ -57,7 +58,8 @@ class FlextMeltanoTapOracleOicTypes(FlextTypes):
 
         type IntegrationConfiguration = dict[str, str | int | bool | dict[str, object]]
         type IntegrationDefinition = dict[
-            str, str | list[str] | dict[str, FlextTypes.JsonValue],
+            str,
+            str | list[str] | dict[str, FlextTypes.JsonValue],
         ]
         type IntegrationFlow = dict[str, str | dict[str, FlextTypes.JsonValue]]
         type IntegrationMapping = dict[str, str | dict[str, object]]
@@ -101,12 +103,14 @@ class FlextMeltanoTapOracleOicTypes(FlextTypes):
 
         type ActivityConfiguration = dict[str, str | bool | dict[str, object]]
         type MetricsCollection = dict[
-            str, int | float | dict[str, FlextTypes.JsonValue],
+            str,
+            int | float | dict[str, FlextTypes.JsonValue],
         ]
         type TrackingData = dict[str, str | dict[str, FlextTypes.JsonValue]]
         type AlertConfiguration = dict[str, bool | str | dict[str, object]]
         type MonitoringMetrics = dict[
-            str, int | float | dict[str, FlextTypes.JsonValue],
+            str,
+            int | float | dict[str, FlextTypes.JsonValue],
         ]
         type AuditTrail = dict[str, str | dict[str, FlextTypes.JsonValue]]
 
@@ -122,7 +126,8 @@ class FlextMeltanoTapOracleOicTypes(FlextTypes):
         type ExtractionMapping = dict[str, str | dict[str, FlextTypes.JsonValue]]
         type ExtractionResult = dict[str, bool | list[dict[str, object]]]
         type ExtractionMetrics = dict[
-            str, int | float | dict[str, FlextTypes.JsonValue],
+            str,
+            int | float | dict[str, FlextTypes.JsonValue],
         ]
         type ExtractionState = dict[str, str | int | dict[str, FlextTypes.JsonValue]]
 

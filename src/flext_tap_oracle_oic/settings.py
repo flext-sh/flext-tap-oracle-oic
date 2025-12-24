@@ -14,10 +14,10 @@ from __future__ import annotations
 import re
 from typing import Self
 
+from flext_core import FlextConstants, FlextResult, FlextSettings
 from pydantic import Field, HttpUrl, SecretStr, field_validator, model_validator
 from pydantic_settings import SettingsConfigDict
 
-from flext import FlextConstants, FlextResult, FlextSettings
 from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
 
 

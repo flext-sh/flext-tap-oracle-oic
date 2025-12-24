@@ -12,9 +12,10 @@ from datetime import UTC, datetime
 from typing import ClassVar, override
 from urllib.parse import urljoin
 
+import urlparse
+from flext_core import FlextConstants, FlextResult
 from flext_core.utilities import FlextUtilities as u_core
 
-from flext import FlextConstants, FlextResult
 from flext_tap_oracle_oic.constants import FlextOracleOicConstants
 
 
@@ -777,10 +778,8 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
                     **tap_config,
                 }
 
-                config_instance = (
-                    FlextMeltanoTapOracleOicSettings.get_global_instance().model_validate(
-                        config_data,
-                    )
+                config_instance = FlextMeltanoTapOracleOicSettings.get_global_instance().model_validate(
+                    config_data,
                 )
                 return FlextResult[FlextMeltanoTapOracleOicSettings].ok(config_instance)
 
@@ -854,7 +853,9 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
             # Batch size validation
             if hasattr(config, "batch_size") and config.batch_size is not None:
                 if not isinstance(config.batch_size, int) or config.batch_size <= 0:
-                    return FlextResult[None].fail("Batch size must be a positive integer")
+                    return FlextResult[None].fail(
+                        "Batch size must be a positive integer"
+                    )
 
             return FlextResult[None].ok(None)
 
