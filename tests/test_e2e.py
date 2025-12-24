@@ -18,7 +18,7 @@ from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
-from flext_core import FlextLogger
+from flext import FlextLogger
 from singer_sdk import ConfigValidationError
 
 from flext_tap_oracle_oic import TapOracleOic

@@ -9,10 +9,12 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from enum import StrEnum
 from typing import Final
 
-from flext_core import FlextConstants
 from flext_oracle_oic.constants import FlextOracleOicConstants as ParentOicConstants
+
+from flext import FlextConstants
 
 
 class FlextTapOracleOicConstants(FlextConstants):
@@ -131,6 +133,53 @@ class FlextTapOracleOicConstants(FlextConstants):
         DEFAULT_TOKEN_EXPIRY_SECONDS: Final[int] = (
             ParentOicConstants.Auth.DEFAULT_TOKEN_EXPIRY_SECONDS
         )
+
+    # =========================================================================
+    # STRENUM CLASSES - Single source of truth for string enumerations
+    # =========================================================================
+
+    class OICResourceType(StrEnum):
+        """Oracle Integration Cloud resource types.
+
+        DRY Pattern:
+            StrEnum is the single source of truth. Use OICResourceType.INTEGRATION.value
+            or OICResourceType.INTEGRATION directly - no base strings needed.
+        """
+
+        INTEGRATION = "integration"
+        CONNECTION = "connection"
+        LOOKUP = "lookup"
+        LIBRARY = "library"
+        AGENT = "agent"
+        CERTIFICATE = "certificate"
+        PACKAGE = "package"
+        PROJECT = "project"
+
+    class IntegrationStatus(StrEnum):
+        """Integration lifecycle status.
+
+        DRY Pattern:
+            StrEnum is the single source of truth. Use IntegrationStatus.ACTIVATED.value
+            or IntegrationStatus.ACTIVATED directly - no base strings needed.
+        """
+
+        CONFIGURED = "configured"
+        ACTIVATED = "activated"
+        DEACTIVATED = "deactivated"
+        FAILED = "failed"
+        LOCKED = "locked"
+
+    class ConnectionStatus(StrEnum):
+        """Connection status.
+
+        DRY Pattern:
+            StrEnum is the single source of truth. Use ConnectionStatus.TESTED.value
+            or ConnectionStatus.TESTED directly - no base strings needed.
+        """
+
+        CONFIGURED = "configured"
+        TESTED = "tested"
+        FAILED = "failed"
 
 
 c = FlextTapOracleOicConstants

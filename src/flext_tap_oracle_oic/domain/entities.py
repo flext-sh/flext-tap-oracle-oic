@@ -8,41 +8,16 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from enum import StrEnum
 
-from flext_core import FlextModels, FlextResult
 from pydantic import ConfigDict, Field
 
+from flext import FlextModels, FlextResult
+from flext_tap_oracle_oic.constants import c
 
-class OICResourceType(StrEnum):
-    """Oracle Integration Cloud resource types."""
-
-    INTEGRATION = "integration"
-    CONNECTION = "connection"
-    LOOKUP = "lookup"
-    LIBRARY = "library"
-    AGENT = "agent"
-    CERTIFICATE = "certificate"
-    PACKAGE = "package"
-    PROJECT = "project"
-
-
-class IntegrationStatus(StrEnum):
-    """Integration lifecycle status."""
-
-    CONFIGURED = "configured"
-    ACTIVATED = "activated"
-    DEACTIVATED = "deactivated"
-    FAILED = "failed"
-    LOCKED = "locked"
-
-
-class ConnectionStatus(StrEnum):
-    """Connection status."""
-
-    CONFIGURED = "configured"
-    TESTED = "tested"
-    FAILED = "failed"
+# Aliases from constants.py (single source of truth)
+OICResourceType = c.OICResourceType
+IntegrationStatus = c.IntegrationStatus
+ConnectionStatus = c.ConnectionStatus
 
 
 class OICConnection(FlextModels):

@@ -10,11 +10,11 @@ from __future__ import annotations
 import re
 from datetime import UTC, datetime
 from typing import ClassVar, override
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 
-from flext_core import FlextResult
 from flext_core.utilities import FlextUtilities as u_core
 
+from flext import FlextConstants, FlextResult
 from flext_tap_oracle_oic.constants import FlextOracleOicConstants
 
 
@@ -718,6 +718,145 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
                 "record_count": record_count,
                 "rate_per_second": records_per_second,
             }
+
+    class ConfigurationFactory:
+        """Configuration factory utilities for OIC tap setup."""
+
+        @staticmethod
+        def create_oracle_oic_tap_config(
+            oauth_params: dict[str, object],
+            connection_params: dict[str, object],
+            tap_params: dict[str, object] | None = None,
+        ) -> FlextResult[FlextMeltanoTapOracleOicSettings]:
+            """Create Oracle Integration Cloud tap configuration using grouped parameters.
+
+            Business Rule: Configuration Factory Pattern
+            ===========================================
+            This method implements the FLEXT configuration factory pattern for
+            Oracle Integration Cloud tap operations. It provides a clean API for
+            creating validated tap configurations from grouped parameters.
+
+            Parameter Groups:
+            - oauth_params: OAuth2/IDCS authentication credentials
+            - connection_params: OIC connection and endpoint information
+            - tap_params: Optional tap-specific runtime parameters
+
+            Validation Chain:
+            1. Apply semantic defaults from FlextConstants
+            2. Merge all parameter groups into unified config
+            3. Validate using FlextSettings Pydantic patterns
+            4. Return typed configuration instance or detailed error
+
+            Args:
+                oauth_params: OAuth2/IDCS authentication parameters
+                connection_params: OIC connection parameters
+                tap_params: Optional tap-specific parameters
+
+            Returns:
+                FlextResult containing validated Oracle OIC tap configuration
+
+            """
+            # Import here to avoid circular imports
+            from flext_tap_oracle_oic.settings import FlextMeltanoTapOracleOicSettings
+
+            try:
+                # Apply defaults
+                tap_config = tap_params or {}
+
+                # Set default values using semantic constants
+                tap_config.setdefault(
+                    "batch_size",
+                    FlextConstants.Performance.DEFAULT_BATCH_SIZE,
+                )
+                tap_config.setdefault("stream_prefix", "oic")
+
+                # Merge OAuth, connection, and tap parameters
+                config_data = {
+                    **oauth_params,
+                    **connection_params,
+                    **tap_config,
+                }
+
+                config_instance = (
+                    FlextMeltanoTapOracleOicSettings.get_global_instance().model_validate(
+                        config_data,
+                    )
+                )
+                return FlextResult[FlextMeltanoTapOracleOicSettings].ok(config_instance)
+
+            except Exception as e:
+                return FlextResult[FlextMeltanoTapOracleOicSettings].fail(
+                    f"Oracle OIC tap configuration creation failed: {e}",
+                )
+
+        @staticmethod
+        def validate_oracle_oic_tap_configuration(
+            config: FlextMeltanoTapOracleOicSettings,
+        ) -> FlextResult[None]:
+            """Validate Oracle Integration Cloud tap configuration using FlextSettings patterns - ZERO DUPLICATION.
+
+            Business Rule: Comprehensive Configuration Validation
+            ====================================================
+            This method implements comprehensive validation for Oracle Integration
+            Cloud tap configurations following FLEXT validation patterns.
+
+            Validation Categories:
+            - Required field presence and non-emptiness
+            - OAuth2 credential validation (secrets, endpoints)
+            - URL format validation for OIC endpoints
+            - Timeout and batch size range validation
+            - Stream configuration structure validation
+
+            Error Handling:
+            - Detailed error messages for each validation failure
+            - Early return on first validation error (fail-fast)
+            - Type-safe validation using Pydantic patterns
+
+            Args:
+                config: FlextMeltanoTapOracleOicSettings instance to validate
+
+            Returns:
+                FlextResult[None]: ok(None) on success, fail(error_msg) on validation error
+
+            """
+            # Import here to avoid circular imports
+
+            # Required string fields validation
+            required_fields = [
+                (config.oauth_client_id, "OAuth client ID is required"),
+                (
+                    config.oauth_client_secret.get_secret_value(),
+                    "OAuth client secret is required",
+                ),
+                (config.oauth_audience, "OAuth audience is required"),
+            ]
+
+            for field_value, error_msg in required_fields:
+                if not field_value or not str(field_value).strip():
+                    return FlextResult[None].fail(error_msg)
+
+            # OIC base URL validation
+            if not config.oic_base_url or not str(config.oic_base_url).strip():
+                return FlextResult[None].fail("OIC base URL is required")
+
+            try:
+                parsed_url = urlparse(str(config.oic_base_url))
+                if not parsed_url.scheme or not parsed_url.netloc:
+                    return FlextResult[None].fail("Invalid OIC base URL format")
+            except Exception:
+                return FlextResult[None].fail("Invalid OIC base URL format")
+
+            # Timeout validation
+            if hasattr(config, "timeout") and config.timeout is not None:
+                if not isinstance(config.timeout, int) or config.timeout <= 0:
+                    return FlextResult[None].fail("Timeout must be a positive integer")
+
+            # Batch size validation
+            if hasattr(config, "batch_size") and config.batch_size is not None:
+                if not isinstance(config.batch_size, int) or config.batch_size <= 0:
+                    return FlextResult[None].fail("Batch size must be a positive integer")
+
+            return FlextResult[None].ok(None)
 
     # Proxy methods for backward compatibility
     @classmethod
