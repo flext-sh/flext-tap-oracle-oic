@@ -728,7 +728,7 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
             oauth_params: dict[str, object],
             connection_params: dict[str, object],
             tap_params: dict[str, object] | None = None,
-        ) -> FlextResult[FlextMeltanoTapOracleOicSettings]:
+        ) -> FlextResult[FlextMeltanoTapOracleOicSettings]:  # noqa: F821
             """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
             Business Rule: Configuration Factory Pattern
@@ -758,7 +758,9 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
 
             """
             # Import here to avoid circular imports
-            from flext_tap_oracle_oic.settings import FlextMeltanoTapOracleOicSettings
+            from flext_tap_oracle_oic.settings import (  # noqa: PLC0415
+                FlextMeltanoTapOracleOicSettings,
+            )
 
             try:
                 # Apply defaults
@@ -790,7 +792,7 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
 
         @staticmethod
         def validate_oracle_oic_tap_configuration(
-            config: FlextMeltanoTapOracleOicSettings,
+            config: FlextMeltanoTapOracleOicSettings,  # noqa: F821
         ) -> FlextResult[None]:
             """Validate Oracle Integration Cloud tap configuration using FlextSettings patterns - ZERO DUPLICATION.
 
@@ -846,16 +848,18 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
                 return FlextResult[None].fail("Invalid OIC base URL format")
 
             # Timeout validation
-            if hasattr(config, "timeout") and config.timeout is not None:
-                if not isinstance(config.timeout, int) or config.timeout <= 0:
-                    return FlextResult[None].fail("Timeout must be a positive integer")
+            if hasattr(config, "timeout") and config.timeout is not None and (
+                not isinstance(config.timeout, int) or config.timeout <= 0
+            ):
+                return FlextResult[None].fail("Timeout must be a positive integer")
 
             # Batch size validation
-            if hasattr(config, "batch_size") and config.batch_size is not None:
-                if not isinstance(config.batch_size, int) or config.batch_size <= 0:
-                    return FlextResult[None].fail(
-                        "Batch size must be a positive integer"
-                    )
+            if hasattr(config, "batch_size") and config.batch_size is not None and (
+                not isinstance(config.batch_size, int) or config.batch_size <= 0
+            ):
+                return FlextResult[None].fail(
+                    "Batch size must be a positive integer"
+                )
 
             return FlextResult[None].ok(None)
 
