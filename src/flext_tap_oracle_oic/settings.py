@@ -18,8 +18,6 @@ from flext_core import FlextConstants, FlextResult, FlextSettings
 from pydantic import Field, HttpUrl, SecretStr, field_validator, model_validator
 from pydantic_settings import SettingsConfigDict
 
-from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
-
 
 class FlextMeltanoTapOracleOicSettings(FlextSettings):
     """Oracle Integration Cloud Tap Configuration using enhanced FlextSettings patterns.
@@ -99,14 +97,14 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
     )
 
     max_retries: int = Field(
-        default=FlextConstants.Network.DEFAULT_MAX_RETRIES,
+        default=FlextConstants.Reliability.DEFAULT_MAX_RETRIES,
         ge=0,
         le=10,
         description="Maximum retry attempts",
     )
 
     page_size: int = Field(
-        default=FlextConstants.Performance.DEFAULT_BATCH_SIZE,
+        default=FlextConstants.DEFAULT_BATCH_SIZE,
         ge=1,
         le=1000,
         description="API pagination size",
@@ -130,16 +128,16 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
     )
 
     batch_size: int = Field(
-        default=FlextConstants.Performance.DEFAULT_BATCH_SIZE,
+        default=FlextConstants.DEFAULT_BATCH_SIZE,
         ge=1,
-        le=FlextConstants.Performance.MAX_BATCH_SIZE_VALIDATION,
+        le=FlextConstants.MAX_BATCH_SIZE_LIMIT,
         description="Batch size for data extraction",
     )
 
     max_parallel_streams: int = Field(
         default=FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
         ge=1,
-        le=FlextConstants.Container.MAX_WORKERS,
+        le=FlextConstants.MAX_WORKERS_VALIDATION,
         description="Maximum parallel streams for extraction",
     )
 
@@ -444,7 +442,6 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
         cls.reset_shared_instance()
 
 
-# Factory function for backward compatibility (will be removed in future versions)
 def create_oracle_oic_tap_config(
     oauth_params: dict[str, object],
     connection_params: dict[str, object],
@@ -453,19 +450,36 @@ def create_oracle_oic_tap_config(
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
     Args:
-    oauth_params: OAuth2/IDCS authentication parameters
-    connection_params: OIC connection parameters
-    tap_params: Optional tap-specific parameters
+        oauth_params: OAuth2/IDCS authentication parameters
+        connection_params: OIC connection parameters
+        tap_params: Optional tap-specific parameters
 
     Returns:
-    FlextResult containing validated Oracle OIC tap configuration
+        FlextResult containing validated Oracle OIC tap configuration
 
     """
-    return FlextMeltanoTapOracleOicUtilities.ConfigurationFactory.create_oracle_oic_tap_config(
-        oauth_params=oauth_params,
-        connection_params=connection_params,
-        tap_params=tap_params,
-    )
+    try:
+        tap_config = tap_params or {}
+
+        tap_config.setdefault(
+            "batch_size",
+            FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE,
+        )
+        tap_config.setdefault("stream_prefix", "oic")
+
+        config_data = {
+            **oauth_params,
+            **connection_params,
+            **tap_config,
+        }
+
+        config_instance = FlextMeltanoTapOracleOicSettings.model_validate(config_data)
+        return FlextResult[FlextMeltanoTapOracleOicSettings].ok(config_instance)
+
+    except (ValueError, TypeError, KeyError, AttributeError, OSError) as e:
+        return FlextResult[FlextMeltanoTapOracleOicSettings].fail(
+            f"Oracle OIC tap configuration creation failed: {e}",
+        )
 
 
 def validate_oracle_oic_tap_configuration(

@@ -12,12 +12,10 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import os
-from typing import cast
 
 from flext_core import FlextResult
 from flext_oracle_oic import (
-    OICAuthConfig,
-    OICConnectionConfig,
+    FlextOracleOicModels,
 )
 from pydantic import SecretStr
 
@@ -61,7 +59,7 @@ def create_oic_auth_config(
     client_secret: str,
     token_url: str,
     **kwargs: object,
-) -> FlextResult[OICAuthConfig]:
+) -> FlextResult[FlextOracleOicModels.OICAuthConfig]:
     """Create OIC authentication configuration.
 
     Args:
@@ -71,30 +69,29 @@ def create_oic_auth_config(
     **kwargs: Additional configuration parameters
 
     Returns:
-    FlextResult with OICAuthConfig or error message.
+    FlextResult with FlextOracleOicModels.OICAuthConfig or error message.
 
     """
     try:
-        config: dict[str, object] = OICAuthConfig(
+        config: dict[str, object] = FlextOracleOicModels.OICAuthConfig(
             oauth_client_id=client_id,
             oauth_client_secret=SecretStr(client_secret),
             oauth_token_url=token_url,
-            oauth_scope=cast(
-                "str",
-                kwargs.get("oauth_scope", "urn:opc:resource:consumer:all"),
-            ),
+            oauth_scope=str(kwargs.get("oauth_scope", "urn:opc:resource:consumer:all")),
         )
 
-        return FlextResult[OICAuthConfig].ok(config)
+        return FlextResult[FlextOracleOicModels.OICAuthConfig].ok(config)
 
     except (ValueError, TypeError) as e:
-        return FlextResult[OICAuthConfig].fail(f"Failed to create OIC auth config: {e}")
+        return FlextResult[FlextOracleOicModels.OICAuthConfig].fail(
+            f"Failed to create OIC auth config: {e}"
+        )
 
 
 def create_oic_connection_config(
     base_url: str,
     **kwargs: object,
-) -> FlextResult[OICConnectionConfig]:
+) -> FlextResult[FlextOracleOicModels.OICConnectionConfig]:
     """Create OIC connection configuration.
 
     Args:
@@ -102,21 +99,21 @@ def create_oic_connection_config(
     **kwargs: Additional configuration parameters
 
     Returns:
-    FlextResult with OICConnectionConfig or error message.
+    FlextResult with FlextOracleOicModels.OICConnectionConfig or error message.
 
     """
     try:
-        config: dict[str, object] = OICConnectionConfig(
+        config: dict[str, object] = FlextOracleOicModels.OICConnectionConfig(
             base_url=base_url,
-            api_version=cast("str", kwargs.get("api_version", "v1")),
-            request_timeout=cast("int", kwargs.get("request_timeout", 30)),
-            max_retries=cast("int", kwargs.get("max_retries", 3)),
+            api_version=str(kwargs.get("api_version", "v1")),
+            request_timeout=int(kwargs.get("request_timeout", 30)),
+            max_retries=int(kwargs.get("max_retries", 3)),
         )
 
-        return FlextResult[OICConnectionConfig].ok(config)
+        return FlextResult[FlextOracleOicModels.OICConnectionConfig].ok(config)
 
     except (ValueError, TypeError) as e:
-        return FlextResult[OICConnectionConfig].fail(
+        return FlextResult[FlextOracleOicModels.OICConnectionConfig].fail(
             f"Failed to create OIC connection config: {e}",
         )
 

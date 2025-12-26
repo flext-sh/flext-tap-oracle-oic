@@ -213,7 +213,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             }
         return value
 
-    class OicAuthenticationConfig(FlextModels.BaseConfig):
+    class OicAuthenticationConfig(FlextModels.ArbitraryTypesModel):
         """OAuth2/IDCS authentication configuration for OIC API access."""
 
         # Pydantic 2.11 Configuration - Authentication Features
@@ -903,7 +903,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                 raise ValueError(msg)
             return self
 
-    class OicStreamConfiguration(FlextModels.BaseConfig):
+    class OicStreamConfiguration(FlextModels.ArbitraryTypesModel):
         """Configuration for OIC tap streams."""
 
         # Pydantic 2.11 Configuration - Stream Features
@@ -1007,7 +1007,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                 raise ValueError(msg)
             return self
 
-    class OicApiResponse(FlextModels.BaseModel):
+    class OicApiResponse(FlextModels.Entity):
         """Standardized OIC API response wrapper."""
 
         # Pydantic 2.11 Configuration - API Response Features
@@ -1098,7 +1098,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                 raise ValueError(msg)
             return self
 
-    class OicErrorContext(FlextModels.BaseModel):
+    class OicErrorContext(FlextModels.Entity):
         """Error context for OIC API error handling."""
 
         # Pydantic 2.11 Configuration - Error Context Features

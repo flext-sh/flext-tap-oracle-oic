@@ -1,4 +1,10 @@
-"""Singer Oracle OIC tap protocols for FLEXT ecosystem."""
+"""Singer Oracle OIC tap protocols for FLEXT ecosystem.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
+
+from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
@@ -46,7 +52,8 @@ class FlextMeltanoTapOracleOicProtocols(p_meltano, p_db_oracle):
                 """Protocol for Oracle OIC connection."""
 
                 def connect(
-                    self, config: dict[str, object],
+                    self,
+                    config: dict[str, object],
                 ) -> p_meltano.Result[object]:
                     """Connect to Oracle OIC with provided configuration."""
                     ...

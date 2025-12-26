@@ -18,7 +18,8 @@ from unittest.mock import Mock, patch
 import pytest
 import requests
 from flext_meltano import OAuthAuthenticator
-from flext_oracle_oic import (
+
+
     OICTapAuthenticator as OICOAuth2Authenticator,
 )
 

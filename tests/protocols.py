@@ -15,7 +15,8 @@ from flext_tap_oracle_oic.protocols import FlextMeltanoTapOracleOicProtocols
 
 
 class TestsFlextTapOracleOicProtocols(
-    FlextTestsProtocols, FlextMeltanoTapOracleOicProtocols,
+    FlextTestsProtocols,
+    FlextMeltanoTapOracleOicProtocols,
 ):
     """Test protocols combining FlextTestsProtocols and FlextMeltanoTapOracleOicProtocols.
 

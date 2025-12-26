@@ -59,7 +59,7 @@ class OICValidationError(FlextExceptions.ValidationError):
     """Oracle OIC validation error."""
 
 
-class OICAPIError(FlextExceptions.ProcessingError):
+class OICAPIError(FlextExceptions.OperationError):
     """Oracle OIC API error."""
 
 
