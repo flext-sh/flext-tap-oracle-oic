@@ -17,7 +17,6 @@ from flext_api.settings import FlextApiSettings
 from flext_core import FlextExceptions, FlextLogger, FlextResult, t
 from flext_meltano import FlextMeltanoStream
 
-from flext_tap_oracle_oic.constants import FlextOracleOicConstants
 from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
 
 # Constants for paginator and response tracking

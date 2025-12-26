@@ -11,16 +11,16 @@ from flext_core import FlextLogger, FlextModels, FlextResult
 from flext_meltano import FlextMeltanoBridge, FlextMeltanoService, FlextMeltanoSettings
 
 from flext_tap_oracle_oic.__version__ import __version__, __version_info__
-from flext_tap_oracle_oic.config import (
-    FlextMeltanoTapOracleOicSettings,
-    create_oracle_oic_tap_config,
-)
 from flext_tap_oracle_oic.models import (
     FlextMeltanoTapOracleOicModels,
     m,
     m_tap_oracle_oic,
 )
 from flext_tap_oracle_oic.protocols import FlextMeltanoTapOracleOicProtocols
+from flext_tap_oracle_oic.settings import (
+    FlextMeltanoTapOracleOicSettings,
+    create_oracle_oic_tap_config,
+)
 from flext_tap_oracle_oic.simple_api import setup_oic_tap as create_oic_tap
 from flext_tap_oracle_oic.tap_client import OracleOicClient, TapOracleOic
 from flext_tap_oracle_oic.tap_exceptions import (

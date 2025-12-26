@@ -36,59 +36,113 @@ class IntegrationsStream(OICBaseStream):
 
     schema: dict[str, object] = cast(
         "dict[str, object]",
-        th.PropertiesList(
-            th.Property("id", th.StringType(), description="Integration ID"),
-            th.Property("name", th.StringType(), description="Integration name"),
-            th.Property("version", th.StringType(), description="Integration version"),
-            th.Property(
+        FlextMeltanoTypes.Singer.Typing.PropertiesList(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "id",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Integration ID",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "name",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Integration name",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "version",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Integration version",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "description",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Integration description",
             ),
-            th.Property("status", th.StringType(), description="Integration status"),
-            th.Property("pattern", th.StringType(), description="Integration pattern"),
-            th.Property("style", th.StringType(), description="Integration style"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "status",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Integration status",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "pattern",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Integration pattern",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "style",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Integration style",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "created",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Creation timestamp",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "lastUpdated",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Last update timestamp",
             ),
-            th.Property("createdBy", th.StringType(), description="Created by user"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "createdBy",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Created by user",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "lastUpdatedBy",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Last updated by user",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "connections",
-                th.ArrayType(th.ObjectType()),
+                FlextMeltanoTypes.Singer.Typing.ArrayType(
+                    FlextMeltanoTypes.Singer.Typing.ObjectType()
+                ),
                 description="Used connections",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "endpoints",
-                th.ArrayType(th.ObjectType()),
+                FlextMeltanoTypes.Singer.Typing.ArrayType(
+                    FlextMeltanoTypes.Singer.Typing.ObjectType()
+                ),
                 description="Integration endpoints",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "trackingFields",
-                th.ArrayType(th.StringType()),
+                FlextMeltanoTypes.Singer.Typing.ArrayType(
+                    FlextMeltanoTypes.Singer.Typing.StringType()
+                ),
                 description="Tracking fields",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "payloadTracking",
-                th.BooleanType(),
+                FlextMeltanoTypes.Singer.Typing.BooleanType(),
                 description="Payload tracking enabled",
             ),
-            th.Property("tracing", th.BooleanType(), description="Tracing enabled"),
-            th.Property("lockedBy", th.StringType(), description="Locked by user"),
-            th.Property("lockedFlag", th.BooleanType(), description="Is locked"),
-            th.Property("projectId", th.StringType(), description="Project ID"),
-            th.Property("folderId", th.StringType(), description="Folder ID"),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "tracing",
+                FlextMeltanoTypes.Singer.Typing.BooleanType(),
+                description="Tracing enabled",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "lockedBy",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Locked by user",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "lockedFlag",
+                FlextMeltanoTypes.Singer.Typing.BooleanType(),
+                description="Is locked",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "projectId",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Project ID",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "folderId",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Folder ID",
+            ),
         ).to_dict(),
     )
 
@@ -110,57 +164,97 @@ class ConnectionsStream(OICBaseStream):
 
     schema: dict[str, object] = cast(
         "dict[str, object]",
-        th.PropertiesList(
-            th.Property("id", th.StringType(), description="Connection ID"),
-            th.Property("name", th.StringType(), description="Connection name"),
-            th.Property(
+        FlextMeltanoTypes.Singer.Typing.PropertiesList(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "id",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Connection ID",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "name",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Connection name",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "description",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Connection description",
             ),
-            th.Property("adapterType", th.StringType(), description="Adapter type"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "adapterType",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Adapter type",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "adapterDisplayName",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Adapter display name",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "adapterVersion",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Adapter version",
             ),
-            th.Property("status", th.StringType(), description="Connection status"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "status",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Connection status",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "created",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Creation timestamp",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "lastUpdated",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Last update timestamp",
             ),
-            th.Property("createdBy", th.StringType(), description="Created by user"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "createdBy",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Created by user",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "lastUpdatedBy",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Last updated by user",
             ),
-            th.Property("connectionUrl", th.StringType(), description="Connection URL"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "connectionUrl",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Connection URL",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "securityPolicy",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Security policy",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "connectionProperties",
-                th.ObjectType(),
+                FlextMeltanoTypes.Singer.Typing.ObjectType(),
                 description="Connection properties",
             ),
-            th.Property("isValid", th.BooleanType(), description="Connection validity"),
-            th.Property("usageCount", th.IntegerType(), description="Usage count"),
-            th.Property("lockedBy", th.StringType(), description="Locked by user"),
-            th.Property("lockedFlag", th.BooleanType(), description="Is locked"),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "isValid",
+                FlextMeltanoTypes.Singer.Typing.BooleanType(),
+                description="Connection validity",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "usageCount",
+                FlextMeltanoTypes.Singer.Typing.IntegerType(),
+                description="Usage count",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "lockedBy",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Locked by user",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "lockedFlag",
+                FlextMeltanoTypes.Singer.Typing.BooleanType(),
+                description="Is locked",
+            ),
         ).to_dict(),
     )
 
@@ -181,44 +275,76 @@ class PackagesStream(OICBaseStream):
 
     schema: dict[str, object] = cast(
         "dict[str, object]",
-        th.PropertiesList(
-            th.Property("id", th.StringType(), description="Package ID"),
-            th.Property("name", th.StringType(), description="Package name"),
-            th.Property(
+        FlextMeltanoTypes.Singer.Typing.PropertiesList(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "id",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Package ID",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "name",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Package name",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "description",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Package description",
             ),
-            th.Property("version", th.StringType(), description="Package version"),
-            th.Property("status", th.StringType(), description="Package status"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "version",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Package version",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "status",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Package status",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "created",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Creation timestamp",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "lastUpdated",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Last update timestamp",
             ),
-            th.Property("createdBy", th.StringType(), description="Created by user"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "createdBy",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Created by user",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "lastUpdatedBy",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Last updated by user",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "integrations",
-                th.ArrayType(th.ObjectType()),
+                FlextMeltanoTypes.Singer.Typing.ArrayType(
+                    FlextMeltanoTypes.Singer.Typing.ObjectType()
+                ),
                 description="Included integrations",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "connections",
-                th.ArrayType(th.ObjectType()),
+                FlextMeltanoTypes.Singer.Typing.ArrayType(
+                    FlextMeltanoTypes.Singer.Typing.ObjectType()
+                ),
                 description="Included connections",
             ),
-            th.Property("size", th.IntegerType(), description="Package size"),
-            th.Property("projectId", th.StringType(), description="Project ID"),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "size",
+                FlextMeltanoTypes.Singer.Typing.IntegerType(),
+                description="Package size",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "projectId",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Project ID",
+            ),
         ).to_dict(),
     )
 
@@ -238,43 +364,67 @@ class LookupsStream(OICBaseStream):
 
     schema: dict[str, object] = cast(
         "dict[str, object]",
-        th.PropertiesList(
-            th.Property("name", th.StringType(), description="Lookup name"),
-            th.Property(
+        FlextMeltanoTypes.Singer.Typing.PropertiesList(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "name",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Lookup name",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "description",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Lookup description",
             ),
-            th.Property("type", th.StringType(), description="Lookup type"),
-            th.Property("status", th.StringType(), description="Lookup status"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "type",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Lookup type",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "status",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Lookup status",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "created",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Creation timestamp",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "lastUpdated",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Last update timestamp",
             ),
-            th.Property("createdBy", th.StringType(), description="Created by user"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "createdBy",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Created by user",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "lastUpdatedBy",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Last updated by user",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "valueCount",
-                th.IntegerType(),
+                FlextMeltanoTypes.Singer.Typing.IntegerType(),
                 description="Number of lookup values",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "defaultValue",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Default lookup value",
             ),
-            th.Property("isReadOnly", th.BooleanType(), description="Is read-only"),
-            th.Property("usageCount", th.IntegerType(), description="Usage count"),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "isReadOnly",
+                FlextMeltanoTypes.Singer.Typing.BooleanType(),
+                description="Is read-only",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "usageCount",
+                FlextMeltanoTypes.Singer.Typing.IntegerType(),
+                description="Usage count",
+            ),
         ).to_dict(),
     )
 
@@ -297,38 +447,72 @@ class LibrariesStream(OICBaseStream):
 
     schema: dict[str, object] = cast(
         "dict[str, object]",
-        th.PropertiesList(
-            th.Property("id", th.StringType(), description="Library ID"),
-            th.Property("name", th.StringType(), description="Library name"),
-            th.Property(
+        FlextMeltanoTypes.Singer.Typing.PropertiesList(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "id",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Library ID",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "name",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Library name",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "description",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Library description",
             ),
-            th.Property("type", th.StringType(), description="Library type"),
-            th.Property("status", th.StringType(), description="Library status"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "type",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Library type",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "status",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Library status",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "created",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Creation timestamp",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "lastUpdated",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Last update timestamp",
             ),
-            th.Property("createdBy", th.StringType(), description="Created by user"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "createdBy",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Created by user",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "lastUpdatedBy",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Last updated by user",
             ),
-            th.Property("version", th.StringType(), description="Library version"),
-            th.Property("size", th.IntegerType(), description="Library size"),
-            th.Property("usageCount", th.IntegerType(), description="Usage count"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "version",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Library version",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "size",
+                FlextMeltanoTypes.Singer.Typing.IntegerType(),
+                description="Library size",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "usageCount",
+                FlextMeltanoTypes.Singer.Typing.IntegerType(),
+                description="Usage count",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "functions",
-                th.ArrayType(th.StringType()),
+                FlextMeltanoTypes.Singer.Typing.ArrayType(
+                    FlextMeltanoTypes.Singer.Typing.StringType()
+                ),
                 description="Available functions",
             ),
         ).to_dict(),
@@ -350,40 +534,72 @@ class CertificatesStream(OICBaseStream):
 
     schema: dict[str, object] = cast(
         "dict[str, object]",
-        th.PropertiesList(
-            th.Property("name", th.StringType(), description="Certificate name"),
-            th.Property(
+        FlextMeltanoTypes.Singer.Typing.PropertiesList(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "name",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Certificate name",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "description",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Certificate description",
             ),
-            th.Property("type", th.StringType(), description="Certificate type"),
-            th.Property("status", th.StringType(), description="Certificate status"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "type",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Certificate type",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "status",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Certificate status",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "created",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Creation timestamp",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "lastUpdated",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Last update timestamp",
             ),
-            th.Property("createdBy", th.StringType(), description="Created by user"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "createdBy",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Created by user",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "expirationDate",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Expiration date",
             ),
-            th.Property("issuer", th.StringType(), description="Certificate issuer"),
-            th.Property("subject", th.StringType(), description="Certificate subject"),
-            th.Property("serialNumber", th.StringType(), description="Serial number"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "issuer",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Certificate issuer",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "subject",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Certificate subject",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "serialNumber",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Serial number",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "fingerprint",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Certificate fingerprint",
             ),
-            th.Property("usageCount", th.IntegerType(), description="Usage count"),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "usageCount",
+                FlextMeltanoTypes.Singer.Typing.IntegerType(),
+                description="Usage count",
+            ),
         ).to_dict(),
     )
 
@@ -403,37 +619,69 @@ class AdaptersStream(OICBaseStream):
 
     schema: dict[str, object] = cast(
         "dict[str, object]",
-        th.PropertiesList(
-            th.Property("id", th.StringType(), description="Adapter ID"),
-            th.Property("name", th.StringType(), description="Adapter name"),
-            th.Property(
+        FlextMeltanoTypes.Singer.Typing.PropertiesList(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "id",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Adapter ID",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "name",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Adapter name",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "displayName",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Adapter display name",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "description",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Adapter description",
             ),
-            th.Property("version", th.StringType(), description="Adapter version"),
-            th.Property("vendor", th.StringType(), description="Adapter vendor"),
-            th.Property("category", th.StringType(), description="Adapter category"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "version",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Adapter version",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "vendor",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Adapter vendor",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "category",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Adapter category",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "capabilities",
-                th.ArrayType(th.StringType()),
+                FlextMeltanoTypes.Singer.Typing.ArrayType(
+                    FlextMeltanoTypes.Singer.Typing.StringType()
+                ),
                 description="Adapter capabilities",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "connectionTypes",
-                th.ArrayType(th.StringType()),
+                FlextMeltanoTypes.Singer.Typing.ArrayType(
+                    FlextMeltanoTypes.Singer.Typing.StringType()
+                ),
                 description="Connection types",
             ),
-            th.Property("isCustom", th.BooleanType(), description="Is custom adapter"),
-            th.Property("isDeprecated", th.BooleanType(), description="Is deprecated"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "isCustom",
+                FlextMeltanoTypes.Singer.Typing.BooleanType(),
+                description="Is custom adapter",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "isDeprecated",
+                FlextMeltanoTypes.Singer.Typing.BooleanType(),
+                description="Is deprecated",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "documentationUrl",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Documentation URL",
             ),
         ).to_dict(),
@@ -459,49 +707,69 @@ class ProjectsStream(OICBaseStream):
 
     schema: dict[str, object] = cast(
         "dict[str, object]",
-        th.PropertiesList(
-            th.Property("id", th.StringType(), description="Project ID"),
-            th.Property("name", th.StringType(), description="Project name"),
-            th.Property(
+        FlextMeltanoTypes.Singer.Typing.PropertiesList(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "id",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Project ID",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "name",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Project name",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "description",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Project description",
             ),
-            th.Property("status", th.StringType(), description="Project status"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "status",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Project status",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "created",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Creation timestamp",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "lastUpdated",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Last update timestamp",
             ),
-            th.Property("createdBy", th.StringType(), description="Created by user"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "createdBy",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Created by user",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "lastUpdatedBy",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Last updated by user",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "folders",
-                th.ArrayType(th.ObjectType()),
+                FlextMeltanoTypes.Singer.Typing.ArrayType(
+                    FlextMeltanoTypes.Singer.Typing.ObjectType()
+                ),
                 description="Project folders",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "integrationCount",
-                th.IntegerType(),
+                FlextMeltanoTypes.Singer.Typing.IntegerType(),
                 description="Number of integrations",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "connectionCount",
-                th.IntegerType(),
+                FlextMeltanoTypes.Singer.Typing.IntegerType(),
                 description="Number of connections",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "permissions",
-                th.ArrayType(th.ObjectType()),
+                FlextMeltanoTypes.Singer.Typing.ArrayType(
+                    FlextMeltanoTypes.Singer.Typing.ObjectType()
+                ),
                 description="Project permissions",
             ),
         ).to_dict(),
@@ -527,44 +795,60 @@ class ExecutionsStream(OICBaseStream):
 
     schema: dict[str, object] = cast(
         "dict[str, object]",
-        th.PropertiesList(
-            th.Property(
+        FlextMeltanoTypes.Singer.Typing.PropertiesList(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "instanceId",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Execution instance ID",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "integrationName",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Integration name",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "integrationVersion",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Integration version",
             ),
-            th.Property("status", th.StringType(), description="Execution status"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "status",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Execution status",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "startTime",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Execution start time",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "endTime",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Execution end time",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "duration",
-                th.IntegerType(),
+                FlextMeltanoTypes.Singer.Typing.IntegerType(),
                 description="Execution duration (ms)",
             ),
-            th.Property("errorCode", th.StringType(), description="Error code"),
-            th.Property("errorMessage", th.StringType(), description="Error message"),
-            th.Property("payloadSize", th.IntegerType(), description="Payload size"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "errorCode",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Error code",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "errorMessage",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Error message",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "payloadSize",
+                FlextMeltanoTypes.Singer.Typing.IntegerType(),
+                description="Payload size",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "processedRecords",
-                th.IntegerType(),
+                FlextMeltanoTypes.Singer.Typing.IntegerType(),
                 description="Processed record count",
             ),
         ).to_dict(),
@@ -575,7 +859,7 @@ class MetricsStream(OICBaseStream):
     """Oracle Integration Cloud Metrics Stream.
 
     Extracts performance and usage metrics for integrations,
-    connections, and overall system health.
+    connections, and overall system healFlextMeltanoTypes.Singer.Typing.
     """
 
     name: ClassVar[str] = "metrics"
@@ -587,25 +871,45 @@ class MetricsStream(OICBaseStream):
 
     schema: dict[str, object] = cast(
         "dict[str, object]",
-        th.PropertiesList(
-            th.Property("metricId", th.StringType(), description="Metric ID"),
-            th.Property("metricName", th.StringType(), description="Metric name"),
-            th.Property(
+        FlextMeltanoTypes.Singer.Typing.PropertiesList(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "metricId",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Metric ID",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "metricName",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Metric name",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "timestamp",
-                th.DateTimeType(),
+                FlextMeltanoTypes.Singer.Typing.DateTimeType(),
                 description="Metric timestamp",
             ),
-            th.Property("value", th.NumberType(), description="Metric value"),
-            th.Property("unit", th.StringType(), description="Metric unit"),
-            th.Property("tags", th.ObjectType(), description="Metric tags"),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "value",
+                FlextMeltanoTypes.Singer.Typing.NumberType(),
+                description="Metric value",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "unit",
+                FlextMeltanoTypes.Singer.Typing.StringType(),
+                description="Metric unit",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
+                "tags",
+                FlextMeltanoTypes.Singer.Typing.ObjectType(),
+                description="Metric tags",
+            ),
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "integrationName",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Related integration",
             ),
-            th.Property(
+            FlextMeltanoTypes.Singer.Typing.Property(
                 "connectionName",
-                th.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType(),
                 description="Related connection",
             ),
         ).to_dict(),

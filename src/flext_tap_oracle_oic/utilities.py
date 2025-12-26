@@ -10,13 +10,12 @@ from __future__ import annotations
 import re
 from datetime import UTC, datetime
 from typing import ClassVar, override
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
-import urlparse
-from flext_core import FlextConstants, FlextResult
+from flext_core import FlextResult
 from flext_core.utilities import FlextUtilities as u_core
 
-from flext_tap_oracle_oic.constants import FlextOracleOicConstants
+from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
 
 
 class FlextMeltanoTapOracleOicUtilities(u_core):
@@ -223,9 +222,6 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
                 # Handle different response formats
                 if "data" in response_data:
                     parsed_response["items"] = response_data["data"]
-                elif isinstance(response_data, list):
-                    parsed_response["items"] = response_data
-                    parsed_response["count"] = len(response_data)
 
                 return FlextResult[dict[str, object]].ok(parsed_response)
 
@@ -247,7 +243,7 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
             dict[str, object]: Pagination information
 
             """
-            if not response or not isinstance(response, dict):
+            if not response:
                 return {
                     "has_more": False,
                     "limit": FlextMeltanoTapOracleOicUtilities.DEFAULT_PAGE_SIZE,
@@ -310,7 +306,7 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
             dict[str, object]: Extracted metadata
 
             """
-            if not integration_data or not isinstance(integration_data, dict):
+            if not integration_data:
                 return {}
 
             metadata = {
@@ -503,7 +499,9 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
                 if "page_size" in stream_config:
                     page_size = stream_config["page_size"]
 
-                    max_page_size = FlextOracleOicConstants.Processing.MAX_PAGE_SIZE
+                    max_page_size = (
+                        FlextTapOracleOicConstants.TapOicProcessing.MAX_PAGE_SIZE
+                    )
                     if (
                         not isinstance(page_size, int)
                         or page_size <= 0
@@ -533,12 +531,12 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
             dict[str, object]: Stream state
 
             """
-            if not isinstance(state, dict):
-                return {}
+            # state is guaranteed to be dict by type annotation
             bookmarks = state.get("bookmarks", {})
             if not isinstance(bookmarks, dict):
                 return {}
-            return bookmarks.get(stream_name, {})
+            stream_bookmarks = bookmarks.get(stream_name, {})
+            return stream_bookmarks if isinstance(stream_bookmarks, dict) else {}
 
         @staticmethod
         def set_stream_state(
@@ -557,8 +555,7 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
             dict[str, object]: Updated state
 
             """
-            if not isinstance(state, dict):
-                return {}
+            # state is guaranteed to be dict by type annotation
 
             if "bookmarks" not in state:
                 state["bookmarks"] = {}
@@ -592,9 +589,8 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
                     stream_name,
                 )
             )
-            if isinstance(stream_state, dict):
-                return stream_state.get(bookmark_key)
-            return None
+            # stream_state is guaranteed to be dict by type annotation
+            return stream_state.get(bookmark_key)
 
         @staticmethod
         def set_bookmark(
@@ -615,8 +611,7 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
             dict[str, object]: Updated state
 
             """
-            if not isinstance(state, dict):
-                return {}
+            # state is guaranteed to be dict by type annotation
 
             if "bookmarks" not in state:
                 state["bookmarks"] = {}
@@ -647,16 +642,24 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
             dict[str, object]: Updated state
 
             """
-            if not isinstance(pagination_info, dict):
-                return state
+            # pagination_info is guaranteed to be dict by type annotation
 
             offset = pagination_info.get("offset", 0)
             page_size = pagination_info.get("current_page_size", 0)
 
             # Ensure values are numeric
             try:
-                offset_val = int(offset) if offset is not None else 0
-                page_size_val = int(page_size) if page_size is not None else 0
+                offset_val = (
+                    int(offset)
+                    if offset is not None and isinstance(offset, (int, str, float))
+                    else 0
+                )
+                page_size_val = (
+                    int(page_size)
+                    if page_size is not None
+                    and isinstance(page_size, (int, str, float))
+                    else 0
+                )
             except (ValueError, TypeError):
                 offset_val = 0
                 page_size_val = 0
@@ -719,149 +722,6 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
                 "record_count": record_count,
                 "rate_per_second": records_per_second,
             }
-
-    class ConfigurationFactory:
-        """Configuration factory utilities for OIC tap setup."""
-
-        @staticmethod
-        def create_oracle_oic_tap_config(
-            oauth_params: dict[str, object],
-            connection_params: dict[str, object],
-            tap_params: dict[str, object] | None = None,
-        ) -> FlextResult[FlextMeltanoTapOracleOicSettings]:  # noqa: F821
-            """Create Oracle Integration Cloud tap configuration using grouped parameters.
-
-            Business Rule: Configuration Factory Pattern
-            ===========================================
-            This method implements the FLEXT configuration factory pattern for
-            Oracle Integration Cloud tap operations. It provides a clean API for
-            creating validated tap configurations from grouped parameters.
-
-            Parameter Groups:
-            - oauth_params: OAuth2/IDCS authentication credentials
-            - connection_params: OIC connection and endpoint information
-            - tap_params: Optional tap-specific runtime parameters
-
-            Validation Chain:
-            1. Apply semantic defaults from FlextConstants
-            2. Merge all parameter groups into unified config
-            3. Validate using FlextSettings Pydantic patterns
-            4. Return typed configuration instance or detailed error
-
-            Args:
-                oauth_params: OAuth2/IDCS authentication parameters
-                connection_params: OIC connection parameters
-                tap_params: Optional tap-specific parameters
-
-            Returns:
-                FlextResult containing validated Oracle OIC tap configuration
-
-            """
-            # Import here to avoid circular imports
-            from flext_tap_oracle_oic.settings import (  # noqa: PLC0415
-                FlextMeltanoTapOracleOicSettings,
-            )
-
-            try:
-                # Apply defaults
-                tap_config = tap_params or {}
-
-                # Set default values using semantic constants
-                tap_config.setdefault(
-                    "batch_size",
-                    FlextConstants.Performance.DEFAULT_BATCH_SIZE,
-                )
-                tap_config.setdefault("stream_prefix", "oic")
-
-                # Merge OAuth, connection, and tap parameters
-                config_data = {
-                    **oauth_params,
-                    **connection_params,
-                    **tap_config,
-                }
-
-                config_instance = FlextMeltanoTapOracleOicSettings.get_global_instance().model_validate(
-                    config_data,
-                )
-                return FlextResult[FlextMeltanoTapOracleOicSettings].ok(config_instance)
-
-            except Exception as e:
-                return FlextResult[FlextMeltanoTapOracleOicSettings].fail(
-                    f"Oracle OIC tap configuration creation failed: {e}",
-                )
-
-        @staticmethod
-        def validate_oracle_oic_tap_configuration(
-            config: FlextMeltanoTapOracleOicSettings,  # noqa: F821
-        ) -> FlextResult[None]:
-            """Validate Oracle Integration Cloud tap configuration using FlextSettings patterns - ZERO DUPLICATION.
-
-            Business Rule: Comprehensive Configuration Validation
-            ====================================================
-            This method implements comprehensive validation for Oracle Integration
-            Cloud tap configurations following FLEXT validation patterns.
-
-            Validation Categories:
-            - Required field presence and non-emptiness
-            - OAuth2 credential validation (secrets, endpoints)
-            - URL format validation for OIC endpoints
-            - Timeout and batch size range validation
-            - Stream configuration structure validation
-
-            Error Handling:
-            - Detailed error messages for each validation failure
-            - Early return on first validation error (fail-fast)
-            - Type-safe validation using Pydantic patterns
-
-            Args:
-                config: FlextMeltanoTapOracleOicSettings instance to validate
-
-            Returns:
-                FlextResult[None]: ok(None) on success, fail(error_msg) on validation error
-
-            """
-            # Import here to avoid circular imports
-
-            # Required string fields validation
-            required_fields = [
-                (config.oauth_client_id, "OAuth client ID is required"),
-                (
-                    config.oauth_client_secret.get_secret_value(),
-                    "OAuth client secret is required",
-                ),
-                (config.oauth_audience, "OAuth audience is required"),
-            ]
-
-            for field_value, error_msg in required_fields:
-                if not field_value or not str(field_value).strip():
-                    return FlextResult[None].fail(error_msg)
-
-            # OIC base URL validation
-            if not config.oic_base_url or not str(config.oic_base_url).strip():
-                return FlextResult[None].fail("OIC base URL is required")
-
-            try:
-                parsed_url = urlparse(str(config.oic_base_url))
-                if not parsed_url.scheme or not parsed_url.netloc:
-                    return FlextResult[None].fail("Invalid OIC base URL format")
-            except Exception:
-                return FlextResult[None].fail("Invalid OIC base URL format")
-
-            # Timeout validation
-            if hasattr(config, "timeout") and config.timeout is not None and (
-                not isinstance(config.timeout, int) or config.timeout <= 0
-            ):
-                return FlextResult[None].fail("Timeout must be a positive integer")
-
-            # Batch size validation
-            if hasattr(config, "batch_size") and config.batch_size is not None and (
-                not isinstance(config.batch_size, int) or config.batch_size <= 0
-            ):
-                return FlextResult[None].fail(
-                    "Batch size must be a positive integer"
-                )
-
-            return FlextResult[None].ok(None)
 
     # Proxy methods for backward compatibility
     @classmethod
