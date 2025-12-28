@@ -11,11 +11,11 @@ import os
 import sys
 from asyncio import run
 from collections.abc import Sequence
-from typing import ClassVar, cast, override
+from typing import ClassVar, override
 
 from flext_api import FlextApiClient
 from flext_api.settings import FlextApiSettings
-from flext_core import FlextLogger, FlextResult
+from flext_core import FlextLogger, FlextResult, FlextTypes as t
 from flext_meltano import FlextMeltanoStream as Stream, FlextMeltanoTap as Tap
 
 from flext_tap_oracle_oic.settings import FlextMeltanoTapOracleOicSettings
@@ -72,7 +72,7 @@ class FlextOracleOicAuthenticator:
             if isinstance(response.body, dict):
                 token_data = response.body
             elif isinstance(response.body, str):
-                token_data: dict[str, object] = json.loads(response.body)
+                token_data: dict[str, t.GeneralValueType] = json.loads(response.body)
             else:
                 return FlextResult[str].fail("Empty or invalid OAuth response body")
 
@@ -164,7 +164,7 @@ class OracleOicClient:
     def post(
         self,
         endpoint: str,
-        data: dict[str, object] | None = None,
+        data: dict[str, t.GeneralValueType] | None = None,
     ) -> FlextResult[object]:
         """Make authenticated POST request to OIC API."""
         # Zero Tolerance FIX: Use utilities for URL validation and building
@@ -183,8 +183,8 @@ class OracleOicClient:
 
         try:
             url = url_result.value
-            # Convert data to string dict[str, object] for FlextApiClient compatibility
-            json_data: dict[str, object] = (
+            # Convert data to string dict[str, t.GeneralValueType] for FlextApiClient compatibility
+            json_data: dict[str, t.GeneralValueType] = (
                 {str(k): str(v) for k, v in data.items()} if data else None
             )
             response_result = self._api_client.post(
@@ -251,9 +251,9 @@ class TapOracleOic(Tap):
     def __init__(
         self,
         *,
-        config: dict[str, object] | None = None,
-        catalog: dict[str, object] | None = None,
-        state: dict[str, object] | None = None,
+        config: dict[str, t.GeneralValueType] | None = None,
+        catalog: dict[str, t.GeneralValueType] | None = None,
+        state: dict[str, t.GeneralValueType] | None = None,
         parse_env_config: bool = False,
         validate_config: bool = True,
     ) -> None:
@@ -340,7 +340,7 @@ class TapOracleOic(Tap):
     ) -> Stream:
         """Create stream instance using OICBaseStream composition."""
         # Create dynamic stream class inheriting from OICBaseStream
-        stream_class = type(
+        stream_class: type[Stream] = type(
             class_name,
             (OICBaseStream,),
             {
@@ -365,7 +365,7 @@ class TapOracleOic(Tap):
             },
         )
 
-        return cast("Stream", stream_class(tap=self))
+        return stream_class(tap=self)
 
     def test_connection(self) -> FlextResult[bool]:
         """Test connection to Oracle OIC using real API client."""
@@ -399,8 +399,10 @@ def main() -> int:
     if exit_code != 0:
         return exit_code
 
-    config: dict[str, object] = _build_config_from_env()
-    config_typed: dict[str, object] = {k: v for k, v in config.items() if v is not None}
+    config: dict[str, t.GeneralValueType] = _build_config_from_env()
+    config_typed: dict[str, t.GeneralValueType] = {
+        k: v for k, v in config.items() if v is not None
+    }
     tap = TapOracleOic(config=config_typed)
 
     try:
@@ -428,14 +430,14 @@ def _build_config_from_env() -> dict[str, str | None]:
 
 def _validate_and_setup_config() -> int:
     """Validate required configuration. Returns 0 for success, 1 for error."""
-    config: dict[str, object] = _build_config_from_env()
+    config: dict[str, t.GeneralValueType] = _build_config_from_env()
     required_config = [
         "oauth_client_id",
         "oauth_client_secret",
         "oauth_token_url",
         "oic_url",
     ]
-    missing_config: dict[str, object] = [
+    missing_config: dict[str, t.GeneralValueType] = [
         key for key in required_config if not config.get(key)
     ]
 

@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import os
 
-from flext_core import FlextResult
+from flext_core import FlextResult, FlextTypes as t
 from flext_oracle_oic import (
     FlextOracleOicModels,
 )
@@ -29,13 +29,13 @@ def setup_oic_tap(
     config: Optional configuration override
 
     Returns:
-    FlextResult with basic config dict[str, object] or error message.
+    FlextResult with basic config dict[str, t.GeneralValueType] or error message.
 
     """
     try:
         if config is None:
             # Create basic configuration dictionary
-            config: dict[str, object] = {
+            config: dict[str, t.GeneralValueType] = {
                 "oauth_client_id": os.getenv("OIC_CLIENT_ID", "your-client-id"),
                 "oauth_client_secret": os.getenv("OIC_CLIENT_SECRET", "your-secret"),
                 "oauth_token_url": os.getenv(
@@ -73,7 +73,7 @@ def create_oic_auth_config(
 
     """
     try:
-        config: dict[str, object] = FlextOracleOicModels.OICAuthConfig(
+        config: dict[str, t.GeneralValueType] = FlextOracleOicModels.OICAuthConfig(
             oauth_client_id=client_id,
             oauth_client_secret=SecretStr(client_secret),
             oauth_token_url=token_url,
@@ -103,11 +103,13 @@ def create_oic_connection_config(
 
     """
     try:
-        config: dict[str, object] = FlextOracleOicModels.OICConnectionConfig(
-            base_url=base_url,
-            api_version=str(kwargs.get("api_version", "v1")),
-            request_timeout=int(kwargs.get("request_timeout", 30)),
-            max_retries=int(kwargs.get("max_retries", 3)),
+        config: dict[str, t.GeneralValueType] = (
+            FlextOracleOicModels.OICConnectionConfig(
+                base_url=base_url,
+                api_version=str(kwargs.get("api_version", "v1")),
+                request_timeout=int(kwargs.get("request_timeout", 30)),
+                max_retries=int(kwargs.get("max_retries", 3)),
+            )
         )
 
         return FlextResult[FlextOracleOicModels.OICConnectionConfig].ok(config)
