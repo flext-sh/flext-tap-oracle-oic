@@ -8,9 +8,9 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Literal, Self
+from typing import Self
 
-from flext_core import FlextConstants, FlextModels, FlextTypes as t
+from flext_core import FlextModels, FlextTypes as t
 from flext_core.utilities import u
 from pydantic import (
     ConfigDict,
@@ -20,46 +20,6 @@ from pydantic import (
     field_serializer,
     model_validator,
 )
-
-# Oracle Integration Cloud status constants
-ACTIVE = "ACTIVE"
-INACTIVE = "INACTIVE"
-DRAFT = "DRAFT"
-ERROR = "ERROR"
-TESTING = "TESTING"
-DEPRECATED = "DEPRECATED"
-
-# Status constants
-RUNNING = "RUNNING"
-COMPLETED = "COMPLETED"
-FAILED = "FAILED"
-ABORTED = "ABORTED"
-SUSPENDED = "SUSPENDED"
-
-# Integration constants
-INTEGRATION = "INTEGRATION"
-LIBRARY = "LIBRARY"
-TEMPLATE = "TEMPLATE"
-RECIPE = "RECIPE"
-CONNECTIVITY_AGENT = "CONNECTIVITY_AGENT"
-
-# Agent type constants
-ON_PREMISES_AGENT = "ON_PREMISES_AGENT"
-FILE_AGENT = "FILE_AGENT"
-
-# Status constants
-ONLINE = "ONLINE"
-OFFLINE = "OFFLINE"
-MAINTENANCE = "MAINTENANCE"
-
-# Replication method constants
-FULL_TABLE = "FULL_TABLE"
-INCREMENTAL = "INCREMENTAL"
-
-# Error type constants
-AUTHENTICATION = "AUTHENTICATION"
-AUTHORIZATION = "AUTHORIZATION"
-RATE_LIMIT = "RATE_LIMIT"
 
 
 class FlextMeltanoTapOracleOicModels(FlextModels):
@@ -320,7 +280,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         name: str = Field(..., description="Integration name")
         description: str | None = Field(None, description="Integration description")
         version: str = Field(..., description="Integration version")
-        status: Literal[ACTIVE, INACTIVE, DRAFT, ERROR] = Field(
+        status: t.Project.OicIntegrationStatusLiteral = Field(
             ...,
             description="Integration status",
         )
@@ -437,7 +397,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         )
 
         # Status and health
-        status: Literal[ACTIVE, INACTIVE, ERROR, TESTING] = Field(
+        status: t.Project.OicIntegrationStatusLiteral = Field(
             ...,
             description="Connection status",
         )
@@ -538,7 +498,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         )
 
         # Status and results
-        status: Literal[RUNNING, COMPLETED, FAILED, ABORTED, SUSPENDED] = Field(
+        status: t.Project.OicJobStatusLiteral = Field(
             ...,
             description="Activity status",
         )
@@ -630,7 +590,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         version: str = Field(..., description="Package version")
 
         # Package metadata
-        package_type: Literal[INTEGRATION, LIBRARY, TEMPLATE, RECIPE] = Field(
+        package_type: t.Project.OicIntegrationTypeLiteral = Field(
             ...,
             description="Package type",
         )
@@ -648,7 +608,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         )
 
         # Status
-        status: Literal[ACTIVE, INACTIVE, DEPRECATED] = Field(
+        status: t.Project.OicIntegrationStatusLiteral = Field(
             ...,
             description="Package status",
         )
@@ -825,7 +785,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         )
 
         # Agent status and health
-        status: Literal[ONLINE, OFFLINE, ERROR, MAINTENANCE] = Field(
+        status: t.Project.OicAgentStatusLiteral = Field(
             ...,
             description="Agent status",
         )
@@ -925,7 +885,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         )
 
         stream_name: str = Field(..., description="Singer stream name")
-        replication_method: Literal[FULL_TABLE, INCREMENTAL] = Field(
+        replication_method: t.Project.OicReplicationMethodLiteral = Field(
             default="FULL_TABLE",
             description="Replication method",
         )
@@ -1119,14 +1079,9 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             },
         )
 
-        error_type: Literal[
-            "AUTHENTICATION",
-            "AUTHORIZATION",
-            "RATE_LIMIT",
-            "SERVER_ERROR",
-            "NETWORK",
-            "VALIDATION",
-        ] = Field(..., description="Error category")
+        error_type: t.Project.OicErrorTypeLiteral = Field(
+            ..., description="Error category"
+        )
         http_status_code: int | None = Field(None, description="HTTP status code")
         retry_after_seconds: int | None = Field(
             None,
@@ -1181,13 +1136,13 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
 
         def _determine_severity(self) -> str:
             """Determine error severity based on type and status code."""
-            if self.error_type in {"AUTHENTICATION", "AUTHORIZATION"}:
+            if self.error_type in {c.OicErrorType.AUTHENTICATION, c.OicErrorType.AUTHORIZATION}:
                 return "critical"
-            if self.error_type == "RATE_LIMIT":
+            if self.error_type == c.OicErrorType.RATE_LIMIT:
                 return "warning"
-            if self.error_type == "SERVER_ERROR":
+            if self.error_type == c.OicErrorType.SERVER_ERROR:
                 return "error"
-            if self.error_type in {"NETWORK", "VALIDATION"}:
+            if self.error_type in {c.OicErrorType.NETWORK, c.OicErrorType.VALIDATION}:
                 return "warning"
             return "unknown"
 

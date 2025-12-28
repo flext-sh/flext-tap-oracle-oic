@@ -180,6 +180,63 @@ class FlextTapOracleOicConstants(FlextConstants):
         TESTED = "tested"
         FAILED = "failed"
 
+    class OicIntegrationStatus(StrEnum):
+        """OIC integration lifecycle status using StrEnum for type safety."""
+
+        ACTIVE = "ACTIVE"
+        INACTIVE = "INACTIVE"
+        DRAFT = "DRAFT"
+        ERROR = "ERROR"
+        TESTING = "TESTING"
+        DEPRECATED = "DEPRECATED"
+
+    class OicJobStatus(StrEnum):
+        """OIC job execution status using StrEnum for type safety."""
+
+        RUNNING = "RUNNING"
+        COMPLETED = "COMPLETED"
+        FAILED = "FAILED"
+        ABORTED = "ABORTED"
+        SUSPENDED = "SUSPENDED"
+
+    class OicIntegrationType(StrEnum):
+        """OIC integration type using StrEnum for type safety."""
+
+        INTEGRATION = "INTEGRATION"
+        LIBRARY = "LIBRARY"
+        TEMPLATE = "TEMPLATE"
+        RECIPE = "RECIPE"
+        CONNECTIVITY_AGENT = "CONNECTIVITY_AGENT"
+
+    class OicAgentType(StrEnum):
+        """OIC agent type using StrEnum for type safety."""
+
+        ON_PREMISES_AGENT = "ON_PREMISES_AGENT"
+        FILE_AGENT = "FILE_AGENT"
+
+    class OicAgentStatus(StrEnum):
+        """OIC agent operational status using StrEnum for type safety."""
+
+        ONLINE = "ONLINE"
+        OFFLINE = "OFFLINE"
+        MAINTENANCE = "MAINTENANCE"
+
+    class OicReplicationMethod(StrEnum):
+        """Replication method types using StrEnum for type safety."""
+
+        FULL_TABLE = "FULL_TABLE"
+        INCREMENTAL = "INCREMENTAL"
+
+    class OicErrorType(StrEnum):
+        """Error type constants using StrEnum for type safety."""
+
+        AUTHENTICATION = "AUTHENTICATION"
+        AUTHORIZATION = "AUTHORIZATION"
+        RATE_LIMIT = "RATE_LIMIT"
+        SERVER_ERROR = "SERVER_ERROR"
+        NETWORK = "NETWORK"
+        VALIDATION = "VALIDATION"
+
 
 c = FlextTapOracleOicConstants
 
