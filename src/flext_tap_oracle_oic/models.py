@@ -1136,7 +1136,10 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
 
         def _determine_severity(self) -> str:
             """Determine error severity based on type and status code."""
-            if self.error_type in {c.OicErrorType.AUTHENTICATION, c.OicErrorType.AUTHORIZATION}:
+            if self.error_type in {
+                c.OicErrorType.AUTHENTICATION,
+                c.OicErrorType.AUTHORIZATION,
+            }:
                 return "critical"
             if self.error_type == c.OicErrorType.RATE_LIMIT:
                 return "warning"
