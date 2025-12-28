@@ -14,7 +14,7 @@ from __future__ import annotations
 import re
 from typing import Self
 
-from flext_core import FlextConstants, FlextResult, FlextSettings
+from flext_core import FlextConstants, FlextResult, FlextSettings, FlextTypes as t
 from pydantic import Field, HttpUrl, SecretStr, field_validator, model_validator
 from pydantic_settings import SettingsConfigDict
 
@@ -162,8 +162,8 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             msg = f"Invalid stream prefix: {v}. Must start with letter and contain only letters, digits, and underscores"
             raise ValueError(msg)
 
-        if len(v) > FlextConstants.Limits.MAX_STRING_LENGTH:
-            msg = f"Stream prefix too long: {len(v)} > {FlextConstants.Limits.MAX_STRING_LENGTH}"
+        if len(v) > 255:
+            msg = f"Stream prefix too long: {len(v)} > 255"
             raise ValueError(msg)
 
         return v.lower()
@@ -193,7 +193,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             return None
 
         # Minimum length check for YYYY-MM-DD format
-        if len(v) < FlextConstants.Configuration.MIN_DATE_LENGTH:
+        if len(v) < 10:
             msg = "Start date must be in YYYY-MM-DD format or ISO 8601"
             raise ValueError(msg)
 
@@ -263,7 +263,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
                 return FlextResult[None].fail("Page size must be positive")
 
             # Validate performance settings
-            max_safe_parallel = FlextConstants.Container.MAX_WORKERS
+            max_safe_parallel = 4
             max_safe_batch = FlextConstants.Performance.BatchProcessing.MAX_ITEMS // 2
             if (
                 self.max_parallel_streams > max_safe_parallel
@@ -283,7 +283,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
         """Get full API base URL with version."""
         return f"{str(self.base_url).rstrip('/')}/ic/api/integration/{self.api_version}"
 
-    def get_auth_config(self) -> dict[str, object]:
+    def get_auth_config(self) -> dict[str, t.GeneralValueType]:
         """Get authentication configuration dictionary."""
         return {
             "client_id": self.oauth_client_id,
@@ -292,7 +292,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             "audience": self.oauth_audience,
         }
 
-    def get_connection_config(self) -> dict[str, object]:
+    def get_connection_config(self) -> dict[str, t.GeneralValueType]:
         """Get connection configuration dictionary."""
         return {
             "base_url": str(self.base_url),
@@ -302,7 +302,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             "page_size": self.page_size,
         }
 
-    def get_tap_config(self) -> dict[str, object]:
+    def get_tap_config(self) -> dict[str, t.GeneralValueType]:
         """Get tap-specific configuration dictionary."""
         return {
             "stream_prefix": self.stream_prefix,
@@ -312,7 +312,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             "max_parallel_streams": self.max_parallel_streams,
         }
 
-    def get_performance_config(self) -> dict[str, object]:
+    def get_performance_config(self) -> dict[str, t.GeneralValueType]:
         """Get performance configuration dictionary."""
         return {
             "batch_size": self.batch_size,
@@ -346,7 +346,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
         **overrides: object,
     ) -> FlextMeltanoTapOracleOicSettings:
         """Create configuration for specific environment using enhanced singleton pattern."""
-        env_overrides: dict[str, object] = {}
+        env_overrides: dict[str, t.GeneralValueType] = {}
 
         if environment == "production":
             env_overrides.update({
@@ -391,7 +391,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
     @classmethod
     def create_for_development(cls, **overrides: object) -> Self:
         """Create configuration for development environment."""
-        dev_overrides: dict[str, object] = {
+        dev_overrides: dict[str, t.GeneralValueType] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT * 2,
             "max_retries": 1,
             "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 20,
@@ -407,7 +407,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
     @classmethod
     def create_for_production(cls, **overrides: object) -> Self:
         """Create configuration for production environment."""
-        prod_overrides: dict[str, object] = {
+        prod_overrides: dict[str, t.GeneralValueType] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
             "max_retries": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
             "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 10,
@@ -423,7 +423,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
     @classmethod
     def create_for_testing(cls, **overrides: object) -> Self:
         """Create configuration for testing environment."""
-        test_overrides: dict[str, object] = {
+        test_overrides: dict[str, t.GeneralValueType] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT // 3,
             "max_retries": 1,
             "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 100,
@@ -443,9 +443,9 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
 
 
 def create_oracle_oic_tap_config(
-    oauth_params: dict[str, object],
-    connection_params: dict[str, object],
-    tap_params: dict[str, object] | None = None,
+    oauth_params: dict[str, t.GeneralValueType],
+    connection_params: dict[str, t.GeneralValueType],
+    tap_params: dict[str, t.GeneralValueType] | None = None,
 ) -> FlextResult[FlextMeltanoTapOracleOicSettings]:
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 

@@ -13,6 +13,8 @@ from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from pathlib import Path
 
+from flext_core import FlextTypes as t
+
 
 class TestDataBuilder:
     """Builder pattern for creating test data consistently."""
@@ -24,7 +26,7 @@ class TestDataBuilder:
         status: str = "ACTIVE",
         time_updated: str = "2024-01-15T10:30:00Z",
         **kwargs: object,
-    ) -> dict[str, object]:
+    ) -> dict[str, t.GeneralValueType]:
         """Create a test integration record with default values."""
         record = {
             "id": integration_id,
@@ -35,8 +37,8 @@ class TestDataBuilder:
             "version": "0.9.0",
             "identifier": integration_id.lower(),
         }
-        record.update(kwargs)
-        return record
+        record.update(cast("dict[str, str]", kwargs))
+        return cast("dict[str, t.GeneralValueType]", record)
 
     @staticmethod
     def connection_record(
@@ -46,7 +48,7 @@ class TestDataBuilder:
         time_updated: str = "2024-01-15T10:30:00Z",
         connection_type: str = "REST",
         **kwargs: object,
-    ) -> dict[str, object]:
+    ) -> dict[str, t.GeneralValueType]:
         """Create a test connection record with default values."""
         record = {
             "id": connection_id,
@@ -57,8 +59,8 @@ class TestDataBuilder:
             "description": f"Test connection: {name}",
             "identifier": connection_id.lower(),
         }
-        record.update(kwargs)
-        return record
+        record.update(cast("dict[str, str]", kwargs))
+        return cast("dict[str, t.GeneralValueType]", record)
 
     @staticmethod
     def package_record(
@@ -68,7 +70,7 @@ class TestDataBuilder:
         time_updated: str = "2024-01-15T10:30:00Z",
         version: str = "0.9.0",
         **kwargs: object,
-    ) -> dict[str, object]:
+    ) -> dict[str, t.GeneralValueType]:
         """Create a test package record with default values."""
         record = {
             "id": package_id,
@@ -79,8 +81,8 @@ class TestDataBuilder:
             "description": f"Test package: {name}",
             "identifier": package_id.lower(),
         }
-        record.update(kwargs)
-        return record
+        record.update(cast("dict[str, str]", kwargs))
+        return cast("dict[str, t.GeneralValueType]", record)
 
     @staticmethod
     def monitoring_record(
@@ -90,7 +92,7 @@ class TestDataBuilder:
         start_time: str = "2024-01-15T10:30:00Z",
         end_time: str = "2024-01-15T10:35:00Z",
         **kwargs: object,
-    ) -> dict[str, object]:
+    ) -> dict[str, t.GeneralValueType]:
         """Create a test monitoring record with default values."""
         record = {
             "instanceId": instance_id,
@@ -101,15 +103,15 @@ class TestDataBuilder:
             "duration": 300000,  # 5 minutes in milliseconds
             "recordsProcessed": 100,
         }
-        record.update(kwargs)
-        return record
+        record.update(cast("dict[str, str]", kwargs))
+        return cast("dict[str, t.GeneralValueType]", record)
 
     @staticmethod
     def singer_record(
         stream: str,
-        record_data: dict[str, object],
+        record_data: dict[str, t.GeneralValueType],
         time_extracted: str | None = None,
-    ) -> dict[str, object]:
+    ) -> dict[str, t.GeneralValueType]:
         """Create a Singer record with the given stream and data."""
         if time_extracted is None:
             time_extracted = "2024-01-15T10:35:00Z"
@@ -123,9 +125,9 @@ class TestDataBuilder:
     @staticmethod
     def singer_schema(
         stream: str,
-        properties: dict[str, object],
+        properties: dict[str, t.GeneralValueType],
         key_properties: list[str] | None = None,
-    ) -> dict[str, object]:
+    ) -> dict[str, t.GeneralValueType]:
         """Create a Singer schema with the given stream and properties."""
         if key_properties is None:
             key_properties = ["id"]
@@ -165,7 +167,7 @@ class TestValidator:
         assert len(stream.primary_keys) > 0
 
     @staticmethod
-    def validate_singer_record(record: dict[str, object]) -> None:
+    def validate_singer_record(record: dict[str, t.GeneralValueType]) -> None:
         """Validate Singer record structure."""
         if "type" not in record:
             msg: str = f"Expected {'type'} in {record}"
@@ -176,7 +178,7 @@ class TestValidator:
         assert isinstance(record["record"], dict)
 
     @staticmethod
-    def validate_config_schema(config_schema: dict[str, object]) -> None:
+    def validate_config_schema(config_schema: dict[str, t.GeneralValueType]) -> None:
         """Validate configuration schema structure."""
         if "properties" not in config_schema:
             msg: str = f"Expected {'properties'} in {config_schema}"
@@ -186,7 +188,7 @@ class TestValidator:
 
     @staticmethod
     def validate_performance_metrics(
-        metrics: dict[str, object],
+        metrics: dict[str, t.GeneralValueType],
         max_duration: float = 5.0,
     ) -> None:
         """Validate performance metrics meet requirements."""
@@ -216,7 +218,7 @@ class MockAPIServer:
 
     def setup_integrations_mock(
         self,
-        records: list[dict[str, object]] | None = None,
+        records: list[dict[str, t.GeneralValueType]] | None = None,
     ) -> None:
         """Setup integrations endpoint mock."""
         if records is None:
@@ -230,7 +232,7 @@ class MockAPIServer:
 
     def setup_connections_mock(
         self,
-        records: list[dict[str, object]] | None = None,
+        records: list[dict[str, t.GeneralValueType]] | None = None,
     ) -> None:
         """Setup connections endpoint mock."""
         if records is None:
@@ -273,10 +275,10 @@ class PerformanceMeasurer:
         """Initialize the performance measurer."""
         self.start_time: float | None = None
         self.end_time: float | None = None
-        self.measurements: list[dict[str, object]] = []
+        self.measurements: list[dict[str, t.GeneralValueType]] = []
 
     @contextmanager
-    def measure_duration(self) -> Generator[dict[str, object]]:
+    def measure_duration(self) -> Generator[dict[str, t.GeneralValueType]]:
         """Measure execution duration."""
         self.start_time = time.time()
         metrics = {"start_time": self.start_time}
@@ -306,7 +308,7 @@ class TestConfigGenerator:
     """Generate test configurations for various scenarios."""
 
     @staticmethod
-    def minimal_oauth2_config() -> dict[str, object]:
+    def minimal_oauth2_config() -> dict[str, t.GeneralValueType]:
         """Create minimal OAuth2 configuration."""
         return {
             "base_url": "https://test-oic.integration.ocp.oraclecloud.com",
@@ -317,7 +319,7 @@ class TestConfigGenerator:
         }
 
     @staticmethod
-    def full_oauth2_config() -> dict[str, object]:
+    def full_oauth2_config() -> dict[str, t.GeneralValueType]:
         """Create full OAuth2 configuration."""
         return {
             "base_url": "https://test-oic.integration.ocp.oraclecloud.com",
@@ -333,7 +335,7 @@ class TestConfigGenerator:
         }
 
     @staticmethod
-    def production_oauth2_config() -> dict[str, object]:
+    def production_oauth2_config() -> dict[str, t.GeneralValueType]:
         """Create production OAuth2 configuration."""
         return {
             "base_url": "https://production-oic.integration.ocp.oraclecloud.com",
@@ -349,7 +351,7 @@ class TestConfigGenerator:
         }
 
     @staticmethod
-    def invalid_configs() -> list[dict[str, object]]:
+    def invalid_configs() -> list[dict[str, t.GeneralValueType]]:
         """Get invalid configuration examples."""
         return [
             # Empty base URL
@@ -398,7 +400,7 @@ class TestFileManager:
 
     def create_config_file(
         self,
-        config: dict[str, object],
+        config: dict[str, t.GeneralValueType],
         filename: str = "test_config.json",
     ) -> Path:
         """Create a test configuration file."""
@@ -409,7 +411,7 @@ class TestFileManager:
 
     def create_catalog_file(
         self,
-        catalog: dict[str, object],
+        catalog: dict[str, t.GeneralValueType],
         filename: str = "test_catalog.json",
     ) -> Path:
         """Create a test catalog file."""
@@ -420,7 +422,7 @@ class TestFileManager:
 
     def create_records_file(
         self,
-        records: list[dict[str, object]],
+        records: list[dict[str, t.GeneralValueType]],
         filename: str = "test_records.jsonl",
     ) -> Path:
         """Create a test records file."""
@@ -444,12 +446,12 @@ class TestRunner:
 
     def __init__(self) -> None:
         """Initialize the test runner."""
-        self.results: list[dict[str, object]] = []
+        self.results: list[dict[str, t.GeneralValueType]] = []
 
     def run_tests_parallel(
         self,
         test_functions: list[Callable[[], object]],
-    ) -> list[object]:
+    ) -> list[t.GeneralValueType]:
         """Run multiple test functions in parallel."""
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = [executor.submit(test_func) for test_func in test_functions]

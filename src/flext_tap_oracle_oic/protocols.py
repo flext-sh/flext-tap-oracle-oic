@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
+from flext_core import FlextTypes as t
 from flext_db_oracle.protocols import FlextDbOracleProtocols as p_db_oracle
 from flext_meltano.protocols import FlextMeltanoProtocols as p_meltano
 
@@ -53,7 +54,7 @@ class FlextMeltanoTapOracleOicProtocols(p_meltano, p_db_oracle):
 
                 def connect(
                     self,
-                    config: dict[str, object],
+                    config: dict[str, t.GeneralValueType],
                 ) -> p_meltano.Result[object]:
                     """Connect to Oracle OIC with provided configuration."""
                     ...
@@ -64,8 +65,8 @@ class FlextMeltanoTapOracleOicProtocols(p_meltano, p_db_oracle):
 
                 def discover_integrations(
                     self,
-                    config: dict[str, object],
-                ) -> p_meltano.Result[list[dict[str, object]]]:
+                    config: dict[str, t.GeneralValueType],
+                ) -> p_meltano.Result[list[dict[str, t.GeneralValueType]]]:
                     """Discover available integrations in Oracle OIC."""
                     ...
 
@@ -76,7 +77,7 @@ class FlextMeltanoTapOracleOicProtocols(p_meltano, p_db_oracle):
                 def extract_integration_data(
                     self,
                     integration: str,
-                ) -> p_meltano.Result[list[dict[str, object]]]:
+                ) -> p_meltano.Result[list[dict[str, t.GeneralValueType]]]:
                     """Extract data from an Oracle OIC integration."""
                     ...
 
@@ -86,8 +87,8 @@ class FlextMeltanoTapOracleOicProtocols(p_meltano, p_db_oracle):
 
                 def generate_catalog(
                     self,
-                    config: dict[str, object],
-                ) -> p_meltano.Result[dict[str, object]]:
+                    config: dict[str, t.GeneralValueType],
+                ) -> p_meltano.Result[dict[str, t.GeneralValueType]]:
                     """Generate Singer catalog for OIC entities."""
                     ...
 

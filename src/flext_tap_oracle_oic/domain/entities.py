@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from flext_core import FlextModels, FlextResult
+from flext_core import FlextModels, FlextResult, FlextTypes as t
 from pydantic import ConfigDict, Field
 
 from flext_tap_oracle_oic.constants import c
@@ -23,7 +23,7 @@ ConnectionStatus = c.ConnectionStatus
 class OICConnection(FlextModels):
     """OIC connection domain entity using flext-core patterns."""
 
-    model_config: dict[str, object] = ConfigDict(frozen=False)
+    model_config: dict[str, t.GeneralValueType] = ConfigDict(frozen=False)
 
     connection_id: str = Field(
         ...,
@@ -39,7 +39,7 @@ class OICConnection(FlextModels):
 
     # Connection properties
     connection_url: str | None = Field(None, description="Connection endpoint URL")
-    connection_properties: dict[str, object] = Field(
+    connection_properties: dict[str, t.GeneralValueType] = Field(
         default_factory=dict,
         description="Connection properties",
     )
@@ -51,7 +51,7 @@ class OICConnection(FlextModels):
         description="Connection status",
     )
     last_tested: datetime | None = Field(None, description="Last test timestamp")
-    test_result: dict[str, object] | None = Field(
+    test_result: dict[str, t.GeneralValueType] | None = Field(
         None,
         description="Last test result",
     )
@@ -80,7 +80,7 @@ class OICConnection(FlextModels):
 class OICIntegration(FlextModels):
     """OIC integration domain entity using flext-core patterns."""
 
-    model_config: dict[str, object] = ConfigDict(frozen=False)
+    model_config: dict[str, t.GeneralValueType] = ConfigDict(frozen=False)
 
     integration_id: str = Field(
         ...,
@@ -158,14 +158,14 @@ class OICIntegration(FlextModels):
 class OICLookup(FlextModels):
     """OIC lookup table domain entity using flext-core patterns."""
 
-    model_config: dict[str, object] = ConfigDict(frozen=False)
+    model_config: dict[str, t.GeneralValueType] = ConfigDict(frozen=False)
 
     lookup_id: str = Field(..., min_length=1, description="OIC lookup identifier")
     lookup_name: str = Field(..., min_length=1, description="Lookup table name")
     domain_name: str | None = Field(None, description="Domain name")
 
     # Lookup structure
-    columns: list[dict[str, object]] = Field(
+    columns: list[dict[str, t.GeneralValueType]] = Field(
         default_factory=list,
         description="Column definitions",
     )
@@ -235,7 +235,7 @@ class OICMonitoringRecord(FlextModels):
     error_count: int = Field(default=0, ge=0, description="Number of errors")
 
     # Tracking
-    business_identifiers: dict[str, object] = Field(
+    business_identifiers: dict[str, t.GeneralValueType] = Field(
         default_factory=dict,
         description="Business tracking identifiers",
     )
@@ -259,7 +259,7 @@ class OICMonitoringRecord(FlextModels):
 class OICProject(FlextModels):
     """OIC project domain entity using flext-core patterns."""
 
-    model_config: dict[str, object] = ConfigDict(frozen=False)
+    model_config: dict[str, t.GeneralValueType] = ConfigDict(frozen=False)
 
     project_id: str = Field(..., min_length=1, description="OIC project identifier")
     project_code: str = Field(..., min_length=1, description="Project code")

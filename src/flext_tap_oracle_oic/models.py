@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Literal, Self
 
-from flext_core import FlextConstants, FlextModels
+from flext_core import FlextConstants, FlextModels, FlextTypes as t
 from flext_core.utilities import u
 from pydantic import (
     ConfigDict,
@@ -123,7 +123,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         return sum(1 for name in model_names if hasattr(self, name))
 
     @computed_field
-    def oic_tap_system_summary(self) -> dict[str, object]:
+    def oic_tap_system_summary(self) -> dict[str, t.GeneralValueType]:
         """Complete Singer Oracle OIC tap system summary with API extraction capabilities."""
         return {
             "total_models": self.active_oic_tap_models_count,
@@ -251,7 +251,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         timeout_seconds: int = Field(default=30, description="Authentication timeout")
 
         @computed_field
-        def auth_config_summary(self) -> dict[str, object]:
+        def auth_config_summary(self) -> dict[str, t.GeneralValueType]:
             """OAuth2 authentication configuration summary."""
             return {
                 "oauth_setup": {
@@ -350,7 +350,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         )
 
         @computed_field
-        def integration_health_summary(self) -> dict[str, object]:
+        def integration_health_summary(self) -> dict[str, t.GeneralValueType]:
             """OIC integration health and performance summary."""
             error_rate = 0.0
             if self.execution_count and self.execution_count > 0:
@@ -458,7 +458,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         )
 
         @computed_field
-        def connection_security_summary(self) -> dict[str, object]:
+        def connection_security_summary(self) -> dict[str, t.GeneralValueType]:
             """OIC connection security and health summary."""
             return {
                 "connection_identity": {
@@ -557,7 +557,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         )
 
         @computed_field
-        def activity_performance_summary(self) -> dict[str, object]:
+        def activity_performance_summary(self) -> dict[str, t.GeneralValueType]:
             """OIC activity performance summary."""
             duration_seconds = 0.0
             if self.duration_ms:
@@ -655,7 +655,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         download_count: int | None = Field(None, description="Package download count")
 
         @computed_field
-        def package_composition_summary(self) -> dict[str, object]:
+        def package_composition_summary(self) -> dict[str, t.GeneralValueType]:
             """OIC package composition and usage summary."""
             return {
                 "package_identity": {
@@ -745,7 +745,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         queue_depth: int | None = Field(None, description="Message queue depth")
 
         @computed_field
-        def metrics_analysis_summary(self) -> dict[str, object]:
+        def metrics_analysis_summary(self) -> dict[str, t.GeneralValueType]:
             """OIC metrics complete analysis summary."""
             total_messages = (self.success_count or 0) + (self.error_count or 0)
             error_rate = 0.0
@@ -852,7 +852,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         last_error: str | None = Field(None, description="Last error message")
 
         @computed_field
-        def agent_health_summary(self) -> dict[str, object]:
+        def agent_health_summary(self) -> dict[str, t.GeneralValueType]:
             """OIC agent health and connectivity summary."""
             health_status = "healthy"
             if self.status in {"ERROR", "OFFLINE"}:
@@ -967,7 +967,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         )
 
         @computed_field
-        def stream_config_summary(self) -> dict[str, object]:
+        def stream_config_summary(self) -> dict[str, t.GeneralValueType]:
             """OIC stream configuration summary."""
             return {
                 "stream_identity": {
@@ -1040,7 +1040,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         # Error information
         error_code: str | None = Field(None, description="Error code if failed")
         error_message: str | None = Field(None, description="Error message if failed")
-        error_details: dict[str, object] | None = Field(
+        error_details: dict[str, t.GeneralValueType] | None = Field(
             None,
             description="Detailed error information",
         )
@@ -1054,7 +1054,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         request_id: str | None = Field(None, description="Request correlation ID")
 
         @computed_field
-        def api_response_summary(self) -> dict[str, object]:
+        def api_response_summary(self) -> dict[str, t.GeneralValueType]:
             """OIC API response summary."""
             return {
                 "response_status": {
@@ -1136,7 +1136,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         # Context information
         endpoint: str | None = Field(None, description="API endpoint that failed")
         request_method: str | None = Field(None, description="HTTP method used")
-        request_params: dict[str, object] | None = Field(
+        request_params: dict[str, t.GeneralValueType] | None = Field(
             None,
             description="Request parameters",
         )
@@ -1156,7 +1156,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         )
 
         @computed_field
-        def error_context_summary(self) -> dict[str, object]:
+        def error_context_summary(self) -> dict[str, t.GeneralValueType]:
             """OIC error context summary."""
             return {
                 "error_classification": {

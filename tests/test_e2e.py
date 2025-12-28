@@ -18,7 +18,7 @@ from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
-from flext_core import FlextLogger
+from flext_core import FlextTypes as t, FlextLogger
 from singer_sdk import ConfigValidationError
 
 from flext_tap_oracle_oic import TapOracleOic
@@ -37,7 +37,7 @@ class TestTapOracleOicE2E:
     """End-to-end tests for tap-oracle-oic."""
 
     @pytest.fixture
-    def config(self) -> dict[str, object]:
+    def config(self) -> dict[str, t.GeneralValueType]:
         """Mock configuration that matches the required schema."""
         return {
             "oauth_client_id": "test_client_id",
@@ -49,12 +49,12 @@ class TestTapOracleOicE2E:
         }
 
     @pytest.fixture
-    def tap(self, config: dict[str, object]) -> object:
+    def tap(self, config: dict[str, t.GeneralValueType]) -> object:
         """Create TapOracleOic instance for testing."""
         return TapOracleOic(config=config)
 
     @pytest.fixture
-    def config_path(self, tmp_path: Path, config: dict[str, object]) -> str:
+    def config_path(self, tmp_path: Path, config: dict[str, t.GeneralValueType]) -> str:
         """Create a temporary config file for CLI tests."""
         config_file = tmp_path / "test_config.json"
         with config_file.open("w", encoding="utf-8") as f:
@@ -64,7 +64,7 @@ class TestTapOracleOicE2E:
     def test_tap_initialization(
         self,
         tap: TapOracleOic,
-        config: dict[str, object],
+        config: dict[str, t.GeneralValueType],
     ) -> None:
         """Test TapOracleOic initialization with configuration."""
         if tap.name != "tap-oracle-oic":
