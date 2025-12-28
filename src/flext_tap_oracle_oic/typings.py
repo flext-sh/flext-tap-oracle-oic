@@ -222,6 +222,28 @@ class FlextMeltanoTapOracleOicTypes(_t):
         ]
         type TapOracleOicPipelineConfig = dict[str, _t.GeneralValueType]
 
+        # Singer tap Oracle OIC-specific Literal type aliases (referencing constants.py StrEnums)
+        type OicIntegrationStatusLiteral = Literal[
+            "ACTIVE", "INACTIVE", "DRAFT", "ERROR", "TESTING", "DEPRECATED"
+        ]
+        type OicJobStatusLiteral = Literal[
+            "RUNNING", "COMPLETED", "FAILED", "ABORTED", "SUSPENDED"
+        ]
+        type OicIntegrationTypeLiteral = Literal[
+            "INTEGRATION", "LIBRARY", "TEMPLATE", "RECIPE", "CONNECTIVITY_AGENT"
+        ]
+        type OicAgentTypeLiteral = Literal["ON_PREMISES_AGENT", "FILE_AGENT"]
+        type OicAgentStatusLiteral = Literal["ONLINE", "OFFLINE", "MAINTENANCE"]
+        type OicReplicationMethodLiteral = Literal["FULL_TABLE", "INCREMENTAL"]
+        type OicErrorTypeLiteral = Literal[
+            "AUTHENTICATION",
+            "AUTHORIZATION",
+            "RATE_LIMIT",
+            "SERVER_ERROR",
+            "NETWORK",
+            "VALIDATION",
+        ]
+
     class TapOracleOic:
         """Tap Oracle OIC types namespace for cross-project access.
 
