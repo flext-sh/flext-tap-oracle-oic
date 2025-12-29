@@ -25,10 +25,10 @@ class TestDataBuilder:
         name: str = "Test Integration",
         status: str = "ACTIVE",
         time_updated: str = "2024-01-15T10:30:00Z",
-        **kwargs: object,
+        **kwargs: t.GeneralValueType,
     ) -> dict[str, t.GeneralValueType]:
         """Create a test integration record with default values."""
-        record = {
+        record: dict[str, t.GeneralValueType] = {
             "id": integration_id,
             "name": name,
             "status": status,
@@ -37,8 +37,8 @@ class TestDataBuilder:
             "version": "0.9.0",
             "identifier": integration_id.lower(),
         }
-        record.update(cast("dict[str, str]", kwargs))
-        return cast("dict[str, t.GeneralValueType]", record)
+        record.update(kwargs)
+        return record
 
     @staticmethod
     def connection_record(
@@ -47,10 +47,10 @@ class TestDataBuilder:
         status: str = "ACTIVE",
         time_updated: str = "2024-01-15T10:30:00Z",
         connection_type: str = "REST",
-        **kwargs: object,
+        **kwargs: t.GeneralValueType,
     ) -> dict[str, t.GeneralValueType]:
         """Create a test connection record with default values."""
-        record = {
+        record: dict[str, t.GeneralValueType] = {
             "id": connection_id,
             "name": name,
             "status": status,
@@ -59,8 +59,8 @@ class TestDataBuilder:
             "description": f"Test connection: {name}",
             "identifier": connection_id.lower(),
         }
-        record.update(cast("dict[str, str]", kwargs))
-        return cast("dict[str, t.GeneralValueType]", record)
+        record.update(kwargs)
+        return record
 
     @staticmethod
     def package_record(
@@ -69,10 +69,10 @@ class TestDataBuilder:
         status: str = "ACTIVE",
         time_updated: str = "2024-01-15T10:30:00Z",
         version: str = "0.9.0",
-        **kwargs: object,
+        **kwargs: t.GeneralValueType,
     ) -> dict[str, t.GeneralValueType]:
         """Create a test package record with default values."""
-        record = {
+        record: dict[str, t.GeneralValueType] = {
             "id": package_id,
             "name": name,
             "status": status,
@@ -81,8 +81,8 @@ class TestDataBuilder:
             "description": f"Test package: {name}",
             "identifier": package_id.lower(),
         }
-        record.update(cast("dict[str, str]", kwargs))
-        return cast("dict[str, t.GeneralValueType]", record)
+        record.update(kwargs)
+        return record
 
     @staticmethod
     def monitoring_record(
@@ -91,10 +91,10 @@ class TestDataBuilder:
         status: str = "SUCCEEDED",
         start_time: str = "2024-01-15T10:30:00Z",
         end_time: str = "2024-01-15T10:35:00Z",
-        **kwargs: object,
+        **kwargs: t.GeneralValueType,
     ) -> dict[str, t.GeneralValueType]:
         """Create a test monitoring record with default values."""
-        record = {
+        record: dict[str, t.GeneralValueType] = {
             "instanceId": instance_id,
             "integrationId": integration_id,
             "status": status,
@@ -103,8 +103,8 @@ class TestDataBuilder:
             "duration": 300000,  # 5 minutes in milliseconds
             "recordsProcessed": 100,
         }
-        record.update(cast("dict[str, str]", kwargs))
-        return cast("dict[str, t.GeneralValueType]", record)
+        record.update(kwargs)
+        return record
 
     @staticmethod
     def singer_record(

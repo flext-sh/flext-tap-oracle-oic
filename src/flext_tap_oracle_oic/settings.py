@@ -18,6 +18,8 @@ from flext_core import FlextConstants, FlextResult, FlextSettings, FlextTypes as
 from pydantic import Field, HttpUrl, SecretStr, field_validator, model_validator
 from pydantic_settings import SettingsConfigDict
 
+from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants as c
+
 
 class FlextMeltanoTapOracleOicSettings(FlextSettings):
     """Oracle Integration Cloud Tap Configuration using enhanced FlextSettings patterns.
@@ -162,8 +164,8 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             msg = f"Invalid stream prefix: {v}. Must start with letter and contain only letters, digits, and underscores"
             raise ValueError(msg)
 
-        if len(v) > 255:
-            msg = f"Stream prefix too long: {len(v)} > 255"
+        if len(v) > c.TapOicValidation.MAX_STREAM_PREFIX_LENGTH:
+            msg = f"Stream prefix too long: {len(v)} > {c.TapOicValidation.MAX_STREAM_PREFIX_LENGTH}"
             raise ValueError(msg)
 
         return v.lower()
@@ -193,7 +195,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             return None
 
         # Minimum length check for YYYY-MM-DD format
-        if len(v) < 10:
+        if len(v) < c.TapOicValidation.MIN_DATE_LENGTH:
             msg = "Start date must be in YYYY-MM-DD format or ISO 8601"
             raise ValueError(msg)
 

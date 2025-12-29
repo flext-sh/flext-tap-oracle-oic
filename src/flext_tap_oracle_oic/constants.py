@@ -133,6 +133,12 @@ class FlextTapOracleOicConstants(FlextConstants):
             ParentOicConstants.Auth.DEFAULT_TOKEN_EXPIRY_SECONDS
         )
 
+    class TapOicValidation:
+        """OIC tap validation constants."""
+
+        MAX_STREAM_PREFIX_LENGTH: Final[int] = 255
+        MIN_DATE_LENGTH: Final[int] = 10  # YYYY-MM-DD format
+
     # =========================================================================
     # STRENUM CLASSES - Single source of truth for string enumerations
     # =========================================================================
