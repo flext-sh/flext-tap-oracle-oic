@@ -35,7 +35,7 @@ class OICHealthChecker:
         api_config = FlextApiSettings(base_url=base_url)
         self._api_client = FlextApiClient(api_config)
 
-    def _get_headers(self: object) -> dict[str, str]:
+    def _get_headers(self) -> dict[str, str]:
         headers = {
             "Accept": "JSON_MIME",
             "Content-Type": "JSON_MIME",

@@ -102,7 +102,7 @@ class TestOracleOicClient:
         with contextlib.suppress(Exception):
             # May fail due to implementation details, but should not crash
             result = client.get_access_token()
-            if isinstance(result, FlextResult) and result.success:
+            if isinstance(result, FlextResult) and result.is_success:
                 assert result.data is not None
 
     @patch("requests.Session.get")
@@ -207,7 +207,7 @@ class TestOracleOicClient:
         """Test FlextResult pattern usage."""
         # Test FlextResult creation
         success_result = FlextResult[None].ok({"test": "data"})
-        if not (success_result.success):
+        if not (success_result.is_success):
             msg: str = f"Expected True, got {success_result.success}"
             raise AssertionError(msg)
         if success_result.data != {"test": "data"}:
@@ -216,7 +216,7 @@ class TestOracleOicClient:
             raise AssertionError(msg)
 
         failure_result: FlextResult[object] = FlextResult[None].fail("Test error")
-        if failure_result.success:
+        if failure_result.is_success:
             msg: str = f"Expected False, got {failure_result.success}"
             raise AssertionError(msg)
         assert failure_result.error == "Test error"
