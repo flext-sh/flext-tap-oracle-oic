@@ -137,7 +137,7 @@ class OICBaseStream(FlextMeltanoStream):
     """
 
     @property
-    def url_base(self: object) -> str:
+    def url_base(self) -> str:
         """Build base URL for Oracle OIC API requests with intelligent discovery.
 
         Returns:
@@ -192,21 +192,21 @@ class OICBaseStream(FlextMeltanoStream):
         return base_url + FlextOracleOicConstants.OIC_API_BASE_PATH
 
     @property
-    def api_client(self: object) -> FlextApiClient:
+    def api_client(self) -> FlextApiClient:
         """Get authenticated API client from parent tap's OIC client."""
         # Access the Tap's OIC client for authenticated API client
         if hasattr(self, "tap") and hasattr(self.tap, "client"):
             client_result: FlextResult[object] = (
                 self.tap.client.get_authenticated_client()
             )
-            if client_result.success and client_result.data is not None:
+            if client_result.is_success and client_result.data is not None:
                 return client_result.data
 
         # Fallback to creating new FlextApiClient
         api_config = FlextApiSettings()
         return FlextApiClient(api_config)
 
-    def get_new_paginator(self: object) -> OICPaginator:
+    def get_new_paginator(self) -> OICPaginator:
         """Create new Oracle OIC paginator with configuration.
 
         Returns:

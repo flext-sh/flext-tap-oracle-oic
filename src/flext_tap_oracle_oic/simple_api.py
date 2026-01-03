@@ -146,7 +146,7 @@ def validate_oic_config(config: object) -> FlextResult[bool]:
                     f"Missing required configuration keys: {missing_keys}",
                 )
 
-        return FlextResult[bool].ok(data=True)
+        return FlextResult[bool].ok(value=True)
 
     except (ValueError, TypeError) as e:
         return FlextResult[bool].fail(f"Failed to validate OIC config: {e}")

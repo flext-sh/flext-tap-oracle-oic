@@ -112,7 +112,7 @@ class OracleOicClient:
     def _get_auth_headers(self) -> FlextResult[dict[str, str]]:
         """Get authorization headers with OAuth2 token."""
         token_result: FlextResult[object] = self.authenticator.get_access_token()
-        if not token_result.success:
+        if not token_result.is_success:
             return FlextResult[dict[str, str]].fail(
                 f"Failed to get access token: {token_result.error}",
             )
@@ -132,7 +132,7 @@ class OracleOicClient:
             return FlextResult[object].fail(f"URL building failed: {url_result.error}")
 
         headers_result: FlextResult[object] = self._get_auth_headers()
-        if not headers_result.success:
+        if not headers_result.is_success:
             return FlextResult[object].fail(
                 f"Failed to get auth headers: {headers_result.error}",
             )
@@ -176,7 +176,7 @@ class OracleOicClient:
             return FlextResult[object].fail(f"URL building failed: {url_result.error}")
 
         headers_result: FlextResult[object] = self._get_auth_headers()
-        if not headers_result.success:
+        if not headers_result.is_success:
             return FlextResult[object].fail(
                 f"Failed to get auth headers: {headers_result.error}",
             )
@@ -271,7 +271,7 @@ class TapOracleOic(Tap):
         self._utilities = FlextMeltanoTapOracleOicUtilities()
 
     @property
-    def client(self: object) -> OracleOicClient:
+    def client(self) -> OracleOicClient:
         """Get Oracle OIC client instance using flext-oracle-oic."""
         if self._client is None:
             # Zero Tolerance FIX: Use utilities for configuration validation
@@ -308,7 +308,7 @@ class TapOracleOic(Tap):
             )
         return self._client
 
-    def discover_streams(self: object) -> Sequence[Stream]:
+    def discover_streams(self) -> Sequence[Stream]:
         """Discover available streams using consolidated stream registry."""
         logger.info("Discovering Oracle OIC streams using consolidated streams")
 
@@ -375,9 +375,9 @@ class TapOracleOic(Tap):
             # Test authentication by making a simple API call
             test_result: FlextResult[object] = self.client.get("integrations")
 
-            if test_result.success:
+            if test_result.is_success:
                 logger.info("Oracle OIC connection test successful")
-                return FlextResult[bool].ok(data=True)
+                return FlextResult[bool].ok(value=True)
 
             error_msg: str = f"Oracle OIC connection test failed: {test_result.error}"
             logger.error(error_msg)
@@ -490,7 +490,7 @@ def _execute_test_command(tap: TapOracleOic) -> int:
     """Execute test command."""
     logger.info("Testing Oracle OIC connection")
     result: FlextResult[object] = tap.test_connection()
-    return 0 if result.success else 1
+    return 0 if result.is_success else 1
 
 
 def _execute_run_command(_tap: TapOracleOic) -> int:
