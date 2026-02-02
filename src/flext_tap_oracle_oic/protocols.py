@@ -42,7 +42,7 @@ class FlextMeltanoTapOracleOicProtocols(p_meltano, p_db_oracle):
     oic_connection: p.Tap.OracleOic.OicConnectionProtocol
     """
 
-    class Tap:
+    class TapOracleOic:
         """Singer Tap domain protocols."""
 
         class OracleOic:
