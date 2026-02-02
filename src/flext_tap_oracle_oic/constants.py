@@ -100,7 +100,7 @@ class FlextTapOracleOicConstants(FlextConstants):
         "lookup_usage": "/lookups/{name}/usage",
     }
 
-    class Connection:
+    class TapOracleOic:
         """OIC connection configuration."""
 
         DEFAULT_TIMEOUT: Final[int] = ParentOicConstants.OIC.DEFAULT_TIMEOUT

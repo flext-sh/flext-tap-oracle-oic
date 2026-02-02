@@ -36,7 +36,7 @@ class FlextMeltanoTapOracleOicTypes(_t):
     # SINGER TAP TYPES - Complex Singer protocol types
     # =========================================================================
 
-    class SingerTap:
+    class TapOracleOic:
         """Singer tap protocol complex types."""
 
         type TapConfiguration = dict[
@@ -243,23 +243,6 @@ class FlextMeltanoTapOracleOicTypes(_t):
             "NETWORK",
             "VALIDATION",
         ]
-
-    class TapOracleOic:
-        """Tap Oracle OIC types namespace for cross-project access.
-
-        Provides organized access to all Tap Oracle OIC types for other FLEXT projects.
-        Usage: Other projects can reference `t.TapOracleOic.OracleOicIntegration.*`, `t.TapOracleOic.Project.*`, etc.
-        This enables consistent namespace patterns for cross-project type access.
-
-        Examples:
-            from flext_tap_oracle_oic.typings import t
-            config: t.TapOracleOic.Project.SingerTapOracleOicProjectConfig = ...
-            integration: t.TapOracleOic.OracleOicIntegration.IntegrationDefinition = ...
-
-        Note: Namespace composition via inheritance - no aliases needed.
-        Access parent namespaces directly through inheritance.
-
-        """
 
 
 # Alias for simplified usage

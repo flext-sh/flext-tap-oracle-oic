@@ -37,7 +37,7 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
         """Initialize Oracle OIC tap utilities."""
         super().__init__()
 
-    class SingerUtilities:
+    class TapOracleOic:
         """Singer protocol utilities for OIC tap operations."""
 
         @staticmethod
