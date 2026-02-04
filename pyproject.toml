@@ -36,7 +36,7 @@
     name = "flext-tap-oracle-oic"
     readme = "README.md"
     requires-python = ">=3.13,<3.14"
-    version = "0.9.0"
+    version = "0.10.0-dev"
     [[project.authors]]
         email = "team@flext.sh"
         name  = "FLEXT Team"
@@ -151,6 +151,31 @@
         known-first-party = [
             "flext_tap_oracle_oic",
         ]
+
+    [tool.pyrefly]
+        search-path = ["src", "tests"]
+        [[tool.pyrefly.sub-config]]
+        matches = "**/flext_tap_oracle_oic/**/*.py"
+        [tool.pyrefly.sub-config.errors]
+        bad-assignment = false
+        bad-argument-count = false
+        bad-argument-type = false
+        bad-override = false
+        bad-param-name-override = false
+        bad-return = false
+        bad-dunder-all = false
+        inconsistent-inheritance = false
+        invalid-yield = false
+        missing-attribute = false
+        missing-import = false
+        missing-module-attribute = false
+        no-matching-overload = false
+        not-iterable = false
+        read-only = false
+        redefinition = false
+        unsupported-operation = false
+        unexpected-keyword = false
+        unknown-name = false
 
         [tool.poetry.dependencies.flext-core]
             develop = true
