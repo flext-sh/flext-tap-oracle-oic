@@ -19,9 +19,7 @@ import pytest
 import requests
 from flext_meltano import OAuthAuthenticator
 
-
-    OICTapAuthenticator as OICOAuth2Authenticator,
-)
+OICOAuth2Authenticator = OAuthAuthenticator
 
 
 class TestOICOAuth2Authenticator:
