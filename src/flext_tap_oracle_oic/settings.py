@@ -241,28 +241,28 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
 
         return self
 
-    def validate_business_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self) -> FlextResult[bool]:
         """Validate Oracle Integration Cloud tap configuration business rules."""
         try:
             # Validate OAuth configuration
             if not self.oauth_client_id:
-                return FlextResult[None].fail("OAuth client ID is required")
+                return FlextResult[bool].fail("OAuth client ID is required")
 
             if not self.oauth_client_secret.get_secret_value():
-                return FlextResult[None].fail("OAuth client secret is required")
+                return FlextResult[bool].fail("OAuth client secret is required")
 
             if not self.oauth_audience:
-                return FlextResult[None].fail("OAuth audience is required")
+                return FlextResult[bool].fail("OAuth audience is required")
 
             # Validate connection parameters
             if self.timeout <= 0:
-                return FlextResult[None].fail("Timeout must be positive")
+                return FlextResult[bool].fail("Timeout must be positive")
 
             if self.max_retries < 0:
-                return FlextResult[None].fail("Max retries cannot be negative")
+                return FlextResult[bool].fail("Max retries cannot be negative")
 
             if self.page_size <= 0:
-                return FlextResult[None].fail("Page size must be positive")
+                return FlextResult[bool].fail("Page size must be positive")
 
             # Validate performance settings
             max_safe_parallel = 4
@@ -271,14 +271,14 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
                 self.max_parallel_streams > max_safe_parallel
                 and self.batch_size > max_safe_batch
             ):
-                return FlextResult[None].fail(
+                return FlextResult[bool].fail(
                     "High parallelism with large batch sizes may cause memory issues",
                 )
 
-            return FlextResult[None].ok(None)
+            return FlextResult[bool].ok(value=True)
 
         except Exception as e:
-            return FlextResult[None].fail(f"Business rules validation failed: {e}")
+            return FlextResult[bool].fail(f"Business rules validation failed: {e}")
 
     # Configuration helper methods
     def get_api_base_url(self) -> str:
@@ -486,7 +486,7 @@ def create_oracle_oic_tap_config(
 
 def validate_oracle_oic_tap_configuration(
     config: FlextMeltanoTapOracleOicSettings,
-) -> FlextResult[None]:
+) -> FlextResult[bool]:
     """Validate Oracle Integration Cloud tap configuration using FlextSettings patterns - ZERO DUPLICATION."""
     # Required string fields validation
     required_fields = [
@@ -501,21 +501,21 @@ def validate_oracle_oic_tap_configuration(
     # Validate required string fields
     for field_value, error_message in required_fields:
         if not (field_value and str(field_value).strip()):
-            return FlextResult[None].fail(error_message)
+            return FlextResult[bool].fail(error_message)
 
     # Validate timeout constraints
     if config.timeout <= 0:
-        return FlextResult[None].fail("Timeout must be positive")
+        return FlextResult[bool].fail("Timeout must be positive")
 
     # Validate retry constraints
     if config.max_retries < 0:
-        return FlextResult[None].fail("Max retries cannot be negative")
+        return FlextResult[bool].fail("Max retries cannot be negative")
 
     # Validate page size constraints
     if config.page_size <= 0:
-        return FlextResult[None].fail("Page size must be positive")
+        return FlextResult[bool].fail("Page size must be positive")
 
-    return FlextResult[None].ok(None)
+    return FlextResult[bool].ok(value=True)
 
 
 __all__: list[str] = [

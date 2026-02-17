@@ -103,7 +103,7 @@ class OICHealthChecker:
 
             if response.status_code in {200, 202}:
                 result = (
-                    response.json()
+                    response.model_dump_json()
                     if hasattr(response, "text") and response.text
                     else {}
                 )
@@ -154,7 +154,7 @@ class OICHealthChecker:
             )
 
             if response.status_code == HTTP_OK:
-                integration = response.json()
+                integration = response.model_dump_json()
                 status = integration.get("status", "UNKNOWN")
 
                 # Determine health based on status

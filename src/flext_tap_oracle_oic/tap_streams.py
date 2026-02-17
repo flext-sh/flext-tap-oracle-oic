@@ -60,7 +60,7 @@ class OICPaginator:
 
         """
         try:
-            data: dict[str, t.GeneralValueType] = response.json()
+            data: dict[str, t.GeneralValueType] = response.model_dump_json()
 
             # Track response time for adaptive sizing
             if hasattr(response, "elapsed") and self._adaptive_sizing:
@@ -302,7 +302,7 @@ class OICBaseStream(FlextMeltanoStream):
                 return
 
             try:
-                data: dict[str, t.GeneralValueType] = response.json()
+                data: dict[str, t.GeneralValueType] = response.model_dump_json()
             except (ValueError, TypeError, KeyError):
                 self.logger.exception("Failed to parse JSON from %s", response.url)
                 if self.config.get("fail_on_parsing_errors", True):
@@ -426,7 +426,7 @@ class OICBaseStream(FlextMeltanoStream):
     def _handle_response_error(self, response: object) -> None:
         """Handle Oracle OIC API response errors with proper categorization."""
         try:
-            error_data: dict[str, t.GeneralValueType] = response.json()
+            error_data: dict[str, t.GeneralValueType] = response.model_dump_json()
             error_message = error_data.get("message") or error_data.get("error")
         except (ValueError, TypeError, KeyError):
             error_message = response.text or f"HTTP {response.status_code}"
