@@ -6,7 +6,7 @@
 
 **FLEXT-Tap-Oracle-OIC** extracts metadata and operational data from Oracle Integration Cloud (OIC). It provides complete observability and audit capabilities for enterprise integration landscapes.
 
-Part of the [FLEXT](https://github.com/flext/flext) ecosystem.
+Part of the [FLEXT](https://github.com/flext-sh/flext) ecosystem.
 
 ## 🚀 Key Features
 
