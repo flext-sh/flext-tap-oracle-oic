@@ -30,9 +30,7 @@ from flext_tap_oracle_oic.tap_exceptions import (
     OICValidationError,
 )
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
-from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities as u
-
-FlextMeltanoTapOracleOicUtilities = u
+from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
 
 __all__ = [
     "FlextLogger",
@@ -58,5 +56,4 @@ __all__ = [
     "create_oracle_oic_tap_config",
     "m",
     "m_tap_oracle_oic",
-    "u",
 ]
