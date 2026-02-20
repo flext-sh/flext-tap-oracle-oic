@@ -48,7 +48,9 @@ class TestsFlextMeltanoTapOracleOicTypes(FlextTestsTypes):
             "https://test.oraclecloud.com",
             "https://staging.oraclecloud.com",
         ]
-        type TestOracleOicUsername = Literal["test_user", "REDACTED_LDAP_BIND_PASSWORD_user"]
+        type TestOracleOicUsername = Literal[
+            "test_user", "REDACTED_LDAP_BIND_PASSWORD_user"
+        ]
         type TestOracleOicMethod = Literal["GET", "POST", "PUT", "DELETE"]
 
         # Test data types

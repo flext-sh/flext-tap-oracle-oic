@@ -21,7 +21,6 @@ from flext_tap_oracle_oic.settings import (
     FlextMeltanoTapOracleOicSettings,
     create_oracle_oic_tap_config,
 )
-from flext_tap_oracle_oic.simple_api import setup_oic_tap as create_oic_tap
 from flext_tap_oracle_oic.tap_client import OracleOicClient, TapOracleOic
 from flext_tap_oracle_oic.tap_exceptions import (
     OICAPIError,
@@ -52,7 +51,6 @@ __all__ = [
     "TapOracleOic",
     "__version__",
     "__version_info__",
-    "create_oic_tap",
     "create_oracle_oic_tap_config",
     "m",
     "m_tap_oracle_oic",
