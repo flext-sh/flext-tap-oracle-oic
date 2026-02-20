@@ -1,96 +1,27 @@
-# FLEXT-Tap-Oracle-OIC
+# FLEXT Tap Oracle OIC
 
-<!-- TOC START -->
+Singer Tap para extracao de entidades e dados de Oracle Integration Cloud.
 
-- [🚀 Key Features](#-key-features)
-- [📦 Installation](#-installation)
-- [🛠️ Usage](#-usage)
-  - [Configuration](#configuration)
-  - [Discovery Mode](#discovery-mode)
-  - [Data Extraction](#data-extraction)
-- [🏗️ Architecture](#-architecture)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
+Descricao oficial atual: "FLEXT Tap Oracle OIC - Singer Tap for Oracle Integration Cloud".
 
-<!-- TOC END -->
+## O que este projeto entrega
 
-[![Singer SDK](https://img.shields.io/badge/singer--sdk-compliant-brightgreen.svg)](https://sdk.meltano.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+- Coleta recursos OIC para fluxo de integracao.
+- Padroniza emissao Singer para consumo downstream.
+- Apoia replicacao e analise de dados de integracao cloud.
 
-**FLEXT-Tap-Oracle-OIC** extracts metadata and operational data from Oracle Integration Cloud (OIC). It provides complete observability and audit capabilities for enterprise integration landscapes.
+## Contexto operacional
 
-Part of the [FLEXT](https://github.com/flext-sh/flext) ecosystem.
+- Entrada: acesso Oracle OIC e escopo de extracao.
+- Saida: stream Singer de entidades OIC.
+- Dependencias: conectividade OIC e stack Singer.
 
-## 🚀 Key Features
+## Estado atual e risco de adocao
 
-- **Comprehensive Metadata**: Syncs Integrations (`integrations`), Connections (`connections`), Packages (`packages`), and Agents (`agents`).
-- **Operational Visibility**: Streams for execution metrics (`metrics`), activity logs (`activity`), and error tracking (`tracking`).
-- **Secure Access**: Built-in OAuth2 support for IDCS authentication with automatic token handling.
-- **Incremental Sync**: Efficiently syncs only new activity and metric data to minimize API load.
-- **Resilience**: Robust retry logic and backoff strategies for OIC API limits.
+- Qualidade: **Alpha**
+- Uso recomendado: **Nao produtivo**
+- Nivel de estabilidade: em maturacao funcional e tecnica, sujeito a mudancas de contrato sem garantia de retrocompatibilidade.
 
-## 📦 Installation
+## Diretriz para uso nesta fase
 
-To usage in your Meltano project, add the extractor to your `meltano.yml`:
-
-```yaml
-plugins:
-  extractors:
-    - name: tap-oracle-oic
-      pip_url: flext-tap-oracle-oic
-      config:
-        base_url: ${OIC_BASE_URL}
-        oauth_client_id: ${OIC_CLIENT_ID}
-        oauth_client_secret: ${OIC_CLIENT_SECRET}
-        oauth_token_url: ${OIC_TOKEN_URL}
-        oauth_client_aud: ${OIC_AUDIENCE}
-```
-
-## 🛠️ Usage
-
-### Configuration
-
-Configure connectivity to your OIC instance:
-
-```json
-{
-  "base_url": "https://instance.integration.ocp.oraclecloud.com",
-  "oauth_client_id": "client_id",
-  "oauth_client_secret": "client_secret",
-  "oauth_token_url": "https://idcs.identity.oraclecloud.com/oauth2/v1/token",
-  "oauth_client_aud": "urn:opc:resource:consumer::all"
-}
-```
-
-### Discovery Mode
-
-Generate a catalog of available OIC resources:
-
-```bash
-tap-oracle-oic --config config.json --discover > catalog.json
-```
-
-### Data Extraction
-
-Run the tap to extract data:
-
-```bash
-tap-oracle-oic --config config.json --catalog catalog.json | target-jsonl
-```
-
-## 🏗️ Architecture
-
-Built on the Singer SDK, ensuring standard compliance:
-
-- **Streams**: Maps REST API resources to Singer streams.
-- **Auth**: Centralized OAuth handling via `flext-oracle-oic-ext`.
-- **State**: Tracks `updated_time` for incremental replication of logs.
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](docs/development.md) for details on adding new resource streams.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Aplicar este projeto somente em desenvolvimento, prova de conceito e homologacao controlada, com expectativa de ajustes frequentes ate maturidade de release.
