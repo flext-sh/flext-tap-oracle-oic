@@ -11,6 +11,8 @@ from datetime import UTC, datetime
 from typing import Literal, Self
 
 from flext_core import FlextConstants, FlextModels, t
+from flext_meltano.models import FlextMeltanoModels
+from flext_oracle_oic.models import FlextOracleOicModels
 from pydantic import (
     ConfigDict,
     Field,
@@ -49,7 +51,7 @@ _MIN_PERCENTAGE: float = 0.0
 _MAX_PERCENTAGE: float = 100.0
 
 
-class FlextMeltanoTapOracleOicModels(FlextModels):
+class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     """Oracle Integration Cloud tap models extending flext-core FlextModels.
 
     Provides complete models for OIC entity extraction, authentication,
