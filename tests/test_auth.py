@@ -1,6 +1,6 @@
 """Tests for OIC OAuth2 authenticator.
 
-Real tests for the actual authentication module without skips.
+Tests for FlextOracleOicAuthenticator with mocked dependencies.
 
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
@@ -8,199 +8,188 @@ SPDX-License-Identifier: MIT
 
 """
 
-# MIGRATED: Singer SDK imports centralized via flext-meltano
 from __future__ import annotations
 
 import base64
-import contextlib
-from unittest.mock import Mock, patch
+import json
+from unittest.mock import MagicMock
 
 import pytest
-import requests
-from flext_meltano import OAuthAuthenticator
-
-OICOAuth2Authenticator = OAuthAuthenticator
+from flext_core import r
+from flext_tap_oracle_oic.tap_client import FlextOracleOicAuthenticator
 
 
 class TestOICOAuth2Authenticator:
-    """Test OIC OAuth2 authenticator with real functionality."""
+    """Test OIC OAuth2 authenticator with mocked dependencies."""
 
     @pytest.fixture
-    def mock_stream(self) -> Mock:
-        """Create a mock stream with required config."""
-        stream = Mock()
-        stream.config = {
-            "oauth_client_id": "test_client_id",
-            "oauth_client_secret": "test_client_secret",
-            "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
-            "oauth_scope": "urn:opc:resource:consumer:all",
+    def mock_config(self) -> MagicMock:
+        """Create a mock config that mimics FlextMeltanoTapOracleOicSettings."""
+        config = MagicMock()
+        config.oauth_client_id = "test_client_id"
+        config.oauth_client_secret = MagicMock()
+        config.oauth_client_secret.get_secret_value.return_value = "test_client_secret"
+        config.oauth_token_url = "https://test.identity.oraclecloud.com/oauth2/v1/token"
+        config.oauth_audience = "urn:opc:resource:consumer:all"
+        config.base_url = "https://oic.example.com"
+        config.get_token_request_data.return_value = {
+            "grant_type": "client_credentials",
+            "client_id": "test_client_id",
+            "client_secret": "test_client_secret",
+            "audience": "urn:opc:resource:consumer:all",
         }
-        return stream
+        return config
 
     @pytest.fixture
-    def authenticator(self, mock_stream: Mock) -> OICOAuth2Authenticator:
-        """Create an authenticator instance."""
-        return OICOAuth2Authenticator(stream=mock_stream)
+    def authenticator(self, mock_config: MagicMock) -> FlextOracleOicAuthenticator:
+        """Create authenticator bypassing __init__ to avoid global state."""
+        auth = FlextOracleOicAuthenticator.__new__(FlextOracleOicAuthenticator)
+        auth.config = mock_config
+        auth._access_token = None
+        auth._api_client = MagicMock()
+        return auth
 
     def test_authenticator_initialization(
         self,
-        authenticator: OICOAuth2Authenticator,
-        mock_stream: Mock,
+        authenticator: FlextOracleOicAuthenticator,
+        mock_config: MagicMock,
     ) -> None:
-        """Test authenticator initialization."""
-        if authenticator._stream != mock_stream:
-            msg: str = f"Expected {mock_stream}, got {authenticator._stream}"
-            raise AssertionError(msg)
-        assert authenticator.auth_endpoint == mock_stream.config.get("oauth_token_url")
+        """Test authenticator stores config."""
+        assert authenticator.config is mock_config
+        assert authenticator._access_token is None
 
-    def test_oauth_token_request_payload(
+    def test_get_access_token_success(
         self,
-        authenticator: OICOAuth2Authenticator,
+        authenticator: FlextOracleOicAuthenticator,
     ) -> None:
-        """Test OAuth token request payload generation."""
-        payload = authenticator.oauth_request_payload
-
-        if payload["grant_type"] != "client_credentials":
-            msg: str = f"Expected {'client_credentials'}, got {payload['grant_type']}"
-            raise AssertionError(msg)
-        assert payload["scope"] == "urn:opc:resource:consumer:all"
-
-    def test_client_credentials_encoding(self) -> None:
-        """Test method."""
-        """Test client credentials are properly base64 encoded."""
-        # Test the base64 encoding logic
-        client_id = "test_client_id"
-        client_secret = "test_client_secret"
-
-        expected_credentials = f"{client_id}:{client_secret}"
-        expected_b64 = base64.b64encode(expected_credentials.encode()).decode()
-
-        # Verify the encoding matches what would be used
-        actual_b64 = base64.b64encode(f"{client_id}:{client_secret}".encode()).decode()
-        if actual_b64 != expected_b64:
-            msg: str = f"Expected {expected_b64}, got {actual_b64}"
-            raise AssertionError(msg)
-
-    @patch("requests.post")
-    def test_oauth_request_headers(
-        self,
-        mock_post: Mock,
-        authenticator: OICOAuth2Authenticator,
-    ) -> None:
-        """Test OAuth request headers include proper authorization."""
-        # Mock successful token response
-        mock_response = Mock()
-        mock_response.json.return_value = {
-            "access_token": "test_token",
-            "token_type": "Bearer",
-            "expires_in": 3600,
-        }
-        mock_post.return_value = mock_response
-
-        # Get auth headers (this will trigger token request)
-        with contextlib.suppress(Exception):
-            # May fail due to missing token, but we want to check the request
-            _ = authenticator.auth_headers
-
-        # Verify request was made with proper headers if called
-        if mock_post.called:
-            call_kwargs = mock_post.call_args[1]
-            headers = call_kwargs.get("headers", {})
-
-            # Should have basic auth header
-            auth_header = headers.get("Authorization", "")
-            assert auth_header.startswith("Basic ")
-
-    def test_oauth_request_payload_structure(
-        self,
-        authenticator: OICOAuth2Authenticator,
-    ) -> None:
-        """Test OAuth request payload has correct structure."""
-        payload = authenticator.oauth_request_payload
-
-        # Required OAuth2 fields
-        if "grant_type" not in payload:
-            msg: str = f"Expected {'grant_type'} in {payload}"
-            raise AssertionError(msg)
-        assert "scope" in payload
-
-        # Grant type should be client_credentials
-        if payload["grant_type"] != "client_credentials":
-            msg: str = f"Expected {'client_credentials'}, got {payload['grant_type']}"
-            raise AssertionError(msg)
-
-    def test_authenticator_missing_config_handling(self, mock_stream: Mock) -> None:
-        """Test authenticator handles missing config properly."""
-        # Test with missing oauth_endpoint
-        mock_stream.config = {
-            "oauth_client_id": "test_id",
-            "oauth_client_secret": "test_secret",
-        }
-
-        # Should handle missing config gracefully
-        authenticator = OICOAuth2Authenticator(stream=mock_stream)
-        if authenticator._stream != mock_stream:
-            msg: str = f"Expected {mock_stream}, got {authenticator._stream}"
-            raise AssertionError(msg)
-
-    def test_token_validation(self) -> None:
-        """Test method."""
-        """Test token validation logic."""
-        # Test with mock token data
-        token_data = {
+        """Test successful token retrieval."""
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.body = {
             "access_token": "test_token_123",
             "token_type": "Bearer",
             "expires_in": 3600,
         }
+        authenticator._api_client.post.return_value = r[object].ok(mock_response)
 
-        # Verify token structure is as expected
-        if "access_token" not in token_data:
-            msg: str = f"Expected {'access_token'} in {token_data}"
-            raise AssertionError(msg)
-        assert "token_type" in token_data
-        if token_data["token_type"] != "Bearer":
-            msg: str = f"Expected {'Bearer'}, got {token_data['token_type']}"
-            raise AssertionError(msg)
+        result = authenticator.get_access_token()
+        assert result.is_success
+        assert result.value == "test_token_123"
+        assert authenticator._access_token == "test_token_123"
 
-    @patch("requests.post")
-    def test_authentication_error_handling(
+    def test_get_access_token_http_failure(
         self,
-        mock_post: Mock,
-        authenticator: OICOAuth2Authenticator,
+        authenticator: FlextOracleOicAuthenticator,
     ) -> None:
-        """Test authentication error handling."""
-        # Mock failed request
-        mock_post.side_effect = requests.RequestException("Connection failed")
+        """Test token retrieval with HTTP failure."""
+        authenticator._api_client.post.return_value = r[object].fail(
+            "Connection refused",
+        )
 
-        # Should handle request errors gracefully when updating token
-        with pytest.raises((requests.RequestException, ValueError, AttributeError)):
-            authenticator.update_access_token()
+        result = authenticator.get_access_token()
+        assert result.is_failure
+        assert result.error is not None
+        assert "OAuth2 request failed" in result.error
 
-    def test_oauth_scope_configuration(
+    def test_get_access_token_bad_status_code(
         self,
-        authenticator: OICOAuth2Authenticator,
+        authenticator: FlextOracleOicAuthenticator,
     ) -> None:
-        """Test OAuth scope configuration."""
-        payload = authenticator.oauth_request_payload
+        """Test token retrieval with non-200 status code."""
+        mock_response = MagicMock()
+        mock_response.status_code = 401
+        mock_response.body = {"error": "invalid_client"}
+        authenticator._api_client.post.return_value = r[object].ok(mock_response)
 
-        # Should have OIC-specific scope
-        expected_scope = "urn:opc:resource:consumer:all"
-        if payload["scope"] != expected_scope:
-            msg: str = f"Expected {expected_scope}, got {payload['scope']}"
-            raise AssertionError(msg)
+        result = authenticator.get_access_token()
+        assert result.is_failure
+        assert result.error is not None
+        assert "status" in result.error
 
-    def test_authenticator_inheritance(
+    def test_get_access_token_empty_body(
         self,
-        authenticator: OICOAuth2Authenticator,
+        authenticator: FlextOracleOicAuthenticator,
     ) -> None:
-        """Test authenticator inherits from Singer SDK properly."""
-        assert isinstance(authenticator, OAuthAuthenticator)
+        """Test token retrieval with empty response body."""
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.body = None
+        authenticator._api_client.post.return_value = r[object].ok(mock_response)
 
-    def test_stream_reference(
+        result = authenticator.get_access_token()
+        assert result.is_failure
+        assert result.error is not None
+
+    def test_get_access_token_missing_token_in_response(
         self,
-        authenticator: OICOAuth2Authenticator,
-        mock_stream: Mock,
+        authenticator: FlextOracleOicAuthenticator,
     ) -> None:
-        """Test authenticator maintains stream reference."""
-        assert authenticator._stream is mock_stream
-        assert hasattr(authenticator, "_stream")
+        """Test token retrieval when response has no access_token field."""
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.body = {"token_type": "Bearer", "expires_in": 3600}
+        authenticator._api_client.post.return_value = r[object].ok(mock_response)
+
+        result = authenticator.get_access_token()
+        assert result.is_failure
+        assert result.error is not None
+
+    def test_get_access_token_string_body(
+        self,
+        authenticator: FlextOracleOicAuthenticator,
+    ) -> None:
+        """Test token retrieval with JSON string body."""
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.body = json.dumps(
+            {
+                "access_token": "string_body_token",
+                "token_type": "Bearer",
+            },
+        )
+        authenticator._api_client.post.return_value = r[object].ok(mock_response)
+
+        result = authenticator.get_access_token()
+        assert result.is_success
+        assert result.value == "string_body_token"
+
+    def test_get_access_token_exception_handling(
+        self,
+        authenticator: FlextOracleOicAuthenticator,
+    ) -> None:
+        """Test token retrieval handles unexpected exceptions."""
+        authenticator._api_client.post.side_effect = RuntimeError("Unexpected error")
+
+        result = authenticator.get_access_token()
+        assert result.is_failure
+        assert result.error is not None
+        assert "OAuth2 authentication failed" in result.error
+
+    def test_token_request_data_structure(
+        self,
+        mock_config: MagicMock,
+    ) -> None:
+        """Test token request data has correct structure."""
+        data = mock_config.get_token_request_data()
+
+        assert data["grant_type"] == "client_credentials"
+        assert data["client_id"] == "test_client_id"
+        assert data["client_secret"] == "test_client_secret"
+        assert data["audience"] == "urn:opc:resource:consumer:all"
+
+    def test_client_credentials_encoding(self) -> None:
+        """Test client credentials base64 encoding logic."""
+        client_id = "test_client_id"
+        client_secret = "test_client_secret"
+
+        expected = base64.b64encode(
+            f"{client_id}:{client_secret}".encode(),
+        ).decode()
+        actual = base64.b64encode(
+            f"{client_id}:{client_secret}".encode(),
+        ).decode()
+        assert actual == expected
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

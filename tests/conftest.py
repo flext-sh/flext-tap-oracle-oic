@@ -24,8 +24,8 @@ from flext_tap_oracle_oic import t
 def set_test_environment() -> Generator[None]:
     """Set test environment variables."""
     os.environ["FLEXT_ENV"] = "test"
-    os.environ["FLEXT_LOG_LEVEL"] = "debug"
-    os.environ["SINGER_SDK_LOG_LEVEL"] = "debug"
+    os.environ["FLEXT_LOG_LEVEL"] = "DEBUG"
+    os.environ["SINGER_SDK_LOG_LEVEL"] = "DEBUG"
     os.environ["OIC_TEST_MODE"] = "true"
     yield
     # Cleanup
