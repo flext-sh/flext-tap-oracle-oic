@@ -11,7 +11,7 @@ from __future__ import annotations
 from flext_tap_oracle_oic import t
 
 import pytest
-from singer_sdk import ConfigValidationError
+from singer_sdk.exceptions import ConfigValidationError
 
 from flext_tap_oracle_oic import TapOracleOic
 
