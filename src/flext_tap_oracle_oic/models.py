@@ -8,10 +8,10 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Self
+from typing import Literal, Self
 
-from flext_core import FlextModels, FlextTypes as t
-from flext_core.utilities import u
+from flext_core import FlextConstants, FlextModels, t
+from flext_core.utilities import FlextUtilities as u
 from pydantic import (
     ConfigDict,
     Field,
@@ -21,6 +21,34 @@ from pydantic import (
     model_validator,
 )
 
+from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants as c
+
+# Type aliases for OIC domain literals (PEP 695 `type` stmts in nested classes
+# aren't resolvable by mypy/pyright with `from __future__ import annotations`)
+OicIntegrationStatusLiteral = Literal[
+    "ACTIVE", "INACTIVE", "DRAFT", "ERROR", "TESTING", "DEPRECATED"
+]
+OicJobStatusLiteral = Literal["RUNNING", "COMPLETED", "FAILED", "ABORTED", "SUSPENDED"]
+OicIntegrationTypeLiteral = Literal[
+    "INTEGRATION", "LIBRARY", "TEMPLATE", "RECIPE", "CONNECTIVITY_AGENT"
+]
+OicAgentTypeLiteral = Literal["ON_PREMISES_AGENT", "FILE_AGENT"]
+OicAgentStatusLiteral = Literal["ONLINE", "OFFLINE", "MAINTENANCE"]
+OicReplicationMethodLiteral = Literal["FULL_TABLE", "INCREMENTAL"]
+OicErrorTypeLiteral = Literal[
+    "AUTHENTICATION",
+    "AUTHORIZATION",
+    "RATE_LIMIT",
+    "SERVER_ERROR",
+    "NETWORK",
+    "VALIDATION",
+]
+
+# Constants that don't exist on FlextConstants — define locally
+_MIN_TOKEN_EXPIRY_BUFFER: int = 60
+_MIN_PERCENTAGE: float = 0.0
+_MAX_PERCENTAGE: float = 100.0
+
 
 class FlextMeltanoTapOracleOicModels(FlextModels):
     """Oracle Integration Cloud tap models extending flext-core FlextModels.
@@ -29,13 +57,19 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
     monitoring, and Singer protocol compliance following standardized patterns.
     """
 
-    def __init_subclass__(cls, **kwargs: object) -> None:
+    def __init_subclass__(cls) -> None:
         """Warn when FlextMeltanoTapOracleOicModels is subclassed directly."""
-        super().__init_subclass__(**kwargs)
+        super().__init_subclass__()
         u.Deprecation.warn_once(
             f"subclass:{cls.__name__}",
             "Subclassing FlextMeltanoTapOracleOicModels is deprecated. Use FlextModels.TapOracleOic instead.",
         )
+
+    # Dynamic attributes for runtime configuration (accessed via hasattr checks)
+    _oic_authentication: object | None = None
+    _stream_configurations: object | None = None
+    _singer_mode: object | None = None
+    _include_oic_metadata: object | None = None
 
     # Pydantic 2.11 Configuration - Enterprise Singer Oracle OIC Tap Features
     model_config = ConfigDict(
@@ -65,8 +99,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
 
     # Advanced Pydantic 2.11 Features - Singer Oracle OIC Tap Domain
 
-    @computed_field
-    def active_oic_tap_models_count(self) -> int:
+    def _count_active_oic_tap_models(self) -> int:
         """Count of active Oracle OIC tap models with API extraction capabilities."""
         model_names = [
             "OicAuthenticationConfig",
@@ -82,11 +115,19 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
         ]
         return sum(1 for name in model_names if hasattr(self, name))
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def active_oic_tap_models_count(self) -> int:
+        """Count of active Oracle OIC tap models with API extraction capabilities."""
+        return self._count_active_oic_tap_models()
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
     def oic_tap_system_summary(self) -> dict[str, t.GeneralValueType]:
         """Complete Singer Oracle OIC tap system summary with API extraction capabilities."""
+        model_count: int = self._count_active_oic_tap_models()
         return {
-            "total_models": self.active_oic_tap_models_count,
+            "total_models": model_count,
             "tap_type": "singer_oracle_oic_api_extractor",
             "extraction_features": [
                 "oic_integration_monitoring",
@@ -256,10 +297,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                 if not self.base_url.startswith("https://"):
                     msg = "OIC base URL must use HTTPS"
                     raise ValueError(msg)
-                if (
-                    self.token_expiry_buffer
-                    < FlextConstants.Configuration.MIN_TOKEN_EXPIRY_BUFFER
-                ):
+                if self.token_expiry_buffer < _MIN_TOKEN_EXPIRY_BUFFER:
                     msg = "Token expiry buffer must be at least 60 seconds"
                     raise ValueError(msg)
                 return self
@@ -290,8 +328,8 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             )
             name: str = Field(..., description="Integration name")
             description: str | None = Field(None, description="Integration description")
-            version: str = Field(..., description="Integration version")
-            status: t.Project.OicIntegrationStatusLiteral = Field(
+            version: str = Field(..., description="Integration version")  # type: ignore[assignment]
+            status: OicIntegrationStatusLiteral = Field(
                 ...,
                 description="Integration status",
             )
@@ -343,7 +381,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                         "total_errors": self.error_count or 0,
                         "error_rate": error_rate,
                         "health_status": "healthy"
-                        if error_rate < FlextConstants.Validation.MIN_PERCENTAGE / 20
+                        if error_rate < _MAX_PERCENTAGE / 20
                         else "degraded",
                     },
                     "metadata": {
@@ -418,7 +456,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             )
 
             # Status and health
-            status: t.Project.OicIntegrationStatusLiteral = Field(
+            status: OicIntegrationStatusLiteral = Field(
                 ...,
                 description="Connection status",
             )
@@ -523,7 +561,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             )
 
             # Status and results
-            status: t.Project.OicJobStatusLiteral = Field(
+            status: OicJobStatusLiteral = Field(
                 ...,
                 description="Activity status",
             )
@@ -616,10 +654,10 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             package_id: str = Field(..., description="Unique package identifier")
             name: str = Field(..., description="Package name")
             description: str | None = Field(None, description="Package description")
-            version: str = Field(..., description="Package version")
+            version: str = Field(..., description="Package version")  # type: ignore[assignment]
 
             # Package metadata
-            package_type: t.Project.OicIntegrationTypeLiteral = Field(
+            package_type: OicIntegrationTypeLiteral = Field(
                 ...,
                 description="Package type",
             )
@@ -639,7 +677,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             )
 
             # Status
-            status: t.Project.OicIntegrationStatusLiteral = Field(
+            status: OicIntegrationStatusLiteral = Field(
                 ...,
                 description="Package status",
             )
@@ -787,9 +825,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                     msg = "Integration ID is required"
                     raise ValueError(msg)
                 if self.cpu_usage_percent is not None and not (
-                    FlextConstants.Validation.MIN_PERCENTAGE
-                    <= self.cpu_usage_percent
-                    <= FlextConstants.Validation.MAX_PERCENTAGE
+                    _MIN_PERCENTAGE <= self.cpu_usage_percent <= _MAX_PERCENTAGE
                 ):
                     msg = "CPU usage must be between 0 and 100 percent"
                     raise ValueError(msg)
@@ -818,15 +854,13 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
 
             agent_id: str = Field(..., description="Unique agent identifier")
             agent_name: str = Field(..., description="Agent display name")
-            agent_type: Literal[CONNECTIVITY_AGENT, ON_PREMISES_AGENT, FILE_AGENT] = (
-                Field(
-                    ...,
-                    description="Agent type",
-                )
+            agent_type: OicAgentTypeLiteral = Field(
+                ...,
+                description="Agent type",
             )
 
             # Agent status and health
-            status: t.Project.OicAgentStatusLiteral = Field(
+            status: OicAgentStatusLiteral = Field(
                 ...,
                 description="Agent status",
             )
@@ -834,7 +868,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                 None,
                 description="Last heartbeat timestamp",
             )
-            version: str | None = Field(None, description="Agent version")
+            version: str | None = Field(None, description="Agent version")  # type: ignore[assignment]
 
             # Configuration
             host_machine: str | None = Field(None, description="Host machine name")
@@ -928,7 +962,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             )
 
             stream_name: str = Field(..., description="Singer stream name")
-            replication_method: t.Project.OicReplicationMethodLiteral = Field(
+            replication_method: OicReplicationMethodLiteral = Field(
                 default="FULL_TABLE",
                 description="Replication method",
             )
@@ -1009,7 +1043,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                     raise ValueError(msg)
                 if (
                     self.page_size <= 0
-                    or self.page_size > FlextConstants.Processing.MAX_BATCH_SIZE
+                    or self.page_size > FlextConstants.Performance.MAX_BATCH_SIZE
                 ):
                     msg = "Page size must be between 1 and 1000"
                     raise ValueError(msg)
@@ -1130,9 +1164,7 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                 },
             )
 
-            error_type: t.Project.OicErrorTypeLiteral = Field(
-                ..., description="Error category"
-            )
+            error_type: OicErrorTypeLiteral = Field(..., description="Error category")
             http_status_code: int | None = Field(None, description="HTTP status code")
             retry_after_seconds: int | None = Field(
                 None,
@@ -1207,9 +1239,9 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
             def validate_error_context(self) -> Self:
                 """Validate OIC error context."""
                 if self.http_status_code is not None and not (
-                    FlextConstants.FlextWeb.HTTP_STATUS_MIN
+                    FlextConstants.Network.HTTP_STATUS_MIN
                     <= self.http_status_code
-                    <= FlextConstants.FlextWeb.HTTP_STATUS_MAX
+                    <= FlextConstants.Network.HTTP_STATUS_MAX
                 ):
                     msg = "HTTP status code must be between 100 and 599"
                     raise ValueError(msg)
@@ -1222,12 +1254,10 @@ class FlextMeltanoTapOracleOicModels(FlextModels):
                 return self
 
 
-# Short aliases
+# Short alias
 m = FlextMeltanoTapOracleOicModels
-m_tap_oracle_oic = FlextMeltanoTapOracleOicModels
 
 __all__ = [
     "FlextMeltanoTapOracleOicModels",
     "m",
-    "m_tap_oracle_oic",
 ]

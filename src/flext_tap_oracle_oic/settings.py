@@ -14,11 +14,12 @@ from __future__ import annotations
 import re
 from typing import Self
 
-from flext_core import FlextConstants, FlextResult, FlextSettings, FlextTypes as t
-from pydantic import Field, HttpUrl, SecretStr, field_validator, model_validator
+from flext_core import FlextConstants, FlextResult, FlextSettings
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import SettingsConfigDict
 
 from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants as c
+from flext_tap_oracle_oic.typings import t
 
 
 class FlextMeltanoTapOracleOicSettings(FlextSettings):
@@ -68,7 +69,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
         description="OAuth2 client secret for IDCS authentication (sensitive)",
     )
 
-    oauth_token_url: HttpUrl = Field(
+    oauth_token_url: str = Field(
         default="https://idcs-tenant.identity.oraclecloud.com/oauth2/v1/token",
         description="OAuth2 token endpoint URL",
     )
@@ -80,7 +81,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
     )
 
     # OIC Connection Configuration
-    base_url: HttpUrl = Field(
+    base_url: str = Field(
         default="https://instance.integration.ocp.oraclecloud.com",
         description="OIC instance base URL",
     )
@@ -379,19 +380,21 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             })
 
         all_overrides = {**env_overrides, **overrides}
-        return cls.get_or_create_shared_instance(
+        return cls(
             project_name="flext-tap-oracle-oic",
             environment=environment,
             **all_overrides,
         )
 
     @classmethod
-    def get_global_instance(cls) -> Self:
-        """Get the global singleton instance using enhanced FlextSettings pattern."""
-        return cls.get_or_create_shared_instance(project_name="flext-tap-oracle-oic")
+    def get_global_instance(cls) -> FlextMeltanoTapOracleOicSettings:
+        """Get the global singleton instance using FlextSettings singleton pattern."""
+        return cls(project_name="flext-tap-oracle-oic")
 
     @classmethod
-    def create_for_development(cls, **overrides: object) -> Self:
+    def create_for_development(
+        cls, **overrides: t.GeneralValueType
+    ) -> FlextMeltanoTapOracleOicSettings:
         """Create configuration for development environment."""
         dev_overrides: dict[str, t.GeneralValueType] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT * 2,
@@ -401,13 +404,15 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             "max_parallel_streams": 1,
             **overrides,
         }
-        return cls.get_or_create_shared_instance(
+        return cls(
             project_name="flext-tap-oracle-oic",
             **dev_overrides,
         )
 
     @classmethod
-    def create_for_production(cls, **overrides: object) -> Self:
+    def create_for_production(
+        cls, **overrides: t.GeneralValueType
+    ) -> FlextMeltanoTapOracleOicSettings:
         """Create configuration for production environment."""
         prod_overrides: dict[str, t.GeneralValueType] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
@@ -417,13 +422,15 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             "max_parallel_streams": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
             **overrides,
         }
-        return cls.get_or_create_shared_instance(
+        return cls(
             project_name="flext-tap-oracle-oic",
             **prod_overrides,
         )
 
     @classmethod
-    def create_for_testing(cls, **overrides: object) -> Self:
+    def create_for_testing(
+        cls, **overrides: t.GeneralValueType
+    ) -> FlextMeltanoTapOracleOicSettings:
         """Create configuration for testing environment."""
         test_overrides: dict[str, t.GeneralValueType] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT // 3,
@@ -433,7 +440,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             "max_parallel_streams": 1,
             **overrides,
         }
-        return cls.get_or_create_shared_instance(
+        return cls(
             project_name="flext-tap-oracle-oic",
             **test_overrides,
         )
@@ -441,7 +448,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
     @classmethod
     def reset_global_instance(cls) -> None:
         """Reset the global FlextMeltanoTapOracleOicSettings instance (mainly for testing)."""
-        cls.reset_shared_instance()
+        cls._reset_instance()
 
 
 def create_oracle_oic_tap_config(

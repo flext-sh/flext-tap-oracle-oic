@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from flext_core import FlextModels, FlextResult, FlextTypes as t
+from flext_core import FlextModels, t
 from pydantic import ConfigDict, Field
 
 from flext_tap_oracle_oic.constants import c
@@ -23,7 +23,7 @@ ConnectionStatus = c.ConnectionStatus
 class OICConnection(FlextModels):
     """OIC connection domain entity using flext-core patterns."""
 
-    model_config: dict[str, t.GeneralValueType] = ConfigDict(frozen=False)
+    model_config = ConfigDict(frozen=False)
 
     connection_id: str = Field(
         ...,
@@ -71,7 +71,7 @@ class OICConnection(FlextModels):
     def mark_failed(self, _error: str) -> None:
         """Mark connection as failed with error details."""
         self.connection_status = ConnectionStatus.FAILED
-        self.test_result: FlextResult[object] = {
+        self.test_result = {
             "error": "error",
             "timestamp": datetime.now(UTC).isoformat(),
         }
@@ -80,7 +80,7 @@ class OICConnection(FlextModels):
 class OICIntegration(FlextModels):
     """OIC integration domain entity using flext-core patterns."""
 
-    model_config: dict[str, t.GeneralValueType] = ConfigDict(frozen=False)
+    model_config = ConfigDict(frozen=False)
 
     integration_id: str = Field(
         ...,
@@ -158,7 +158,7 @@ class OICIntegration(FlextModels):
 class OICLookup(FlextModels):
     """OIC lookup table domain entity using flext-core patterns."""
 
-    model_config: dict[str, t.GeneralValueType] = ConfigDict(frozen=False)
+    model_config = ConfigDict(frozen=False)
 
     lookup_id: str = Field(..., min_length=1, description="OIC lookup identifier")
     lookup_name: str = Field(..., min_length=1, description="Lookup table name")
@@ -259,7 +259,7 @@ class OICMonitoringRecord(FlextModels):
 class OICProject(FlextModels):
     """OIC project domain entity using flext-core patterns."""
 
-    model_config: dict[str, t.GeneralValueType] = ConfigDict(frozen=False)
+    model_config = ConfigDict(frozen=False)
 
     project_id: str = Field(..., min_length=1, description="OIC project identifier")
     project_code: str = Field(..., min_length=1, description="Project code")

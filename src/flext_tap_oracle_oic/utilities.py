@@ -12,14 +12,14 @@ from datetime import UTC, datetime
 from typing import ClassVar, override
 from urllib.parse import urljoin, urlparse
 
-from flext_core import FlextResult, FlextTypes as t
-from flext_core.utilities import FlextUtilities as u_core
+from flext_core import FlextResult, t
+from flext_core.utilities import FlextUtilities
 from flext_meltano import FlextMeltanoModels as m
 
 from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
 
 
-class FlextMeltanoTapOracleOicUtilities(u_core):
+class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
     """Single unified utilities class for Singer tap Oracle OIC operations.
 
     Follows FLEXT unified class pattern with nested helper classes for
@@ -605,7 +605,7 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
             state: dict[str, t.GeneralValueType],
             stream_name: str,
             bookmark_key: str,
-            bookmark_value: object,
+            bookmark_value: t.GeneralValueType,
         ) -> dict[str, t.GeneralValueType]:
             """Set bookmark value for a stream.
 
@@ -812,7 +812,7 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
         state: dict[str, t.GeneralValueType],
         stream_name: str,
         bookmark_key: str,
-        bookmark_value: object,
+        bookmark_value: t.GeneralValueType,
     ) -> dict[str, t.GeneralValueType]:
         """Proxy method for StateManagement.set_bookmark()."""
         return cls.StateManagement.set_bookmark(

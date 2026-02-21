@@ -103,9 +103,13 @@ class FlextTapOracleOicConstants(FlextConstants):
     class TapOracleOic:
         """OIC connection configuration."""
 
-        DEFAULT_TIMEOUT: Final[int] = ParentOicConstants.OIC.DEFAULT_TIMEOUT
-        DEFAULT_MAX_RETRIES: Final[int] = ParentOicConstants.OIC.DEFAULT_MAX_RETRIES
-        DEFAULT_VERIFY_SSL: Final[bool] = ParentOicConstants.OIC.DEFAULT_VERIFY_SSL
+        DEFAULT_TIMEOUT: Final[int] = ParentOicConstants.OracleOic.DEFAULT_TIMEOUT
+        DEFAULT_MAX_RETRIES: Final[int] = (
+            ParentOicConstants.OracleOic.DEFAULT_MAX_RETRIES
+        )
+        DEFAULT_VERIFY_SSL: Final[bool] = (
+            ParentOicConstants.OracleOic.DEFAULT_VERIFY_SSL
+        )
 
     class TapOicProcessing:
         """OIC tap processing configuration.
@@ -113,9 +117,9 @@ class FlextTapOracleOicConstants(FlextConstants):
         Note: Does not override parent Processing class to avoid inheritance conflicts.
         """
 
-        DEFAULT_PAGE_SIZE: Final[int] = ParentOicConstants.OIC.DEFAULT_PAGE_SIZE
-        MAX_PAGE_SIZE: Final[int] = ParentOicConstants.OIC.MAX_PAGE_SIZE
-        MIN_PAGE_SIZE: Final[int] = ParentOicConstants.OIC.MIN_PAGE_SIZE
+        DEFAULT_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.DEFAULT_PAGE_SIZE
+        MAX_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.MAX_PAGE_SIZE
+        MIN_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.MIN_PAGE_SIZE
 
     class TapOicAuth:
         """OIC authentication configuration.

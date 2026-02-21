@@ -9,11 +9,12 @@ from __future__ import annotations
 
 import concurrent.futures
 import time
+import typing
 from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from pathlib import Path
 
-from flext_core import FlextTypes as t
+from flext_core import t
 
 
 class TestDataBuilder:
@@ -143,14 +144,14 @@ class TestValidator:
     """Validator utilities for test assertions."""
 
     @staticmethod
-    def validate_tap_instance(tap_instance: object) -> None:
+    def validate_tap_instance(tap_instance: t.GeneralValueType) -> None:
         """Validate tap instance has required attributes."""
         assert hasattr(tap_instance, "name")
         assert hasattr(tap_instance, "config")
         assert hasattr(tap_instance, "catalog")
 
     @staticmethod
-    def validate_stream_schema(stream: object) -> None:
+    def validate_stream_schema(stream: t.GeneralValueType) -> None:
         """Validate stream schema structure."""
         assert hasattr(stream, "schema")
         assert stream.schema is not None
@@ -160,7 +161,7 @@ class TestValidator:
         assert len(stream.schema["properties"]) > 0
 
     @staticmethod
-    def validate_stream_metadata(stream: object) -> None:
+    def validate_stream_metadata(stream: t.GeneralValueType) -> None:
         """Validate stream metadata structure."""
         assert hasattr(stream, "primary_keys")
         assert stream.primary_keys is not None
@@ -188,7 +189,7 @@ class TestValidator:
 
     @staticmethod
     def validate_performance_metrics(
-        metrics: dict[str, t.GeneralValueType],
+        metrics: dict[str, typing.Any],
         max_duration: float = 5.0,
     ) -> None:
         """Validate performance metrics meet requirements."""
@@ -203,14 +204,14 @@ class MockAPIServer:
 
     def __init__(self) -> None:
         """Initialize the mock API server."""
-        self.requests_mock: object = None
+        self.requests_mock: t.GeneralValueType = None
         self.base_url = "https://test-oic.integration.ocp.oraclecloud.com"
         self.token_url = "https://test-idcs.identity.oraclecloud.com/oauth2/v1/token"
 
     def setup_oauth2_mock(self, token: str = "mock-token-12345") -> None:
         """Setup OAuth2 authentication mock."""
         if self.requests_mock is not None:
-            self.requests_mock.post(
+            self.requests_mock.post(  # type: ignore[attr-defined]
                 self.token_url,
                 json={"access_token": token, "token_type": "Bearer"},
                 status_code=200,
@@ -224,7 +225,7 @@ class MockAPIServer:
         if records is None:
             records = [TestDataBuilder.integration_record()]
         if self.requests_mock is not None:
-            self.requests_mock.get(
+            self.requests_mock.get(  # type: ignore[attr-defined]
                 f"{self.base_url}/ic/api/integration/v1/integrations",
                 json={"items": records},
                 status_code=200,
@@ -238,7 +239,7 @@ class MockAPIServer:
         if records is None:
             records = [TestDataBuilder.connection_record()]
         if self.requests_mock is not None:
-            self.requests_mock.get(
+            self.requests_mock.get(  # type: ignore[attr-defined]
                 f"{self.base_url}/ic/api/integration/v1/connections",
                 json={"items": records},
                 status_code=200,
@@ -252,14 +253,16 @@ class MockAPIServer:
     ) -> None:
         """Setup error response mock."""
         if self.requests_mock is not None:
-            self.requests_mock.get(
+            self.requests_mock.get(  # type: ignore[attr-defined]
                 f"{self.base_url}{endpoint}",
                 json={"error": error_message},
                 status_code=status_code,
             )
 
     @contextmanager
-    def mock_context(self, requests_mock_instance: object) -> object:
+    def mock_context(
+        self, requests_mock_instance: t.GeneralValueType
+    ) -> Generator[MockAPIServer]:
         """Provide mock context for testing."""
         self.requests_mock = requests_mock_instance
         try:
@@ -275,13 +278,13 @@ class PerformanceMeasurer:
         """Initialize the performance measurer."""
         self.start_time: float | None = None
         self.end_time: float | None = None
-        self.measurements: list[dict[str, t.GeneralValueType]] = []
+        self.measurements: list[dict[str, typing.Any]] = []
 
     @contextmanager
-    def measure_duration(self) -> Generator[dict[str, t.GeneralValueType]]:
+    def measure_duration(self) -> Generator[dict[str, typing.Any]]:
         """Measure execution duration."""
         self.start_time = time.time()
-        metrics = {"start_time": self.start_time}
+        metrics: dict[str, typing.Any] = {"start_time": self.start_time}
         try:
             yield metrics
         finally:
@@ -294,14 +297,15 @@ class PerformanceMeasurer:
         if not self.measurements:
             return 0.0
         return float(
-            sum(m["duration"] for m in self.measurements) / len(self.measurements),
+            sum(float(m["duration"]) for m in self.measurements)
+            / len(self.measurements),
         )
 
     def get_max_duration(self) -> float:
         """Get maximum duration from all measurements."""
         if not self.measurements:
             return 0.0
-        return float(max(m["duration"] for m in self.measurements))
+        return float(max(float(m["duration"]) for m in self.measurements))
 
 
 class TestConfigGenerator:
@@ -450,8 +454,8 @@ class TestRunner:
 
     def run_tests_parallel(
         self,
-        test_functions: list[Callable[[], object]],
-    ) -> list[t.GeneralValueType]:
+        test_functions: list[Callable[[], t.GeneralValueType]],
+    ) -> list[dict[str, t.GeneralValueType]]:
         """Run multiple test functions in parallel."""
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = [executor.submit(test_func) for test_func in test_functions]

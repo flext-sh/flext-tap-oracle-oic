@@ -10,10 +10,10 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_core import FlextTypes as t
 from flext_meltano import FlextMeltanoTypes
 
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
+from flext_tap_oracle_oic.typings import t
 
 # Initialize FlextMeltanoTypes for compatibility
 th = FlextMeltanoTypes()
@@ -26,16 +26,16 @@ class IntegrationsStream(OICBaseStream):
     endpoints, triggers, connections, and execution statistics.
     """
 
-    name: ClassVar[str] = "integrations"
+    name: ClassVar[str] = "integrations"  # type: ignore[assignment, misc]
     path: ClassVar[str] = "/integrations"
-    primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: ClassVar[str] = "lastUpdated"
+    primary_keys: ClassVar[list[str]] = ["id"]  # type: ignore[assignment]
+    replication_key: ClassVar[str] = "lastUpdated"  # type: ignore[assignment]
     api_category: ClassVar[str] = "core"
     requires_design_api: ClassVar[bool] = True
-    default_sort: ClassVar[str] = "lastUpdated:desc"
+    default_sort: ClassVar[str] = "lastUpdated:desc"  # type: ignore[assignment]
     default_expand: ClassVar[str] = "connections,endpoints"
 
-    schema: dict[str, t.GeneralValueType] = (
+    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "id",
@@ -154,15 +154,15 @@ class ConnectionsStream(OICBaseStream):
     and connection properties for integrations.
     """
 
-    name: ClassVar[str] = "connections"
+    name: ClassVar[str] = "connections"  # type: ignore[assignment, misc]
     path: ClassVar[str] = "/connections"
-    primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: ClassVar[str] = "lastUpdated"
+    primary_keys: ClassVar[list[str]] = ["id"]  # type: ignore[assignment]
+    replication_key: ClassVar[str] = "lastUpdated"  # type: ignore[assignment]
     api_category: ClassVar[str] = "core"
     requires_design_api: ClassVar[bool] = True
-    default_sort: ClassVar[str] = "name:asc"
+    default_sort: ClassVar[str] = "name:asc"  # type: ignore[assignment]
 
-    schema: dict[str, t.GeneralValueType] = (
+    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "id",
@@ -265,14 +265,14 @@ class PackagesStream(OICBaseStream):
     including package metadata and content information.
     """
 
-    name: ClassVar[str] = "packages"
+    name: ClassVar[str] = "packages"  # type: ignore[assignment, misc]
     path: ClassVar[str] = "/packages"
-    primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: ClassVar[str] = "lastUpdated"
+    primary_keys: ClassVar[list[str]] = ["id"]  # type: ignore[assignment]
+    replication_key: ClassVar[str] = "lastUpdated"  # type: ignore[assignment]
     api_category: ClassVar[str] = "core"
-    default_sort: ClassVar[str] = "lastUpdated:desc"
+    default_sort: ClassVar[str] = "lastUpdated:desc"  # type: ignore[assignment]
 
-    schema: dict[str, t.GeneralValueType] = (
+    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "id",
@@ -354,13 +354,13 @@ class LookupsStream(OICBaseStream):
     and transformations across integrations.
     """
 
-    name: ClassVar[str] = "lookups"
+    name: ClassVar[str] = "lookups"  # type: ignore[assignment, misc]
     path: ClassVar[str] = "/lookups"
-    primary_keys: ClassVar[list[str]] = ["name"]
-    replication_key: ClassVar[str] = "lastUpdated"
+    primary_keys: ClassVar[list[str]] = ["name"]  # type: ignore[assignment]
+    replication_key: ClassVar[str] = "lastUpdated"  # type: ignore[assignment]
     api_category: ClassVar[str] = "core"
 
-    schema: dict[str, t.GeneralValueType] = (
+    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "name",
@@ -436,13 +436,13 @@ class LibrariesStream(OICBaseStream):
     XSLT stylesheets, and custom functions.
     """
 
-    name: ClassVar[str] = "libraries"
+    name: ClassVar[str] = "libraries"  # type: ignore[assignment, misc]
     path: ClassVar[str] = "/libraries"
-    primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: ClassVar[str] = "lastUpdated"
+    primary_keys: ClassVar[list[str]] = ["id"]  # type: ignore[assignment]
+    replication_key: ClassVar[str] = "lastUpdated"  # type: ignore[assignment]
     api_category: ClassVar[str] = "infrastructure"
 
-    schema: dict[str, t.GeneralValueType] = (
+    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "id",
@@ -522,13 +522,13 @@ class CertificatesStream(OICBaseStream):
     message encryption, and digital signatures.
     """
 
-    name: ClassVar[str] = "certificates"
+    name: ClassVar[str] = "certificates"  # type: ignore[assignment, misc]
     path: ClassVar[str] = "/certificates"
-    primary_keys: ClassVar[list[str]] = ["name"]
-    replication_key: ClassVar[str] = "lastUpdated"
+    primary_keys: ClassVar[list[str]] = ["name"]  # type: ignore[assignment]
+    replication_key: ClassVar[str] = "lastUpdated"  # type: ignore[assignment]
     api_category: ClassVar[str] = "security"
 
-    schema: dict[str, t.GeneralValueType] = (
+    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "name",
@@ -606,13 +606,13 @@ class AdaptersStream(OICBaseStream):
     capabilities, and configuration options.
     """
 
-    name: ClassVar[str] = "adapters"
+    name: ClassVar[str] = "adapters"  # type: ignore[assignment, misc]
     path: ClassVar[str] = "/adapters"
-    primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: ClassVar[str | None] = None  # Static metadata
+    primary_keys: ClassVar[list[str]] = ["id"]  # type: ignore[assignment]
+    replication_key: ClassVar[str | None] = None  # type: ignore[assignment]
     api_category: ClassVar[str] = "infrastructure"
 
-    schema: dict[str, t.GeneralValueType] = (
+    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "id",
@@ -692,14 +692,14 @@ class ProjectsStream(OICBaseStream):
     permissions, and resource grouping.
     """
 
-    name: ClassVar[str] = "projects"
+    name: ClassVar[str] = "projects"  # type: ignore[assignment, misc]
     path: ClassVar[str] = "/projects"
-    primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: ClassVar[str] = "lastUpdated"
+    primary_keys: ClassVar[list[str]] = ["id"]  # type: ignore[assignment]
+    replication_key: ClassVar[str] = "lastUpdated"  # type: ignore[assignment]
     api_category: ClassVar[str] = "extended"
     requires_design_api: ClassVar[bool] = True
 
-    schema: dict[str, t.GeneralValueType] = (
+    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "id",
@@ -779,14 +779,14 @@ class ExecutionsStream(OICBaseStream):
     performance metrics, and error information.
     """
 
-    name: ClassVar[str] = "executions"
+    name: ClassVar[str] = "executions"  # type: ignore[assignment, misc]
     path: ClassVar[str] = "/monitoring/v1/integrations"
-    primary_keys: ClassVar[list[str]] = ["instanceId"]
-    replication_key: ClassVar[str] = "startTime"
+    primary_keys: ClassVar[list[str]] = ["instanceId"]  # type: ignore[assignment]
+    replication_key: ClassVar[str] = "startTime"  # type: ignore[assignment]
     api_category: ClassVar[str] = "monitoring"
     requires_monitoring_api: ClassVar[bool] = True
 
-    schema: dict[str, t.GeneralValueType] = (
+    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "instanceId",
@@ -854,14 +854,14 @@ class MetricsStream(OICBaseStream):
     connections, and overall system healFlextMeltanoTypes.Singer.Typing.
     """
 
-    name: ClassVar[str] = "metrics"
+    name: ClassVar[str] = "metrics"  # type: ignore[assignment, misc]
     path: ClassVar[str] = "/monitoring/v1/metrics"
-    primary_keys: ClassVar[list[str]] = ["metricId", "timestamp"]
-    replication_key: ClassVar[str] = "timestamp"
+    primary_keys: ClassVar[list[str]] = ["metricId", "timestamp"]  # type: ignore[assignment]
+    replication_key: ClassVar[str] = "timestamp"  # type: ignore[assignment]
     api_category: ClassVar[str] = "monitoring"
     requires_monitoring_api: ClassVar[bool] = True
 
-    schema: dict[str, t.GeneralValueType] = (
+    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "metricId",
@@ -910,21 +910,21 @@ class MetricsStream(OICBaseStream):
 # CONSOLIDATED STREAM REGISTRY
 
 
-ALL_STREAMS = {
+ALL_STREAMS: dict[str, type[OICBaseStream]] = {
     # Core business streams
-    "integrations": "IntegrationsStream",
-    "connections": "ConnectionsStream",
-    "packages": "PackagesStream",
-    "lookups": "LookupsStream",
+    "integrations": IntegrationsStream,  # type: ignore[type-abstract]
+    "connections": ConnectionsStream,  # type: ignore[type-abstract]
+    "packages": PackagesStream,  # type: ignore[type-abstract]
+    "lookups": LookupsStream,  # type: ignore[type-abstract]
     # Infrastructure streams
-    "libraries": "LibrariesStream",
-    "certificates": "CertificatesStream",
-    "adapters": "AdaptersStream",
+    "libraries": LibrariesStream,  # type: ignore[type-abstract]
+    "certificates": CertificatesStream,  # type: ignore[type-abstract]
+    "adapters": AdaptersStream,  # type: ignore[type-abstract]
     # Extended business streams
-    "projects": "ProjectsStream",
+    "projects": ProjectsStream,  # type: ignore[type-abstract]
     # Monitoring streams
-    "executions": "ExecutionsStream",
-    "metrics": "MetricsStream",
+    "executions": ExecutionsStream,  # type: ignore[type-abstract]
+    "metrics": MetricsStream,  # type: ignore[type-abstract]
 }
 
 CORE_STREAMS = ["integrations", "connections", "packages", "lookups", "libraries"]

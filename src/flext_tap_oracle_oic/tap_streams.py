@@ -10,14 +10,15 @@ from __future__ import annotations
 import re
 from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
-from typing import override
+from typing import ClassVar
 
-from flext_api import FlextApiClient
+import requests
+from flext_api import FlextApi
 from flext_api.settings import FlextApiSettings
-from flext_core import FlextExceptions, FlextLogger, FlextResult, t
+from flext_core import FlextExceptions, FlextLogger, t
 from flext_meltano import FlextMeltanoStream
-from flext_oracle_oic import FlextOracleOicConstants
 
+from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
 from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
 
 # Constants for paginator and response tracking
@@ -40,16 +41,16 @@ class OICPaginator:
     - Response time tracking and optimization
     """
 
-    @override
     def __init__(self, start_value: int = 0, page_size: int = 100) -> None:
         """Initialize paginator with starting offset and page size."""
-        super().__init__(start_value, page_size)
-        self._max_page_size = 1000
-        self._min_page_size = 10
-        self._adaptive_sizing = True
-        self._response_times: t.FloatList = []
+        self.current_value: int = start_value
+        self._page_size: int = page_size
+        self._max_page_size: int = 1000
+        self._min_page_size: int = 10
+        self._adaptive_sizing: bool = True
+        self._response_times: list[float] = []
 
-    def get_next(self, response: object) -> int | None:
+    def get_next(self, response: requests.Response) -> int | None:
         """Calculate next offset for Oracle OIC pagination.
 
         Args:
@@ -60,7 +61,7 @@ class OICPaginator:
 
         """
         try:
-            data: dict[str, t.GeneralValueType] = response.model_dump_json()
+            data: dict[str, t.GeneralValueType] = response.json()
 
             # Track response time for adaptive sizing
             if hasattr(response, "elapsed") and self._adaptive_sizing:
@@ -70,7 +71,8 @@ class OICPaginator:
 
         except (ValueError, KeyError, TypeError, AttributeError) as e:
             logger = FlextLogger(__name__)
-            logger.warning(f"OIC pagination parsing failed: {type(e).__name__}: {e}")
+            err_msg = f"OIC pagination parsing failed: {type(e).__name__}: {e}"
+            logger.warning(err_msg)
             logger.info("Returning None - pagination parsing failure properly handled")
             logger.debug("This indicates end of pagination or malformed OIC response")
             return None
@@ -136,6 +138,14 @@ class OICBaseStream(FlextMeltanoStream):
     - Support for all OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
     """
 
+    # Stream configuration attributes (set by dynamic class construction)
+    requires_design_api: ClassVar[bool] = False
+    requires_runtime_api: ClassVar[bool] = False
+    api_path: ClassVar[str | None] = None
+    api_category: ClassVar[str] = "core"
+    default_sort: ClassVar[str | None] = None
+    additional_params: ClassVar[dict[str, t.GeneralValueType] | None] = None
+
     @property
     def url_base(self) -> str:
         """Build base URL for Oracle OIC API requests with intelligent discovery.
@@ -169,42 +179,32 @@ class OICBaseStream(FlextMeltanoStream):
 
         # Convert to appropriate API endpoint based on stream requirements
         if "integration.ocp.oraclecloud.com" in base_url:
-            if hasattr(self, "requires_design_api") and self.requires_design_api:
+            if self.requires_design_api:
                 base_url = f"https://design.integration.{region}.ocp.oraclecloud.com"
-            elif hasattr(self, "requires_runtime_api") and self.requires_runtime_api:
+            elif self.requires_runtime_api:
                 base_url = f"https://runtime.integration.{region}.ocp.oraclecloud.com"
 
         # Handle specialized API paths
-        if hasattr(self, "api_path"):
-            return base_url + str(self.api_path)
-        if hasattr(self, "api_category"):
-            api_paths = {
-                "core": FlextOracleOicConstants.OIC_API_BASE_PATH,
-                "monitoring": FlextOracleOicConstants.OIC_MONITORING_API_PATH,
-                "b2b": FlextOracleOicConstants.OIC_B2B_API_PATH,
-                "process": FlextOracleOicConstants.OIC_PROCESS_API_PATH,
-            }
-            return base_url + api_paths.get(
-                self.api_category,
-                FlextOracleOicConstants.OIC_API_BASE_PATH,
-            )
+        if self.api_path is not None:
+            return base_url + self.api_path
 
-        return base_url + FlextOracleOicConstants.OIC_API_BASE_PATH
+        api_paths = {
+            "core": FlextTapOracleOicConstants.OIC_API_BASE_PATH,
+            "monitoring": FlextTapOracleOicConstants.OIC_MONITORING_API_PATH,
+            "b2b": FlextTapOracleOicConstants.OIC_B2B_API_PATH,
+            "process": FlextTapOracleOicConstants.OIC_PROCESS_API_PATH,
+        }
+        return base_url + api_paths.get(
+            self.api_category,
+            FlextTapOracleOicConstants.OIC_API_BASE_PATH,
+        )
 
     @property
-    def api_client(self) -> FlextApiClient:
+    def api_client(self) -> FlextApi:
         """Get authenticated API client from parent tap's OIC client."""
-        # Access the Tap's OIC client for authenticated API client
-        if hasattr(self, "tap") and hasattr(self.tap, "client"):
-            client_result: FlextResult[object] = (
-                self.tap.client.get_authenticated_client()
-            )
-            if client_result.is_success and client_result.data is not None:
-                return client_result.data
-
-        # Fallback to creating new FlextApiClient
+        # Fallback to creating new FlextApi
         api_config = FlextApiSettings()
-        return FlextApiClient(api_config)
+        return FlextApi(api_config)
 
     def get_new_paginator(self) -> OICPaginator:
         """Create new Oracle OIC paginator with configuration.
@@ -217,8 +217,8 @@ class OICBaseStream(FlextMeltanoStream):
 
     def get_url_params(
         self,
-        context: Mapping[str, object] | None,
-        next_page_token: object | None,
+        context: Mapping[str, t.GeneralValueType] | None,
+        next_page_token: int | None,
     ) -> dict[str, t.GeneralValueType]:
         """Build URL parameters for Oracle OIC API requests.
 
@@ -247,7 +247,7 @@ class OICBaseStream(FlextMeltanoStream):
         if sort_field:
             sort_direction = "desc" if self.config.get("sort_desc", False) else "asc"
             params["orderBy"] = f"{sort_field}:{sort_direction}"
-        elif hasattr(self, "default_sort"):
+        elif self.default_sort is not None:
             params["orderBy"] = self.default_sort
 
         # Custom query filter
@@ -273,18 +273,15 @@ class OICBaseStream(FlextMeltanoStream):
                 params["fields"] = select_fields
 
         # Stream-specific parameters
-        if hasattr(self, "additional_params"):
-            if callable(self.additional_params):
-                params.update(self.additional_params(context))
-            else:
-                params.update(self.additional_params)
+        if self.additional_params is not None:
+            params.update(self.additional_params)
 
         # Remove empty values
         return {k: v for k, v in params.items() if v is not None}
 
     def parse_response(
         self,
-        response: object,
+        response: requests.Response,
     ) -> Iterator[dict[str, t.GeneralValueType]]:
         """Parse Oracle OIC API response and yield records with validation.
 
@@ -297,14 +294,14 @@ class OICBaseStream(FlextMeltanoStream):
         """
         try:
             # Validate response status
-            if not response.ok:
+            if not response.ok:  # type: ignore[union-attr]
                 self._handle_response_error(response)
                 return
 
             try:
-                data: dict[str, t.GeneralValueType] = response.model_dump_json()
+                data: dict[str, t.GeneralValueType] = response.json()  # type: ignore[union-attr]
             except (ValueError, TypeError, KeyError):
-                self.logger.exception("Failed to parse JSON from %s", response.url)
+                self.logger.exception("Failed to parse JSON from %s", response.url)  # type: ignore[union-attr]
                 if self.config.get("fail_on_parsing_errors", True):
                     raise
                 return
@@ -313,10 +310,12 @@ class OICBaseStream(FlextMeltanoStream):
             self._track_response_metrics(response, data)
 
             # Extract records from response and yield with validation
-            yield from self._extract_and_yield_records(data, response.url)
+            response_url = str(getattr(response, "url", "unknown"))
+            yield from self._extract_and_yield_records(data, response_url)
 
         except (ValueError, TypeError, KeyError, AttributeError):
-            self.logger.exception("Error parsing response from %s", response.url)
+            response_url_err = str(getattr(response, "url", "unknown"))
+            self.logger.exception("Error parsing response from %s", response_url_err)
             if self.config.get("fail_on_parsing_errors", True):
                 raise
 
@@ -387,13 +386,13 @@ class OICBaseStream(FlextMeltanoStream):
     ) -> bool:
         """Check if empty result is expected/normal based on OIC response metadata."""
         if isinstance(data, dict):
-            items: list[t.GeneralValueType] = data.get("items", [])
-            data_items: dict[str, t.GeneralValueType] = data.get("data", [])
+            items_val = data.get("items", [])
+            data_val = data.get("data", [])
             return (
                 data.get("totalSize", 0) == 0
                 or data.get("count", 0) == 0
-                or (isinstance(items, list) and len(items) == 0)
-                or (isinstance(data_items, list) and len(data_items) == 0)
+                or (isinstance(items_val, list) and len(items_val) == 0)
+                or (isinstance(data_val, list) and len(data_val) == 0)
             )
         return len(data) == 0
 
@@ -423,30 +422,37 @@ class OICBaseStream(FlextMeltanoStream):
         enriched["_tap_stream_name"] = self.name
         return enriched
 
-    def _handle_response_error(self, response: object) -> None:
+    def _handle_response_error(self, response: requests.Response) -> None:
         """Handle Oracle OIC API response errors with proper categorization."""
         try:
-            error_data: dict[str, t.GeneralValueType] = response.model_dump_json()
+            error_data: dict[str, t.GeneralValueType] = response.json()
             error_message = error_data.get("message") or error_data.get("error")
         except (ValueError, TypeError, KeyError):
-            error_message = response.text or f"HTTP {response.status_code}"
+            error_message = (
+                getattr(response, "text", None)
+                or f"HTTP {getattr(response, 'status_code', 'unknown')}"
+            )
 
-        self.logger.error("OIC API error from %s: %s", response.url, error_message)
+        response_url = str(getattr(response, "url", "unknown"))
+        err_msg = str(error_message)
+        self.logger.error("OIC API error from %s: %s", response_url, err_msg)
 
-        if response.status_code == HTTP_UNAUTHORIZED:
+        status_code = getattr(response, "status_code", 0)
+        if status_code == HTTP_UNAUTHORIZED:
             msg = "Unauthorized: Authentication failed or token expired"
-            raise FlextExceptions.ServiceError(msg)
-        if response.status_code == HTTP_FORBIDDEN:
+            raise FlextExceptions.AuthenticationError(msg)
+        if status_code == HTTP_FORBIDDEN:
             msg = "Forbidden: Insufficient permissions to access resource"
-            raise FlextExceptions.ServiceError(msg)
-        if response.status_code == HTTP_RATE_LIMITED:
+            raise FlextExceptions.AuthorizationError(msg)
+        if status_code == HTTP_RATE_LIMITED:
             msg = "Rate limit exceeded: Too many requests"
-            raise FlextExceptions.ServiceError(msg)
-        response.raise_for_status()
+            raise FlextExceptions.RateLimitError(msg)
+        if hasattr(response, "raise_for_status"):
+            response.raise_for_status()
 
     def _track_response_metrics(
         self,
-        response: object,
+        response: requests.Response,
         data: dict[str, t.GeneralValueType] | list[t.GeneralValueType],
     ) -> None:
         """Track response metrics for monitoring and optimization."""

@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
-from flext_core import FlextTypes as t
+from flext_tap_oracle_oic import t
 
 import pytest
 from singer_sdk import ConfigValidationError
