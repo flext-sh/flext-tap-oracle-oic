@@ -108,14 +108,12 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         ]
         return sum(1 for name in model_names if hasattr(self, name))
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
+    @computed_field
     def active_oic_tap_models_count(self) -> int:
         """Count of active Oracle OIC tap models with API extraction capabilities."""
         return self._count_active_oic_tap_models()
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
+    @computed_field
     def oic_tap_system_summary(self) -> dict[str, t.GeneralValueType]:
         """Complete Singer Oracle OIC tap system summary with API extraction capabilities."""
         model_count: int = self._count_active_oic_tap_models()
@@ -321,7 +319,9 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
             name: str = Field(..., description="Integration name")
             description: str | None = Field(None, description="Integration description")
-            version: str = Field(..., description="Integration version")  # type: ignore[assignment]
+            api_version: str = Field(
+                ..., description="Integration version from OIC API"
+            )
             status: OicIntegrationStatusLiteral = Field(
                 ...,
                 description="Integration status",
@@ -366,7 +366,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     "integration_identity": {
                         "id": self.integration_id,
                         "name": self.name,
-                        "version": self.version,
+                        "version": self.api_version,
                         "status": self.status,
                     },
                     "health_metrics": {
@@ -647,7 +647,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             package_id: str = Field(..., description="Unique package identifier")
             name: str = Field(..., description="Package name")
             description: str | None = Field(None, description="Package description")
-            version: str = Field(..., description="Package version")  # type: ignore[assignment]
+            api_version: str = Field(..., description="Package version from OIC API")
 
             # Package metadata
             package_type: OicIntegrationTypeLiteral = Field(
@@ -685,7 +685,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     "package_identity": {
                         "id": self.package_id,
                         "name": self.name,
-                        "version": self.version,
+                        "version": self.api_version,
                         "type": self.package_type,
                         "status": self.status,
                     },
@@ -861,7 +861,9 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 None,
                 description="Last heartbeat timestamp",
             )
-            version: str | None = Field(None, description="Agent version")  # type: ignore[assignment]
+            api_version: str | None = Field(
+                None, description="Agent version from OIC API"
+            )
 
             # Configuration
             host_machine: str | None = Field(None, description="Host machine name")
@@ -895,7 +897,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         "id": self.agent_id,
                         "name": self.agent_name,
                         "type": self.agent_type,
-                        "version": self.version,
+                        "version": self.api_version,
                         "status": self.status,
                     },
                     "connectivity": {

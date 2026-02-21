@@ -294,14 +294,14 @@ class OICBaseStream(FlextMeltanoStream):
         """
         try:
             # Validate response status
-            if not response.ok:  # type: ignore[union-attr]
+            if not response.ok:
                 self._handle_response_error(response)
                 return
 
             try:
-                data: dict[str, t.GeneralValueType] = response.json()  # type: ignore[union-attr]
+                data: dict[str, t.GeneralValueType] = response.json()
             except (ValueError, TypeError, KeyError):
-                self.logger.exception("Failed to parse JSON from %s", response.url)  # type: ignore[union-attr]
+                self.logger.exception("Failed to parse JSON from %s", response.url)
                 if self.config.get("fail_on_parsing_errors", True):
                     raise
                 return
