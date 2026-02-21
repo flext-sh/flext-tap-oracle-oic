@@ -14,6 +14,7 @@ from urllib.parse import urljoin, urlparse
 
 from flext_core import FlextResult, FlextTypes as t
 from flext_core.utilities import FlextUtilities as u_core
+from flext_meltano import FlextMeltanoModels as m
 
 from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
 
@@ -43,9 +44,9 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
         @staticmethod
         def create_schema_message(
             stream_name: str,
-            schema: dict[str, t.GeneralValueType],
+            schema: dict[str, t.JsonValue],
             key_properties: list[str] | None = None,
-        ) -> dict[str, t.GeneralValueType]:
+        ) -> m.Meltano.SingerSchemaMessage:
             """Create Singer schema message.
 
             Args:
@@ -57,19 +58,18 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
             dict[str, t.GeneralValueType]: Singer schema message
 
             """
-            return {
-                "type": "SCHEMA",
-                "stream": stream_name,
-                "schema": schema,
-                "key_properties": key_properties or [],
-            }
+            return m.Meltano.SingerSchemaMessage(
+                stream=stream_name,
+                schema=schema,
+                key_properties=key_properties or [],
+            )
 
         @staticmethod
         def create_record_message(
             stream_name: str,
-            record: dict[str, t.GeneralValueType],
+            record: dict[str, t.JsonValue],
             time_extracted: datetime | None = None,
-        ) -> dict[str, t.GeneralValueType]:
+        ) -> m.Meltano.SingerRecordMessage:
             """Create Singer record message.
 
             Args:
@@ -82,17 +82,16 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
 
             """
             extracted_time = time_extracted or datetime.now(UTC)
-            return {
-                "type": "RECORD",
-                "stream": stream_name,
-                "record": record,
-                "time_extracted": extracted_time.isoformat(),
-            }
+            return m.Meltano.SingerRecordMessage(
+                stream=stream_name,
+                record=record,
+                time_extracted=extracted_time.isoformat(),
+            )
 
         @staticmethod
         def create_state_message(
-            state: dict[str, t.GeneralValueType],
-        ) -> dict[str, t.GeneralValueType]:
+            state: dict[str, dict[str, str]],
+        ) -> m.Meltano.SingerStateMessage:
             """Create Singer state message.
 
             Args:
@@ -102,13 +101,16 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
             dict[str, t.GeneralValueType]: Singer state message
 
             """
-            return {
-                "type": "STATE",
-                "value": state,
-            }
+            return m.Meltano.SingerStateMessage(value=state)
 
         @staticmethod
-        def write_message(message: dict[str, t.GeneralValueType]) -> None:
+        def write_message(
+            message: (
+                m.Meltano.SingerSchemaMessage
+                | m.Meltano.SingerRecordMessage
+                | m.Meltano.SingerStateMessage
+            ),
+        ) -> None:
             """Write Singer message to stdout.
 
             Args:
@@ -734,11 +736,11 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
     def create_schema_message(
         cls,
         stream_name: str,
-        schema: dict[str, t.GeneralValueType],
+        schema: dict[str, t.JsonValue],
         key_properties: list[str] | None = None,
-    ) -> dict[str, t.GeneralValueType]:
+    ) -> m.Meltano.SingerSchemaMessage:
         """Proxy method for SingerUtilities.create_schema_message()."""
-        return cls.SingerUtilities.create_schema_message(
+        return cls.TapOracleOic.create_schema_message(
             stream_name,
             schema,
             key_properties,
@@ -748,11 +750,11 @@ class FlextMeltanoTapOracleOicUtilities(u_core):
     def create_record_message(
         cls,
         stream_name: str,
-        record: dict[str, t.GeneralValueType],
+        record: dict[str, t.JsonValue],
         time_extracted: datetime | None = None,
-    ) -> dict[str, t.GeneralValueType]:
+    ) -> m.Meltano.SingerRecordMessage:
         """Proxy method for SingerUtilities.create_record_message()."""
-        return cls.SingerUtilities.create_record_message(
+        return cls.TapOracleOic.create_record_message(
             stream_name,
             record,
             time_extracted,
