@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Protocol, runtime_checkable
 
 from flext_db_oracle.protocols import FlextDbOracleProtocols as p_db_oracle
@@ -56,7 +57,7 @@ class FlextMeltanoTapOracleOicProtocols(p_meltano, p_db_oracle):
 
                 def connect(
                     self,
-                    config: dict[str, t.GeneralValueType],
+                    config: Mapping[str, t.GeneralValueType],
                 ) -> p_meltano.Result[object]:
                     """Connect to Oracle OIC with provided configuration."""
                     ...
@@ -67,8 +68,8 @@ class FlextMeltanoTapOracleOicProtocols(p_meltano, p_db_oracle):
 
                 def discover_integrations(
                     self,
-                    config: dict[str, t.GeneralValueType],
-                ) -> p_meltano.Result[list[dict[str, t.GeneralValueType]]]:
+                    config: Mapping[str, t.GeneralValueType],
+                ) -> p_meltano.Result[list[Mapping[str, t.GeneralValueType]]]:
                     """Discover available integrations in Oracle OIC."""
                     ...
 
@@ -79,7 +80,7 @@ class FlextMeltanoTapOracleOicProtocols(p_meltano, p_db_oracle):
                 def extract_integration_data(
                     self,
                     integration: str,
-                ) -> p_meltano.Result[list[dict[str, t.GeneralValueType]]]:
+                ) -> p_meltano.Result[list[Mapping[str, t.GeneralValueType]]]:
                     """Extract data from an Oracle OIC integration."""
                     ...
 
@@ -89,7 +90,7 @@ class FlextMeltanoTapOracleOicProtocols(p_meltano, p_db_oracle):
 
                 def generate_catalog(
                     self,
-                    config: dict[str, t.GeneralValueType],
+                    config: Mapping[str, t.GeneralValueType],
                 ) -> p_meltano.Result[m.Meltano.SingerCatalog]:
                     """Generate Singer catalog for OIC entities."""
                     ...

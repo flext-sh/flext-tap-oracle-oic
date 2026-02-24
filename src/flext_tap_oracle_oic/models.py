@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from datetime import UTC, datetime
 from typing import Literal, Self
 
@@ -106,7 +107,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             "OicApiResponse",
             "OicErrorContext",
         ]
-        return sum(1 for name in model_names if hasattr(self, name))
+        return sum(1 for name in model_names if getattr(self, name, None) is not None)
 
     @computed_field
     def active_oic_tap_models_count(self) -> int:
@@ -114,7 +115,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         return self._count_active_oic_tap_models()
 
     @computed_field
-    def oic_tap_system_summary(self) -> dict[str, t.GeneralValueType]:
+    def oic_tap_system_summary(self) -> Mapping[str, t.GeneralValueType]:
         """Complete Singer Oracle OIC tap system summary with API extraction capabilities."""
         model_count: int = self._count_active_oic_tap_models()
         return {
@@ -149,27 +150,25 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         """Validate Singer Oracle OIC tap system consistency and configuration."""
         # Singer OIC tap authentication validation
         if (
-            hasattr(self, "_oic_authentication")
-            and self._oic_authentication
-            and not hasattr(self, "OicAuthenticationConfig")
+            self._oic_authentication
+            and getattr(self, "OicAuthenticationConfig", None) is None
         ):
             msg = "OicAuthenticationConfig required when OIC authentication configured"
             raise ValueError(msg)
 
         # Stream configuration validation
         if (
-            hasattr(self, "_stream_configurations")
-            and self._stream_configurations
-            and not hasattr(self, "OicStreamConfiguration")
+            self._stream_configurations
+            and getattr(self, "OicStreamConfiguration", None) is None
         ):
             msg = "OicStreamConfiguration required for stream configurations"
             raise ValueError(msg)
 
         # Singer protocol compliance validation
-        if hasattr(self, "_singer_mode") and self._singer_mode:
+        if self._singer_mode:
             required_models = ["OicApiResponse", "OicErrorContext"]
             for model in required_models:
-                if not hasattr(self, model):
+                if getattr(self, model, None) is None:
                     msg = f"{model} required for Singer protocol compliance"
                     raise ValueError(msg)
 
@@ -193,9 +192,8 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         "data_source": "oracle_integration_cloud",
                     },
                 }
-            case str() | int() | float() | bool() if hasattr(
-                self,
-                "_include_oic_metadata",
+            case str() | int() | float() | bool() if (
+                self._include_oic_metadata is not None
             ):
                 return {
                     "value": value,
@@ -254,7 +252,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             @computed_field
-            def auth_config_summary(self) -> dict[str, t.GeneralValueType]:
+            def auth_config_summary(self) -> Mapping[str, t.GeneralValueType]:
                 """OAuth2 authentication configuration summary."""
                 return {
                     "oauth_setup": {
@@ -358,7 +356,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             @computed_field
-            def integration_health_summary(self) -> dict[str, t.GeneralValueType]:
+            def integration_health_summary(self) -> Mapping[str, t.GeneralValueType]:
                 """OIC integration health and performance summary."""
                 error_rate = 0.0
                 if self.execution_count and self.execution_count > 0:
@@ -472,7 +470,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             @computed_field
-            def connection_security_summary(self) -> dict[str, t.GeneralValueType]:
+            def connection_security_summary(self) -> Mapping[str, t.GeneralValueType]:
                 """OIC connection security and health summary."""
                 return {
                     "connection_identity": {
@@ -577,7 +575,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             @computed_field
-            def activity_performance_summary(self) -> dict[str, t.GeneralValueType]:
+            def activity_performance_summary(self) -> Mapping[str, t.GeneralValueType]:
                 """OIC activity performance summary."""
                 duration_seconds = 0.0
                 if self.duration_ms:
@@ -681,7 +679,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             @computed_field
-            def package_composition_summary(self) -> dict[str, t.GeneralValueType]:
+            def package_composition_summary(self) -> Mapping[str, t.GeneralValueType]:
                 """OIC package composition and usage summary."""
                 return {
                     "package_identity": {
@@ -777,7 +775,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             queue_depth: int | None = Field(None, description="Message queue depth")
 
             @computed_field
-            def metrics_analysis_summary(self) -> dict[str, t.GeneralValueType]:
+            def metrics_analysis_summary(self) -> Mapping[str, t.GeneralValueType]:
                 """OIC metrics complete analysis summary."""
                 total_messages = (self.success_count or 0) + (self.error_count or 0)
                 error_rate = 0.0
@@ -886,7 +884,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             last_error: str | None = Field(None, description="Last error message")
 
             @computed_field
-            def agent_health_summary(self) -> dict[str, t.GeneralValueType]:
+            def agent_health_summary(self) -> Mapping[str, t.GeneralValueType]:
                 """OIC agent health and connectivity summary."""
                 health_status = "healthy"
                 if self.status in {"ERROR", "OFFLINE"}:
@@ -1001,7 +999,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             @computed_field
-            def stream_config_summary(self) -> dict[str, t.GeneralValueType]:
+            def stream_config_summary(self) -> Mapping[str, t.GeneralValueType]:
                 """OIC stream configuration summary."""
                 return {
                     "stream_identity": {
@@ -1095,7 +1093,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             request_id: str | None = Field(None, description="Request correlation ID")
 
             @computed_field
-            def api_response_summary(self) -> dict[str, t.GeneralValueType]:
+            def api_response_summary(self) -> Mapping[str, t.GeneralValueType]:
                 """OIC API response summary."""
                 return {
                     "response_status": {
@@ -1191,7 +1189,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             @computed_field
-            def error_context_summary(self) -> dict[str, t.GeneralValueType]:
+            def error_context_summary(self) -> Mapping[str, t.GeneralValueType]:
                 """OIC error context summary."""
                 return {
                     "error_classification": {

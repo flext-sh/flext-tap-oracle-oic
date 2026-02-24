@@ -12,6 +12,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import re
+from collections.abc import Mapping
 from typing import Self
 
 from flext_core import FlextConstants, FlextResult, FlextSettings
@@ -286,7 +287,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
         """Get full API base URL with version."""
         return f"{str(self.base_url).rstrip('/')}/ic/api/integration/{self.api_version}"
 
-    def get_auth_config(self) -> dict[str, t.GeneralValueType]:
+    def get_auth_config(self) -> Mapping[str, t.GeneralValueType]:
         """Get authentication configuration dictionary."""
         return {
             "client_id": self.oauth_client_id,
@@ -295,7 +296,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             "audience": self.oauth_audience,
         }
 
-    def get_connection_config(self) -> dict[str, t.GeneralValueType]:
+    def get_connection_config(self) -> Mapping[str, t.GeneralValueType]:
         """Get connection configuration dictionary."""
         return {
             "base_url": str(self.base_url),
@@ -305,7 +306,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             "page_size": self.page_size,
         }
 
-    def get_tap_config(self) -> dict[str, t.GeneralValueType]:
+    def get_tap_config(self) -> Mapping[str, t.GeneralValueType]:
         """Get tap-specific configuration dictionary."""
         return {
             "stream_prefix": self.stream_prefix,
@@ -315,7 +316,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             "max_parallel_streams": self.max_parallel_streams,
         }
 
-    def get_performance_config(self) -> dict[str, t.GeneralValueType]:
+    def get_performance_config(self) -> Mapping[str, t.GeneralValueType]:
         """Get performance configuration dictionary."""
         return {
             "batch_size": self.batch_size,
@@ -325,7 +326,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             "max_retries": self.max_retries,
         }
 
-    def get_token_request_data(self) -> dict[str, str]:
+    def get_token_request_data(self) -> Mapping[str, str]:
         """Get OAuth2 token request data for client credentials flow."""
         return {
             "grant_type": "client_credentials",
@@ -334,7 +335,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             "audience": self.oauth_audience,
         }
 
-    def get_headers(self) -> dict[str, str]:
+    def get_headers(self) -> Mapping[str, str]:
         """Get default headers for OIC API requests."""
         return {
             "Content-Type": "application/json",
@@ -452,9 +453,9 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
 
 
 def create_oracle_oic_tap_config(
-    oauth_params: dict[str, t.GeneralValueType],
-    connection_params: dict[str, t.GeneralValueType],
-    tap_params: dict[str, t.GeneralValueType] | None = None,
+    oauth_params: Mapping[str, t.GeneralValueType],
+    connection_params: Mapping[str, t.GeneralValueType],
+    tap_params: Mapping[str, t.GeneralValueType] | None = None,
 ) -> FlextResult[FlextMeltanoTapOracleOicSettings]:
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
@@ -468,7 +469,9 @@ def create_oracle_oic_tap_config(
 
     """
     try:
-        tap_config = tap_params or {}
+        tap_config: dict[str, t.GeneralValueType] = (
+            dict(tap_params) if tap_params is not None else {}
+        )
 
         tap_config.setdefault(
             "batch_size",

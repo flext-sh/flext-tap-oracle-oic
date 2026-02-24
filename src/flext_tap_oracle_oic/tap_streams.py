@@ -61,7 +61,7 @@ def _as_value_list(value: object) -> list[t.GeneralValueType] | None:
         return None
 
 
-def _as_value_map(value: object) -> dict[str, t.GeneralValueType] | None:
+def _as_value_map(value: object) -> Mapping[str, t.GeneralValueType] | None:
     """Validate payload as strict dict[str, GeneralValueType]."""
     try:
         return _GENERAL_MAP_ADAPTER.validate_python(value)
@@ -119,7 +119,7 @@ class OICPaginator:
             data = response.json()
 
             # Track response time for adaptive sizing
-            if hasattr(response, "elapsed") and self._adaptive_sizing:
+            if getattr(response, "elapsed", None) is not None and self._adaptive_sizing:
                 self._track_response_time(response.elapsed.total_seconds())
 
             return self._calculate_next_offset(data)
@@ -278,7 +278,7 @@ class OICBaseStream(FlextMeltanoStream):
         self,
         context: Mapping[str, t.GeneralValueType] | None,
         next_page_token: int | None,
-    ) -> dict[str, t.GeneralValueType]:
+    ) -> Mapping[str, t.GeneralValueType]:
         """Build URL parameters for Oracle OIC API requests.
 
         Args:
@@ -341,7 +341,7 @@ class OICBaseStream(FlextMeltanoStream):
     def parse_response(
         self,
         response: requests.Response,
-    ) -> Iterator[dict[str, t.GeneralValueType]]:
+    ) -> Iterator[Mapping[str, t.GeneralValueType]]:
         """Parse Oracle OIC API response and yield records with validation.
 
         Args:
@@ -382,7 +382,7 @@ class OICBaseStream(FlextMeltanoStream):
         self,
         data: object,
         url: str,
-    ) -> Iterator[dict[str, t.GeneralValueType]]:
+    ) -> Iterator[Mapping[str, t.GeneralValueType]]:
         """Extract and yield records with validation and enrichment."""
         records_yielded = 0
 
@@ -411,7 +411,7 @@ class OICBaseStream(FlextMeltanoStream):
     def _extract_items_for_processing(
         self,
         data: object,
-    ) -> Iterator[dict[str, t.GeneralValueType]]:
+    ) -> Iterator[Mapping[str, t.GeneralValueType]]:
         """Extract items from various OIC response formats for processing."""
         list_payload = _as_value_list(data)
         if list_payload is not None:
@@ -425,7 +425,7 @@ class OICBaseStream(FlextMeltanoStream):
     def _process_list_data(
         self,
         data: list[t.GeneralValueType],
-    ) -> Iterator[dict[str, t.GeneralValueType]]:
+    ) -> Iterator[Mapping[str, t.GeneralValueType]]:
         """Process list-type response data."""
         for item in data:
             record = _as_value_map(item)
@@ -434,8 +434,8 @@ class OICBaseStream(FlextMeltanoStream):
 
     def _process_dict_data(
         self,
-        data: dict[str, t.GeneralValueType],
-    ) -> Iterator[dict[str, t.GeneralValueType]]:
+        data: Mapping[str, t.GeneralValueType],
+    ) -> Iterator[Mapping[str, t.GeneralValueType]]:
         """Process dict-type response data with OIC format detection."""
         envelope = _as_oic_envelope(data)
         if envelope is not None and envelope.items is not None:
@@ -466,7 +466,7 @@ class OICBaseStream(FlextMeltanoStream):
         list_payload = _as_value_list(data)
         return len(list_payload) == 0 if list_payload is not None else False
 
-    def _is_single_record(self, data: dict[str, t.GeneralValueType]) -> bool:
+    def _is_single_record(self, data: Mapping[str, t.GeneralValueType]) -> bool:
         """Check if dict[str, t.GeneralValueType] represents a single record vs OIC metadata container."""
         metadata_keys = {
             "totalSize",
@@ -479,15 +479,15 @@ class OICBaseStream(FlextMeltanoStream):
         }
         return not any(key in data for key in metadata_keys)
 
-    def _validate_record(self, record: dict[str, t.GeneralValueType]) -> bool:
+    def _validate_record(self, record: Mapping[str, t.GeneralValueType]) -> bool:
         """Validate record meets basic requirements for processing."""
         return _as_value_map(record) is not None
 
     def _enrich_record(
-        self, record: dict[str, t.GeneralValueType]
-    ) -> dict[str, t.GeneralValueType]:
+        self, record: Mapping[str, t.GeneralValueType]
+    ) -> Mapping[str, t.GeneralValueType]:
         """Enrich record with tap metadata for traceability."""
-        enriched = dict[str, t.GeneralValueType](record)
+        enriched: dict[str, t.GeneralValueType] = dict(record)
         enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
         enriched["_tap_stream_name"] = self.name
         return enriched
@@ -517,8 +517,9 @@ class OICBaseStream(FlextMeltanoStream):
         if status_code == HTTP_RATE_LIMITED:
             msg = "Rate limit exceeded: Too many requests"
             raise FlextExceptions.RateLimitError(msg)
-        if hasattr(response, "raise_for_status"):
-            response.raise_for_status()
+        raise_for_status = getattr(response, "raise_for_status", None)
+        if raise_for_status is not None:
+            raise_for_status()
 
     def _track_response_metrics(
         self,
@@ -527,7 +528,7 @@ class OICBaseStream(FlextMeltanoStream):
     ) -> None:
         """Track response metrics for monitoring and optimization."""
         # Log response time and size for monitoring
-        if hasattr(response, "elapsed"):
+        if getattr(response, "elapsed", None) is not None:
             self.logger.debug("Response time: %.2fs", response.elapsed.total_seconds())
 
         # Log record count for monitoring

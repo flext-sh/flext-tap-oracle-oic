@@ -10,6 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from datetime import UTC, datetime
 
 from flext_api import FlextApi
@@ -37,7 +38,7 @@ class OICHealthChecker:
         api_config = FlextApiSettings(base_url=base_url)
         self._api_client = FlextApi(api_config)
 
-    def _get_headers(self) -> dict[str, str]:
+    def _get_headers(self) -> Mapping[str, str]:
         headers = {
             "Accept": JSON_MIME,
             "Content-Type": JSON_MIME,
@@ -55,7 +56,7 @@ class OICHealthChecker:
             headers=self._get_headers(),
         )
 
-    def check_health(self) -> dict[str, t.GeneralValueType]:
+    def check_health(self) -> Mapping[str, t.GeneralValueType]:
         """Check OIC instance health."""
         try:
             # Try to access the integrations endpoint as a health check
@@ -95,7 +96,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_connection(self, connection_id: str) -> dict[str, t.GeneralValueType]:
+    def test_connection(self, connection_id: str) -> Mapping[str, t.GeneralValueType]:
         """Test specific OIC connection."""
         try:
             # Call the connection test endpoint
@@ -146,7 +147,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_integration(self, integration_id: str) -> dict[str, t.GeneralValueType]:
+    def test_integration(self, integration_id: str) -> Mapping[str, t.GeneralValueType]:
         """Test specific OIC integration."""
         try:
             # Get integration details
@@ -211,7 +212,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def check_monitoring_health(self) -> dict[str, t.GeneralValueType]:
+    def check_monitoring_health(self) -> Mapping[str, t.GeneralValueType]:
         """Check OIC monitoring service health."""
         try:
             # Try to access monitoring endpoint

@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import os
 import sys
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from typing import ClassVar, override
 
 from flext_api import FlextApi
@@ -115,17 +115,17 @@ class OracleOicClient:
         # Zero Tolerance FIX: Use FlextMeltanoTapOracleOicUtilities for ALL business operations
         self._utilities = FlextMeltanoTapOracleOicUtilities()
 
-    def _get_auth_headers(self) -> FlextResult[dict[str, str]]:
+    def _get_auth_headers(self) -> FlextResult[Mapping[str, str]]:
         """Get authorization headers with OAuth2 token."""
         token_result = self.authenticator.get_access_token()
         if token_result.is_failure:
-            return FlextResult[dict[str, str]].fail(
+            return FlextResult[Mapping[str, str]].fail(
                 f"Failed to get access token: {token_result.error}",
             )
 
-        headers = self.config.get_headers()
+        headers: dict[str, str] = dict(self.config.get_headers())
         headers["Authorization"] = f"Bearer {token_result.value}"
-        return FlextResult[dict[str, str]].ok(headers)
+        return FlextResult[Mapping[str, str]].ok(headers)
 
     def get(self, endpoint: str) -> FlextResult[object]:
         """Make authenticated GET request to OIC API."""
@@ -169,7 +169,7 @@ class OracleOicClient:
     def post(
         self,
         endpoint: str,
-        data: dict[str, t.GeneralValueType] | None = None,
+        data: Mapping[str, t.GeneralValueType] | None = None,
     ) -> FlextResult[object]:
         """Make authenticated POST request to OIC API."""
         # Zero Tolerance FIX: Use utilities for URL validation and building
@@ -252,17 +252,17 @@ class TapOracleOic(Tap):
     def __init__(
         self,
         *,
-        config: dict[str, t.GeneralValueType] | None = None,
-        catalog: dict[str, t.GeneralValueType] | None = None,
-        state: dict[str, t.GeneralValueType] | None = None,
+        config: Mapping[str, t.GeneralValueType] | None = None,
+        catalog: Mapping[str, t.GeneralValueType] | None = None,
+        state: Mapping[str, t.GeneralValueType] | None = None,
         parse_env_config: bool = False,
         validate_config: bool = True,
     ) -> None:
         """Initialize Oracle OIC tap with library composition."""
         super().__init__(
-            config=config,
-            catalog=catalog,
-            state=state,
+            config=dict(config) if config is not None else None,
+            catalog=dict(catalog) if catalog is not None else None,
+            state=dict(state) if state is not None else None,
             parse_env_config=parse_env_config,
             validate_config=validate_config,
         )
@@ -401,7 +401,9 @@ def main() -> int:
     if exit_code != 0:
         return exit_code
 
-    config: dict[str, t.GeneralValueType] = _build_config_from_env()
+    config: dict[str, t.GeneralValueType] = {
+        k: v for k, v in _build_config_from_env().items()
+    }
     config_typed: dict[str, t.GeneralValueType] = {
         k: v for k, v in config.items() if v is not None
     }
@@ -417,7 +419,7 @@ def main() -> int:
         return 1
 
 
-def _build_config_from_env() -> dict[str, t.GeneralValueType]:
+def _build_config_from_env() -> Mapping[str, t.GeneralValueType]:
     """Build configuration from environment variables."""
     return {
         "oauth_client_id": os.getenv("TAP_ORACLE_OIC_OAUTH_CLIENT_ID"),
@@ -433,7 +435,9 @@ def _build_config_from_env() -> dict[str, t.GeneralValueType]:
 
 def _validate_and_setup_config() -> int:
     """Validate required configuration. Returns 0 for success, 1 for error."""
-    config: dict[str, t.GeneralValueType] = _build_config_from_env()
+    config: dict[str, t.GeneralValueType] = {
+        k: v for k, v in _build_config_from_env().items()
+    }
     required_config = [
         "oauth_client_id",
         "oauth_client_secret",
@@ -475,7 +479,7 @@ def _execute_discover_command(tap: TapOracleOic) -> int:
                 "key_properties": getattr(stream, "primary_keys", []),
                 "replication_method": (
                     "INCREMENTAL"
-                    if hasattr(stream, "replication_key") and stream.replication_key
+                    if getattr(stream, "replication_key", None)
                     else "FULL_TABLE"
                 ),
                 "replication_key": getattr(stream, "replication_key", None),
