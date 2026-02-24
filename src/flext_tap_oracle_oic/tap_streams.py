@@ -17,6 +17,7 @@ from flext_api import FlextApi
 from flext_api.settings import FlextApiSettings
 from flext_core import FlextExceptions, FlextLogger, t
 from flext_meltano import FlextMeltanoStream
+from pydantic import BaseModel, ConfigDict, TypeAdapter, ValidationError
 
 from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
 from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
@@ -28,6 +29,60 @@ SLOW_RESPONSE_THRESHOLD = 5.0
 HTTP_UNAUTHORIZED = 401
 HTTP_FORBIDDEN = 403
 HTTP_RATE_LIMITED = 429
+
+
+class _OicEnvelope(BaseModel):
+    """Pydantic envelope for OIC response payloads."""
+
+    model_config = ConfigDict(extra="allow")
+
+    items: list[t.GeneralValueType] | None = None
+    data: list[t.GeneralValueType] | None = None
+    totalSize: int | None = None
+    count: int | None = None
+
+
+_GENERAL_LIST_ADAPTER = TypeAdapter(
+    list[t.GeneralValueType],
+    config=ConfigDict(strict=True),
+)
+_GENERAL_MAP_ADAPTER = TypeAdapter(
+    dict[str, t.GeneralValueType],
+    config=ConfigDict(strict=True),
+)
+_STRING_LIST_ADAPTER = TypeAdapter(list[str], config=ConfigDict(strict=True))
+
+
+def _as_value_list(value: object) -> list[t.GeneralValueType] | None:
+    """Validate payload as strict list[GeneralValueType]."""
+    try:
+        return _GENERAL_LIST_ADAPTER.validate_python(value)
+    except ValidationError:
+        return None
+
+
+def _as_value_map(value: object) -> dict[str, t.GeneralValueType] | None:
+    """Validate payload as strict dict[str, GeneralValueType]."""
+    try:
+        return _GENERAL_MAP_ADAPTER.validate_python(value)
+    except ValidationError:
+        return None
+
+
+def _as_string_list(value: object) -> list[str] | None:
+    """Validate payload as strict list[str]."""
+    try:
+        return _STRING_LIST_ADAPTER.validate_python(value)
+    except ValidationError:
+        return None
+
+
+def _as_oic_envelope(value: object) -> _OicEnvelope | None:
+    """Validate payload as an OIC envelope model."""
+    try:
+        return _OicEnvelope.model_validate(value, strict=True)
+    except ValidationError:
+        return None
 
 
 class OICPaginator:
@@ -61,7 +116,7 @@ class OICPaginator:
 
         """
         try:
-            data: dict[str, t.GeneralValueType] = response.json()
+            data = response.json()
 
             # Track response time for adaptive sizing
             if hasattr(response, "elapsed") and self._adaptive_sizing:
@@ -79,7 +134,7 @@ class OICPaginator:
 
     def _calculate_next_offset(
         self,
-        data: dict[str, t.GeneralValueType] | list[t.GeneralValueType],
+        data: object,
     ) -> int | None:
         """Calculate next offset based on OIC response format."""
         items = self._extract_items_from_response(data)
@@ -89,16 +144,20 @@ class OICPaginator:
 
     def _extract_items_from_response(
         self,
-        data: dict[str, t.GeneralValueType] | list[t.GeneralValueType],
+        data: object,
     ) -> list[t.GeneralValueType] | None:
         """Extract items from various OIC response formats."""
-        if isinstance(data, list):
-            return data
-        if isinstance(data, dict):
-            if "items" in data and isinstance(data["items"], list):
-                return data["items"]
-            if "data" in data and isinstance(data["data"], list):
-                return data["data"]
+        list_payload = _as_value_list(data)
+        if list_payload is not None:
+            return list_payload
+
+        envelope = _as_oic_envelope(data)
+        if envelope is None:
+            return None
+        if envelope.items is not None:
+            return envelope.items
+        if envelope.data is not None:
+            return envelope.data
         return None
 
     def _track_response_time(self, response_time: float) -> None:
@@ -267,10 +326,10 @@ class OICBaseStream(FlextMeltanoStream):
         # Field selection for reduced payload
         select_fields = self.config.get("select_fields")
         if select_fields:
-            if isinstance(select_fields, list):
-                params["fields"] = ",".join(select_fields)
-            else:
-                params["fields"] = select_fields
+            field_list = _as_string_list(select_fields)
+            params["fields"] = (
+                ",".join(field_list) if field_list is not None else str(select_fields)
+            )
 
         # Stream-specific parameters
         if self.additional_params is not None:
@@ -299,7 +358,7 @@ class OICBaseStream(FlextMeltanoStream):
                 return
 
             try:
-                data: dict[str, t.GeneralValueType] = response.json()
+                data = response.json()
             except (ValueError, TypeError, KeyError):
                 self.logger.exception("Failed to parse JSON from %s", response.url)
                 if self.config.get("fail_on_parsing_errors", True):
@@ -321,7 +380,7 @@ class OICBaseStream(FlextMeltanoStream):
 
     def _extract_and_yield_records(
         self,
-        data: dict[str, t.GeneralValueType] | list[t.GeneralValueType],
+        data: object,
         url: str,
     ) -> Iterator[dict[str, t.GeneralValueType]]:
         """Extract and yield records with validation and enrichment."""
@@ -333,10 +392,14 @@ class OICBaseStream(FlextMeltanoStream):
                 records_yielded += 1
 
         if records_yielded == 0 and not self._is_empty_result_expected(data):
+            map_data = _as_value_map(data)
+            payload_descriptor: object = (
+                list(map_data.keys()) if map_data is not None else type(data)
+            )
             self.logger.warning(
                 "Unknown response format from %s: %s",
                 url,
-                list(data.keys()) if isinstance(data, dict) else type(data),
+                payload_descriptor,
             )
         elif records_yielded > 0:
             self.logger.debug(
@@ -347,13 +410,17 @@ class OICBaseStream(FlextMeltanoStream):
 
     def _extract_items_for_processing(
         self,
-        data: dict[str, t.GeneralValueType] | list[t.GeneralValueType],
+        data: object,
     ) -> Iterator[dict[str, t.GeneralValueType]]:
         """Extract items from various OIC response formats for processing."""
-        if isinstance(data, list):
-            yield from self._process_list_data(data)
-        elif isinstance(data, dict):
-            yield from self._process_dict_data(data)
+        list_payload = _as_value_list(data)
+        if list_payload is not None:
+            yield from self._process_list_data(list_payload)
+            return
+
+        map_payload = _as_value_map(data)
+        if map_payload is not None:
+            yield from self._process_dict_data(map_payload)
 
     def _process_list_data(
         self,
@@ -361,40 +428,43 @@ class OICBaseStream(FlextMeltanoStream):
     ) -> Iterator[dict[str, t.GeneralValueType]]:
         """Process list-type response data."""
         for item in data:
-            if isinstance(item, dict):
-                yield item
+            record = _as_value_map(item)
+            if record is not None:
+                yield record
 
     def _process_dict_data(
         self,
         data: dict[str, t.GeneralValueType],
     ) -> Iterator[dict[str, t.GeneralValueType]]:
         """Process dict-type response data with OIC format detection."""
-        if "items" in data:
-            items = data["items"]
-            if isinstance(items, list):
-                yield from self._process_list_data(items)
-        elif "data" in data:
-            data_items = data["data"]
-            if isinstance(data_items, list):
-                yield from self._process_list_data(data_items)
-        elif self._is_single_record(data):
+        envelope = _as_oic_envelope(data)
+        if envelope is not None and envelope.items is not None:
+            yield from self._process_list_data(envelope.items)
+            return
+
+        if envelope is not None and envelope.data is not None:
+            yield from self._process_list_data(envelope.data)
+            return
+
+        if self._is_single_record(data):
             yield data
 
     def _is_empty_result_expected(
         self,
-        data: dict[str, t.GeneralValueType] | list[t.GeneralValueType],
+        data: object,
     ) -> bool:
         """Check if empty result is expected/normal based on OIC response metadata."""
-        if isinstance(data, dict):
-            items_val = data.get("items", [])
-            data_val = data.get("data", [])
+        envelope = _as_oic_envelope(data)
+        if envelope is not None:
             return (
-                data.get("totalSize", 0) == 0
-                or data.get("count", 0) == 0
-                or (isinstance(items_val, list) and len(items_val) == 0)
-                or (isinstance(data_val, list) and len(data_val) == 0)
+                envelope.totalSize == 0
+                or envelope.count == 0
+                or (envelope.items is not None and len(envelope.items) == 0)
+                or (envelope.data is not None and len(envelope.data) == 0)
             )
-        return len(data) == 0
+
+        list_payload = _as_value_list(data)
+        return len(list_payload) == 0 if list_payload is not None else False
 
     def _is_single_record(self, data: dict[str, t.GeneralValueType]) -> bool:
         """Check if dict[str, t.GeneralValueType] represents a single record vs OIC metadata container."""
@@ -411,7 +481,7 @@ class OICBaseStream(FlextMeltanoStream):
 
     def _validate_record(self, record: dict[str, t.GeneralValueType]) -> bool:
         """Validate record meets basic requirements for processing."""
-        return isinstance(record, dict)
+        return _as_value_map(record) is not None
 
     def _enrich_record(
         self, record: dict[str, t.GeneralValueType]
@@ -425,7 +495,7 @@ class OICBaseStream(FlextMeltanoStream):
     def _handle_response_error(self, response: requests.Response) -> None:
         """Handle Oracle OIC API response errors with proper categorization."""
         try:
-            error_data: dict[str, t.GeneralValueType] = response.json()
+            error_data = _as_value_map(response.json()) or {}
             error_message = error_data.get("message") or error_data.get("error")
         except (ValueError, TypeError, KeyError):
             error_message = (
@@ -453,7 +523,7 @@ class OICBaseStream(FlextMeltanoStream):
     def _track_response_metrics(
         self,
         response: requests.Response,
-        data: dict[str, t.GeneralValueType] | list[t.GeneralValueType],
+        data: object,
     ) -> None:
         """Track response metrics for monitoring and optimization."""
         # Log response time and size for monitoring
@@ -461,17 +531,18 @@ class OICBaseStream(FlextMeltanoStream):
             self.logger.debug("Response time: %.2fs", response.elapsed.total_seconds())
 
         # Log record count for monitoring
-        if isinstance(data, list):
-            self.logger.debug("Received %s records", len(data))
-        elif isinstance(data, dict):
-            if "items" in data:
-                items = data["items"]
-                if isinstance(items, list):
-                    self.logger.debug("Received %s records", len(items))
-            elif "data" in data:
-                data_items = data["data"]
-                if isinstance(data_items, list):
-                    self.logger.debug("Received %s records", len(data_items))
+        list_payload = _as_value_list(data)
+        if list_payload is not None:
+            self.logger.debug("Received %s records", len(list_payload))
+            return
+
+        envelope = _as_oic_envelope(data)
+        if envelope is None:
+            return
+        if envelope.items is not None:
+            self.logger.debug("Received %s records", len(envelope.items))
+        elif envelope.data is not None:
+            self.logger.debug("Received %s records", len(envelope.data))
 
 
 # Export for module interface

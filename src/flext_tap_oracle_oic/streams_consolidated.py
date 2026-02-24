@@ -35,7 +35,7 @@ class IntegrationsStream(OICBaseStream):
     default_sort: ClassVar[str] = "lastUpdated:desc"  # type: ignore[assignment]
     default_expand: ClassVar[str] = "connections,endpoints"
 
-    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "id",
@@ -162,7 +162,7 @@ class ConnectionsStream(OICBaseStream):
     requires_design_api: ClassVar[bool] = True
     default_sort: ClassVar[str] = "name:asc"  # type: ignore[assignment]
 
-    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "id",
@@ -272,7 +272,7 @@ class PackagesStream(OICBaseStream):
     api_category: ClassVar[str] = "core"
     default_sort: ClassVar[str] = "lastUpdated:desc"  # type: ignore[assignment]
 
-    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "id",
@@ -360,7 +360,7 @@ class LookupsStream(OICBaseStream):
     replication_key: ClassVar[str] = "lastUpdated"  # type: ignore[assignment]
     api_category: ClassVar[str] = "core"
 
-    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "name",
@@ -442,7 +442,7 @@ class LibrariesStream(OICBaseStream):
     replication_key: ClassVar[str] = "lastUpdated"  # type: ignore[assignment]
     api_category: ClassVar[str] = "infrastructure"
 
-    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "id",
@@ -528,7 +528,7 @@ class CertificatesStream(OICBaseStream):
     replication_key: ClassVar[str] = "lastUpdated"  # type: ignore[assignment]
     api_category: ClassVar[str] = "security"
 
-    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "name",
@@ -612,7 +612,7 @@ class AdaptersStream(OICBaseStream):
     replication_key: ClassVar[str | None] = None  # type: ignore[assignment]
     api_category: ClassVar[str] = "infrastructure"
 
-    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "id",
@@ -699,7 +699,7 @@ class ProjectsStream(OICBaseStream):
     api_category: ClassVar[str] = "extended"
     requires_design_api: ClassVar[bool] = True
 
-    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "id",
@@ -786,7 +786,7 @@ class ExecutionsStream(OICBaseStream):
     api_category: ClassVar[str] = "monitoring"
     requires_monitoring_api: ClassVar[bool] = True
 
-    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "instanceId",
@@ -861,7 +861,7 @@ class MetricsStream(OICBaseStream):
     api_category: ClassVar[str] = "monitoring"
     requires_monitoring_api: ClassVar[bool] = True
 
-    schema: dict[str, t.GeneralValueType] = (  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = (  # type: ignore[assignment]
         FlextMeltanoTypes.Singer.Typing.PropertiesList(
             FlextMeltanoTypes.Singer.Typing.Property(
                 "metricId",

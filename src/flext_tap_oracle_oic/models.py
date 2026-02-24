@@ -182,28 +182,30 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         _info: FieldSerializationInfo,
     ) -> object:
         """Add Singer Oracle OIC tap metadata to all serialized fields."""
-        if isinstance(value, dict):
-            return {
-                **value,
-                "_oic_tap_metadata": {
-                    "extraction_timestamp": datetime.now(UTC).isoformat(),
-                    "tap_type": "oracle_oic_api_extractor",
-                    "singer_protocol": "v1.0",
-                    "data_source": "oracle_integration_cloud",
-                },
-            }
-        if isinstance(value, (str, int, float, bool)) and hasattr(
-            self,
-            "_include_oic_metadata",
-        ):
-            return {
-                "value": value,
-                "_oic_context": {
-                    "extracted_at": datetime.now(UTC).isoformat(),
-                    "tap_name": "flext-tap-oracle-oic",
-                },
-            }
-        return value
+        match value:
+            case dict() as value_dict:
+                return {
+                    **value_dict,
+                    "_oic_tap_metadata": {
+                        "extraction_timestamp": datetime.now(UTC).isoformat(),
+                        "tap_type": "oracle_oic_api_extractor",
+                        "singer_protocol": "v1.0",
+                        "data_source": "oracle_integration_cloud",
+                    },
+                }
+            case str() | int() | float() | bool() if hasattr(
+                self,
+                "_include_oic_metadata",
+            ):
+                return {
+                    "value": value,
+                    "_oic_context": {
+                        "extracted_at": datetime.now(UTC).isoformat(),
+                        "tap_name": "flext-tap-oracle-oic",
+                    },
+                }
+            case _:
+                return value
 
     class TapOracleOic:
         """TapOracleOic domain namespace."""

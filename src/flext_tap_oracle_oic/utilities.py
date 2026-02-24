@@ -15,8 +15,51 @@ from urllib.parse import urljoin, urlparse
 from flext_core import FlextResult, t
 from flext_core.utilities import FlextUtilities
 from flext_meltano import FlextMeltanoModels as m
+from pydantic import ConfigDict, TypeAdapter, ValidationError
 
 from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
+
+_STRICT_LIST_ADAPTER = TypeAdapter(
+    list[t.GeneralValueType],
+    config=ConfigDict(strict=True),
+)
+_STRICT_MAP_ADAPTER = TypeAdapter(
+    dict[str, t.GeneralValueType],
+    config=ConfigDict(strict=True),
+)
+_STRICT_INT_ADAPTER = TypeAdapter(int, config=ConfigDict(strict=True))
+
+
+def _as_list(value: object) -> list[t.GeneralValueType] | None:
+    """Strict list validation via Pydantic adapter."""
+    try:
+        return _STRICT_LIST_ADAPTER.validate_python(value)
+    except ValidationError:
+        return None
+
+
+def _as_map(value: object) -> dict[str, t.GeneralValueType] | None:
+    """Strict map validation via Pydantic adapter."""
+    try:
+        return _STRICT_MAP_ADAPTER.validate_python(value)
+    except ValidationError:
+        return None
+
+
+def _as_int(value: object) -> int | None:
+    """Strict integer validation via Pydantic adapter."""
+    try:
+        return _STRICT_INT_ADAPTER.validate_python(value)
+    except ValidationError:
+        return None
+
+
+def _coerce_int(value: object) -> int:
+    """Coerce potentially numeric values to integer with safe fallback."""
+    try:
+        return int(str(value))
+    except (TypeError, ValueError):
+        return 0
 
 
 class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
@@ -257,8 +300,9 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 }
 
             items = response.get("items", [])
-            if not isinstance(items, list):
-                items = []
+            items_list = _as_list(items)
+            if items_list is None:
+                items_list = []
 
             return {
                 "has_more": response.get("hasMore", False),
@@ -268,7 +312,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 ),
                 "offset": response.get("offset", 0),
                 "total_count": response.get("count", 0),
-                "current_page_size": len(items),
+                "current_page_size": len(items_list),
             }
 
     class OicDataProcessing:
@@ -326,13 +370,18 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
             # Extract connection information
             connections = integration_data.get("connectionInstances", [])
-            if not isinstance(connections, list):
-                connections = []
+            connection_list = _as_list(connections)
+            if connection_list is None:
+                connection_list = []
 
-            metadata["connection_count"] = len(connections)
+            metadata["connection_count"] = len(connection_list)
             metadata["connection_types"] = [
-                conn.get("connectionType") if isinstance(conn, dict) else None
-                for conn in connections
+                (
+                    conn_map.get("connectionType")
+                    if (conn_map := _as_map(conn)) is not None
+                    else None
+                )
+                for conn in connection_list
             ]
 
             return metadata
@@ -458,8 +507,8 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
             # Validate optional timeout
             if "timeout" in config:
-                timeout = config["timeout"]
-                if not isinstance(timeout, int) or timeout <= 0:
+                timeout = _as_int(config["timeout"])
+                if timeout is None or timeout <= 0:
                     return FlextResult[dict[str, t.GeneralValueType]].fail(
                         "Timeout must be a positive integer",
                     )
@@ -485,14 +534,16 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 )
 
             streams = config["streams"]
-            if not isinstance(streams, dict):
+            stream_map = _as_map(streams)
+            if stream_map is None:
                 return FlextResult[dict[str, t.GeneralValueType]].fail(
                     "Streams configuration must be a dictionary",
                 )
 
             # Validate each stream
-            for stream_name, stream_config in streams.items():
-                if not isinstance(stream_config, dict):
+            for stream_name, stream_payload in stream_map.items():
+                stream_config = _as_map(stream_payload)
+                if stream_config is None:
                     return FlextResult[dict[str, t.GeneralValueType]].fail(
                         f"Stream '{stream_name}' configuration must be a dictionary",
                     )
@@ -505,16 +556,12 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
                 # Validate page size if provided
                 if "page_size" in stream_config:
-                    page_size = stream_config["page_size"]
+                    page_size = _as_int(stream_config["page_size"])
 
                     max_page_size = (
                         FlextTapOracleOicConstants.TapOicProcessing.MAX_PAGE_SIZE
                     )
-                    if (
-                        not isinstance(page_size, int)
-                        or page_size <= 0
-                        or page_size > max_page_size
-                    ):
+                    if page_size is None or page_size <= 0 or page_size > max_page_size:
                         return FlextResult[dict[str, t.GeneralValueType]].fail(
                             f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}",
                         )
@@ -541,10 +588,11 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """
             # state is guaranteed to be dict by type annotation
             bookmarks = state.get("bookmarks", {})
-            if not isinstance(bookmarks, dict):
+            bookmark_map = _as_map(bookmarks)
+            if bookmark_map is None:
                 return {}
-            stream_bookmarks = bookmarks.get(stream_name, {})
-            return stream_bookmarks if isinstance(stream_bookmarks, dict) else {}
+            stream_bookmarks = _as_map(bookmark_map.get(stream_name, {}))
+            return stream_bookmarks if stream_bookmarks is not None else {}
 
         @staticmethod
         def set_stream_state(
@@ -569,8 +617,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 state["bookmarks"] = {}
 
             bookmarks = state["bookmarks"]
-            if isinstance(bookmarks, dict):
-                bookmarks[stream_name] = stream_state
+            bookmark_map = _as_map(bookmarks)
+            if bookmark_map is not None:
+                bookmark_map[stream_name] = stream_state
+                state["bookmarks"] = bookmark_map
 
             return state
 
@@ -624,12 +674,15 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             if "bookmarks" not in state:
                 state["bookmarks"] = {}
             bookmarks = state["bookmarks"]
-            if isinstance(bookmarks, dict):
-                if stream_name not in bookmarks:
-                    bookmarks[stream_name] = {}
-                stream_bookmarks = bookmarks[stream_name]
-                if isinstance(stream_bookmarks, dict):
+            bookmark_map = _as_map(bookmarks)
+            if bookmark_map is not None:
+                if stream_name not in bookmark_map:
+                    bookmark_map[stream_name] = {}
+                stream_bookmarks = _as_map(bookmark_map[stream_name])
+                if stream_bookmarks is not None:
                     stream_bookmarks[bookmark_key] = bookmark_value
+                    bookmark_map[stream_name] = stream_bookmarks
+                    state["bookmarks"] = bookmark_map
 
             return state
 
@@ -657,17 +710,8 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
             # Ensure values are numeric
             try:
-                offset_val = (
-                    int(offset)
-                    if offset is not None and isinstance(offset, (int, str, float))
-                    else 0
-                )
-                page_size_val = (
-                    int(page_size)
-                    if page_size is not None
-                    and isinstance(page_size, (int, str, float))
-                    else 0
-                )
+                offset_val = _coerce_int(offset)
+                page_size_val = _coerce_int(page_size)
             except (ValueError, TypeError):
                 offset_val = 0
                 page_size_val = 0

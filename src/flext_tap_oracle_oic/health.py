@@ -115,7 +115,11 @@ class OICHealthChecker:
 
             response = response_result.value
             if response.status_code in {200, 202}:
-                body = response.body if isinstance(response.body, dict) else {}
+                match response.body:
+                    case dict() as body_dict:
+                        body = body_dict
+                    case _:
+                        body = {}
                 status_val = str(body.get("status", "success"))
                 test_result_val = str(
                     body.get("testResult", "Connection test successful")
@@ -159,7 +163,11 @@ class OICHealthChecker:
 
             response = response_result.value
             if response.status_code == HTTP_OK:
-                integration = response.body if isinstance(response.body, dict) else {}
+                match response.body:
+                    case dict() as integration_dict:
+                        integration = integration_dict
+                    case _:
+                        integration = {}
                 status_val = str(integration.get("status", "UNKNOWN"))
 
                 # Determine health based on status

@@ -69,15 +69,22 @@ class FlextOracleOicAuthenticator:
                 )
 
             # Handle response.body properly - it could be str, dict, or None
-            if isinstance(response.body, dict):
-                token_data = response.body
-            elif isinstance(response.body, str):
-                token_data = json.loads(response.body)
-            else:
-                return FlextResult[str].fail("Empty or invalid OAuth response body")
+            match response.body:
+                case dict() as token_dict:
+                    token_data = token_dict
+                case str() as body_str:
+                    token_data = json.loads(body_str)
+                case _:
+                    return FlextResult[str].fail("Empty or invalid OAuth response body")
 
             access_token = token_data.get("access_token")
-            if not access_token or not isinstance(access_token, str):
+            match access_token:
+                case str() as access_token_str if access_token_str:
+                    access_token = access_token_str
+                case _:
+                    return FlextResult[str].fail("No valid access token in response")
+
+            if not access_token:
                 return FlextResult[str].fail("No valid access token in response")
 
             self._access_token = access_token
