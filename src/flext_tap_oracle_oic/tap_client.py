@@ -401,9 +401,7 @@ def main() -> int:
     if exit_code != 0:
         return exit_code
 
-    config: dict[str, t.GeneralValueType] = {
-        k: v for k, v in _build_config_from_env().items()
-    }
+    config: dict[str, t.GeneralValueType] = dict(_build_config_from_env())
     config_typed: dict[str, t.GeneralValueType] = {
         k: v for k, v in config.items() if v is not None
     }
@@ -435,9 +433,7 @@ def _build_config_from_env() -> Mapping[str, t.GeneralValueType]:
 
 def _validate_and_setup_config() -> int:
     """Validate required configuration. Returns 0 for success, 1 for error."""
-    config: dict[str, t.GeneralValueType] = {
-        k: v for k, v in _build_config_from_env().items()
-    }
+    config: dict[str, t.GeneralValueType] = dict(_build_config_from_env())
     required_config = [
         "oauth_client_id",
         "oauth_client_secret",

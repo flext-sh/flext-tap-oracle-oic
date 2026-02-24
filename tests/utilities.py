@@ -106,9 +106,9 @@ class TestsFlextMeltanoTapOracleOicUtilities(FlextTestsUtilities):
 
 
 # Alias for simplified usage
-tu = TestsFlextMeltanoTapOracleOicUtilities
+u = TestsFlextMeltanoTapOracleOicUtilities
 
 __all__ = [
     "TestsFlextMeltanoTapOracleOicUtilities",
-    "tu",
+    "u",
 ]

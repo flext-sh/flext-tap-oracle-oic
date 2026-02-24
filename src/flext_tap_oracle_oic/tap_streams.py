@@ -17,7 +17,7 @@ from flext_api import FlextApi
 from flext_api.settings import FlextApiSettings
 from flext_core import FlextExceptions, FlextLogger, t
 from flext_meltano import FlextMeltanoStream
-from pydantic import BaseModel, ConfigDict, TypeAdapter, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError
 
 from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
 from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
@@ -38,7 +38,7 @@ class _OicEnvelope(BaseModel):
 
     items: list[t.GeneralValueType] | None = None
     data: list[t.GeneralValueType] | None = None
-    totalSize: int | None = None
+    total_size: int | None = Field(default=None, alias="totalSize")
     count: int | None = None
 
 
