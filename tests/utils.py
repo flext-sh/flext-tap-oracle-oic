@@ -211,7 +211,7 @@ class MockAPIServer:
     def setup_oauth2_mock(self, token: str = "mock-token-12345") -> None:
         """Setup OAuth2 authentication mock."""
         if self.requests_mock is not None:
-            self.requests_mock.post(  # type: ignore[attr-defined]
+            self.requests_mock.post(
                 self.token_url,
                 json={"access_token": token, "token_type": "Bearer"},
                 status_code=200,
@@ -225,7 +225,7 @@ class MockAPIServer:
         if records is None:
             records = [TestDataBuilder.integration_record()]
         if self.requests_mock is not None:
-            self.requests_mock.get(  # type: ignore[attr-defined]
+            self.requests_mock.get(
                 f"{self.base_url}/ic/api/integration/v1/integrations",
                 json={"items": records},
                 status_code=200,
@@ -239,7 +239,7 @@ class MockAPIServer:
         if records is None:
             records = [TestDataBuilder.connection_record()]
         if self.requests_mock is not None:
-            self.requests_mock.get(  # type: ignore[attr-defined]
+            self.requests_mock.get(
                 f"{self.base_url}/ic/api/integration/v1/connections",
                 json={"items": records},
                 status_code=200,
@@ -253,7 +253,7 @@ class MockAPIServer:
     ) -> None:
         """Setup error response mock."""
         if self.requests_mock is not None:
-            self.requests_mock.get(  # type: ignore[attr-defined]
+            self.requests_mock.get(
                 f"{self.base_url}{endpoint}",
                 json={"error": error_message},
                 status_code=status_code,
