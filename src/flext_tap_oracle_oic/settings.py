@@ -279,7 +279,15 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
 
             return FlextResult[bool].ok(value=True)
 
-        except Exception as e:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ) as e:
             return FlextResult[bool].fail(f"Business rules validation failed: {e}")
 
     # Configuration helper methods

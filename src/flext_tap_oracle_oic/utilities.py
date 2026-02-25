@@ -192,7 +192,15 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
                 return FlextResult[str].ok(endpoint_url)
 
-            except Exception as e:
+            except (
+                ValueError,
+                TypeError,
+                KeyError,
+                AttributeError,
+                OSError,
+                RuntimeError,
+                ImportError,
+            ) as e:
                 return FlextResult[str].fail(f"URL validation error: {e}")
 
         @staticmethod
@@ -236,7 +244,15 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
                 return FlextResult[str].ok(api_url)
 
-            except Exception as e:
+            except (
+                ValueError,
+                TypeError,
+                KeyError,
+                AttributeError,
+                OSError,
+                RuntimeError,
+                ImportError,
+            ) as e:
                 return FlextResult[str].fail(f"URL building error: {e}")
 
         @staticmethod
@@ -273,7 +289,15 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
                 return FlextResult[Mapping[str, t.GeneralValueType]].ok(parsed_response)
 
-            except Exception as e:
+            except (
+                ValueError,
+                TypeError,
+                KeyError,
+                AttributeError,
+                OSError,
+                RuntimeError,
+                ImportError,
+            ) as e:
                 return FlextResult[Mapping[str, t.GeneralValueType]].fail(
                     f"Response parsing error: {e}",
                 )
@@ -430,7 +454,15 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                     f"Unsupported timestamp format: {timestamp_str}",
                 )
 
-            except Exception as e:
+            except (
+                ValueError,
+                TypeError,
+                KeyError,
+                AttributeError,
+                OSError,
+                RuntimeError,
+                ImportError,
+            ) as e:
                 return FlextResult[str].fail(f"Timestamp formatting error: {e}")
 
         @staticmethod

@@ -463,7 +463,15 @@ class TestRunner:
                 try:
                     result = future.result()
                     self.results.append({"status": "success", "result": result})
-                except Exception as e:
+                except (
+                    ValueError,
+                    TypeError,
+                    KeyError,
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                    ImportError,
+                ) as e:
                     self.results.append({"status": "error", "error": str(e)})
 
         return self.results

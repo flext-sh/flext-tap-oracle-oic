@@ -91,7 +91,15 @@ class FlextOracleOicAuthenticator:
             logger.info("OAuth2 access token obtained successfully")
             return FlextResult[str].ok(access_token)
 
-        except Exception as e:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ) as e:
             return FlextResult[str].fail(f"OAuth2 authentication failed: {e}")
 
 
@@ -163,7 +171,15 @@ class OracleOicClient:
 
             return FlextResult[object].ok(response)
 
-        except Exception as e:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ) as e:
             return FlextResult[object].fail(f"OIC API request failed: {e}")
 
     def post(
@@ -208,7 +224,15 @@ class OracleOicClient:
 
             return FlextResult[object].ok(response)
 
-        except Exception as e:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ) as e:
             return FlextResult[object].fail(f"OIC API request failed: {e}")
 
 

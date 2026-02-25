@@ -87,7 +87,15 @@ class OICHealthChecker:
                 "api_accessible": "False",
                 "error": f"API returned status {response.status_code}",
             }
-        except Exception as e:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ) as e:
             return {
                 "status": "error",
                 "timestamp": datetime.now(UTC).isoformat(),
@@ -139,7 +147,15 @@ class OICHealthChecker:
                 "timestamp": datetime.now(UTC).isoformat(),
                 "error": f"Test failed with status {response.status_code}",
             }
-        except Exception as e:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ) as e:
             return {
                 "connectionId": connection_id,
                 "status": "error",
@@ -204,7 +220,15 @@ class OICHealthChecker:
                 "timestamp": datetime.now(UTC).isoformat(),
                 "error": f"Failed to get integration status: {response.status_code}",
             }
-        except Exception as e:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ) as e:
             return {
                 "integrationId": integration_id,
                 "health": "error",
@@ -243,7 +267,15 @@ class OICHealthChecker:
                 "accessible": "False",
                 "error": f"API returned status {response.status_code}",
             }
-        except Exception as e:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ) as e:
             return {
                 "service": "monitoring",
                 "status": "error",
