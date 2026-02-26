@@ -8,12 +8,10 @@ SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
-from flext_tap_oracle_oic import t
 
 import pytest
+from flext_tap_oracle_oic import TapOracleOic, t
 from singer_sdk.exceptions import ConfigValidationError
-
-from flext_tap_oracle_oic import TapOracleOic
 
 
 class TestTapOracleOic:

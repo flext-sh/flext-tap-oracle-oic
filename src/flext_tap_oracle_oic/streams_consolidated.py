@@ -28,7 +28,7 @@ class IntegrationsStream(OICBaseStream):
 
     name: str = "integrations"
     path: str = "/integrations"
-    primary_keys: list[str] = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "core"
     requires_design_api: ClassVar[bool] = True
@@ -154,7 +154,7 @@ class ConnectionsStream(OICBaseStream):
 
     name: str = "connections"
     path: str = "/connections"
-    primary_keys: list[str] = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "core"
     requires_design_api: ClassVar[bool] = True
@@ -263,7 +263,7 @@ class PackagesStream(OICBaseStream):
 
     name: str = "packages"
     path: str = "/packages"
-    primary_keys: list[str] = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "core"
     default_sort: ClassVar[str] = "lastUpdated:desc"
@@ -350,7 +350,7 @@ class LookupsStream(OICBaseStream):
 
     name: str = "lookups"
     path: str = "/lookups"
-    primary_keys: list[str] = ["name"]
+    primary_keys: ClassVar[list[str]] = ["name"]
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "core"
 
@@ -430,7 +430,7 @@ class LibrariesStream(OICBaseStream):
 
     name: str = "libraries"
     path: str = "/libraries"
-    primary_keys: list[str] = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "infrastructure"
 
@@ -514,7 +514,7 @@ class CertificatesStream(OICBaseStream):
 
     name: str = "certificates"
     path: str = "/certificates"
-    primary_keys: list[str] = ["name"]
+    primary_keys: ClassVar[list[str]] = ["name"]
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "security"
 
@@ -596,7 +596,7 @@ class AdaptersStream(OICBaseStream):
 
     name: str = "adapters"
     path: str = "/adapters"
-    primary_keys: list[str] = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key: str | None = None
     api_category: ClassVar[str] = "infrastructure"
 
@@ -680,7 +680,7 @@ class ProjectsStream(OICBaseStream):
 
     name: str = "projects"
     path: str = "/projects"
-    primary_keys: list[str] = ["id"]
+    primary_keys: ClassVar[list[str]] = ["id"]
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "extended"
     requires_design_api: ClassVar[bool] = True
@@ -765,7 +765,7 @@ class ExecutionsStream(OICBaseStream):
 
     name: str = "executions"
     path: str = "/monitoring/v1/integrations"
-    primary_keys: list[str] = ["instanceId"]
+    primary_keys: ClassVar[list[str]] = ["instanceId"]
     replication_key: str = "startTime"
     api_category: ClassVar[str] = "monitoring"
     requires_monitoring_api: ClassVar[bool] = True
@@ -838,7 +838,7 @@ class MetricsStream(OICBaseStream):
 
     name: str = "metrics"
     path: str = "/monitoring/v1/metrics"
-    primary_keys: list[str] = ["metricId", "timestamp"]
+    primary_keys: ClassVar[list[str]] = ["metricId", "timestamp"]
     replication_key: str = "timestamp"
     api_category: ClassVar[str] = "monitoring"
     requires_monitoring_api: ClassVar[bool] = True
