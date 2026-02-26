@@ -457,7 +457,7 @@ class OICBaseStream(FlextMeltanoStream):
         envelope = _as_oic_envelope(data)
         if envelope is not None:
             return (
-                envelope.totalSize == 0
+                envelope.total_size == 0
                 or envelope.count == 0
                 or (envelope.items is not None and len(envelope.items) == 0)
                 or (envelope.data is not None and len(envelope.data) == 0)

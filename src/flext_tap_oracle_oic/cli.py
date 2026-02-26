@@ -61,7 +61,9 @@ def main() -> None:
         SystemExit: On configuration errors or execution failures
 
     """
-    TapOracleOic.cli()
+    tap_cli = getattr(TapOracleOic, "cli", None)
+    if callable(tap_cli):
+        tap_cli()
 
 
 if __name__ == "__main__":

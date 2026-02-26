@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
+
 from flext_meltano import FlextMeltanoTypes
 
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
@@ -26,10 +27,10 @@ class IntegrationsStream(OICBaseStream):
     endpoints, triggers, connections, and execution statistics.
     """
 
-    name: ClassVar[str] = "integrations"
-    path: ClassVar[str] = "/integrations"
-    primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: ClassVar[str] = "lastUpdated"
+    name: str = "integrations"
+    path: str = "/integrations"
+    primary_keys: list[str] = ["id"]
+    replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "core"
     requires_design_api: ClassVar[bool] = True
     default_sort: ClassVar[str] = "lastUpdated:desc"
@@ -152,10 +153,10 @@ class ConnectionsStream(OICBaseStream):
     and connection properties for integrations.
     """
 
-    name: ClassVar[str] = "connections"
-    path: ClassVar[str] = "/connections"
-    primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: ClassVar[str] = "lastUpdated"
+    name: str = "connections"
+    path: str = "/connections"
+    primary_keys: list[str] = ["id"]
+    replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "core"
     requires_design_api: ClassVar[bool] = True
     default_sort: ClassVar[str] = "name:asc"
@@ -261,10 +262,10 @@ class PackagesStream(OICBaseStream):
     including package metadata and content information.
     """
 
-    name: ClassVar[str] = "packages"
-    path: ClassVar[str] = "/packages"
-    primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: ClassVar[str] = "lastUpdated"
+    name: str = "packages"
+    path: str = "/packages"
+    primary_keys: list[str] = ["id"]
+    replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "core"
     default_sort: ClassVar[str] = "lastUpdated:desc"
 
@@ -348,10 +349,10 @@ class LookupsStream(OICBaseStream):
     and transformations across integrations.
     """
 
-    name: ClassVar[str] = "lookups"
-    path: ClassVar[str] = "/lookups"
-    primary_keys: ClassVar[list[str]] = ["name"]
-    replication_key: ClassVar[str] = "lastUpdated"
+    name: str = "lookups"
+    path: str = "/lookups"
+    primary_keys: list[str] = ["name"]
+    replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "core"
 
     schema: dict[str, t.JsonValue] = FlextMeltanoTypes.Singer.Typing.PropertiesList(
@@ -428,10 +429,10 @@ class LibrariesStream(OICBaseStream):
     XSLT stylesheets, and custom functions.
     """
 
-    name: ClassVar[str] = "libraries"
-    path: ClassVar[str] = "/libraries"
-    primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: ClassVar[str] = "lastUpdated"
+    name: str = "libraries"
+    path: str = "/libraries"
+    primary_keys: list[str] = ["id"]
+    replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "infrastructure"
 
     schema: dict[str, t.JsonValue] = FlextMeltanoTypes.Singer.Typing.PropertiesList(
@@ -512,10 +513,10 @@ class CertificatesStream(OICBaseStream):
     message encryption, and digital signatures.
     """
 
-    name: ClassVar[str] = "certificates"
-    path: ClassVar[str] = "/certificates"
-    primary_keys: ClassVar[list[str]] = ["name"]
-    replication_key: ClassVar[str] = "lastUpdated"
+    name: str = "certificates"
+    path: str = "/certificates"
+    primary_keys: list[str] = ["name"]
+    replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "security"
 
     schema: dict[str, t.JsonValue] = FlextMeltanoTypes.Singer.Typing.PropertiesList(
@@ -594,10 +595,10 @@ class AdaptersStream(OICBaseStream):
     capabilities, and configuration options.
     """
 
-    name: ClassVar[str] = "adapters"
-    path: ClassVar[str] = "/adapters"
-    primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: ClassVar[str | None] = None
+    name: str = "adapters"
+    path: str = "/adapters"
+    primary_keys: list[str] = ["id"]
+    replication_key: str | None = None
     api_category: ClassVar[str] = "infrastructure"
 
     schema: dict[str, t.JsonValue] = FlextMeltanoTypes.Singer.Typing.PropertiesList(
@@ -678,10 +679,10 @@ class ProjectsStream(OICBaseStream):
     permissions, and resource grouping.
     """
 
-    name: ClassVar[str] = "projects"
-    path: ClassVar[str] = "/projects"
-    primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: ClassVar[str] = "lastUpdated"
+    name: str = "projects"
+    path: str = "/projects"
+    primary_keys: list[str] = ["id"]
+    replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "extended"
     requires_design_api: ClassVar[bool] = True
 
@@ -763,10 +764,10 @@ class ExecutionsStream(OICBaseStream):
     performance metrics, and error information.
     """
 
-    name: ClassVar[str] = "executions"
-    path: ClassVar[str] = "/monitoring/v1/integrations"
-    primary_keys: ClassVar[list[str]] = ["instanceId"]
-    replication_key: ClassVar[str] = "startTime"
+    name: str = "executions"
+    path: str = "/monitoring/v1/integrations"
+    primary_keys: list[str] = ["instanceId"]
+    replication_key: str = "startTime"
     api_category: ClassVar[str] = "monitoring"
     requires_monitoring_api: ClassVar[bool] = True
 
@@ -836,10 +837,10 @@ class MetricsStream(OICBaseStream):
     connections, and overall system healFlextMeltanoTypes.Singer.Typing.
     """
 
-    name: ClassVar[str] = "metrics"
-    path: ClassVar[str] = "/monitoring/v1/metrics"
-    primary_keys: ClassVar[list[str]] = ["metricId", "timestamp"]
-    replication_key: ClassVar[str] = "timestamp"
+    name: str = "metrics"
+    path: str = "/monitoring/v1/metrics"
+    primary_keys: list[str] = ["metricId", "timestamp"]
+    replication_key: str = "timestamp"
     api_category: ClassVar[str] = "monitoring"
     requires_monitoring_api: ClassVar[bool] = True
 

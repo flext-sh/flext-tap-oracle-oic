@@ -389,11 +389,11 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             })
 
         all_overrides = {**env_overrides, **overrides}
-        return cls(
-            project_name="flext-tap-oracle-oic",
-            environment=environment,
+        return cls.model_validate({
+            "project_name": "flext-tap-oracle-oic",
+            "environment": environment,
             **all_overrides,
-        )
+        })
 
     @classmethod
     def get_global_instance(cls) -> FlextMeltanoTapOracleOicSettings:
@@ -413,10 +413,10 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             "max_parallel_streams": 1,
             **overrides,
         }
-        return cls(
-            project_name="flext-tap-oracle-oic",
+        return cls.model_validate({
+            "project_name": "flext-tap-oracle-oic",
             **dev_overrides,
-        )
+        })
 
     @classmethod
     def create_for_production(
@@ -431,10 +431,10 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             "max_parallel_streams": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
             **overrides,
         }
-        return cls(
-            project_name="flext-tap-oracle-oic",
+        return cls.model_validate({
+            "project_name": "flext-tap-oracle-oic",
             **prod_overrides,
-        )
+        })
 
     @classmethod
     def create_for_testing(
@@ -449,10 +449,10 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
             "max_parallel_streams": 1,
             **overrides,
         }
-        return cls(
-            project_name="flext-tap-oracle-oic",
+        return cls.model_validate({
+            "project_name": "flext-tap-oracle-oic",
             **test_overrides,
-        )
+        })
 
     @classmethod
     def reset_global_instance(cls) -> None:

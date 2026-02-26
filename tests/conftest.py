@@ -511,7 +511,7 @@ def large_integration_dataset() -> list[dict[str, t.GeneralValueType]]:
     integrations: list[dict[str, t.GeneralValueType]] = []
 
     for i in range(1000):
-        integration = {
+        integration: dict[str, t.GeneralValueType] = {
             "id": f"INTEGRATION_{i:04d}",
             "name": f"Integration{i:04d}",
             "version": "01.00.0000",
