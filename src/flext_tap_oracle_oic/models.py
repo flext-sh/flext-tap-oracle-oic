@@ -107,7 +107,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             "OicApiResponse",
             "OicErrorContext",
         ]
-        return sum(1 for name in model_names if getattr(self, name, None) is not None)
+        return sum(1 for name in model_names if getattr(self, name) is not None)
 
     @computed_field
     def active_oic_tap_models_count(self) -> int:
@@ -149,18 +149,12 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     def validate_oic_tap_system_consistency(self) -> Self:
         """Validate Singer Oracle OIC tap system consistency and configuration."""
         # Singer OIC tap authentication validation
-        if (
-            self._oic_authentication
-            and getattr(self, "OicAuthenticationConfig", None) is None
-        ):
+        if self._oic_authentication and not hasattr(self, "OicAuthenticationConfig"):
             msg = "OicAuthenticationConfig required when OIC authentication configured"
             raise ValueError(msg)
 
         # Stream configuration validation
-        if (
-            self._stream_configurations
-            and getattr(self, "OicStreamConfiguration", None) is None
-        ):
+        if self._stream_configurations and not hasattr(self, "OicStreamConfiguration"):
             msg = "OicStreamConfiguration required for stream configurations"
             raise ValueError(msg)
 
@@ -168,7 +162,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         if self._singer_mode:
             required_models = ["OicApiResponse", "OicErrorContext"]
             for model in required_models:
-                if getattr(self, model, None) is None:
+                if not hasattr(self, model):
                     msg = f"{model} required for Singer protocol compliance"
                     raise ValueError(msg)
 
