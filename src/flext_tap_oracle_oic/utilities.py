@@ -18,7 +18,7 @@ from flext_core.utilities import FlextUtilities
 from flext_meltano import FlextMeltanoModels as m
 from pydantic import ConfigDict, TypeAdapter, ValidationError
 
-from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
+from flext_tap_oracle_oic.constants import FlextMeltanoTapOracleOicConstants
 
 _STRICT_LIST_ADAPTER = TypeAdapter(
     list[t.GeneralValueType],
@@ -592,7 +592,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                     page_size = _as_int(stream_config["page_size"])
 
                     max_page_size = (
-                        FlextTapOracleOicConstants.TapOicProcessing.MAX_PAGE_SIZE
+                        FlextMeltanoTapOracleOicConstants.TapOicProcessing.MAX_PAGE_SIZE
                     )
                     if page_size is None or page_size <= 0 or page_size > max_page_size:
                         return FlextResult[Mapping[str, t.GeneralValueType]].fail(

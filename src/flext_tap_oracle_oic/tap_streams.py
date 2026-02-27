@@ -19,7 +19,7 @@ from flext_core import FlextExceptions, FlextLogger, t
 from flext_meltano import FlextMeltanoStream
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError
 
-from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
+from flext_tap_oracle_oic.constants import FlextMeltanoTapOracleOicConstants
 from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
 
 # Constants for paginator and response tracking
@@ -265,14 +265,14 @@ class OICBaseStream(FlextMeltanoStream):
             return base_url + self.api_path
 
         api_paths = {
-            "core": FlextTapOracleOicConstants.OIC_API_BASE_PATH,
-            "monitoring": FlextTapOracleOicConstants.OIC_MONITORING_API_PATH,
-            "b2b": FlextTapOracleOicConstants.OIC_B2B_API_PATH,
-            "process": FlextTapOracleOicConstants.OIC_PROCESS_API_PATH,
+            "core": FlextMeltanoTapOracleOicConstants.OIC_API_BASE_PATH,
+            "monitoring": FlextMeltanoTapOracleOicConstants.OIC_MONITORING_API_PATH,
+            "b2b": FlextMeltanoTapOracleOicConstants.OIC_B2B_API_PATH,
+            "process": FlextMeltanoTapOracleOicConstants.OIC_PROCESS_API_PATH,
         }
         return base_url + api_paths.get(
             self.api_category,
-            FlextTapOracleOicConstants.OIC_API_BASE_PATH,
+            FlextMeltanoTapOracleOicConstants.OIC_API_BASE_PATH,
         )
 
     @property

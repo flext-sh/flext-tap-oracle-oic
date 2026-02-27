@@ -12,11 +12,12 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Final
 
-from flext_core import FlextConstants
+from flext_meltano import FlextMeltanoConstants
+from flext_oracle_oic import FlextOracleOicConstants
 from flext_oracle_oic.constants import FlextOracleOicConstants as ParentOicConstants
 
 
-class FlextTapOracleOicConstants(FlextConstants):
+class FlextMeltanoTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants):
     """FLEXT Oracle OIC TAP constants extending flext-core platform constants.
 
     Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
@@ -248,9 +249,9 @@ class FlextTapOracleOicConstants(FlextConstants):
         VALIDATION = "VALIDATION"
 
 
-c = FlextTapOracleOicConstants
+c = FlextMeltanoTapOracleOicConstants
 
 __all__: list[str] = [
-    "FlextTapOracleOicConstants",
+    "FlextMeltanoTapOracleOicConstants",
     "c",
 ]

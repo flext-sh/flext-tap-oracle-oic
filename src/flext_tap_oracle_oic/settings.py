@@ -19,7 +19,7 @@ from flext_core import FlextConstants, FlextResult, FlextSettings
 from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import SettingsConfigDict
 
-from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants as c
+from flext_tap_oracle_oic.constants import FlextMeltanoTapOracleOicConstants as c
 from flext_tap_oracle_oic.typings import t
 
 
