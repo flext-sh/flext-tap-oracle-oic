@@ -15,7 +15,7 @@ from urllib.parse import urljoin, urlparse
 
 from flext_core import FlextResult, t
 from flext_core.utilities import FlextUtilities
-from flext_meltano import FlextMeltanoModels as m
+from flext_meltano import m
 from pydantic import ConfigDict, TypeAdapter, ValidationError
 
 from flext_tap_oracle_oic.constants import FlextMeltanoTapOracleOicConstants
