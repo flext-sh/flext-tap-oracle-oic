@@ -11,6 +11,7 @@ from flext_core import FlextLogger, FlextModels, FlextResult
 from flext_meltano import FlextMeltanoBridge, FlextMeltanoService, FlextMeltanoSettings
 
 from flext_tap_oracle_oic.__version__ import __version__, __version_info__
+from flext_tap_oracle_oic.constants import FlextMeltanoTapOracleOicConstants, c
 from flext_tap_oracle_oic.models import FlextMeltanoTapOracleOicModels, m
 from flext_tap_oracle_oic.protocols import FlextMeltanoTapOracleOicProtocols
 from flext_tap_oracle_oic.settings import (
@@ -48,6 +49,7 @@ __all__ = [
     "TapOracleOic",
     "__version__",
     "__version_info__",
+    "c",
     "create_oracle_oic_tap_config",
     "m",
     "t",
