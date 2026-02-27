@@ -327,7 +327,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             items = response.get("items", [])
             items_list = _as_list(items)
             if items_list is None:
-                items_list = []
+                items_list = list[t.GeneralValueType]()
 
             return {
                 "has_more": response.get("hasMore", False),
@@ -397,7 +397,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             connections = integration_data.get("connectionInstances", [])
             connection_list = _as_list(connections)
             if connection_list is None:
-                connection_list = []
+                connection_list = list[t.GeneralValueType]()
 
             metadata["connection_count"] = len(connection_list)
             metadata["connection_types"] = [
@@ -648,7 +648,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
             state_copy: dict[str, t.GeneralValueType] = dict(state)
             if "bookmarks" not in state_copy:
-                state_copy["bookmarks"] = {}
+                state_copy["bookmarks"] = dict[str, t.GeneralValueType]()
 
             bookmarks = state_copy["bookmarks"]
             bookmark_map = _as_map(bookmarks)
@@ -708,7 +708,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
             state_copy: dict[str, t.GeneralValueType] = dict(state)
             if "bookmarks" not in state_copy:
-                state_copy["bookmarks"] = {}
+                state_copy["bookmarks"] = dict[str, t.GeneralValueType]()
             bookmarks = state_copy["bookmarks"]
             bookmark_map = _as_map(bookmarks)
             if bookmark_map is not None:

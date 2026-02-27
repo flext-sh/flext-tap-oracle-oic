@@ -10,7 +10,7 @@ from __future__ import annotations
 import re
 from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
-from typing import ClassVar
+from typing import ClassVar, override
 
 import requests
 from flext_api import FlextApi
@@ -204,6 +204,23 @@ class OICBaseStream(FlextMeltanoStream):
     api_category: ClassVar[str] = "core"
     default_sort: ClassVar[str | None] = None
     additional_params: ClassVar[dict[str, t.GeneralValueType] | None] = None
+    primary_keys: ClassVar[list[str]] = []  # type: ignore[override]
+
+    @override
+    def get_records(
+        self,
+        context: Mapping[str, t.GeneralValueType] | None = None,
+    ) -> Iterator[dict[str, t.GeneralValueType]]:
+        """Get records from OIC API.
+
+        Args:
+            context: Optional context for record extraction.
+
+        Yields:
+            Records from the OIC API.
+
+        """
+        ...
 
     @property
     def url_base(self) -> str:

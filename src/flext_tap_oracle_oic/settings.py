@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Mapping
-from typing import Self
+from typing import Self, override
 
 from flext_core import FlextConstants, FlextResult, FlextSettings
 from pydantic import Field, SecretStr, field_validator, model_validator
@@ -396,6 +396,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
         })
 
     @classmethod
+    @override
     def get_global_instance(cls) -> FlextMeltanoTapOracleOicSettings:
         """Get the global singleton instance using FlextSettings singleton pattern."""
         return cls(project_name="flext-tap-oracle-oic")
@@ -455,6 +456,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
         })
 
     @classmethod
+    @override
     def reset_global_instance(cls) -> None:
         """Reset the global FlextMeltanoTapOracleOicSettings instance (mainly for testing)."""
         cls._reset_instance()

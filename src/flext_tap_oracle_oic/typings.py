@@ -32,6 +32,19 @@ class FlextMeltanoTapOracleOicTypes(_t):
     Uses Python 3.13+ type syntax and patterns.
     """
 
+    # Re-export parent FlextTypes attributes for type checker visibility
+    GeneralValueType = _t.GeneralValueType
+    ScalarValue = _t.ScalarValue
+    MetadataScalarValue = _t.MetadataScalarValue
+    ConfigMap = _t.ConfigMap
+    Dict = _t.Dict
+    ServiceMap = _t.ServiceMap
+    ErrorMap = _t.ErrorMap
+    ObjectList = _t.ObjectList
+    FactoryMap = _t.FactoryMap
+    ResourceMap = _t.ResourceMap
+    FieldValidatorMap = _t.FieldValidatorMap
+
     # =========================================================================
     # SINGER TAP TYPES - Complex Singer protocol types
     # =========================================================================

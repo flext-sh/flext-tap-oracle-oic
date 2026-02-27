@@ -334,6 +334,7 @@ class TapOracleOic(Tap):
             )
         return self._client
 
+    @override
     def discover_streams(self) -> Sequence[Stream]:
         """Discover available streams using consolidated stream registry."""
         logger.info("Discovering Oracle OIC streams using consolidated streams")
