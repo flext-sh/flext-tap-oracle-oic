@@ -42,10 +42,7 @@ if TYPE_CHECKING:
     )
     from flext_tap_oracle_oic.tap_streams import OICBaseStream
     from flext_tap_oracle_oic.typings import t
-    from flext_tap_oracle_oic.utilities import (
-        FlextMeltanoTapOracleOicUtilities,
-        FlextMeltanoTapOracleOicUtilities as u,
-    )
+    from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities, u
 
 # Lazy import mapping: export_name -> (module_path, attr_name)
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
@@ -53,34 +50,15 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextMeltanoBridge": ("flext_meltano", "FlextMeltanoBridge"),
     "FlextMeltanoService": ("flext_meltano", "FlextMeltanoService"),
     "FlextMeltanoSettings": ("flext_meltano", "FlextMeltanoSettings"),
-    "FlextMeltanoTapOracleOicConstants": (
-        "flext_tap_oracle_oic.constants",
-        "FlextMeltanoTapOracleOicConstants",
-    ),
-    "FlextMeltanoTapOracleOicModels": (
-        "flext_tap_oracle_oic.models",
-        "FlextMeltanoTapOracleOicModels",
-    ),
-    "FlextMeltanoTapOracleOicProtocols": (
-        "flext_tap_oracle_oic.protocols",
-        "FlextMeltanoTapOracleOicProtocols",
-    ),
-    "FlextMeltanoTapOracleOicSettings": (
-        "flext_tap_oracle_oic.settings",
-        "FlextMeltanoTapOracleOicSettings",
-    ),
-    "FlextMeltanoTapOracleOicUtilities": (
-        "flext_tap_oracle_oic.utilities",
-        "FlextMeltanoTapOracleOicUtilities",
-    ),
-    "u": ("flext_tap_oracle_oic.utilities", "u"),
+    "FlextMeltanoTapOracleOicConstants": ("flext_tap_oracle_oic.constants", "FlextMeltanoTapOracleOicConstants"),
+    "FlextMeltanoTapOracleOicModels": ("flext_tap_oracle_oic.models", "FlextMeltanoTapOracleOicModels"),
+    "FlextMeltanoTapOracleOicProtocols": ("flext_tap_oracle_oic.protocols", "FlextMeltanoTapOracleOicProtocols"),
+    "FlextMeltanoTapOracleOicSettings": ("flext_tap_oracle_oic.settings", "FlextMeltanoTapOracleOicSettings"),
+    "FlextMeltanoTapOracleOicUtilities": ("flext_tap_oracle_oic.utilities", "FlextMeltanoTapOracleOicUtilities"),
     "FlextModels": ("flext_core", "FlextModels"),
     "FlextResult": ("flext_core", "FlextResult"),
     "OICAPIError": ("flext_tap_oracle_oic.tap_exceptions", "OICAPIError"),
-    "OICAuthenticationError": (
-        "flext_tap_oracle_oic.tap_exceptions",
-        "OICAuthenticationError",
-    ),
+    "OICAuthenticationError": ("flext_tap_oracle_oic.tap_exceptions", "OICAuthenticationError"),
     "OICBaseStream": ("flext_tap_oracle_oic.tap_streams", "OICBaseStream"),
     "OICConnectionError": ("flext_tap_oracle_oic.tap_exceptions", "OICConnectionError"),
     "OICValidationError": ("flext_tap_oracle_oic.tap_exceptions", "OICValidationError"),
@@ -89,12 +67,10 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "__version__": ("flext_tap_oracle_oic.__version__", "__version__"),
     "__version_info__": ("flext_tap_oracle_oic.__version__", "__version_info__"),
     "c": ("flext_tap_oracle_oic.constants", "FlextMeltanoTapOracleOicConstants"),
-    "create_oracle_oic_tap_config": (
-        "flext_tap_oracle_oic.settings",
-        "create_oracle_oic_tap_config",
-    ),
+    "create_oracle_oic_tap_config": ("flext_tap_oracle_oic.settings", "create_oracle_oic_tap_config"),
     "m": ("flext_tap_oracle_oic.models", "FlextMeltanoTapOracleOicModels"),
     "t": ("flext_tap_oracle_oic.typings", "t"),
+    "u": ("flext_tap_oracle_oic.utilities", "u"),
 }
 
 __all__ = [
