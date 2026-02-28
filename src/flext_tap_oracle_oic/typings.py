@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from flext_core import FlextTypes as _t
+from flext_meltano import FlextMeltanoTypes
 
 # =============================================================================
 # TAP ORACLE OIC-SPECIFIC TYPE VARIABLES - Domain-specific TypeVars for Singer Oracle OIC operations
@@ -24,7 +24,7 @@ from flext_core import FlextTypes as _t
 
 
 # Singer Oracle OIC tap domain TypeVars
-class FlextMeltanoTapOracleOicTypes(_t):
+class FlextMeltanoTapOracleOicTypes(FlextMeltanoTypes):
     """Singer Oracle OIC tap-specific type definitions extending t.
 
     Domain-specific type system for Singer Oracle OIC tap operations.
