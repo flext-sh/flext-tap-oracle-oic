@@ -61,10 +61,16 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
             str,
             str | bool | dict[str, FlextMeltanoTypes.JsonValue],
         ]
-        type CatalogDefinition = dict[str, str | list[dict[str, FlextMeltanoTypes.JsonValue]]]
-        type SchemaDefinition = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue] | bool]
+        type CatalogDefinition = dict[
+            str, str | list[dict[str, FlextMeltanoTypes.JsonValue]]
+        ]
+        type SchemaDefinition = dict[
+            str, str | dict[str, FlextMeltanoTypes.JsonValue] | bool
+        ]
         type MessageOutput = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
-        type StateManagement = dict[str, str | int | dict[str, FlextMeltanoTypes.JsonValue]]
+        type StateManagement = dict[
+            str, str | int | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
 
     # =========================================================================
     # ORACLE OIC INTEGRATION TYPES - Complex Oracle OIC integration types
@@ -82,9 +88,15 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
             str | list[str] | dict[str, FlextMeltanoTypes.JsonValue],
         ]
         type IntegrationFlow = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
-        type IntegrationMapping = dict[str, str | dict[str, FlextMeltanoTypes.GeneralValueType]]
-        type IntegrationMetadata = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
-        type IntegrationStatus = dict[str, str | bool | dict[str, FlextMeltanoTypes.GeneralValueType]]
+        type IntegrationMapping = dict[
+            str, str | dict[str, FlextMeltanoTypes.GeneralValueType]
+        ]
+        type IntegrationMetadata = dict[
+            str, str | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
+        type IntegrationStatus = dict[
+            str, str | bool | dict[str, FlextMeltanoTypes.GeneralValueType]
+        ]
 
     # =========================================================================
     # OIC CONNECTION TYPES - Complex Oracle OIC connection types
@@ -97,14 +109,22 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
             str,
             str | int | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
         ]
-        type ConnectionCredentials = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
-        type ConnectionSecurity = dict[str, str | bool | dict[str, FlextMeltanoTypes.GeneralValueType]]
+        type ConnectionCredentials = dict[
+            str, str | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
+        type ConnectionSecurity = dict[
+            str, str | bool | dict[str, FlextMeltanoTypes.GeneralValueType]
+        ]
         type ConnectionValidation = dict[
             str,
             bool | str | dict[str, FlextMeltanoTypes.GeneralValueType],
         ]
-        type ConnectionMetadata = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
-        type ConnectionPool = dict[str, int | bool | dict[str, FlextMeltanoTypes.GeneralValueType]]
+        type ConnectionMetadata = dict[
+            str, str | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
+        type ConnectionPool = dict[
+            str, int | bool | dict[str, FlextMeltanoTypes.GeneralValueType]
+        ]
 
     # =========================================================================
     # OIC AUTHENTICATION TYPES - Complex OAuth2/IDCS authentication types
@@ -113,12 +133,24 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
     class OicAuthentication:
         """Oracle OIC authentication complex types."""
 
-        type OAuth2Configuration = dict[str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]]
-        type IdcsConfiguration = dict[str, str | bool | dict[str, FlextMeltanoTypes.JsonValue]]
-        type TokenManagement = dict[str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]]
-        type AuthenticationFlow = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
-        type SecuritySettings = dict[str, bool | str | dict[str, FlextMeltanoTypes.GeneralValueType]]
-        type AuthenticationCache = dict[str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]]
+        type OAuth2Configuration = dict[
+            str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]
+        ]
+        type IdcsConfiguration = dict[
+            str, str | bool | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
+        type TokenManagement = dict[
+            str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]
+        ]
+        type AuthenticationFlow = dict[
+            str, str | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
+        type SecuritySettings = dict[
+            str, bool | str | dict[str, FlextMeltanoTypes.GeneralValueType]
+        ]
+        type AuthenticationCache = dict[
+            str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]
+        ]
 
     # =========================================================================
     # OIC MONITORING TYPES - Complex Oracle OIC monitoring and activity types
@@ -136,7 +168,9 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
             int | float | dict[str, FlextMeltanoTypes.JsonValue],
         ]
         type TrackingData = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
-        type AlertConfiguration = dict[str, bool | str | dict[str, FlextMeltanoTypes.GeneralValueType]]
+        type AlertConfiguration = dict[
+            str, bool | str | dict[str, FlextMeltanoTypes.GeneralValueType]
+        ]
         type MonitoringMetrics = dict[
             str,
             int | float | dict[str, FlextMeltanoTypes.JsonValue],
@@ -159,12 +193,16 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
             str | list[str] | dict[str, FlextMeltanoTypes.GeneralValueType],
         ]
         type ExtractionMapping = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
-        type ExtractionResult = dict[str, bool | list[dict[str, FlextMeltanoTypes.GeneralValueType]]]
+        type ExtractionResult = dict[
+            str, bool | list[dict[str, FlextMeltanoTypes.GeneralValueType]]
+        ]
         type ExtractionMetrics = dict[
             str,
             int | float | dict[str, FlextMeltanoTypes.JsonValue],
         ]
-        type ExtractionState = dict[str, str | int | dict[str, FlextMeltanoTypes.JsonValue]]
+        type ExtractionState = dict[
+            str, str | int | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
 
     # =========================================================================
     # STREAM PROCESSING TYPES - Complex stream handling types
@@ -178,10 +216,17 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
             str | bool | int | dict[str, FlextMeltanoTypes.GeneralValueType],
         ]
         type StreamMetadata = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
-        type StreamRecord = dict[str, FlextMeltanoTypes.JsonValue | dict[str, FlextMeltanoTypes.GeneralValueType]]
+        type StreamRecord = dict[
+            str,
+            FlextMeltanoTypes.JsonValue | dict[str, FlextMeltanoTypes.GeneralValueType],
+        ]
         type StreamState = dict[str, str | int | dict[str, FlextMeltanoTypes.JsonValue]]
-        type StreamBookmark = dict[str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]]
-        type StreamSchema = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue] | bool]
+        type StreamBookmark = dict[
+            str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]
+        ]
+        type StreamSchema = dict[
+            str, str | dict[str, FlextMeltanoTypes.JsonValue] | bool
+        ]
 
     # =========================================================================
     # ERROR HANDLING TYPES - Complex error management types
@@ -194,11 +239,21 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
             str,
             bool | str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
         ]
-        type ErrorRecovery = dict[str, str | bool | dict[str, FlextMeltanoTypes.GeneralValueType]]
-        type ErrorReporting = dict[str, str | int | dict[str, FlextMeltanoTypes.JsonValue]]
-        type ErrorClassification = dict[str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]]
-        type ErrorMetrics = dict[str, int | float | dict[str, FlextMeltanoTypes.JsonValue]]
-        type ErrorTracking = list[dict[str, str | int | dict[str, FlextMeltanoTypes.JsonValue]]]
+        type ErrorRecovery = dict[
+            str, str | bool | dict[str, FlextMeltanoTypes.GeneralValueType]
+        ]
+        type ErrorReporting = dict[
+            str, str | int | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
+        type ErrorClassification = dict[
+            str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]
+        ]
+        type ErrorMetrics = dict[
+            str, int | float | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
+        type ErrorTracking = list[
+            dict[str, str | int | dict[str, FlextMeltanoTypes.JsonValue]]
+        ]
 
     # =========================================================================
     # SINGER TAP ORACLE OIC PROJECT TYPES - Domain-specific project types extending t
@@ -238,7 +293,9 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
         ]
 
         # Singer tap Oracle OIC-specific project configurations
-        type SingerTapOracleOicProjectConfig = dict[str, FlextMeltanoTypes.GeneralValueType]
+        type SingerTapOracleOicProjectConfig = dict[
+            str, FlextMeltanoTypes.GeneralValueType
+        ]
         type OicExtractorConfig = dict[str, str | int | bool | list[str]]
         type SingerProtocolConfig = dict[
             str,

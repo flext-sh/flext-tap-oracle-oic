@@ -222,8 +222,10 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             """
             try:
                 # Validate base URL
-                validation_result = FlextTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
-                    base_url,
+                validation_result = (
+                    FlextTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
+                        base_url,
+                    )
                 )
                 if validation_result.is_failure:
                     return FlextResult[str].fail(
@@ -520,8 +522,10 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 )
 
             # Validate OIC base URL
-            url_validation = FlextTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
-                str(config["oic_base_url"]),
+            url_validation = (
+                FlextTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
+                    str(config["oic_base_url"]),
+                )
             )
             if url_validation.is_failure:
                 return FlextResult[Mapping[str, t.GeneralValueType]].fail(
@@ -677,11 +681,9 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             object: Bookmark value or None
 
             """
-            stream_state = (
-                FlextTapOracleOicUtilities.StateManagement.get_stream_state(
-                    state,
-                    stream_name,
-                )
+            stream_state = FlextTapOracleOicUtilities.StateManagement.get_stream_state(
+                state,
+                stream_name,
             )
             # stream_state is guaranteed to be dict by type annotation
             return stream_state.get(bookmark_key)
@@ -883,8 +885,10 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         config: Mapping[str, t.GeneralValueType],
     ) -> FlextResult[Mapping[str, t.GeneralValueType]]:
         """Proxy method for ConfigValidation.validate_oic_connection_config()."""
-        return FlextTapOracleOicUtilities.ConfigValidation.validate_oic_connection_config(
-            config,
+        return (
+            FlextTapOracleOicUtilities.ConfigValidation.validate_oic_connection_config(
+                config,
+            )
         )
 
     @classmethod

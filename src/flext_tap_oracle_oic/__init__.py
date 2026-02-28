@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from flext_core import cleanup_submodule_namespace, lazy_getattr
+from flext_core._utilities.lazy import cleanup_submodule_namespace, lazy_getattr
 
 if TYPE_CHECKING:
     from flext_core import FlextLogger, FlextModels, FlextResult
@@ -28,7 +28,10 @@ if TYPE_CHECKING:
         FlextTapOracleOicModels,
         FlextTapOracleOicModels as m,
     )
-    from flext_tap_oracle_oic.protocols import FlextTapOracleOicProtocols
+    from flext_tap_oracle_oic.protocols import (
+        FlextTapOracleOicProtocols,
+        FlextTapOracleOicProtocols as p,
+    )
     from flext_tap_oracle_oic.settings import (
         FlextTapOracleOicSettings,
         create_oracle_oic_tap_config,
@@ -76,6 +79,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "c": ("flext_tap_oracle_oic.constants", "FlextTapOracleOicConstants"),
     "create_oracle_oic_tap_config": ("flext_tap_oracle_oic.settings", "create_oracle_oic_tap_config"),
     "m": ("flext_tap_oracle_oic.models", "FlextTapOracleOicModels"),
+    "p": ("flext_tap_oracle_oic.protocols", "FlextTapOracleOicProtocols"),
     "t": ("flext_tap_oracle_oic.typings", "FlextTapOracleOicTypes"),
     "u": ("flext_tap_oracle_oic.utilities", "FlextTapOracleOicUtilities"),
 }
@@ -105,6 +109,7 @@ __all__ = [
     "c",
     "create_oracle_oic_tap_config",
     "m",
+    "p",
     "t",
     "u",
 ]
