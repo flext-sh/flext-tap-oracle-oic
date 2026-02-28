@@ -159,6 +159,8 @@ class FlextMeltanoTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicCon
         MAX_STREAM_PREFIX_LENGTH: Final[int] = 255
         MIN_DATE_LENGTH: Final[int] = 10  # YYYY-MM-DD format
         MIN_TOKEN_EXPIRY_BUFFER: Final[int] = 60
+        MIN_PERCENTAGE: Final[float] = 0.0
+        MAX_PERCENTAGE: Final[float] = 100.0
 
     class TapOicPerformance:
         """OIC tap performance and monitoring constants."""
