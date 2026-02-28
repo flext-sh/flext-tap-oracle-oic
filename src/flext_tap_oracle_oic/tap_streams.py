@@ -403,7 +403,7 @@ class OICBaseStream(FlextMeltanoStream):
         if records_yielded == 0 and not self._is_empty_result_expected(data):
             map_data = _as_value_map(data)
             payload_descriptor: t.GeneralValueType = (
-                list(map_data.keys()) if map_data is not None else type(data)
+                list(map_data.keys()) if map_data is not None else str(type(data))
             )
             self.logger.warning(
                 "Unknown response format from %s: %s",
