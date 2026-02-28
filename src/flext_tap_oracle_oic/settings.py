@@ -355,7 +355,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
     def create_for_environment(
         cls,
         environment: str,
-        **overrides: object,
+        **overrides: t.GeneralValueType,
     ) -> FlextMeltanoTapOracleOicSettings:
         """Create configuration for specific environment using enhanced singleton pattern."""
         env_overrides: dict[str, t.GeneralValueType] = {}

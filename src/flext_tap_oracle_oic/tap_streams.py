@@ -45,7 +45,7 @@ _GENERAL_MAP_ADAPTER = TypeAdapter(
 _STRING_LIST_ADAPTER = TypeAdapter(list[str], config=ConfigDict(strict=True))
 
 
-def _as_value_list(value: object) -> list[t.GeneralValueType] | None:
+def _as_value_list(value: t.GeneralValueType) -> list[t.GeneralValueType] | None:
     """Validate payload as strict list[GeneralValueType]."""
     try:
         return _GENERAL_LIST_ADAPTER.validate_python(value)
@@ -53,7 +53,7 @@ def _as_value_list(value: object) -> list[t.GeneralValueType] | None:
         return None
 
 
-def _as_value_map(value: object) -> Mapping[str, t.GeneralValueType] | None:
+def _as_value_map(value: t.GeneralValueType) -> Mapping[str, t.GeneralValueType] | None:
     """Validate payload as strict dict[str, GeneralValueType]."""
     try:
         return _GENERAL_MAP_ADAPTER.validate_python(value)
@@ -61,7 +61,7 @@ def _as_value_map(value: object) -> Mapping[str, t.GeneralValueType] | None:
         return None
 
 
-def _as_string_list(value: object) -> list[str] | None:
+def _as_string_list(value: t.GeneralValueType) -> list[str] | None:
     """Validate payload as strict list[str]."""
     try:
         return _STRING_LIST_ADAPTER.validate_python(value)
@@ -69,7 +69,7 @@ def _as_string_list(value: object) -> list[str] | None:
         return None
 
 
-def _as_oic_envelope(value: object) -> _OicEnvelope | None:
+def _as_oic_envelope(value: t.GeneralValueType) -> _OicEnvelope | None:
     """Validate payload as an OIC envelope model."""
     try:
         return _OicEnvelope.model_validate(value, strict=True)
@@ -126,7 +126,7 @@ class OICPaginator:
 
     def _calculate_next_offset(
         self,
-        data: object,
+        data: t.GeneralValueType,
     ) -> int | None:
         """Calculate next offset based on OIC response format."""
         items = self._extract_items_from_response(data)
@@ -136,7 +136,7 @@ class OICPaginator:
 
     def _extract_items_from_response(
         self,
-        data: object,
+        data: t.GeneralValueType,
     ) -> list[t.GeneralValueType] | None:
         """Extract items from various OIC response formats."""
         list_payload = _as_value_list(data)
@@ -389,7 +389,7 @@ class OICBaseStream(FlextMeltanoStream):
 
     def _extract_and_yield_records(
         self,
-        data: object,
+        data: t.GeneralValueType,
         url: str,
     ) -> Iterator[Mapping[str, t.GeneralValueType]]:
         """Extract and yield records with validation and enrichment."""
@@ -402,7 +402,7 @@ class OICBaseStream(FlextMeltanoStream):
 
         if records_yielded == 0 and not self._is_empty_result_expected(data):
             map_data = _as_value_map(data)
-            payload_descriptor: object = (
+            payload_descriptor: t.GeneralValueType = (
                 list(map_data.keys()) if map_data is not None else type(data)
             )
             self.logger.warning(
@@ -419,7 +419,7 @@ class OICBaseStream(FlextMeltanoStream):
 
     def _extract_items_for_processing(
         self,
-        data: object,
+        data: t.GeneralValueType,
     ) -> Iterator[Mapping[str, t.GeneralValueType]]:
         """Extract items from various OIC response formats for processing."""
         list_payload = _as_value_list(data)
@@ -460,7 +460,7 @@ class OICBaseStream(FlextMeltanoStream):
 
     def _is_empty_result_expected(
         self,
-        data: object,
+        data: t.GeneralValueType,
     ) -> bool:
         """Check if empty result is expected/normal based on OIC response metadata."""
         envelope = _as_oic_envelope(data)
@@ -533,7 +533,7 @@ class OICBaseStream(FlextMeltanoStream):
     def _track_response_metrics(
         self,
         response: requests.Response,
-        data: object,
+        data: t.GeneralValueType,
     ) -> None:
         """Track response metrics for monitoring and optimization."""
         # Log response time and size for monitoring

@@ -31,7 +31,7 @@ _STRICT_MAP_ADAPTER = TypeAdapter(
 _STRICT_INT_ADAPTER = TypeAdapter(int, config=ConfigDict(strict=True))
 
 
-def _as_list(value: object) -> list[t.GeneralValueType] | None:
+def _as_list(value: t.GeneralValueType) -> list[t.GeneralValueType] | None:
     """Strict list validation via Pydantic adapter."""
     try:
         return _STRICT_LIST_ADAPTER.validate_python(value)
@@ -39,7 +39,7 @@ def _as_list(value: object) -> list[t.GeneralValueType] | None:
         return None
 
 
-def _as_map(value: object) -> Mapping[str, t.GeneralValueType] | None:
+def _as_map(value: t.GeneralValueType) -> Mapping[str, t.GeneralValueType] | None:
     """Strict map validation via Pydantic adapter."""
     try:
         return _STRICT_MAP_ADAPTER.validate_python(value)
@@ -47,7 +47,7 @@ def _as_map(value: object) -> Mapping[str, t.GeneralValueType] | None:
         return None
 
 
-def _as_int(value: object) -> int | None:
+def _as_int(value: t.GeneralValueType) -> int | None:
     """Strict integer validation via Pydantic adapter."""
     try:
         return _STRICT_INT_ADAPTER.validate_python(value)
@@ -55,7 +55,7 @@ def _as_int(value: object) -> int | None:
         return None
 
 
-def _coerce_int(value: object) -> int:
+def _coerce_int(value: t.GeneralValueType) -> int:
     """Coerce potentially numeric values to integer with safe fallback."""
     try:
         return int(str(value))
@@ -668,7 +668,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             state: Mapping[str, t.GeneralValueType],
             stream_name: str,
             bookmark_key: str,
-        ) -> object:
+        ) -> t.GeneralValueType:
             """Get bookmark value for a stream.
 
             Args:

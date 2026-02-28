@@ -55,10 +55,10 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     """
 
     # Dynamic attributes for runtime configuration (accessed via hasattr checks)
-    _oic_authentication: object | None = None
-    _stream_configurations: object | None = None
-    _singer_mode: object | None = None
-    _include_oic_metadata: object | None = None
+    _oic_authentication: t.GeneralValueType | None = None
+    _stream_configurations: t.GeneralValueType | None = None
+    _singer_mode: t.GeneralValueType | None = None
+    _include_oic_metadata: t.GeneralValueType | None = None
 
     # Pydantic 2.11 Configuration - Enterprise Singer Oracle OIC Tap Features
     model_config = ConfigDict(
@@ -166,9 +166,9 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     @field_serializer("*", when_used="json")
     def serialize_with_oic_metadata(
         self,
-        value: object,
+        value: t.GeneralValueType,
         _info: FieldSerializationInfo,
-    ) -> object:
+    ) -> t.GeneralValueType:
         """Add Singer Oracle OIC tap metadata to all serialized fields."""
         match value:
             case dict() as value_dict:
@@ -1055,7 +1055,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             success: bool = Field(..., description="Response success indicator")
-            data: object | None = Field(None, description="Response data payload")
+            data: t.GeneralValueType | None = Field(None, description="Response data payload")
             total_count: int | None = Field(
                 None,
                 description="Total entity count (for pagination)",
