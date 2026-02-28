@@ -531,12 +531,12 @@ class FlextMeltanoTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUti
             # Validate credentials
             if not str(config["username"]).strip():
                 return FlextResult[Mapping[str, t.GeneralValueType]].fail(
-                    "Username cannot be empty"
+                    "Username cannot be empty",
                 )
 
             if not str(config["password"]).strip():
                 return FlextResult[Mapping[str, t.GeneralValueType]].fail(
-                    "Password cannot be empty"
+                    "Password cannot be empty",
                 )
 
             # Validate optional timeout
@@ -846,7 +846,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUti
     def validate_oic_endpoint(cls, endpoint_url: str) -> FlextResult[str]:
         """Proxy method for OicApiProcessing.validate_oic_endpoint()."""
         return FlextMeltanoTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
-            endpoint_url
+            endpoint_url,
         )
 
     @classmethod
@@ -867,14 +867,14 @@ class FlextMeltanoTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUti
     def normalize_integration_name(cls, integration_name: str) -> str:
         """Proxy method for OicDataProcessing.normalize_integration_name()."""
         return FlextMeltanoTapOracleOicUtilities.OicDataProcessing.normalize_integration_name(
-            integration_name
+            integration_name,
         )
 
     @classmethod
     def format_oic_timestamp(cls, timestamp_str: str) -> FlextResult[str]:
         """Proxy method for OicDataProcessing.format_oic_timestamp()."""
         return FlextMeltanoTapOracleOicUtilities.OicDataProcessing.format_oic_timestamp(
-            timestamp_str
+            timestamp_str,
         )
 
     @classmethod
@@ -884,7 +884,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUti
     ) -> FlextResult[Mapping[str, t.GeneralValueType]]:
         """Proxy method for ConfigValidation.validate_oic_connection_config()."""
         return FlextMeltanoTapOracleOicUtilities.ConfigValidation.validate_oic_connection_config(
-            config
+            config,
         )
 
     @classmethod
@@ -895,7 +895,8 @@ class FlextMeltanoTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUti
     ) -> Mapping[str, t.GeneralValueType]:
         """Proxy method for StateManagement.get_stream_state()."""
         return FlextMeltanoTapOracleOicUtilities.StateManagement.get_stream_state(
-            state, stream_name
+            state,
+            stream_name,
         )
 
     @classmethod

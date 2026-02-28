@@ -52,7 +52,8 @@ class FlextMeltanoTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicPro
 
             @runtime_checkable
             class OicConnectionProtocol(
-                FlextOracleOicProtocols.Service[object], Protocol
+                FlextOracleOicProtocols.Service[object],
+                Protocol,
             ):
                 """Protocol for Oracle OIC connection."""
 
@@ -65,7 +66,8 @@ class FlextMeltanoTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicPro
 
             @runtime_checkable
             class IntegrationDiscoveryProtocol(
-                FlextOracleOicProtocols.Service[object], Protocol
+                FlextOracleOicProtocols.Service[object],
+                Protocol,
             ):
                 """Protocol for OIC integration discovery."""
 
@@ -80,7 +82,8 @@ class FlextMeltanoTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicPro
 
             @runtime_checkable
             class DataExtractionProtocol(
-                FlextOracleOicProtocols.Service[object], Protocol
+                FlextOracleOicProtocols.Service[object],
+                Protocol,
             ):
                 """Protocol for OIC data extraction."""
 
@@ -95,7 +98,8 @@ class FlextMeltanoTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicPro
 
             @runtime_checkable
             class StreamGenerationProtocol(
-                FlextOracleOicProtocols.Service[object], Protocol
+                FlextOracleOicProtocols.Service[object],
+                Protocol,
             ):
                 """Protocol for Singer stream generation."""
 

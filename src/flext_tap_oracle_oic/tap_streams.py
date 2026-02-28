@@ -215,7 +215,6 @@ class OICBaseStream(FlextMeltanoStream):
             Records from the OIC API.
 
         """
-        ...
 
     @property
     def url_base(self) -> str:
@@ -496,7 +495,8 @@ class OICBaseStream(FlextMeltanoStream):
         return _as_value_map(record) is not None
 
     def _enrich_record(
-        self, record: Mapping[str, t.GeneralValueType]
+        self,
+        record: Mapping[str, t.GeneralValueType],
     ) -> Mapping[str, t.GeneralValueType]:
         """Enrich record with tap metadata for traceability."""
         enriched: dict[str, t.GeneralValueType] = dict(record)

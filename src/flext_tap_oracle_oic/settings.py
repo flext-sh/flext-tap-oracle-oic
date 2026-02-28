@@ -403,7 +403,8 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
 
     @classmethod
     def create_for_development(
-        cls, **overrides: t.GeneralValueType
+        cls,
+        **overrides: t.GeneralValueType,
     ) -> FlextMeltanoTapOracleOicSettings:
         """Create configuration for development environment."""
         dev_overrides: dict[str, t.GeneralValueType] = {
@@ -421,7 +422,8 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
 
     @classmethod
     def create_for_production(
-        cls, **overrides: t.GeneralValueType
+        cls,
+        **overrides: t.GeneralValueType,
     ) -> FlextMeltanoTapOracleOicSettings:
         """Create configuration for production environment."""
         prod_overrides: dict[str, t.GeneralValueType] = {
@@ -439,7 +441,8 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
 
     @classmethod
     def create_for_testing(
-        cls, **overrides: t.GeneralValueType
+        cls,
+        **overrides: t.GeneralValueType,
     ) -> FlextMeltanoTapOracleOicSettings:
         """Create configuration for testing environment."""
         test_overrides: dict[str, t.GeneralValueType] = {

@@ -53,7 +53,8 @@ class FlextMeltanoTapOracleOicTypes(_t):
         """Singer tap protocol complex types."""
 
         type TapConfiguration = dict[
-            str, str | int | bool | dict[str, _t.GeneralValueType]
+            str,
+            str | int | bool | dict[str, _t.GeneralValueType],
         ]
         type StreamConfiguration = dict[
             str,
@@ -72,7 +73,8 @@ class FlextMeltanoTapOracleOicTypes(_t):
         """Oracle OIC integration complex types."""
 
         type IntegrationConfiguration = dict[
-            str, str | int | bool | dict[str, _t.GeneralValueType]
+            str,
+            str | int | bool | dict[str, _t.GeneralValueType],
         ]
         type IntegrationDefinition = dict[
             str,
@@ -91,12 +93,14 @@ class FlextMeltanoTapOracleOicTypes(_t):
         """Oracle OIC connection complex types."""
 
         type ConnectionConfiguration = dict[
-            str, str | int | bool | dict[str, _t.GeneralValueType]
+            str,
+            str | int | bool | dict[str, _t.GeneralValueType],
         ]
         type ConnectionCredentials = dict[str, str | dict[str, _t.JsonValue]]
         type ConnectionSecurity = dict[str, str | bool | dict[str, _t.GeneralValueType]]
         type ConnectionValidation = dict[
-            str, bool | str | dict[str, _t.GeneralValueType]
+            str,
+            bool | str | dict[str, _t.GeneralValueType],
         ]
         type ConnectionMetadata = dict[str, str | dict[str, _t.JsonValue]]
         type ConnectionPool = dict[str, int | bool | dict[str, _t.GeneralValueType]]
@@ -123,7 +127,8 @@ class FlextMeltanoTapOracleOicTypes(_t):
         """Oracle OIC monitoring complex types."""
 
         type ActivityConfiguration = dict[
-            str, str | bool | dict[str, _t.GeneralValueType]
+            str,
+            str | bool | dict[str, _t.GeneralValueType],
         ]
         type MetricsCollection = dict[
             str,
@@ -145,10 +150,12 @@ class FlextMeltanoTapOracleOicTypes(_t):
         """Data extraction complex types."""
 
         type ExtractionConfiguration = dict[
-            str, str | bool | dict[str, _t.GeneralValueType]
+            str,
+            str | bool | dict[str, _t.GeneralValueType],
         ]
         type ExtractionFilter = dict[
-            str, str | list[str] | dict[str, _t.GeneralValueType]
+            str,
+            str | list[str] | dict[str, _t.GeneralValueType],
         ]
         type ExtractionMapping = dict[str, str | dict[str, _t.JsonValue]]
         type ExtractionResult = dict[str, bool | list[dict[str, _t.GeneralValueType]]]
@@ -166,7 +173,8 @@ class FlextMeltanoTapOracleOicTypes(_t):
         """Stream processing complex types."""
 
         type StreamConfiguration = dict[
-            str, str | bool | int | dict[str, _t.GeneralValueType]
+            str,
+            str | bool | int | dict[str, _t.GeneralValueType],
         ]
         type StreamMetadata = dict[str, str | dict[str, _t.JsonValue]]
         type StreamRecord = dict[str, _t.JsonValue | dict[str, _t.GeneralValueType]]
@@ -182,7 +190,8 @@ class FlextMeltanoTapOracleOicTypes(_t):
         """Error handling complex types."""
 
         type ErrorConfiguration = dict[
-            str, bool | str | int | dict[str, _t.GeneralValueType]
+            str,
+            bool | str | int | dict[str, _t.GeneralValueType],
         ]
         type ErrorRecovery = dict[str, str | bool | dict[str, _t.GeneralValueType]]
         type ErrorReporting = dict[str, str | int | dict[str, _t.JsonValue]]
@@ -231,19 +240,33 @@ class FlextMeltanoTapOracleOicTypes(_t):
         type SingerTapOracleOicProjectConfig = dict[str, _t.GeneralValueType]
         type OicExtractorConfig = dict[str, str | int | bool | list[str]]
         type SingerProtocolConfig = dict[
-            str, bool | str | dict[str, _t.GeneralValueType]
+            str,
+            bool | str | dict[str, _t.GeneralValueType],
         ]
         type TapOracleOicPipelineConfig = dict[str, _t.GeneralValueType]
 
         # Singer tap Oracle OIC-specific Literal type aliases (referencing constants.py StrEnums)
         type OicIntegrationStatusLiteral = Literal[
-            "ACTIVE", "INACTIVE", "DRAFT", "ERROR", "TESTING", "DEPRECATED"
+            "ACTIVE",
+            "INACTIVE",
+            "DRAFT",
+            "ERROR",
+            "TESTING",
+            "DEPRECATED",
         ]
         type OicJobStatusLiteral = Literal[
-            "RUNNING", "COMPLETED", "FAILED", "ABORTED", "SUSPENDED"
+            "RUNNING",
+            "COMPLETED",
+            "FAILED",
+            "ABORTED",
+            "SUSPENDED",
         ]
         type OicIntegrationTypeLiteral = Literal[
-            "INTEGRATION", "LIBRARY", "TEMPLATE", "RECIPE", "CONNECTIVITY_AGENT"
+            "INTEGRATION",
+            "LIBRARY",
+            "TEMPLATE",
+            "RECIPE",
+            "CONNECTIVITY_AGENT",
         ]
         type OicAgentTypeLiteral = Literal["ON_PREMISES_AGENT", "FILE_AGENT"]
         type OicAgentStatusLiteral = Literal["ONLINE", "OFFLINE", "MAINTENANCE"]

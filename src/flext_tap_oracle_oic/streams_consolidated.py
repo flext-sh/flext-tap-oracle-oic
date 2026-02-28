@@ -93,21 +93,21 @@ class IntegrationsStream(OICBaseStream):
         FlextMeltanoTypes.Singer.Typing.Property(
             "connections",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.ObjectType()
+                FlextMeltanoTypes.Singer.Typing.ObjectType(),
             ),
             description="Used connections",
         ),
         FlextMeltanoTypes.Singer.Typing.Property(
             "endpoints",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.ObjectType()
+                FlextMeltanoTypes.Singer.Typing.ObjectType(),
             ),
             description="Integration endpoints",
         ),
         FlextMeltanoTypes.Singer.Typing.Property(
             "trackingFields",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.StringType()
+                FlextMeltanoTypes.Singer.Typing.StringType(),
             ),
             description="Tracking fields",
         ),
@@ -316,14 +316,14 @@ class PackagesStream(OICBaseStream):
         FlextMeltanoTypes.Singer.Typing.Property(
             "integrations",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.ObjectType()
+                FlextMeltanoTypes.Singer.Typing.ObjectType(),
             ),
             description="Included integrations",
         ),
         FlextMeltanoTypes.Singer.Typing.Property(
             "connections",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.ObjectType()
+                FlextMeltanoTypes.Singer.Typing.ObjectType(),
             ),
             description="Included connections",
         ),
@@ -497,7 +497,7 @@ class LibrariesStream(OICBaseStream):
         FlextMeltanoTypes.Singer.Typing.Property(
             "functions",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.StringType()
+                FlextMeltanoTypes.Singer.Typing.StringType(),
             ),
             description="Available functions",
         ),
@@ -638,14 +638,14 @@ class AdaptersStream(OICBaseStream):
         FlextMeltanoTypes.Singer.Typing.Property(
             "capabilities",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.StringType()
+                FlextMeltanoTypes.Singer.Typing.StringType(),
             ),
             description="Adapter capabilities",
         ),
         FlextMeltanoTypes.Singer.Typing.Property(
             "connectionTypes",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.StringType()
+                FlextMeltanoTypes.Singer.Typing.StringType(),
             ),
             description="Connection types",
         ),
@@ -728,7 +728,7 @@ class ProjectsStream(OICBaseStream):
         FlextMeltanoTypes.Singer.Typing.Property(
             "folders",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.ObjectType()
+                FlextMeltanoTypes.Singer.Typing.ObjectType(),
             ),
             description="Project folders",
         ),
@@ -745,7 +745,7 @@ class ProjectsStream(OICBaseStream):
         FlextMeltanoTypes.Singer.Typing.Property(
             "permissions",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.ObjectType()
+                FlextMeltanoTypes.Singer.Typing.ObjectType(),
             ),
             description="Project permissions",
         ),

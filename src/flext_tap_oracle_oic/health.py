@@ -126,7 +126,7 @@ class OICHealthChecker:
                         body = dict[str, t.GeneralValueType]()
                 status_val = str(body.get("status", "success"))
                 test_result_val = str(
-                    body.get("testResult", "Connection test successful")
+                    body.get("testResult", "Connection test successful"),
                 )
                 details_val = body.get("details")
                 return {
