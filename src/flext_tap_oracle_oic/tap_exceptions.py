@@ -63,7 +63,6 @@ class OICAPIError(FlextExceptions.OperationError):
     """Oracle OIC API error."""
 
 
-# Export for backward compatibility and module interface
 __all__: list[str] = [
     "OICAPIError",
     "OICAuthenticationError",

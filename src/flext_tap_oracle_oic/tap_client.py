@@ -414,7 +414,6 @@ class TapOracleOic(Tap):
             return FlextResult[bool].fail(exception_msg)
 
 
-# Zero Tolerance: All legacy exception aliases removed
 # Use TapOracleOic directly instead
 
 

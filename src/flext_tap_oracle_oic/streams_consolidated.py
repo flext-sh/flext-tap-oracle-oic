@@ -15,7 +15,6 @@ from flext_meltano import FlextMeltanoTypes
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
 from flext_tap_oracle_oic.typings import t
 
-# Initialize FlextMeltanoTypes for compatibility
 th = FlextMeltanoTypes()
 
 

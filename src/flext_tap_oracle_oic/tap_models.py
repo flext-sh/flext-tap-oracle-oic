@@ -34,7 +34,6 @@ SPDX-License-Identifier: MIT
 """
 
 
-# Export for backward compatibility and module interface
 __all__: list[str] = [
     "OICIntegration",
 ]

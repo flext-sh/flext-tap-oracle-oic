@@ -814,8 +814,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUti
                 "rate_per_second": records_per_second,
             }
 
-    # Proxy methods for backward compatibility
-    @classmethod
+        @classmethod
     def create_schema_message(
         cls,
         stream_name: str,
