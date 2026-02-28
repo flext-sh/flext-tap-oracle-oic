@@ -34,6 +34,7 @@ __all__ = [
     "FlextMeltanoBridge",
     "FlextMeltanoService",
     "FlextMeltanoSettings",
+    "FlextMeltanoTapOracleOicConstants",
     "FlextMeltanoTapOracleOicModels",
     "FlextMeltanoTapOracleOicProtocols",
     "FlextMeltanoTapOracleOicSettings",

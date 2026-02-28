@@ -13,8 +13,7 @@ from datetime import UTC, datetime
 from typing import ClassVar, override
 from urllib.parse import urljoin, urlparse
 
-from flext_core import FlextResult, t
-from flext_core.utilities import FlextUtilities
+from flext_core import FlextResult, FlextUtilities, t
 from flext_meltano import m
 from pydantic import ConfigDict, TypeAdapter, ValidationError
 
