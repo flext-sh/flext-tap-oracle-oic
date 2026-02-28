@@ -18,8 +18,8 @@ from flext_core import FlextExceptions, FlextLogger, t
 from flext_meltano import FlextMeltanoStream
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError
 
-from flext_tap_oracle_oic.constants import FlextMeltanoTapOracleOicConstants, c
-from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
+from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
+from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 
 class _OicEnvelope(BaseModel):
@@ -224,8 +224,8 @@ class OICBaseStream(FlextMeltanoStream):
         Base URL with appropriate OIC API endpoint for stream type.
 
         """
-        # Zero Tolerance FIX: Use FlextMeltanoTapOracleOicUtilities for URL operations
-        utilities = FlextMeltanoTapOracleOicUtilities()
+        # Zero Tolerance FIX: Use FlextTapOracleOicUtilities for URL operations
+        utilities = FlextTapOracleOicUtilities()
 
         base_url = str(
             self.config.get("base_url") or self.config.get("oic_url", ""),
@@ -259,14 +259,14 @@ class OICBaseStream(FlextMeltanoStream):
             return base_url + self.api_path
 
         api_paths = {
-            "core": FlextMeltanoTapOracleOicConstants.OIC_API_BASE_PATH,
-            "monitoring": FlextMeltanoTapOracleOicConstants.OIC_MONITORING_API_PATH,
-            "b2b": FlextMeltanoTapOracleOicConstants.OIC_B2B_API_PATH,
-            "process": FlextMeltanoTapOracleOicConstants.OIC_PROCESS_API_PATH,
+            "core": FlextTapOracleOicConstants.OIC_API_BASE_PATH,
+            "monitoring": FlextTapOracleOicConstants.OIC_MONITORING_API_PATH,
+            "b2b": FlextTapOracleOicConstants.OIC_B2B_API_PATH,
+            "process": FlextTapOracleOicConstants.OIC_PROCESS_API_PATH,
         }
         return base_url + api_paths.get(
             self.api_category,
-            FlextMeltanoTapOracleOicConstants.OIC_API_BASE_PATH,
+            FlextTapOracleOicConstants.OIC_API_BASE_PATH,
         )
 
     @property

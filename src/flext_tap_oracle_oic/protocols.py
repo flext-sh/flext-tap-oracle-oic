@@ -15,7 +15,7 @@ from flext_oracle_oic.protocols import FlextOracleOicProtocols
 from flext_tap_oracle_oic.typings import t
 
 
-class FlextMeltanoTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols):
+class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols):
     """Singer Tap Oracle OIC protocols extending Oracle and Meltano protocols.
 
     Extends both FlextOracleOicProtocols and FlextMeltanoProtocols via multiple inheritance
@@ -38,7 +38,7 @@ class FlextMeltanoTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicPro
     connection: p.OracleOic.ConnectionProtocol
 
     # Meltano protocols (inherited)
-    tap: p.Meltano.TapProtocol
+    tap: p.Meltano.Tap
 
     # Tap Oracle OIC-specific protocols
     oic_connection: p.Tap.OracleOic.OicConnectionProtocol
@@ -124,9 +124,9 @@ class FlextMeltanoTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicPro
 
 
 # Runtime alias for simplified usage
-p = FlextMeltanoTapOracleOicProtocols
+p = FlextTapOracleOicProtocols
 
 __all__ = [
-    "FlextMeltanoTapOracleOicProtocols",
+    "FlextTapOracleOicProtocols",
     "p",
 ]

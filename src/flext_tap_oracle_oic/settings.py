@@ -23,7 +23,7 @@ from flext_tap_oracle_oic.constants import c
 from flext_tap_oracle_oic.typings import t
 
 
-class FlextMeltanoTapOracleOicSettings(FlextSettings):
+class FlextTapOracleOicSettings(FlextSettings):
     """Oracle Integration Cloud Tap Configuration using enhanced FlextSettings patterns.
 
     This class extends FlextSettings and includes all the configuration fields
@@ -356,7 +356,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
         cls,
         environment: str,
         **overrides: t.GeneralValueType,
-    ) -> FlextMeltanoTapOracleOicSettings:
+    ) -> FlextTapOracleOicSettings:
         """Create configuration for specific environment using enhanced singleton pattern."""
         env_overrides: dict[str, t.GeneralValueType] = {}
 
@@ -397,7 +397,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
 
     @classmethod
     @override
-    def get_global_instance(cls) -> FlextMeltanoTapOracleOicSettings:
+    def get_global_instance(cls) -> FlextTapOracleOicSettings:
         """Get the global singleton instance using FlextSettings singleton pattern."""
         return cls(project_name="flext-tap-oracle-oic")
 
@@ -405,7 +405,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
     def create_for_development(
         cls,
         **overrides: t.GeneralValueType,
-    ) -> FlextMeltanoTapOracleOicSettings:
+    ) -> FlextTapOracleOicSettings:
         """Create configuration for development environment."""
         dev_overrides: dict[str, t.GeneralValueType] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT * 2,
@@ -424,7 +424,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
     def create_for_production(
         cls,
         **overrides: t.GeneralValueType,
-    ) -> FlextMeltanoTapOracleOicSettings:
+    ) -> FlextTapOracleOicSettings:
         """Create configuration for production environment."""
         prod_overrides: dict[str, t.GeneralValueType] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
@@ -443,7 +443,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
     def create_for_testing(
         cls,
         **overrides: t.GeneralValueType,
-    ) -> FlextMeltanoTapOracleOicSettings:
+    ) -> FlextTapOracleOicSettings:
         """Create configuration for testing environment."""
         test_overrides: dict[str, t.GeneralValueType] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT // 3,
@@ -461,7 +461,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
     @classmethod
     @override
     def reset_global_instance(cls) -> None:
-        """Reset the global FlextMeltanoTapOracleOicSettings instance (mainly for testing)."""
+        """Reset the global FlextTapOracleOicSettings instance (mainly for testing)."""
         cls._reset_instance()
 
 
@@ -469,7 +469,7 @@ def create_oracle_oic_tap_config(
     oauth_params: Mapping[str, t.GeneralValueType],
     connection_params: Mapping[str, t.GeneralValueType],
     tap_params: Mapping[str, t.GeneralValueType] | None = None,
-) -> FlextResult[FlextMeltanoTapOracleOicSettings]:
+) -> FlextResult[FlextTapOracleOicSettings]:
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
     Args:
@@ -498,17 +498,17 @@ def create_oracle_oic_tap_config(
             **tap_config,
         }
 
-        config_instance = FlextMeltanoTapOracleOicSettings.model_validate(config_data)
-        return FlextResult[FlextMeltanoTapOracleOicSettings].ok(config_instance)
+        config_instance = FlextTapOracleOicSettings.model_validate(config_data)
+        return FlextResult[FlextTapOracleOicSettings].ok(config_instance)
 
     except (ValueError, TypeError, KeyError, AttributeError, OSError) as e:
-        return FlextResult[FlextMeltanoTapOracleOicSettings].fail(
+        return FlextResult[FlextTapOracleOicSettings].fail(
             f"Oracle OIC tap configuration creation failed: {e}",
         )
 
 
 def validate_oracle_oic_tap_configuration(
-    config: FlextMeltanoTapOracleOicSettings,
+    config: FlextTapOracleOicSettings,
 ) -> FlextResult[bool]:
     """Validate Oracle Integration Cloud tap configuration using FlextSettings patterns - ZERO DUPLICATION."""
     # Required string fields validation
@@ -542,7 +542,7 @@ def validate_oracle_oic_tap_configuration(
 
 
 __all__: list[str] = [
-    "FlextMeltanoTapOracleOicSettings",
+    "FlextTapOracleOicSettings",
     "create_oracle_oic_tap_config",
     "validate_oracle_oic_tap_configuration",
 ]

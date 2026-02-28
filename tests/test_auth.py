@@ -24,7 +24,7 @@ class TestOICOAuth2Authenticator:
 
     @pytest.fixture
     def mock_config(self) -> MagicMock:
-        """Create a mock config that mimics FlextMeltanoTapOracleOicSettings."""
+        """Create a mock config that mimics FlextTapOracleOicSettings."""
         config = MagicMock()
         config.oauth_client_id = "test_client_id"
         config.oauth_client_secret = MagicMock()

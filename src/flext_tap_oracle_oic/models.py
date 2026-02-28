@@ -56,7 +56,7 @@ OicErrorTypeLiteral = Literal[
 ]
 
 
-class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
+class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     """Oracle Integration Cloud tap models extending flext-core FlextModels.
 
     Provides complete models for OIC entity extraction, authentication,
@@ -1277,9 +1277,9 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
 
 # Short alias
-m = FlextMeltanoTapOracleOicModels
+m = FlextTapOracleOicModels
 
 __all__ = [
-    "FlextMeltanoTapOracleOicModels",
+    "FlextTapOracleOicModels",
     "m",
 ]

@@ -17,7 +17,7 @@ from flext_oracle_oic import FlextOracleOicConstants
 from flext_oracle_oic.constants import FlextOracleOicConstants as ParentOicConstants
 
 
-class FlextMeltanoTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants):
+class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants):
     """FLEXT Oracle OIC TAP constants extending flext-core platform constants.
 
     Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
@@ -278,9 +278,9 @@ class FlextMeltanoTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicCon
         VALIDATION = "VALIDATION"
 
 
-c = FlextMeltanoTapOracleOicConstants
+c = FlextTapOracleOicConstants
 
 __all__: list[str] = [
-    "FlextMeltanoTapOracleOicConstants",
+    "FlextTapOracleOicConstants",
     "c",
 ]
