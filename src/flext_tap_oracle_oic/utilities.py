@@ -13,8 +13,9 @@ from datetime import UTC, datetime
 from typing import ClassVar, override
 from urllib.parse import urljoin, urlparse
 
-from flext_core import FlextResult, FlextUtilities, t
-from flext_meltano import m
+from flext_core import FlextResult, t
+from flext_meltano import FlextMeltanoUtilities, m
+from flext_oracle_oic import FlextOracleOicUtilities
 from pydantic import ConfigDict, TypeAdapter, ValidationError
 
 from flext_tap_oracle_oic.constants import FlextMeltanoTapOracleOicConstants
@@ -62,7 +63,7 @@ def _coerce_int(value: object) -> int:
         return 0
 
 
-class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
+class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities):
     """Single unified utilities class for Singer tap Oracle OIC operations.
 
     Follows FLEXT unified class pattern with nested helper classes for
@@ -221,8 +222,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             """
             try:
                 # Validate base URL
-                validation_result = FlextMeltanoTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
-                    base_url,
+                validation_result = (
+                    FlextTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
+                        base_url,
+                    )
                 )
                 if validation_result.is_failure:
                     return FlextResult[str].fail(
@@ -317,7 +320,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             if not response:
                 return {
                     "has_more": False,
-                    "limit": FlextMeltanoTapOracleOicUtilities.DEFAULT_PAGE_SIZE,
+                    "limit": FlextTapOracleOicUtilities.DEFAULT_PAGE_SIZE,
                     "offset": 0,
                     "total_count": 0,
                     "current_page_size": 0,
@@ -332,7 +335,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 "has_more": response.get("hasMore", False),
                 "limit": response.get(
                     "limit",
-                    FlextMeltanoTapOracleOicUtilities.DEFAULT_PAGE_SIZE,
+                    FlextTapOracleOicUtilities.DEFAULT_PAGE_SIZE,
                 ),
                 "offset": response.get("offset", 0),
                 "total_count": response.get("count", 0),
@@ -518,8 +521,10 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 )
 
             # Validate OIC base URL
-            url_validation = FlextMeltanoTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
-                str(config["oic_base_url"]),
+            url_validation = (
+                FlextTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
+                    str(config["oic_base_url"]),
+                )
             )
             if url_validation.is_failure:
                 return FlextResult[Mapping[str, t.GeneralValueType]].fail(
@@ -675,11 +680,9 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
             object: Bookmark value or None
 
             """
-            stream_state = (
-                FlextMeltanoTapOracleOicUtilities.StateManagement.get_stream_state(
-                    state,
-                    stream_name,
-                )
+            stream_state = FlextTapOracleOicUtilities.StateManagement.get_stream_state(
+                state,
+                stream_name,
             )
             # stream_state is guaranteed to be dict by type annotation
             return stream_state.get(bookmark_key)
@@ -753,7 +756,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
                 offset_val = 0
                 page_size_val = 0
 
-            return FlextMeltanoTapOracleOicUtilities.StateManagement.set_bookmark(
+            return FlextTapOracleOicUtilities.StateManagement.set_bookmark(
                 state,
                 stream_name,
                 "pagination_offset",
@@ -779,7 +782,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
 
             """
             if total_records <= 0:
-                return FlextMeltanoTapOracleOicUtilities.DEFAULT_PAGE_SIZE
+                return FlextTapOracleOicUtilities.DEFAULT_PAGE_SIZE
 
             calculated_size = max(1, total_records // target_requests)
             return min(calculated_size, 1000)  # OIC API limit
@@ -821,7 +824,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
         key_properties: list[str] | None = None,
     ) -> m.Meltano.SingerSchemaMessage:
         """Proxy method for SingerUtilities.create_schema_message()."""
-        return cls.TapOracleOic.create_schema_message(
+        return FlextTapOracleOicUtilities.TapOracleOic.create_schema_message(
             stream_name,
             schema,
             key_properties,
@@ -835,7 +838,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
         time_extracted: datetime | None = None,
     ) -> m.Meltano.SingerRecordMessage:
         """Proxy method for SingerUtilities.create_record_message()."""
-        return cls.TapOracleOic.create_record_message(
+        return FlextTapOracleOicUtilities.TapOracleOic.create_record_message(
             stream_name,
             record,
             time_extracted,
@@ -844,7 +847,9 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
     @classmethod
     def validate_oic_endpoint(cls, endpoint_url: str) -> FlextResult[str]:
         """Proxy method for OicApiProcessing.validate_oic_endpoint()."""
-        return cls.OicApiProcessing.validate_oic_endpoint(endpoint_url)
+        return FlextTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
+            endpoint_url
+        )
 
     @classmethod
     def build_oic_api_url(
@@ -854,7 +859,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
         query_params: Mapping[str, str] | None = None,
     ) -> FlextResult[str]:
         """Proxy method for OicApiProcessing.build_oic_api_url()."""
-        return cls.OicApiProcessing.build_oic_api_url(
+        return FlextTapOracleOicUtilities.OicApiProcessing.build_oic_api_url(
             base_url,
             resource_path,
             query_params,
@@ -863,12 +868,16 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
     @classmethod
     def normalize_integration_name(cls, integration_name: str) -> str:
         """Proxy method for OicDataProcessing.normalize_integration_name()."""
-        return cls.OicDataProcessing.normalize_integration_name(integration_name)
+        return FlextTapOracleOicUtilities.OicDataProcessing.normalize_integration_name(
+            integration_name
+        )
 
     @classmethod
     def format_oic_timestamp(cls, timestamp_str: str) -> FlextResult[str]:
         """Proxy method for OicDataProcessing.format_oic_timestamp()."""
-        return cls.OicDataProcessing.format_oic_timestamp(timestamp_str)
+        return FlextTapOracleOicUtilities.OicDataProcessing.format_oic_timestamp(
+            timestamp_str
+        )
 
     @classmethod
     def validate_oic_connection_config(
@@ -876,7 +885,11 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
         config: Mapping[str, t.GeneralValueType],
     ) -> FlextResult[Mapping[str, t.GeneralValueType]]:
         """Proxy method for ConfigValidation.validate_oic_connection_config()."""
-        return cls.ConfigValidation.validate_oic_connection_config(config)
+        return (
+            FlextTapOracleOicUtilities.ConfigValidation.validate_oic_connection_config(
+                config
+            )
+        )
 
     @classmethod
     def get_stream_state(
@@ -885,7 +898,9 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
         stream_name: str,
     ) -> Mapping[str, t.GeneralValueType]:
         """Proxy method for StateManagement.get_stream_state()."""
-        return cls.StateManagement.get_stream_state(state, stream_name)
+        return FlextTapOracleOicUtilities.StateManagement.get_stream_state(
+            state, stream_name
+        )
 
     @classmethod
     def set_bookmark(
@@ -896,7 +911,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
         bookmark_value: t.GeneralValueType,
     ) -> Mapping[str, t.GeneralValueType]:
         """Proxy method for StateManagement.set_bookmark()."""
-        return cls.StateManagement.set_bookmark(
+        return FlextTapOracleOicUtilities.StateManagement.set_bookmark(
             state,
             stream_name,
             bookmark_key,
@@ -904,6 +919,9 @@ class FlextMeltanoTapOracleOicUtilities(FlextUtilities):
         )
 
 
+u = FlextTapOracleOicUtilities
+
 __all__ = [
-    "FlextMeltanoTapOracleOicUtilities",
+    "FlextTapOracleOicUtilities",
+    "u",
 ]
