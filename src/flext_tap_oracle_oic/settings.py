@@ -267,7 +267,7 @@ class FlextMeltanoTapOracleOicSettings(FlextSettings):
                 return FlextResult[bool].fail("Page size must be positive")
 
             # Validate performance settings
-            max_safe_parallel = 4
+            max_safe_parallel = c.TapOicPerformance.MAX_SAFE_PARALLEL_STREAMS
             max_safe_batch = FlextConstants.Performance.BatchProcessing.MAX_ITEMS // 2
             if (
                 self.max_parallel_streams > max_safe_parallel

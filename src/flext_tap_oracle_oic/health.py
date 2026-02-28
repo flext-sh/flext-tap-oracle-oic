@@ -18,14 +18,11 @@ from flext_api.models import FlextApiModels
 from flext_api.settings import FlextApiSettings
 from flext_core import FlextResult
 
+from flext_tap_oracle_oic.constants import c
 from flext_tap_oracle_oic.tap_client import (
     FlextOracleOicAuthenticator as OAuthAuthenticator,
 )
 from flext_tap_oracle_oic.typings import t
-
-JSON_MIME = "application/json"
-# Constants
-HTTP_OK = 200
 
 
 class OICHealthChecker:
@@ -40,8 +37,8 @@ class OICHealthChecker:
 
     def _get_headers(self) -> Mapping[str, str]:
         headers = {
-            "Accept": JSON_MIME,
-            "Content-Type": JSON_MIME,
+            "Accept": c.TapOicHttp.JSON_MIME,
+            "Content-Type": c.TapOicHttp.JSON_MIME,
         }
         # Add auth header from authenticator
         token_result = self.authenticator.get_access_token()
@@ -73,7 +70,7 @@ class OICHealthChecker:
                 }
 
             response = response_result.value
-            if response.status_code == HTTP_OK:
+            if response.status_code == c.TapOicHttp.HTTP_OK:
                 return {
                     "status": "healthy",
                     "timestamp": datetime.now(UTC).isoformat(),
@@ -179,7 +176,7 @@ class OICHealthChecker:
                 }
 
             response = response_result.value
-            if response.status_code == HTTP_OK:
+            if response.status_code == c.TapOicHttp.HTTP_OK:
                 match response.body:
                     case dict() as integration_dict:
                         integration = integration_dict
@@ -253,7 +250,7 @@ class OICHealthChecker:
                 }
 
             response = response_result.value
-            if response.status_code == HTTP_OK:
+            if response.status_code == c.TapOicHttp.HTTP_OK:
                 return {
                     "service": "monitoring",
                     "status": "healthy",

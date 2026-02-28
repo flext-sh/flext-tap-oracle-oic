@@ -19,16 +19,8 @@ from flext_core import FlextExceptions, FlextLogger, t
 from flext_meltano import FlextMeltanoStream
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError
 
-from flext_tap_oracle_oic.constants import FlextMeltanoTapOracleOicConstants
+from flext_tap_oracle_oic.constants import FlextMeltanoTapOracleOicConstants, c
 from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
-
-# Constants for paginator and response tracking
-RESPONSE_TIME_HISTORY_SIZE = 10
-MIN_RESPONSE_SAMPLES = 5
-SLOW_RESPONSE_THRESHOLD = 5.0
-HTTP_UNAUTHORIZED = 401
-HTTP_FORBIDDEN = 403
-HTTP_RATE_LIMITED = 429
 
 
 class _OicEnvelope(BaseModel):
@@ -96,12 +88,12 @@ class OICPaginator:
     - Response time tracking and optimization
     """
 
-    def __init__(self, start_value: int = 0, page_size: int = 100) -> None:
+    def __init__(self, start_value: int = c.TapOicProcessing.DEFAULT_PAGINATOR_START, page_size: int = c.TapOicProcessing.DEFAULT_PAGINATOR_PAGE_SIZE) -> None:
         """Initialize paginator with starting offset and page size."""
         self.current_value: int = start_value
         self._page_size: int = page_size
-        self._max_page_size: int = 1000
-        self._min_page_size: int = 10
+        self._max_page_size: int = c.TapOicProcessing.PAGINATOR_MAX_PAGE_SIZE
+        self._min_page_size: int = c.TapOicProcessing.PAGINATOR_MIN_PAGE_SIZE
         self._adaptive_sizing: bool = True
         self._response_times: list[float] = []
 
@@ -165,15 +157,15 @@ class OICPaginator:
         self._response_times.append(response_time)
 
         # Keep only recent response times
-        if len(self._response_times) > RESPONSE_TIME_HISTORY_SIZE:
+        if len(self._response_times) > c.TapOicPerformance.RESPONSE_TIME_HISTORY_SIZE:
             self._response_times.pop(0)
 
         # Adjust page size based on average response time
-        if len(self._response_times) >= MIN_RESPONSE_SAMPLES:
+        if len(self._response_times) >= c.TapOicPerformance.MIN_RESPONSE_SAMPLES:
             avg_time = sum(self._response_times) / len(self._response_times)
 
             if (
-                avg_time > SLOW_RESPONSE_THRESHOLD
+                avg_time > c.TapOicPerformance.SLOW_RESPONSE_THRESHOLD
                 and self._page_size > self._min_page_size
             ):
                 # Slow responses - reduce page size
@@ -525,13 +517,13 @@ class OICBaseStream(FlextMeltanoStream):
         self.logger.error("OIC API error from %s: %s", response_url, err_msg)
 
         status_code = getattr(response, "status_code", 0)
-        if status_code == HTTP_UNAUTHORIZED:
+        if status_code == c.TapOicHttp.HTTP_UNAUTHORIZED:
             msg = "Unauthorized: Authentication failed or token expired"
             raise FlextExceptions.AuthenticationError(msg)
-        if status_code == HTTP_FORBIDDEN:
+        if status_code == c.TapOicHttp.HTTP_FORBIDDEN:
             msg = "Forbidden: Insufficient permissions to access resource"
             raise FlextExceptions.AuthorizationError(msg)
-        if status_code == HTTP_RATE_LIMITED:
+        if status_code == c.TapOicHttp.HTTP_RATE_LIMITED:
             msg = "Rate limit exceeded: Too many requests"
             raise FlextExceptions.RateLimitError(msg)
         raise_for_status = getattr(response, "raise_for_status", None)

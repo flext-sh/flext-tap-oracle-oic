@@ -121,6 +121,11 @@ class FlextMeltanoTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicCon
         DEFAULT_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.DEFAULT_PAGE_SIZE
         MAX_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.MAX_PAGE_SIZE
         MIN_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.MIN_PAGE_SIZE
+        # Pagination defaults
+        DEFAULT_PAGINATOR_START: Final[int] = 0
+        DEFAULT_PAGINATOR_PAGE_SIZE: Final[int] = 100
+        PAGINATOR_MAX_PAGE_SIZE: Final[int] = 1000
+        PAGINATOR_MIN_PAGE_SIZE: Final[int] = 10
 
     class TapOicAuth:
         """OIC authentication configuration.
@@ -138,11 +143,33 @@ class FlextMeltanoTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicCon
             ParentOicConstants.Auth.DEFAULT_TOKEN_EXPIRY_SECONDS
         )
 
+    class TapOicHttp:
+        """HTTP status codes and MIME types for OIC API communication."""
+
+        HTTP_OK: Final[int] = 200
+        HTTP_UNAUTHORIZED: Final[int] = 401
+        HTTP_FORBIDDEN: Final[int] = 403
+        HTTP_ERROR_STATUS_THRESHOLD: Final[int] = 400
+        HTTP_RATE_LIMITED: Final[int] = 429
+        JSON_MIME: Final[str] = "application/json"
+
     class TapOicValidation:
         """OIC tap validation constants."""
 
         MAX_STREAM_PREFIX_LENGTH: Final[int] = 255
         MIN_DATE_LENGTH: Final[int] = 10  # YYYY-MM-DD format
+        MIN_TOKEN_EXPIRY_BUFFER: Final[int] = 60
+
+    class TapOicPerformance:
+        """OIC tap performance and monitoring constants."""
+
+        RESPONSE_TIME_HISTORY_SIZE: Final[int] = 10
+        MIN_RESPONSE_SAMPLES: Final[int] = 5
+        SLOW_RESPONSE_THRESHOLD: Final[float] = 5.0
+        MAX_SAFE_PARALLEL_STREAMS: Final[int] = 4
+
+        MIN_PERCENTAGE: Final[float] = 0.0
+        MAX_PERCENTAGE: Final[float] = 100.0
 
     # =========================================================================
     # STRENUM CLASSES - Single source of truth for string enumerations

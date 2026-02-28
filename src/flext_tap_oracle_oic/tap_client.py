@@ -17,6 +17,7 @@ from flext_api.settings import FlextApiSettings
 from flext_core import FlextLogger, FlextResult, t
 from flext_meltano import FlextMeltanoStream as Stream, FlextMeltanoTap as Tap
 
+from flext_tap_oracle_oic.constants import c
 from flext_tap_oracle_oic.settings import FlextMeltanoTapOracleOicSettings
 from flext_tap_oracle_oic.streams_consolidated import (
     ALL_STREAMS,
@@ -25,9 +26,6 @@ from flext_tap_oracle_oic.streams_consolidated import (
 )
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
 from flext_tap_oracle_oic.utilities import FlextMeltanoTapOracleOicUtilities
-
-# Constants
-HTTP_ERROR_STATUS_THRESHOLD = 400
 
 # Type aliases
 StreamConfigType = object
@@ -63,7 +61,7 @@ class FlextOracleOicAuthenticator:
                 )
 
             response = response_result.value
-            if response.status_code >= HTTP_ERROR_STATUS_THRESHOLD:
+            if response.status_code >= c.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD:
                 return FlextResult[str].fail(
                     f"OAuth2 request failed with status {response.status_code}",
                 )
@@ -164,7 +162,7 @@ class OracleOicClient:
                 )
 
             response = response_result.value
-            if response.status_code >= HTTP_ERROR_STATUS_THRESHOLD:
+            if response.status_code >= c.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD:
                 return FlextResult[object].fail(
                     f"OIC API request failed with status {response.status_code}",
                 )
@@ -217,7 +215,7 @@ class OracleOicClient:
                 )
 
             response = response_result.value
-            if response.status_code >= HTTP_ERROR_STATUS_THRESHOLD:
+            if response.status_code >= c.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD:
                 return FlextResult[object].fail(
                     f"OIC API request failed with status {response.status_code}",
                 )

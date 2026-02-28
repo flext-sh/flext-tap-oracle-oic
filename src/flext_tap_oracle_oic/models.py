@@ -46,11 +46,6 @@ OicErrorTypeLiteral = Literal[
     "VALIDATION",
 ]
 
-# Constants that don't exist on FlextConstants — define locally
-_MIN_TOKEN_EXPIRY_BUFFER: int = 60
-_MIN_PERCENTAGE: float = 0.0
-_MAX_PERCENTAGE: float = 100.0
-
 
 class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     """Oracle Integration Cloud tap models extending flext-core FlextModels.
@@ -282,7 +277,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 if not self.base_url.startswith("https://"):
                     msg = "OIC base URL must use HTTPS"
                     raise ValueError(msg)
-                if self.token_expiry_buffer < _MIN_TOKEN_EXPIRY_BUFFER:
+                if self.token_expiry_buffer < c.TapOicValidation.MIN_TOKEN_EXPIRY_BUFFER:
                     msg = "Token expiry buffer must be at least 60 seconds"
                     raise ValueError(msg)
                 return self
@@ -368,7 +363,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         "total_errors": self.error_count or 0,
                         "error_rate": error_rate,
                         "health_status": "healthy"
-                        if error_rate < _MAX_PERCENTAGE / 20
+                        if error_rate < c.TapOicValidation.MAX_PERCENTAGE / 20
                         else "degraded",
                     },
                     "metadata": {
@@ -812,7 +807,7 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     msg = "Integration ID is required"
                     raise ValueError(msg)
                 if self.cpu_usage_percent is not None and not (
-                    _MIN_PERCENTAGE <= self.cpu_usage_percent <= _MAX_PERCENTAGE
+                    c.TapOicValidation.MIN_PERCENTAGE <= self.cpu_usage_percent <= c.TapOicValidation.MAX_PERCENTAGE
                 ):
                     msg = "CPU usage must be between 0 and 100 percent"
                     raise ValueError(msg)
