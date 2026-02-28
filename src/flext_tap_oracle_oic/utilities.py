@@ -222,10 +222,8 @@ class FlextMeltanoTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUti
             """
             try:
                 # Validate base URL
-                validation_result = (
-                    FlextMeltanoTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
-                        base_url,
-                    )
+                validation_result = FlextMeltanoTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
+                    base_url,
                 )
                 if validation_result.is_failure:
                     return FlextResult[str].fail(
@@ -328,7 +326,9 @@ class FlextMeltanoTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUti
 
             items = response.get("items", [])
             items_list_raw = _as_list(items)
-            items_list: list[t.GeneralValueType] = items_list_raw if items_list_raw is not None else []
+            items_list: list[t.GeneralValueType] = (
+                items_list_raw if items_list_raw is not None else []
+            )
 
             return {
                 "has_more": response.get("hasMore", False),
@@ -520,10 +520,8 @@ class FlextMeltanoTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUti
                 )
 
             # Validate OIC base URL
-            url_validation = (
-                FlextMeltanoTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
-                    str(config["oic_base_url"]),
-                )
+            url_validation = FlextMeltanoTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
+                str(config["oic_base_url"]),
             )
             if url_validation.is_failure:
                 return FlextResult[Mapping[str, t.GeneralValueType]].fail(
@@ -679,9 +677,11 @@ class FlextMeltanoTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUti
             object: Bookmark value or None
 
             """
-            stream_state = FlextMeltanoTapOracleOicUtilities.StateManagement.get_stream_state(
-                state,
-                stream_name,
+            stream_state = (
+                FlextMeltanoTapOracleOicUtilities.StateManagement.get_stream_state(
+                    state,
+                    stream_name,
+                )
             )
             # stream_state is guaranteed to be dict by type annotation
             return stream_state.get(bookmark_key)
@@ -814,7 +814,7 @@ class FlextMeltanoTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUti
                 "rate_per_second": records_per_second,
             }
 
-        @classmethod
+    @classmethod
     def create_schema_message(
         cls,
         stream_name: str,
@@ -883,10 +883,8 @@ class FlextMeltanoTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUti
         config: Mapping[str, t.GeneralValueType],
     ) -> FlextResult[Mapping[str, t.GeneralValueType]]:
         """Proxy method for ConfigValidation.validate_oic_connection_config()."""
-        return (
-            FlextMeltanoTapOracleOicUtilities.ConfigValidation.validate_oic_connection_config(
-                config
-            )
+        return FlextMeltanoTapOracleOicUtilities.ConfigValidation.validate_oic_connection_config(
+            config
         )
 
     @classmethod

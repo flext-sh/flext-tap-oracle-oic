@@ -13,9 +13,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from datetime import UTC, datetime
 
-from flext_api import FlextApi
-from flext_api.models import FlextApiModels
-from flext_api.settings import FlextApiSettings
+from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 from flext_core import FlextResult
 
 from flext_tap_oracle_oic.constants import c

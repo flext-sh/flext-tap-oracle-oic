@@ -12,7 +12,7 @@ from datetime import UTC, datetime
 from typing import Literal, Self
 
 from flext_core import FlextConstants, FlextModels, t
-from flext_meltano.models import FlextMeltanoModels
+from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic.models import FlextOracleOicModels
 from pydantic import (
     ConfigDict,
@@ -277,7 +277,10 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 if not self.base_url.startswith("https://"):
                     msg = "OIC base URL must use HTTPS"
                     raise ValueError(msg)
-                if self.token_expiry_buffer < c.TapOicValidation.MIN_TOKEN_EXPIRY_BUFFER:
+                if (
+                    self.token_expiry_buffer
+                    < c.TapOicValidation.MIN_TOKEN_EXPIRY_BUFFER
+                ):
                     msg = "Token expiry buffer must be at least 60 seconds"
                     raise ValueError(msg)
                 return self
@@ -807,7 +810,9 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     msg = "Integration ID is required"
                     raise ValueError(msg)
                 if self.cpu_usage_percent is not None and not (
-                    c.TapOicValidation.MIN_PERCENTAGE <= self.cpu_usage_percent <= c.TapOicValidation.MAX_PERCENTAGE
+                    c.TapOicValidation.MIN_PERCENTAGE
+                    <= self.cpu_usage_percent
+                    <= c.TapOicValidation.MAX_PERCENTAGE
                 ):
                     msg = "CPU usage must be between 0 and 100 percent"
                     raise ValueError(msg)
@@ -1055,7 +1060,9 @@ class FlextMeltanoTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             success: bool = Field(..., description="Response success indicator")
-            data: t.GeneralValueType | None = Field(None, description="Response data payload")
+            data: t.GeneralValueType | None = Field(
+                None, description="Response data payload"
+            )
             total_count: int | None = Field(
                 None,
                 description="Total entity count (for pagination)",

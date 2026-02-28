@@ -12,8 +12,7 @@ import sys
 from collections.abc import Mapping, Sequence
 from typing import ClassVar, override
 
-from flext_api import FlextApi
-from flext_api.settings import FlextApiSettings
+from flext_api import FlextApi, FlextApiSettings
 from flext_core import FlextLogger, FlextResult, t
 from flext_meltano import FlextMeltanoStream as Stream, FlextMeltanoTap as Tap
 

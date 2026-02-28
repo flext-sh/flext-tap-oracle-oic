@@ -13,8 +13,7 @@ from datetime import UTC, datetime
 from typing import ClassVar, override
 
 import requests
-from flext_api import FlextApi
-from flext_api.settings import FlextApiSettings
+from flext_api import FlextApi, FlextApiSettings
 from flext_core import FlextExceptions, FlextLogger, t
 from flext_meltano import FlextMeltanoStream
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError
@@ -88,7 +87,11 @@ class OICPaginator:
     - Response time tracking and optimization
     """
 
-    def __init__(self, start_value: int = c.TapOicProcessing.DEFAULT_PAGINATOR_START, page_size: int = c.TapOicProcessing.DEFAULT_PAGINATOR_PAGE_SIZE) -> None:
+    def __init__(
+        self,
+        start_value: int = c.TapOicProcessing.DEFAULT_PAGINATOR_START,
+        page_size: int = c.TapOicProcessing.DEFAULT_PAGINATOR_PAGE_SIZE,
+    ) -> None:
         """Initialize paginator with starting offset and page size."""
         self.current_value: int = start_value
         self._page_size: int = page_size
