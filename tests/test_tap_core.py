@@ -254,7 +254,7 @@ def sample_config_with_extended() -> object:
 class TestTapOracleOicWithFixtures:
     """Tests using fixtures."""
 
-    def test_self(self, sample_config: dict[str, t.GeneralValueType]) -> None:
+    def test_self(self, sample_config: dict[str, t.ContainerValue]) -> None:
         """Test method."""
         """Test that the tap is initialized correctly with the sample config."""
         tap = TapOracleOic(config=sample_config, validate_config=False)
@@ -270,7 +270,7 @@ class TestTapOracleOicWithFixtures:
 
     def test_streams_count_with_extended_config(
         self,
-        sample_config_with_extended: dict[str, t.GeneralValueType],
+        sample_config_with_extended: dict[str, t.ContainerValue],
     ) -> None:
         """Test that the number of streams is correct with the extended config."""
         tap = TapOracleOic(config=sample_config_with_extended, validate_config=False)

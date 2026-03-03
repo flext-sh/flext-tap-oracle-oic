@@ -38,7 +38,7 @@ def set_test_environment() -> Generator[None]:
 
 # Oracle OIC configuration fixtures
 @pytest.fixture
-def basic_oic_config() -> dict[str, t.GeneralValueType]:
+def basic_oic_config() -> dict[str, t.ContainerValue]:
     """Basic Oracle OIC tap configuration."""
     return {
         "base_url": "https://oic-test.integration.ocp.oraclecloud.com",
@@ -58,8 +58,8 @@ def basic_oic_config() -> dict[str, t.GeneralValueType]:
 
 @pytest.fixture
 def extended_oic_config(
-    basic_oic_config: dict[str, t.GeneralValueType],
-) -> dict[str, t.GeneralValueType]:
+    basic_oic_config: dict[str, t.ContainerValue],
+) -> dict[str, t.ContainerValue]:
     """Extended Oracle OIC tap configuration with all streams."""
     config = basic_oic_config.copy()
     config.update(
@@ -79,8 +79,8 @@ def extended_oic_config(
 
 @pytest.fixture
 def filtered_oic_config(
-    basic_oic_config: dict[str, t.GeneralValueType],
-) -> dict[str, t.GeneralValueType]:
+    basic_oic_config: dict[str, t.ContainerValue],
+) -> dict[str, t.ContainerValue]:
     """Oracle OIC tap configuration with filters."""
     config = basic_oic_config.copy()
     config.update(
@@ -95,8 +95,8 @@ def filtered_oic_config(
 
 @pytest.fixture
 def performance_oic_config(
-    basic_oic_config: dict[str, t.GeneralValueType],
-) -> dict[str, t.GeneralValueType]:
+    basic_oic_config: dict[str, t.ContainerValue],
+) -> dict[str, t.ContainerValue]:
     """Oracle OIC tap configuration for performance testing."""
     config = basic_oic_config.copy()
     config.update(
@@ -115,7 +115,7 @@ def performance_oic_config(
 
 # Mock OIC API response fixtures
 @pytest.fixture
-def mock_oauth_token_response() -> dict[str, t.GeneralValueType]:
+def mock_oauth_token_response() -> dict[str, t.ContainerValue]:
     """Mock OAuth2 token response."""
     return {
         "access_token": "mock_access_token_12345",
@@ -126,7 +126,7 @@ def mock_oauth_token_response() -> dict[str, t.GeneralValueType]:
 
 
 @pytest.fixture
-def sample_integration_data() -> list[dict[str, t.GeneralValueType]]:
+def sample_integration_data() -> list[dict[str, t.ContainerValue]]:
     """Sample integration data for testing."""
     return [
         {
@@ -182,8 +182,8 @@ def sample_integration_data() -> list[dict[str, t.GeneralValueType]]:
 
 @pytest.fixture
 def mock_integrations_response(
-    sample_integration_data: list[dict[str, t.GeneralValueType]],
-) -> dict[str, t.GeneralValueType]:
+    sample_integration_data: list[dict[str, t.ContainerValue]],
+) -> dict[str, t.ContainerValue]:
     """Mock integrations API response."""
     return {
         "items": sample_integration_data,
@@ -195,7 +195,7 @@ def mock_integrations_response(
 
 
 @pytest.fixture
-def sample_connection_data() -> list[dict[str, t.GeneralValueType]]:
+def sample_connection_data() -> list[dict[str, t.ContainerValue]]:
     """Sample connection data for testing."""
     return [
         {
@@ -245,8 +245,8 @@ def sample_connection_data() -> list[dict[str, t.GeneralValueType]]:
 
 @pytest.fixture
 def mock_connections_response(
-    sample_connection_data: list[dict[str, t.GeneralValueType]],
-) -> dict[str, t.GeneralValueType]:
+    sample_connection_data: list[dict[str, t.ContainerValue]],
+) -> dict[str, t.ContainerValue]:
     """Mock connections API response."""
     return {
         "items": sample_connection_data,
@@ -258,7 +258,7 @@ def mock_connections_response(
 
 
 @pytest.fixture
-def sample_package_data() -> list[dict[str, t.GeneralValueType]]:
+def sample_package_data() -> list[dict[str, t.ContainerValue]]:
     """Sample package data for testing."""
     return [
         {
@@ -294,8 +294,8 @@ def sample_package_data() -> list[dict[str, t.GeneralValueType]]:
 
 @pytest.fixture
 def mock_packages_response(
-    sample_package_data: list[dict[str, t.GeneralValueType]],
-) -> dict[str, t.GeneralValueType]:
+    sample_package_data: list[dict[str, t.ContainerValue]],
+) -> dict[str, t.ContainerValue]:
     """Mock packages API response."""
     return {
         "items": sample_package_data,
@@ -307,7 +307,7 @@ def mock_packages_response(
 
 
 @pytest.fixture
-def sample_lookup_data() -> list[dict[str, t.GeneralValueType]]:
+def sample_lookup_data() -> list[dict[str, t.ContainerValue]]:
     """Sample lookup data for testing."""
     return [
         {
@@ -341,8 +341,8 @@ def sample_lookup_data() -> list[dict[str, t.GeneralValueType]]:
 
 @pytest.fixture
 def mock_lookups_response(
-    sample_lookup_data: list[dict[str, t.GeneralValueType]],
-) -> dict[str, t.GeneralValueType]:
+    sample_lookup_data: list[dict[str, t.ContainerValue]],
+) -> dict[str, t.ContainerValue]:
     """Mock lookups API response."""
     return {
         "items": sample_lookup_data,
@@ -355,7 +355,7 @@ def mock_lookups_response(
 
 # Extended stream fixtures
 @pytest.fixture
-def sample_library_data() -> list[dict[str, t.GeneralValueType]]:
+def sample_library_data() -> list[dict[str, t.ContainerValue]]:
     """Sample library data for testing."""
     return [
         {
@@ -372,7 +372,7 @@ def sample_library_data() -> list[dict[str, t.GeneralValueType]]:
 
 
 @pytest.fixture
-def sample_certificate_data() -> list[dict[str, t.GeneralValueType]]:
+def sample_certificate_data() -> list[dict[str, t.ContainerValue]]:
     """Sample certificate data for testing."""
     return [
         {
@@ -390,7 +390,7 @@ def sample_certificate_data() -> list[dict[str, t.GeneralValueType]]:
 
 
 @pytest.fixture
-def sample_adapter_data() -> list[dict[str, t.GeneralValueType]]:
+def sample_adapter_data() -> list[dict[str, t.ContainerValue]]:
     """Sample adapter data for testing."""
     return [
         {
@@ -408,7 +408,7 @@ def sample_adapter_data() -> list[dict[str, t.GeneralValueType]]:
 
 # Singer protocol fixtures
 @pytest.fixture
-def singer_catalog() -> dict[str, t.GeneralValueType]:
+def singer_catalog() -> dict[str, t.ContainerValue]:
     """Singer catalog for OIC tap."""
     return {
         "streams": [
@@ -463,7 +463,7 @@ def singer_catalog() -> dict[str, t.GeneralValueType]:
 
 
 @pytest.fixture
-def singer_state() -> dict[str, t.GeneralValueType]:
+def singer_state() -> dict[str, t.ContainerValue]:
     """Singer state for OIC tap."""
     return {
         "currently_syncing": None,
@@ -507,12 +507,12 @@ def mock_rate_limit_response() -> Mock:
 
 # Performance testing fixtures
 @pytest.fixture
-def large_integration_dataset() -> list[dict[str, t.GeneralValueType]]:
+def large_integration_dataset() -> list[dict[str, t.ContainerValue]]:
     """Large integration dataset for performance testing."""
-    integrations: list[dict[str, t.GeneralValueType]] = []
+    integrations: list[dict[str, t.ContainerValue]] = []
 
     for i in range(1000):
-        integration: dict[str, t.GeneralValueType] = {
+        integration: dict[str, t.ContainerValue] = {
             "id": f"INTEGRATION_{i:04d}",
             "name": f"Integration{i:04d}",
             "version": "01.00.0000",
@@ -530,7 +530,7 @@ def large_integration_dataset() -> list[dict[str, t.GeneralValueType]]:
 
 
 @pytest.fixture
-def benchmark_config() -> dict[str, t.GeneralValueType]:
+def benchmark_config() -> dict[str, t.ContainerValue]:
     """Configuration for performance benchmarking."""
     return {
         "max_records_to_process": 1000,
@@ -561,7 +561,7 @@ def mock_oic_client() -> type[object]:
     """Mock Oracle OIC client for testing."""
 
     class MockOICClient:
-        def __init__(self, config: dict[str, t.GeneralValueType]) -> None:
+        def __init__(self, config: dict[str, t.ContainerValue]) -> None:
             """Initialize the instance."""
             self.config = config
             self.authenticated = False
@@ -571,7 +571,7 @@ def mock_oic_client() -> type[object]:
             self.authenticated = True
             return True
 
-        def get_integrations(self, **_kwargs: object) -> dict[str, t.GeneralValueType]:
+        def get_integrations(self, **_kwargs: object) -> dict[str, t.ContainerValue]:
             self.call_count["get_integrations"] = (
                 self.call_count.get("get_integrations", 0) + 1
             )
@@ -582,7 +582,7 @@ def mock_oic_client() -> type[object]:
                 "count": 0,
             }
 
-        def get_connections(self, **_kwargs: object) -> dict[str, t.GeneralValueType]:
+        def get_connections(self, **_kwargs: object) -> dict[str, t.ContainerValue]:
             self.call_count["get_connections"] = (
                 self.call_count.get("get_connections", 0) + 1
             )
@@ -609,13 +609,13 @@ def mock_oauth_authenticator() -> type[object]:
     """Mock OAuth2 authenticator for testing."""
 
     class MockOAuthAuthenticator:
-        def __init__(self, config: dict[str, t.GeneralValueType]) -> None:
+        def __init__(self, config: dict[str, t.ContainerValue]) -> None:
             """Initialize the instance."""
             self.config = config
             self.token = None
             self.token_expires_at = None
 
-        def get_access_token(self) -> dict[str, t.GeneralValueType]:
+        def get_access_token(self) -> dict[str, t.ContainerValue]:
             return {
                 "success": True,
                 "value": "mock_access_token_12345",
@@ -624,7 +624,7 @@ def mock_oauth_authenticator() -> type[object]:
         def is_token_valid(self) -> bool:
             return True
 
-        def refresh_token(self) -> dict[str, t.GeneralValueType]:
+        def refresh_token(self) -> dict[str, t.ContainerValue]:
             return self.get_access_token()
 
     return MockOAuthAuthenticator

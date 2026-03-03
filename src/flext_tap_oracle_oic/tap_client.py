@@ -182,7 +182,7 @@ class OracleOicClient:
     def post(
         self,
         endpoint: str,
-        data: Mapping[str, t.GeneralValueType] | None = None,
+        data: Mapping[str, t.ContainerValue] | None = None,
     ) -> FlextResult[object]:
         """Make authenticated POST request to OIC API."""
         # Zero Tolerance FIX: Use utilities for URL validation and building
@@ -273,9 +273,9 @@ class TapOracleOic(Tap):
     def __init__(
         self,
         *,
-        config: Mapping[str, t.GeneralValueType] | None = None,
-        catalog: Mapping[str, t.GeneralValueType] | None = None,
-        state: Mapping[str, t.GeneralValueType] | None = None,
+        config: Mapping[str, t.ContainerValue] | None = None,
+        catalog: Mapping[str, t.ContainerValue] | None = None,
+        state: Mapping[str, t.ContainerValue] | None = None,
         parse_env_config: bool = False,
         validate_config: bool = True,
     ) -> None:
@@ -297,7 +297,7 @@ class TapOracleOic(Tap):
         """Get Oracle OIC client instance using flext-oracle-oic."""
         if self._client is None:
             # Zero Tolerance FIX: Use utilities for configuration validation
-            config_dict: dict[str, t.GeneralValueType] = dict(self.config)
+            config_dict: dict[str, t.ContainerValue] = dict(self.config)
             config_validation_result = (
                 self._utilities.ConfigValidation.validate_oic_connection_config(
                     config_dict,
@@ -422,8 +422,8 @@ def main() -> int:
     if exit_code != 0:
         return exit_code
 
-    config: dict[str, t.GeneralValueType] = dict(_build_config_from_env())
-    config_typed: dict[str, t.GeneralValueType] = {
+    config: dict[str, t.ContainerValue] = dict(_build_config_from_env())
+    config_typed: dict[str, t.ContainerValue] = {
         k: v for k, v in config.items() if v is not None
     }
     tap = TapOracleOic(config=config_typed)
@@ -438,7 +438,7 @@ def main() -> int:
         return 1
 
 
-def _build_config_from_env() -> Mapping[str, t.GeneralValueType]:
+def _build_config_from_env() -> Mapping[str, t.ContainerValue]:
     """Build configuration from environment variables."""
     return {
         "oauth_client_id": os.getenv("TAP_ORACLE_OIC_OAUTH_CLIENT_ID"),
@@ -454,7 +454,7 @@ def _build_config_from_env() -> Mapping[str, t.GeneralValueType]:
 
 def _validate_and_setup_config() -> int:
     """Validate required configuration. Returns 0 for success, 1 for error."""
-    config: dict[str, t.GeneralValueType] = dict(_build_config_from_env())
+    config: dict[str, t.ContainerValue] = dict(_build_config_from_env())
     required_config = [
         "oauth_client_id",
         "oauth_client_secret",

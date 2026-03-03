@@ -295,7 +295,7 @@ class FlextTapOracleOicSettings(FlextSettings):
         """Get full API base URL with version."""
         return f"{str(self.base_url).rstrip('/')}/ic/api/integration/{self.api_version}"
 
-    def get_auth_config(self) -> Mapping[str, t.GeneralValueType]:
+    def get_auth_config(self) -> Mapping[str, t.ContainerValue]:
         """Get authentication configuration dictionary."""
         return {
             "client_id": self.oauth_client_id,
@@ -304,7 +304,7 @@ class FlextTapOracleOicSettings(FlextSettings):
             "audience": self.oauth_audience,
         }
 
-    def get_connection_config(self) -> Mapping[str, t.GeneralValueType]:
+    def get_connection_config(self) -> Mapping[str, t.ContainerValue]:
         """Get connection configuration dictionary."""
         return {
             "base_url": str(self.base_url),
@@ -314,7 +314,7 @@ class FlextTapOracleOicSettings(FlextSettings):
             "page_size": self.page_size,
         }
 
-    def get_tap_config(self) -> Mapping[str, t.GeneralValueType]:
+    def get_tap_config(self) -> Mapping[str, t.ContainerValue]:
         """Get tap-specific configuration dictionary."""
         return {
             "stream_prefix": self.stream_prefix,
@@ -324,7 +324,7 @@ class FlextTapOracleOicSettings(FlextSettings):
             "max_parallel_streams": self.max_parallel_streams,
         }
 
-    def get_performance_config(self) -> Mapping[str, t.GeneralValueType]:
+    def get_performance_config(self) -> Mapping[str, t.ContainerValue]:
         """Get performance configuration dictionary."""
         return {
             "batch_size": self.batch_size,
@@ -355,10 +355,10 @@ class FlextTapOracleOicSettings(FlextSettings):
     def create_for_environment(
         cls,
         environment: str,
-        **overrides: t.GeneralValueType,
+        **overrides: t.ContainerValue,
     ) -> FlextTapOracleOicSettings:
         """Create configuration for specific environment using enhanced singleton pattern."""
-        env_overrides: dict[str, t.GeneralValueType] = {}
+        env_overrides: dict[str, t.ContainerValue] = {}
 
         if environment == "production":
             env_overrides.update({
@@ -404,10 +404,10 @@ class FlextTapOracleOicSettings(FlextSettings):
     @classmethod
     def create_for_development(
         cls,
-        **overrides: t.GeneralValueType,
+        **overrides: t.ContainerValue,
     ) -> FlextTapOracleOicSettings:
         """Create configuration for development environment."""
-        dev_overrides: dict[str, t.GeneralValueType] = {
+        dev_overrides: dict[str, t.ContainerValue] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT * 2,
             "max_retries": 1,
             "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 20,
@@ -423,10 +423,10 @@ class FlextTapOracleOicSettings(FlextSettings):
     @classmethod
     def create_for_production(
         cls,
-        **overrides: t.GeneralValueType,
+        **overrides: t.ContainerValue,
     ) -> FlextTapOracleOicSettings:
         """Create configuration for production environment."""
-        prod_overrides: dict[str, t.GeneralValueType] = {
+        prod_overrides: dict[str, t.ContainerValue] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
             "max_retries": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
             "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 10,
@@ -442,10 +442,10 @@ class FlextTapOracleOicSettings(FlextSettings):
     @classmethod
     def create_for_testing(
         cls,
-        **overrides: t.GeneralValueType,
+        **overrides: t.ContainerValue,
     ) -> FlextTapOracleOicSettings:
         """Create configuration for testing environment."""
-        test_overrides: dict[str, t.GeneralValueType] = {
+        test_overrides: dict[str, t.ContainerValue] = {
             "timeout": FlextConstants.Network.DEFAULT_TIMEOUT // 3,
             "max_retries": 1,
             "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 100,
@@ -466,9 +466,9 @@ class FlextTapOracleOicSettings(FlextSettings):
 
 
 def create_oracle_oic_tap_config(
-    oauth_params: Mapping[str, t.GeneralValueType],
-    connection_params: Mapping[str, t.GeneralValueType],
-    tap_params: Mapping[str, t.GeneralValueType] | None = None,
+    oauth_params: Mapping[str, t.ContainerValue],
+    connection_params: Mapping[str, t.ContainerValue],
+    tap_params: Mapping[str, t.ContainerValue] | None = None,
 ) -> FlextResult[FlextTapOracleOicSettings]:
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
@@ -482,7 +482,7 @@ def create_oracle_oic_tap_config(
 
     """
     try:
-        tap_config: dict[str, t.GeneralValueType] = (
+        tap_config: dict[str, t.ContainerValue] = (
             dict(tap_params) if tap_params is not None else {}
         )
 

@@ -51,7 +51,7 @@ class OICHealthChecker:
             headers=self._get_headers(),
         )
 
-    def check_health(self) -> Mapping[str, t.GeneralValueType]:
+    def check_health(self) -> Mapping[str, t.ContainerValue]:
         """Check OIC instance health."""
         try:
             # Try to access the integrations endpoint as a health check
@@ -99,7 +99,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_connection(self, connection_id: str) -> Mapping[str, t.GeneralValueType]:
+    def test_connection(self, connection_id: str) -> Mapping[str, t.ContainerValue]:
         """Test specific OIC connection."""
         try:
             # Call the connection test endpoint
@@ -123,7 +123,7 @@ class OICHealthChecker:
                     case dict() as body_dict:
                         body = body_dict
                     case _:
-                        body = dict[str, t.GeneralValueType]()
+                        body = dict[str, t.ContainerValue]()
                 status_val = str(body.get("status", "success"))
                 test_result_val = str(
                     body.get("testResult", "Connection test successful"),
@@ -158,7 +158,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_integration(self, integration_id: str) -> Mapping[str, t.GeneralValueType]:
+    def test_integration(self, integration_id: str) -> Mapping[str, t.ContainerValue]:
         """Test specific OIC integration."""
         try:
             # Get integration details
@@ -179,7 +179,7 @@ class OICHealthChecker:
                     case dict() as integration_dict:
                         integration = integration_dict
                     case _:
-                        integration = dict[str, t.GeneralValueType]()
+                        integration = dict[str, t.ContainerValue]()
                 status_val = str(integration.get("status", "UNKNOWN"))
 
                 # Determine health based on status
@@ -231,7 +231,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def check_monitoring_health(self) -> Mapping[str, t.GeneralValueType]:
+    def check_monitoring_health(self) -> Mapping[str, t.ContainerValue]:
         """Check OIC monitoring service health."""
         try:
             # Try to access monitoring endpoint

@@ -34,7 +34,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
     """
 
     # Re-export parent FlextTypes attributes for type checker visibility
-    GeneralValueType = FlextMeltanoTypes.GeneralValueType
+    ContainerValue = FlextMeltanoTypes.ContainerValue
     ScalarValue = FlextMeltanoTypes.ScalarValue
     MetadataScalarValue = FlextMeltanoTypes.MetadataScalarValue
     ConfigMap = FlextMeltanoTypes.ConfigMap
@@ -55,7 +55,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
 
         type TapConfiguration = dict[
             str,
-            str | int | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | int | bool | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type StreamConfiguration = dict[
             str,
@@ -81,7 +81,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
 
         type IntegrationConfiguration = dict[
             str,
-            str | int | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | int | bool | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type IntegrationDefinition = dict[
             str,
@@ -89,13 +89,13 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
         ]
         type IntegrationFlow = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
         type IntegrationMapping = dict[
-            str, str | dict[str, FlextMeltanoTypes.GeneralValueType]
+            str, str | dict[str, FlextMeltanoTypes.ContainerValue]
         ]
         type IntegrationMetadata = dict[
             str, str | dict[str, FlextMeltanoTypes.JsonValue]
         ]
         type IntegrationStatus = dict[
-            str, str | bool | dict[str, FlextMeltanoTypes.GeneralValueType]
+            str, str | bool | dict[str, FlextMeltanoTypes.ContainerValue]
         ]
 
     # =========================================================================
@@ -107,23 +107,23 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
 
         type ConnectionConfiguration = dict[
             str,
-            str | int | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | int | bool | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type ConnectionCredentials = dict[
             str, str | dict[str, FlextMeltanoTypes.JsonValue]
         ]
         type ConnectionSecurity = dict[
-            str, str | bool | dict[str, FlextMeltanoTypes.GeneralValueType]
+            str, str | bool | dict[str, FlextMeltanoTypes.ContainerValue]
         ]
         type ConnectionValidation = dict[
             str,
-            bool | str | dict[str, FlextMeltanoTypes.GeneralValueType],
+            bool | str | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type ConnectionMetadata = dict[
             str, str | dict[str, FlextMeltanoTypes.JsonValue]
         ]
         type ConnectionPool = dict[
-            str, int | bool | dict[str, FlextMeltanoTypes.GeneralValueType]
+            str, int | bool | dict[str, FlextMeltanoTypes.ContainerValue]
         ]
 
     # =========================================================================
@@ -134,22 +134,22 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
         """Oracle OIC authentication complex types."""
 
         type OAuth2Configuration = dict[
-            str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]
+            str, str | int | dict[str, FlextMeltanoTypes.ContainerValue]
         ]
         type IdcsConfiguration = dict[
             str, str | bool | dict[str, FlextMeltanoTypes.JsonValue]
         ]
         type TokenManagement = dict[
-            str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]
+            str, str | int | dict[str, FlextMeltanoTypes.ContainerValue]
         ]
         type AuthenticationFlow = dict[
             str, str | dict[str, FlextMeltanoTypes.JsonValue]
         ]
         type SecuritySettings = dict[
-            str, bool | str | dict[str, FlextMeltanoTypes.GeneralValueType]
+            str, bool | str | dict[str, FlextMeltanoTypes.ContainerValue]
         ]
         type AuthenticationCache = dict[
-            str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]
+            str, str | int | dict[str, FlextMeltanoTypes.ContainerValue]
         ]
 
     # =========================================================================
@@ -161,7 +161,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
 
         type ActivityConfiguration = dict[
             str,
-            str | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | bool | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type MetricsCollection = dict[
             str,
@@ -169,7 +169,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
         ]
         type TrackingData = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
         type AlertConfiguration = dict[
-            str, bool | str | dict[str, FlextMeltanoTypes.GeneralValueType]
+            str, bool | str | dict[str, FlextMeltanoTypes.ContainerValue]
         ]
         type MonitoringMetrics = dict[
             str,
@@ -186,15 +186,15 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
 
         type ExtractionConfiguration = dict[
             str,
-            str | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | bool | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type ExtractionFilter = dict[
             str,
-            str | list[str] | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | list[str] | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type ExtractionMapping = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
         type ExtractionResult = dict[
-            str, bool | list[dict[str, FlextMeltanoTypes.GeneralValueType]]
+            str, bool | list[dict[str, FlextMeltanoTypes.ContainerValue]]
         ]
         type ExtractionMetrics = dict[
             str,
@@ -213,16 +213,16 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
 
         type StreamConfiguration = dict[
             str,
-            str | bool | int | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | bool | int | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type StreamMetadata = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
         type StreamRecord = dict[
             str,
-            FlextMeltanoTypes.JsonValue | dict[str, FlextMeltanoTypes.GeneralValueType],
+            FlextMeltanoTypes.JsonValue | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type StreamState = dict[str, str | int | dict[str, FlextMeltanoTypes.JsonValue]]
         type StreamBookmark = dict[
-            str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]
+            str, str | int | dict[str, FlextMeltanoTypes.ContainerValue]
         ]
         type StreamSchema = dict[
             str, str | dict[str, FlextMeltanoTypes.JsonValue] | bool
@@ -237,16 +237,16 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
 
         type ErrorConfiguration = dict[
             str,
-            bool | str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
+            bool | str | int | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type ErrorRecovery = dict[
-            str, str | bool | dict[str, FlextMeltanoTypes.GeneralValueType]
+            str, str | bool | dict[str, FlextMeltanoTypes.ContainerValue]
         ]
         type ErrorReporting = dict[
             str, str | int | dict[str, FlextMeltanoTypes.JsonValue]
         ]
         type ErrorClassification = dict[
-            str, str | int | dict[str, FlextMeltanoTypes.GeneralValueType]
+            str, str | int | dict[str, FlextMeltanoTypes.ContainerValue]
         ]
         type ErrorMetrics = dict[
             str, int | float | dict[str, FlextMeltanoTypes.JsonValue]
@@ -294,14 +294,14 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
 
         # Singer tap Oracle OIC-specific project configurations
         type SingerTapOracleOicProjectConfig = dict[
-            str, FlextMeltanoTypes.GeneralValueType
+            str, FlextMeltanoTypes.ContainerValue
         ]
         type OicExtractorConfig = dict[str, str | int | bool | list[str]]
         type SingerProtocolConfig = dict[
             str,
-            bool | str | dict[str, FlextMeltanoTypes.GeneralValueType],
+            bool | str | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
-        type TapOracleOicPipelineConfig = dict[str, FlextMeltanoTypes.GeneralValueType]
+        type TapOracleOicPipelineConfig = dict[str, FlextMeltanoTypes.ContainerValue]
 
         # Singer tap Oracle OIC-specific Literal type aliases (referencing constants.py StrEnums)
         type OicIntegrationStatusLiteral = Literal[
