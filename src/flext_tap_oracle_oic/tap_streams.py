@@ -38,7 +38,7 @@ _GENERAL_LIST_ADAPTER = TypeAdapter(
     config=ConfigDict(strict=True),
 )
 _GENERAL_MAP_ADAPTER = TypeAdapter(
-    dict[str, t.ContainerValue],
+    t.ConfigurationMapping,
     config=ConfigDict(strict=True),
 )
 _STRING_LIST_ADAPTER = TypeAdapter(list[str], config=ConfigDict(strict=True))

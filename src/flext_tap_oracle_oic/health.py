@@ -123,7 +123,7 @@ class OICHealthChecker:
                     case dict() as body_dict:
                         body = body_dict
                     case _:
-                        body = dict[str, t.ContainerValue]()
+                        body = t.ConfigurationMapping()
                 status_val = str(body.get("status", "success"))
                 test_result_val = str(
                     body.get("testResult", "Connection test successful"),
@@ -179,7 +179,7 @@ class OICHealthChecker:
                     case dict() as integration_dict:
                         integration = integration_dict
                     case _:
-                        integration = dict[str, t.ContainerValue]()
+                        integration = t.ConfigurationMapping()
                 status_val = str(integration.get("status", "UNKNOWN"))
 
                 # Determine health based on status
