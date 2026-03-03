@@ -16,6 +16,7 @@ from unittest.mock import MagicMock
 
 import pytest
 from flext_core import r
+
 from flext_tap_oracle_oic.tap_client import FlextOracleOicAuthenticator
 
 

@@ -8,8 +8,9 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import pytest
-from flext_tap_oracle_oic import TapOracleOic
 from pydantic import ValidationError as ConfigValidationError
+
+from flext_tap_oracle_oic import TapOracleOic
 
 
 class TestTapOracleOic:
