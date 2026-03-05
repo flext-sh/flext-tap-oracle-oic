@@ -201,20 +201,12 @@ class OICBaseStream(FlextMeltanoStream):
     additional_params: ClassVar[dict[str, t.ContainerValue] | None] = None
     primary_keys: ClassVar[list[str]] = []  # type: ignore[override]
 
-    @override
-    def get_records(
-        self,
-        context: Mapping[str, t.ContainerValue] | None = None,
-    ) -> Iterator[dict[str, t.ContainerValue]]:
-        """Get records from OIC API.
-
-        Args:
-            context: Optional context for record extraction.
-
-        Yields:
-            Records from the OIC API.
-
-        """
+    @property
+    def api_client(self) -> FlextApi:
+        """Get authenticated API client from parent tap's OIC client."""
+        # Fallback to creating new FlextApi
+        api_config = FlextApiSettings()
+        return FlextApi(api_config)
 
     @property
     def url_base(self) -> str:
@@ -269,13 +261,6 @@ class OICBaseStream(FlextMeltanoStream):
             FlextTapOracleOicConstants.OIC_API_BASE_PATH,
         )
 
-    @property
-    def api_client(self) -> FlextApi:
-        """Get authenticated API client from parent tap's OIC client."""
-        # Fallback to creating new FlextApi
-        api_config = FlextApiSettings()
-        return FlextApi(api_config)
-
     def get_new_paginator(self) -> OICPaginator:
         """Create new Oracle OIC paginator with configuration.
 
@@ -284,6 +269,21 @@ class OICBaseStream(FlextMeltanoStream):
 
         """
         return OICPaginator(start_value=0, page_size=self.config.get("page_size", 100))
+
+    @override
+    def get_records(
+        self,
+        context: Mapping[str, t.ContainerValue] | None = None,
+    ) -> Iterator[dict[str, t.ContainerValue]]:
+        """Get records from OIC API.
+
+        Args:
+            context: Optional context for record extraction.
+
+        Yields:
+            Records from the OIC API.
+
+        """
 
     def get_url_params(
         self,
@@ -389,6 +389,16 @@ class OICBaseStream(FlextMeltanoStream):
             if self.config.get("fail_on_parsing_errors", True):
                 raise
 
+    def _enrich_record(
+        self,
+        record: Mapping[str, t.ContainerValue],
+    ) -> Mapping[str, t.ContainerValue]:
+        """Enrich record with tap metadata for traceability."""
+        enriched: dict[str, t.ContainerValue] = dict(record)
+        enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
+        enriched["_tap_stream_name"] = self.name
+        return enriched
+
     def _extract_and_yield_records(
         self,
         data: t.ContainerValue,
@@ -433,32 +443,34 @@ class OICBaseStream(FlextMeltanoStream):
         if map_payload is not None:
             yield from self._process_dict_data(map_payload)
 
-    def _process_list_data(
-        self,
-        data: list[t.ContainerValue],
-    ) -> Iterator[Mapping[str, t.ContainerValue]]:
-        """Process list-type response data."""
-        for item in data:
-            record = _as_value_map(item)
-            if record is not None:
-                yield record
+    def _handle_response_error(self, response: requests.Response) -> None:
+        """Handle Oracle OIC API response errors with proper categorization."""
+        try:
+            error_data = _as_value_map(response.json()) or {}
+            error_message = error_data.get("message") or error_data.get("error")
+        except (ValueError, TypeError, KeyError):
+            error_message = (
+                getattr(response, "text", None)
+                or f"HTTP {getattr(response, 'status_code', 'unknown')}"
+            )
 
-    def _process_dict_data(
-        self,
-        data: Mapping[str, t.ContainerValue],
-    ) -> Iterator[Mapping[str, t.ContainerValue]]:
-        """Process dict-type response data with OIC format detection."""
-        envelope = _as_oic_envelope(data)
-        if envelope is not None and envelope.items is not None:
-            yield from self._process_list_data(envelope.items)
-            return
+        response_url = str(getattr(response, "url", "unknown"))
+        err_msg = str(error_message)
+        self.logger.error("OIC API error from %s: %s", response_url, err_msg)
 
-        if envelope is not None and envelope.data is not None:
-            yield from self._process_list_data(envelope.data)
-            return
-
-        if self._is_single_record(data):
-            yield data
+        status_code = getattr(response, "status_code", 0)
+        if status_code == c.TapOicHttp.HTTP_UNAUTHORIZED:
+            msg = "Unauthorized: Authentication failed or token expired"
+            raise FlextExceptions.AuthenticationError(msg)
+        if status_code == c.TapOicHttp.HTTP_FORBIDDEN:
+            msg = "Forbidden: Insufficient permissions to access resource"
+            raise FlextExceptions.AuthorizationError(msg)
+        if status_code == c.TapOicHttp.HTTP_RATE_LIMITED:
+            msg = "Rate limit exceeded: Too many requests"
+            raise FlextExceptions.RateLimitError(msg)
+        raise_for_status = getattr(response, "raise_for_status", None)
+        if raise_for_status is not None:
+            raise_for_status()
 
     def _is_empty_result_expected(
         self,
@@ -490,48 +502,32 @@ class OICBaseStream(FlextMeltanoStream):
         }
         return not any(key in data for key in metadata_keys)
 
-    def _validate_record(self, record: Mapping[str, t.ContainerValue]) -> bool:
-        """Validate record meets basic requirements for processing."""
-        return _as_value_map(record) is not None
-
-    def _enrich_record(
+    def _process_dict_data(
         self,
-        record: Mapping[str, t.ContainerValue],
-    ) -> Mapping[str, t.ContainerValue]:
-        """Enrich record with tap metadata for traceability."""
-        enriched: dict[str, t.ContainerValue] = dict(record)
-        enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
-        enriched["_tap_stream_name"] = self.name
-        return enriched
+        data: Mapping[str, t.ContainerValue],
+    ) -> Iterator[Mapping[str, t.ContainerValue]]:
+        """Process dict-type response data with OIC format detection."""
+        envelope = _as_oic_envelope(data)
+        if envelope is not None and envelope.items is not None:
+            yield from self._process_list_data(envelope.items)
+            return
 
-    def _handle_response_error(self, response: requests.Response) -> None:
-        """Handle Oracle OIC API response errors with proper categorization."""
-        try:
-            error_data = _as_value_map(response.json()) or {}
-            error_message = error_data.get("message") or error_data.get("error")
-        except (ValueError, TypeError, KeyError):
-            error_message = (
-                getattr(response, "text", None)
-                or f"HTTP {getattr(response, 'status_code', 'unknown')}"
-            )
+        if envelope is not None and envelope.data is not None:
+            yield from self._process_list_data(envelope.data)
+            return
 
-        response_url = str(getattr(response, "url", "unknown"))
-        err_msg = str(error_message)
-        self.logger.error("OIC API error from %s: %s", response_url, err_msg)
+        if self._is_single_record(data):
+            yield data
 
-        status_code = getattr(response, "status_code", 0)
-        if status_code == c.TapOicHttp.HTTP_UNAUTHORIZED:
-            msg = "Unauthorized: Authentication failed or token expired"
-            raise FlextExceptions.AuthenticationError(msg)
-        if status_code == c.TapOicHttp.HTTP_FORBIDDEN:
-            msg = "Forbidden: Insufficient permissions to access resource"
-            raise FlextExceptions.AuthorizationError(msg)
-        if status_code == c.TapOicHttp.HTTP_RATE_LIMITED:
-            msg = "Rate limit exceeded: Too many requests"
-            raise FlextExceptions.RateLimitError(msg)
-        raise_for_status = getattr(response, "raise_for_status", None)
-        if raise_for_status is not None:
-            raise_for_status()
+    def _process_list_data(
+        self,
+        data: list[t.ContainerValue],
+    ) -> Iterator[Mapping[str, t.ContainerValue]]:
+        """Process list-type response data."""
+        for item in data:
+            record = _as_value_map(item)
+            if record is not None:
+                yield record
 
     def _track_response_metrics(
         self,
@@ -556,6 +552,10 @@ class OICBaseStream(FlextMeltanoStream):
             self.logger.debug("Received %s records", len(envelope.items))
         elif envelope.data is not None:
             self.logger.debug("Received %s records", len(envelope.data))
+
+    def _validate_record(self, record: Mapping[str, t.ContainerValue]) -> bool:
+        """Validate record meets basic requirements for processing."""
+        return _as_value_map(record) is not None
 
 
 # Export for module interface

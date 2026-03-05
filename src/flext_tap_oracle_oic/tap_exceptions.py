@@ -26,6 +26,11 @@ class OICExceptionFactory:
     """Factory for Oracle OIC specific exceptions."""
 
     @staticmethod
+    def create_api_error(message: str) -> OICAPIError:
+        """Create OIC API error."""
+        return OICAPIError(message)
+
+    @staticmethod
     def create_authentication_error(message: str) -> OICAuthenticationError:
         """Create OIC authentication error."""
         return OICAuthenticationError(message)
@@ -39,11 +44,6 @@ class OICExceptionFactory:
     def create_validation_error(message: str) -> OICValidationError:
         """Create OIC validation error."""
         return OICValidationError(message)
-
-    @staticmethod
-    def create_api_error(message: str) -> OICAPIError:
-        """Create OIC API error."""
-        return OICAPIError(message)
 
 
 # Specific Oracle OIC exceptions

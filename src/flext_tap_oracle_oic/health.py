@@ -33,24 +33,6 @@ class OICHealthChecker:
         api_config = FlextApiSettings(base_url=base_url)
         self._api_client = FlextApi(api_config)
 
-    def _get_headers(self) -> Mapping[str, str]:
-        headers = {
-            "Accept": c.TapOicHttp.JSON_MIME,
-            "Content-Type": c.TapOicHttp.JSON_MIME,
-        }
-        # Add auth header from authenticator
-        token_result = self.authenticator.get_access_token()
-        if token_result.is_success:
-            headers["Authorization"] = f"Bearer {token_result.value}"
-        return headers
-
-    def _make_get_request(self, url: str) -> FlextResult[FlextApiModels.HttpResponse]:
-        """Make authenticated GET request."""
-        return self._api_client.get(
-            url,
-            headers=self._get_headers(),
-        )
-
     def check_health(self) -> Mapping[str, t.ContainerValue]:
         """Check OIC instance health."""
         try:
@@ -96,6 +78,54 @@ class OICHealthChecker:
                 "timestamp": datetime.now(UTC).isoformat(),
                 "instance_url": self.base_url,
                 "api_accessible": "False",
+                "error": str(e),
+            }
+
+    def check_monitoring_health(self) -> Mapping[str, t.ContainerValue]:
+        """Check OIC monitoring service health."""
+        try:
+            # Try to access monitoring endpoint
+            url = f"{self.base_url}/ic/api/monitoring/v1/instances?limit=1"
+            response_result = self._make_get_request(url)
+
+            if response_result.is_failure:
+                return {
+                    "service": "monitoring",
+                    "status": "error",
+                    "timestamp": datetime.now(UTC).isoformat(),
+                    "accessible": "False",
+                    "error": str(response_result.error),
+                }
+
+            response = response_result.value
+            if response.status_code == c.TapOicHttp.HTTP_OK:
+                return {
+                    "service": "monitoring",
+                    "status": "healthy",
+                    "timestamp": datetime.now(UTC).isoformat(),
+                    "accessible": "True",
+                }
+            return {
+                "service": "monitoring",
+                "status": "unhealthy",
+                "timestamp": datetime.now(UTC).isoformat(),
+                "accessible": "False",
+                "error": f"API returned status {response.status_code}",
+            }
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ) as e:
+            return {
+                "service": "monitoring",
+                "status": "error",
+                "timestamp": datetime.now(UTC).isoformat(),
+                "accessible": "False",
                 "error": str(e),
             }
 
@@ -231,50 +261,20 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def check_monitoring_health(self) -> Mapping[str, t.ContainerValue]:
-        """Check OIC monitoring service health."""
-        try:
-            # Try to access monitoring endpoint
-            url = f"{self.base_url}/ic/api/monitoring/v1/instances?limit=1"
-            response_result = self._make_get_request(url)
+    def _get_headers(self) -> Mapping[str, str]:
+        headers = {
+            "Accept": c.TapOicHttp.JSON_MIME,
+            "Content-Type": c.TapOicHttp.JSON_MIME,
+        }
+        # Add auth header from authenticator
+        token_result = self.authenticator.get_access_token()
+        if token_result.is_success:
+            headers["Authorization"] = f"Bearer {token_result.value}"
+        return headers
 
-            if response_result.is_failure:
-                return {
-                    "service": "monitoring",
-                    "status": "error",
-                    "timestamp": datetime.now(UTC).isoformat(),
-                    "accessible": "False",
-                    "error": str(response_result.error),
-                }
-
-            response = response_result.value
-            if response.status_code == c.TapOicHttp.HTTP_OK:
-                return {
-                    "service": "monitoring",
-                    "status": "healthy",
-                    "timestamp": datetime.now(UTC).isoformat(),
-                    "accessible": "True",
-                }
-            return {
-                "service": "monitoring",
-                "status": "unhealthy",
-                "timestamp": datetime.now(UTC).isoformat(),
-                "accessible": "False",
-                "error": f"API returned status {response.status_code}",
-            }
-        except (
-            ValueError,
-            TypeError,
-            KeyError,
-            AttributeError,
-            OSError,
-            RuntimeError,
-            ImportError,
-        ) as e:
-            return {
-                "service": "monitoring",
-                "status": "error",
-                "timestamp": datetime.now(UTC).isoformat(),
-                "accessible": "False",
-                "error": str(e),
-            }
+    def _make_get_request(self, url: str) -> FlextResult[FlextApiModels.HttpResponse]:
+        """Make authenticated GET request."""
+        return self._api_client.get(
+            url,
+            headers=self._get_headers(),
+        )

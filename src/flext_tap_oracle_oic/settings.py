@@ -157,21 +157,118 @@ class FlextTapOracleOicSettings(FlextSettings):
         description="Project version",
     )
 
-    # Pydantic 2.11+ field validators
-    @field_validator("stream_prefix")
     @classmethod
-    def validate_stream_prefix(cls, v: str) -> str:
-        """Validate stream prefix follows naming conventions."""
-        # Valid identifier: start with letter, contain letters/digits/underscore
-        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_]*$", v):
-            msg = f"Invalid stream prefix: {v}. Must start with letter and contain only letters, digits, and underscores"
-            raise ValueError(msg)
+    def create_for_development(
+        cls,
+        **overrides: t.ContainerValue,
+    ) -> FlextTapOracleOicSettings:
+        """Create configuration for development environment."""
+        dev_overrides: dict[str, t.ContainerValue] = {
+            "timeout": FlextConstants.Network.DEFAULT_TIMEOUT * 2,
+            "max_retries": 1,
+            "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 20,
+            "include_extended": True,
+            "max_parallel_streams": 1,
+            **overrides,
+        }
+        return cls.model_validate({
+            "project_name": "flext-tap-oracle-oic",
+            **dev_overrides,
+        })
 
-        if len(v) > c.TapOicValidation.MAX_STREAM_PREFIX_LENGTH:
-            msg = f"Stream prefix too long: {len(v)} > {c.TapOicValidation.MAX_STREAM_PREFIX_LENGTH}"
-            raise ValueError(msg)
+    @classmethod
+    def create_for_environment(
+        cls,
+        environment: str,
+        **overrides: t.ContainerValue,
+    ) -> FlextTapOracleOicSettings:
+        """Create configuration for specific environment using enhanced singleton pattern."""
+        env_overrides: dict[str, t.ContainerValue] = {}
 
-        return v.lower()
+        if environment == "production":
+            env_overrides.update({
+                "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
+                "max_retries": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
+                "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
+                // 10,
+                "include_extended": False,
+                "max_parallel_streams": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
+            })
+        elif environment == "development":
+            env_overrides.update({
+                "timeout": FlextConstants.Network.DEFAULT_TIMEOUT * 2,
+                "max_retries": 1,
+                "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
+                // 20,
+                "include_extended": True,
+                "max_parallel_streams": 1,
+            })
+        elif environment == "staging":
+            env_overrides.update({
+                "timeout": FlextConstants.Network.DEFAULT_TIMEOUT + 15,
+                "max_retries": 2,
+                "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
+                // 13,
+                "include_extended": False,
+                "max_parallel_streams": 2,
+            })
+
+        all_overrides = {**env_overrides, **overrides}
+        return cls.model_validate({
+            "project_name": "flext-tap-oracle-oic",
+            "environment": environment,
+            **all_overrides,
+        })
+
+    @classmethod
+    def create_for_production(
+        cls,
+        **overrides: t.ContainerValue,
+    ) -> FlextTapOracleOicSettings:
+        """Create configuration for production environment."""
+        prod_overrides: dict[str, t.ContainerValue] = {
+            "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
+            "max_retries": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
+            "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 10,
+            "include_extended": False,
+            "max_parallel_streams": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
+            **overrides,
+        }
+        return cls.model_validate({
+            "project_name": "flext-tap-oracle-oic",
+            **prod_overrides,
+        })
+
+    @classmethod
+    def create_for_testing(
+        cls,
+        **overrides: t.ContainerValue,
+    ) -> FlextTapOracleOicSettings:
+        """Create configuration for testing environment."""
+        test_overrides: dict[str, t.ContainerValue] = {
+            "timeout": FlextConstants.Network.DEFAULT_TIMEOUT // 3,
+            "max_retries": 1,
+            "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 100,
+            "include_extended": True,
+            "max_parallel_streams": 1,
+            **overrides,
+        }
+        return cls.model_validate({
+            "project_name": "flext-tap-oracle-oic",
+            **test_overrides,
+        })
+
+    @classmethod
+    @override
+    def get_global_instance(cls) -> FlextTapOracleOicSettings:
+        """Get the global singleton instance using FlextSettings singleton pattern."""
+        return cls(project_name="flext-tap-oracle-oic")
+
+    @classmethod
+    @override
+    def reset_global_instance(cls) -> None:
+        """Reset the global FlextTapOracleOicSettings instance (mainly for testing)."""
+        cls._reset_instance()
 
     @field_validator("api_version")
     @classmethod
@@ -209,40 +306,82 @@ class FlextTapOracleOicSettings(FlextSettings):
 
         return v
 
-    @model_validator(mode="after")
-    def validate_oauth_configuration(self) -> Self:
-        """Validate OAuth configuration completeness."""
-        # Check that all OAuth fields are provided together
-        oauth_fields = [
-            self.oauth_client_id,
-            self.oauth_client_secret.get_secret_value(),
-            str(self.oauth_token_url),
-            self.oauth_audience,
-        ]
-
-        if any(oauth_fields) and not all(oauth_fields):
-            msg = "All OAuth fields (client_id, client_secret, token_url, audience) must be provided together"
+    # Pydantic 2.11+ field validators
+    @field_validator("stream_prefix")
+    @classmethod
+    def validate_stream_prefix(cls, v: str) -> str:
+        """Validate stream prefix follows naming conventions."""
+        # Valid identifier: start with letter, contain letters/digits/underscore
+        if not re.match(r"^[a-zA-Z][a-zA-Z0-9_]*$", v):
+            msg = f"Invalid stream prefix: {v}. Must start with letter and contain only letters, digits, and underscores"
             raise ValueError(msg)
 
-        return self
+        if len(v) > c.TapOicValidation.MAX_STREAM_PREFIX_LENGTH:
+            msg = f"Stream prefix too long: {len(v)} > {c.TapOicValidation.MAX_STREAM_PREFIX_LENGTH}"
+            raise ValueError(msg)
 
-    @model_validator(mode="after")
-    def validate_url_consistency(self) -> Self:
-        """Validate URL consistency between token URL and base URL."""
-        try:
-            token_host = str(self.oauth_token_url).split("//")[1].split("/")[0]
-            base_host = str(self.base_url).split("//")[1].split("/")[0]
+        return v.lower()
 
-            # Basic validation that hosts are properly formatted
-            if not token_host or not base_host:
-                msg = "OAuth token URL and base URL must be valid URLs"
-                raise ValueError(msg)
+    # Configuration helper methods
+    def get_api_base_url(self) -> str:
+        """Get full API base URL with version."""
+        return f"{str(self.base_url).rstrip('/')}/ic/api/integration/{self.api_version}"
 
-        except (IndexError, AttributeError) as e:
-            msg = f"URL validation failed: {e}"
-            raise ValueError(msg) from e
+    def get_auth_config(self) -> Mapping[str, t.ContainerValue]:
+        """Get authentication configuration dictionary."""
+        return {
+            "client_id": self.oauth_client_id,
+            "client_secret": self.oauth_client_secret.get_secret_value(),
+            "token_url": str(self.oauth_token_url),
+            "audience": self.oauth_audience,
+        }
 
-        return self
+    def get_connection_config(self) -> Mapping[str, t.ContainerValue]:
+        """Get connection configuration dictionary."""
+        return {
+            "base_url": str(self.base_url),
+            "api_version": self.api_version,
+            "timeout": self.timeout,
+            "max_retries": self.max_retries,
+            "page_size": self.page_size,
+        }
+
+    def get_headers(self) -> Mapping[str, str]:
+        """Get default headers for OIC API requests."""
+        return {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": f"flext-tap-oracle-oic/{self.project_version}",
+        }
+
+    def get_performance_config(self) -> Mapping[str, t.ContainerValue]:
+        """Get performance configuration dictionary."""
+        return {
+            "batch_size": self.batch_size,
+            "max_parallel_streams": self.max_parallel_streams,
+            "page_size": self.page_size,
+            "timeout": self.timeout,
+            "max_retries": self.max_retries,
+        }
+
+    def get_tap_config(self) -> Mapping[str, t.ContainerValue]:
+        """Get tap-specific configuration dictionary."""
+        return {
+            "stream_prefix": self.stream_prefix,
+            "include_extended": self.include_extended,
+            "start_date": self.start_date,
+            "batch_size": self.batch_size,
+            "max_parallel_streams": self.max_parallel_streams,
+        }
+
+    def get_token_request_data(self) -> Mapping[str, str]:
+        """Get OAuth2 token request data for client credentials flow."""
+        return {
+            "grant_type": "client_credentials",
+            "client_id": self.oauth_client_id,
+            "client_secret": self.oauth_client_secret.get_secret_value(),
+            "audience": self.oauth_audience,
+        }
 
     def validate_business_rules(self) -> FlextResult[bool]:
         """Validate Oracle Integration Cloud tap configuration business rules."""
@@ -291,179 +430,40 @@ class FlextTapOracleOicSettings(FlextSettings):
         ) as e:
             return FlextResult[bool].fail(f"Business rules validation failed: {e}")
 
-    # Configuration helper methods
-    def get_api_base_url(self) -> str:
-        """Get full API base URL with version."""
-        return f"{str(self.base_url).rstrip('/')}/ic/api/integration/{self.api_version}"
+    @model_validator(mode="after")
+    def validate_oauth_configuration(self) -> Self:
+        """Validate OAuth configuration completeness."""
+        # Check that all OAuth fields are provided together
+        oauth_fields = [
+            self.oauth_client_id,
+            self.oauth_client_secret.get_secret_value(),
+            str(self.oauth_token_url),
+            self.oauth_audience,
+        ]
 
-    def get_auth_config(self) -> Mapping[str, t.ContainerValue]:
-        """Get authentication configuration dictionary."""
-        return {
-            "client_id": self.oauth_client_id,
-            "client_secret": self.oauth_client_secret.get_secret_value(),
-            "token_url": str(self.oauth_token_url),
-            "audience": self.oauth_audience,
-        }
+        if any(oauth_fields) and not all(oauth_fields):
+            msg = "All OAuth fields (client_id, client_secret, token_url, audience) must be provided together"
+            raise ValueError(msg)
 
-    def get_connection_config(self) -> Mapping[str, t.ContainerValue]:
-        """Get connection configuration dictionary."""
-        return {
-            "base_url": str(self.base_url),
-            "api_version": self.api_version,
-            "timeout": self.timeout,
-            "max_retries": self.max_retries,
-            "page_size": self.page_size,
-        }
+        return self
 
-    def get_tap_config(self) -> Mapping[str, t.ContainerValue]:
-        """Get tap-specific configuration dictionary."""
-        return {
-            "stream_prefix": self.stream_prefix,
-            "include_extended": self.include_extended,
-            "start_date": self.start_date,
-            "batch_size": self.batch_size,
-            "max_parallel_streams": self.max_parallel_streams,
-        }
+    @model_validator(mode="after")
+    def validate_url_consistency(self) -> Self:
+        """Validate URL consistency between token URL and base URL."""
+        try:
+            token_host = str(self.oauth_token_url).split("//")[1].split("/")[0]
+            base_host = str(self.base_url).split("//")[1].split("/")[0]
 
-    def get_performance_config(self) -> Mapping[str, t.ContainerValue]:
-        """Get performance configuration dictionary."""
-        return {
-            "batch_size": self.batch_size,
-            "max_parallel_streams": self.max_parallel_streams,
-            "page_size": self.page_size,
-            "timeout": self.timeout,
-            "max_retries": self.max_retries,
-        }
+            # Basic validation that hosts are properly formatted
+            if not token_host or not base_host:
+                msg = "OAuth token URL and base URL must be valid URLs"
+                raise ValueError(msg)
 
-    def get_token_request_data(self) -> Mapping[str, str]:
-        """Get OAuth2 token request data for client credentials flow."""
-        return {
-            "grant_type": "client_credentials",
-            "client_id": self.oauth_client_id,
-            "client_secret": self.oauth_client_secret.get_secret_value(),
-            "audience": self.oauth_audience,
-        }
+        except (IndexError, AttributeError) as e:
+            msg = f"URL validation failed: {e}"
+            raise ValueError(msg) from e
 
-    def get_headers(self) -> Mapping[str, str]:
-        """Get default headers for OIC API requests."""
-        return {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "User-Agent": f"flext-tap-oracle-oic/{self.project_version}",
-        }
-
-    @classmethod
-    def create_for_environment(
-        cls,
-        environment: str,
-        **overrides: t.ContainerValue,
-    ) -> FlextTapOracleOicSettings:
-        """Create configuration for specific environment using enhanced singleton pattern."""
-        env_overrides: dict[str, t.ContainerValue] = {}
-
-        if environment == "production":
-            env_overrides.update({
-                "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
-                "max_retries": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
-                "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
-                // 10,
-                "include_extended": False,
-                "max_parallel_streams": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
-            })
-        elif environment == "development":
-            env_overrides.update({
-                "timeout": FlextConstants.Network.DEFAULT_TIMEOUT * 2,
-                "max_retries": 1,
-                "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
-                // 20,
-                "include_extended": True,
-                "max_parallel_streams": 1,
-            })
-        elif environment == "staging":
-            env_overrides.update({
-                "timeout": FlextConstants.Network.DEFAULT_TIMEOUT + 15,
-                "max_retries": 2,
-                "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
-                // 13,
-                "include_extended": False,
-                "max_parallel_streams": 2,
-            })
-
-        all_overrides = {**env_overrides, **overrides}
-        return cls.model_validate({
-            "project_name": "flext-tap-oracle-oic",
-            "environment": environment,
-            **all_overrides,
-        })
-
-    @classmethod
-    @override
-    def get_global_instance(cls) -> FlextTapOracleOicSettings:
-        """Get the global singleton instance using FlextSettings singleton pattern."""
-        return cls(project_name="flext-tap-oracle-oic")
-
-    @classmethod
-    def create_for_development(
-        cls,
-        **overrides: t.ContainerValue,
-    ) -> FlextTapOracleOicSettings:
-        """Create configuration for development environment."""
-        dev_overrides: dict[str, t.ContainerValue] = {
-            "timeout": FlextConstants.Network.DEFAULT_TIMEOUT * 2,
-            "max_retries": 1,
-            "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 20,
-            "include_extended": True,
-            "max_parallel_streams": 1,
-            **overrides,
-        }
-        return cls.model_validate({
-            "project_name": "flext-tap-oracle-oic",
-            **dev_overrides,
-        })
-
-    @classmethod
-    def create_for_production(
-        cls,
-        **overrides: t.ContainerValue,
-    ) -> FlextTapOracleOicSettings:
-        """Create configuration for production environment."""
-        prod_overrides: dict[str, t.ContainerValue] = {
-            "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
-            "max_retries": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
-            "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 10,
-            "include_extended": False,
-            "max_parallel_streams": FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
-            **overrides,
-        }
-        return cls.model_validate({
-            "project_name": "flext-tap-oracle-oic",
-            **prod_overrides,
-        })
-
-    @classmethod
-    def create_for_testing(
-        cls,
-        **overrides: t.ContainerValue,
-    ) -> FlextTapOracleOicSettings:
-        """Create configuration for testing environment."""
-        test_overrides: dict[str, t.ContainerValue] = {
-            "timeout": FlextConstants.Network.DEFAULT_TIMEOUT // 3,
-            "max_retries": 1,
-            "page_size": FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE // 100,
-            "include_extended": True,
-            "max_parallel_streams": 1,
-            **overrides,
-        }
-        return cls.model_validate({
-            "project_name": "flext-tap-oracle-oic",
-            **test_overrides,
-        })
-
-    @classmethod
-    @override
-    def reset_global_instance(cls) -> None:
-        """Reset the global FlextTapOracleOicSettings instance (mainly for testing)."""
-        cls._reset_instance()
+        return self
 
 
 def create_oracle_oic_tap_config(

@@ -95,24 +95,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         },
     )
 
-    # Advanced Pydantic 2.11 Features - Singer Oracle OIC Tap Domain
-
-    def _count_active_oic_tap_models(self) -> int:
-        """Count of active Oracle OIC tap models with API extraction capabilities."""
-        model_names = [
-            "OicAuthenticationConfig",
-            "OicIntegrationEntity",
-            "OicConnectionEntity",
-            "OicActivityRecord",
-            "OicPackageEntity",
-            "OicMetricsRecord",
-            "OicAgentEntity",
-            "OicStreamConfiguration",
-            "OicApiResponse",
-            "OicErrorContext",
-        ]
-        return sum(1 for name in model_names if getattr(self, name) is not None)
-
     @computed_field
     def active_oic_tap_models_count(self) -> int:
         """Count of active Oracle OIC tap models with API extraction capabilities."""
@@ -149,29 +131,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             },
         }
 
-    @model_validator(mode="after")
-    def validate_oic_tap_system_consistency(self) -> Self:
-        """Validate Singer Oracle OIC tap system consistency and configuration."""
-        # Singer OIC tap authentication validation
-        if self._oic_authentication and not hasattr(self, "OicAuthenticationConfig"):
-            msg = "OicAuthenticationConfig required when OIC authentication configured"
-            raise ValueError(msg)
-
-        # Stream configuration validation
-        if self._stream_configurations and not hasattr(self, "OicStreamConfiguration"):
-            msg = "OicStreamConfiguration required for stream configurations"
-            raise ValueError(msg)
-
-        # Singer protocol compliance validation
-        if self._singer_mode:
-            required_models = ["OicApiResponse", "OicErrorContext"]
-            for model in required_models:
-                if not hasattr(self, model):
-                    msg = f"{model} required for Singer protocol compliance"
-                    raise ValueError(msg)
-
-        return self
-
     @field_serializer("*", when_used="json")
     def serialize_with_oic_metadata(
         self,
@@ -202,6 +161,47 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 }
             case _:
                 return value
+
+    @model_validator(mode="after")
+    def validate_oic_tap_system_consistency(self) -> Self:
+        """Validate Singer Oracle OIC tap system consistency and configuration."""
+        # Singer OIC tap authentication validation
+        if self._oic_authentication and not hasattr(self, "OicAuthenticationConfig"):
+            msg = "OicAuthenticationConfig required when OIC authentication configured"
+            raise ValueError(msg)
+
+        # Stream configuration validation
+        if self._stream_configurations and not hasattr(self, "OicStreamConfiguration"):
+            msg = "OicStreamConfiguration required for stream configurations"
+            raise ValueError(msg)
+
+        # Singer protocol compliance validation
+        if self._singer_mode:
+            required_models = ["OicApiResponse", "OicErrorContext"]
+            for model in required_models:
+                if not hasattr(self, model):
+                    msg = f"{model} required for Singer protocol compliance"
+                    raise ValueError(msg)
+
+        return self
+
+    # Advanced Pydantic 2.11 Features - Singer Oracle OIC Tap Domain
+
+    def _count_active_oic_tap_models(self) -> int:
+        """Count of active Oracle OIC tap models with API extraction capabilities."""
+        model_names = [
+            "OicAuthenticationConfig",
+            "OicIntegrationEntity",
+            "OicConnectionEntity",
+            "OicActivityRecord",
+            "OicPackageEntity",
+            "OicMetricsRecord",
+            "OicAgentEntity",
+            "OicStreamConfiguration",
+            "OicApiResponse",
+            "OicErrorContext",
+        ]
+        return sum(1 for name in model_names if getattr(self, name) is not None)
 
     class TapOracleOic:
         """TapOracleOic domain namespace."""
@@ -1239,24 +1239,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     },
                 }
 
-            def _determine_severity(self) -> str:
-                """Determine error severity based on type and status code."""
-                if self.error_type in {
-                    c.OicErrorType.AUTHENTICATION,
-                    c.OicErrorType.AUTHORIZATION,
-                }:
-                    return "critical"
-                if self.error_type == c.OicErrorType.RATE_LIMIT:
-                    return "warning"
-                if self.error_type == c.OicErrorType.SERVER_ERROR:
-                    return "error"
-                if self.error_type in {
-                    c.OicErrorType.NETWORK,
-                    c.OicErrorType.VALIDATION,
-                }:
-                    return "warning"
-                return "unknown"
-
             @model_validator(mode="after")
             def validate_error_context(self) -> Self:
                 """Validate OIC error context."""
@@ -1274,6 +1256,24 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     msg = "Retry after seconds cannot be negative"
                     raise ValueError(msg)
                 return self
+
+            def _determine_severity(self) -> str:
+                """Determine error severity based on type and status code."""
+                if self.error_type in {
+                    c.OicErrorType.AUTHENTICATION,
+                    c.OicErrorType.AUTHORIZATION,
+                }:
+                    return "critical"
+                if self.error_type == c.OicErrorType.RATE_LIMIT:
+                    return "warning"
+                if self.error_type == c.OicErrorType.SERVER_ERROR:
+                    return "error"
+                if self.error_type in {
+                    c.OicErrorType.NETWORK,
+                    c.OicErrorType.VALIDATION,
+                }:
+                    return "warning"
+                return "unknown"
 
 
 # Short alias

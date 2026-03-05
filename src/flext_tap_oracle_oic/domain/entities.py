@@ -63,11 +63,6 @@ class OICConnection(FlextModels):
     created_at: datetime | None = Field(None, description="Creation timestamp")
     updated_at: datetime | None = Field(None, description="Last update timestamp")
 
-    def test_connection(self) -> None:
-        """Mark connection as tested."""
-        self.last_tested = datetime.now(UTC)
-        self.connection_status = ConnectionStatus.TESTED
-
     def mark_failed(self, _error: str) -> None:
         """Mark connection as failed with error details."""
         self.connection_status = ConnectionStatus.FAILED
@@ -75,6 +70,11 @@ class OICConnection(FlextModels):
             "error": "error",
             "timestamp": datetime.now(UTC).isoformat(),
         }
+
+    def test_connection(self) -> None:
+        """Mark connection as tested."""
+        self.last_tested = datetime.now(UTC)
+        self.connection_status = ConnectionStatus.TESTED
 
 
 class OICIntegration(FlextModels):
@@ -128,6 +128,11 @@ class OICIntegration(FlextModels):
     created_at: datetime | None = Field(None, description="Creation timestamp")
     updated_at: datetime | None = Field(None, description="Last update timestamp")
 
+    @property
+    def is_active(self) -> bool:
+        """Check if integration is active."""
+        return self.integration_status == IntegrationStatus.ACTIVATED
+
     def activate(self) -> None:
         """Activate the integration."""
         self.integration_status = IntegrationStatus.ACTIVATED
@@ -148,11 +153,6 @@ class OICIntegration(FlextModels):
         """Unlock the integration."""
         self.locked_by = None
         self.locked_at = None
-
-    @property
-    def is_active(self) -> bool:
-        """Check if integration is active."""
-        return self.integration_status == IntegrationStatus.ACTIVATED
 
 
 class OICLookup(FlextModels):
@@ -191,19 +191,19 @@ class OICLookup(FlextModels):
     created_at: datetime | None = Field(None, description="Creation timestamp")
     updated_at: datetime | None = Field(None, description="Last update timestamp")
 
-    def update_statistics(self, row_count: int, data_size: int | None = None) -> None:
-        """Update lookup statistics."""
-        self.row_count = row_count
-        self.data_size_bytes = data_size
+    @property
+    def is_empty(self) -> bool:
+        """Check if lookup is empty."""
+        return self.row_count == 0
 
     def record_import(self) -> None:
         """Record successful import."""
         self.last_imported = datetime.now(UTC)
 
-    @property
-    def is_empty(self) -> bool:
-        """Check if lookup is empty."""
-        return self.row_count == 0
+    def update_statistics(self, row_count: int, data_size: int | None = None) -> None:
+        """Update lookup statistics."""
+        self.row_count = row_count
+        self.data_size_bytes = data_size
 
 
 class OICMonitoringRecord(FlextModels):
@@ -241,9 +241,9 @@ class OICMonitoringRecord(FlextModels):
     )
 
     @property
-    def successful(self) -> bool:
-        """Check if execution was successful."""
-        return self.execution_status.lower() in {"completed", "succeeded"}
+    def duration_seconds(self) -> float | None:
+        """Get duration in seconds."""
+        return self.duration_ms / 1000.0 if self.duration_ms is not None else None
 
     @property
     def is_failed(self) -> bool:
@@ -251,9 +251,9 @@ class OICMonitoringRecord(FlextModels):
         return self.execution_status.lower() in {"failed", "faulted", "aborted"}
 
     @property
-    def duration_seconds(self) -> float | None:
-        """Get duration in seconds."""
-        return self.duration_ms / 1000.0 if self.duration_ms is not None else None
+    def successful(self) -> bool:
+        """Check if execution was successful."""
+        return self.execution_status.lower() in {"completed", "succeeded"}
 
 
 class OICProject(FlextModels):
@@ -288,15 +288,17 @@ class OICProject(FlextModels):
     created_at: datetime | None = Field(None, description="Creation timestamp")
     updated_at: datetime | None = Field(None, description="Last update timestamp")
 
+    @property
+    def total_resources(self) -> int:
+        """Get total number of resources in project."""
+        return (
+            len(self.integration_ids) + len(self.connection_ids) + len(self.lookup_ids)
+        )
+
     def add_integration(self, integration_id: str) -> None:
         """Add integration to project."""
         if integration_id not in self.integration_ids:
             self.integration_ids.append(integration_id)
-
-    def remove_integration(self, integration_id: str) -> None:
-        """Remove integration from project."""
-        if integration_id in self.integration_ids:
-            self.integration_ids.remove(integration_id)
 
     def deploy(self, user: str) -> None:
         """Deploy the project."""
@@ -304,12 +306,10 @@ class OICProject(FlextModels):
         self.deployed_at = datetime.now(UTC)
         self.deployed_by = user
 
-    @property
-    def total_resources(self) -> int:
-        """Get total number of resources in project."""
-        return (
-            len(self.integration_ids) + len(self.connection_ids) + len(self.lookup_ids)
-        )
+    def remove_integration(self, integration_id: str) -> None:
+        """Remove integration from project."""
+        if integration_id in self.integration_ids:
+            self.integration_ids.remove(integration_id)
 
 
 # Value Objects for configuration and metadata
@@ -350,16 +350,16 @@ class OICExecutionSummary(FlextModels):
     )
 
     @property
+    def failure_rate(self) -> float:
+        """Calculate failure rate percentage."""
+        return 100.0 - self.success_rate
+
+    @property
     def success_rate(self) -> float:
         """Calculate success rate percentage."""
         if self.total_executions == 0:
             return 0.0
         return (self.successful_executions / self.total_executions) * 100.0
-
-    @property
-    def failure_rate(self) -> float:
-        """Calculate failure rate percentage."""
-        return 100.0 - self.success_rate
 
 
 # Export main entities and value objects

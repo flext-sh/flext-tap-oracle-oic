@@ -120,18 +120,6 @@ class OracleOicClient:
         # Zero Tolerance FIX: Use FlextTapOracleOicUtilities for ALL business operations
         self._utilities = FlextTapOracleOicUtilities()
 
-    def _get_auth_headers(self) -> FlextResult[Mapping[str, str]]:
-        """Get authorization headers with OAuth2 token."""
-        token_result = self.authenticator.get_access_token()
-        if token_result.is_failure:
-            return FlextResult[Mapping[str, str]].fail(
-                f"Failed to get access token: {token_result.error}",
-            )
-
-        headers: dict[str, str] = dict(self.config.get_headers())
-        headers["Authorization"] = f"Bearer {token_result.value}"
-        return FlextResult[Mapping[str, str]].ok(headers)
-
     def get(self, endpoint: str) -> FlextResult[object]:
         """Make authenticated GET request to OIC API."""
         # Zero Tolerance FIX: Use utilities for URL validation and building
@@ -231,6 +219,18 @@ class OracleOicClient:
             ImportError,
         ) as e:
             return FlextResult[object].fail(f"OIC API request failed: {e}")
+
+    def _get_auth_headers(self) -> FlextResult[Mapping[str, str]]:
+        """Get authorization headers with OAuth2 token."""
+        token_result = self.authenticator.get_access_token()
+        if token_result.is_failure:
+            return FlextResult[Mapping[str, str]].fail(
+                f"Failed to get access token: {token_result.error}",
+            )
+
+        headers: dict[str, str] = dict(self.config.get_headers())
+        headers["Authorization"] = f"Bearer {token_result.value}"
+        return FlextResult[Mapping[str, str]].ok(headers)
 
 
 class TapOracleOic(Tap):
@@ -357,6 +357,27 @@ class TapOracleOic(Tap):
         logger.info("Discovered %s streams from Oracle OIC", len(streams))
         return streams
 
+    def test_connection(self) -> FlextResult[bool]:
+        """Test connection to Oracle OIC using real API client."""
+        try:
+            logger.info("Testing Oracle OIC connection")
+
+            # Test authentication by making a simple API call
+            test_result: FlextResult[object] = self.client.get("integrations")
+
+            if test_result.is_success:
+                logger.info("Oracle OIC connection test successful")
+                return FlextResult[bool].ok(value=True)
+
+            error_msg: str = f"Oracle OIC connection test failed: {test_result.error}"
+            logger.error(error_msg)
+            return FlextResult[bool].fail(error_msg)
+
+        except (RuntimeError, ValueError, TypeError) as e:
+            exception_msg: str = f"Oracle OIC connection test exception: {e}"
+            logger.exception(exception_msg)
+            return FlextResult[bool].fail(exception_msg)
+
     def _create_stream_instance(
         self,
         class_name: str,
@@ -390,27 +411,6 @@ class TapOracleOic(Tap):
         )
 
         return stream_class(tap=self)
-
-    def test_connection(self) -> FlextResult[bool]:
-        """Test connection to Oracle OIC using real API client."""
-        try:
-            logger.info("Testing Oracle OIC connection")
-
-            # Test authentication by making a simple API call
-            test_result: FlextResult[object] = self.client.get("integrations")
-
-            if test_result.is_success:
-                logger.info("Oracle OIC connection test successful")
-                return FlextResult[bool].ok(value=True)
-
-            error_msg: str = f"Oracle OIC connection test failed: {test_result.error}"
-            logger.error(error_msg)
-            return FlextResult[bool].fail(error_msg)
-
-        except (RuntimeError, ValueError, TypeError) as e:
-            exception_msg: str = f"Oracle OIC connection test exception: {e}"
-            logger.exception(exception_msg)
-            return FlextResult[bool].fail(exception_msg)
 
 
 # Use TapOracleOic directly instead
