@@ -23,6 +23,7 @@ from flext_tap_oracle_oic.constants import c
 from flext_tap_oracle_oic.typings import t
 
 
+@FlextSettings.auto_register("tap_oracle_oic")
 class FlextTapOracleOicSettings(FlextSettings):
     """Oracle Integration Cloud Tap Configuration using enhanced FlextSettings patterns.
 
