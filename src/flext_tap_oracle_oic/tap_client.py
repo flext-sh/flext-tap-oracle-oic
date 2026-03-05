@@ -7,7 +7,6 @@ SPDX-License-Identifier: MIT.
 from __future__ import annotations
 
 import json
-import os
 import sys
 from collections.abc import Mapping, Sequence
 from typing import ClassVar, override
@@ -439,17 +438,23 @@ def main() -> int:
 
 
 def _build_config_from_env() -> Mapping[str, t.ContainerValue]:
-    """Build configuration from environment variables."""
-    return {
-        "oauth_client_id": os.getenv("TAP_ORACLE_OIC_OAUTH_CLIENT_ID"),
-        "oauth_client_secret": os.getenv("TAP_ORACLE_OIC_OAUTH_CLIENT_SECRET"),
-        "oauth_token_url": os.getenv("TAP_ORACLE_OIC_OAUTH_TOKEN_URL"),
-        "oic_url": os.getenv("TAP_ORACLE_OIC_OIC_URL"),
-        "oauth_scope": os.getenv(
-            "TAP_ORACLE_OIC_OAUTH_SCOPE",
-            "urn:opc:resource:consumer:all",
-        ),
-    }
+    """Build configuration from environment variables using pydantic-settings.
+
+    Uses FlextTapOracleOicSettings with env_prefix='FLEXT_TAP_ORACLE_OIC_'
+    for automatic environment variable loading and validation.
+    """
+    try:
+        settings = FlextTapOracleOicSettings()
+        return {
+            "oauth_client_id": settings.oauth_client_id,
+            "oauth_client_secret": settings.oauth_client_secret.get_secret_value(),
+            "oauth_token_url": str(settings.oauth_token_url),
+            "oic_url": str(settings.base_url),
+            "oauth_scope": settings.oauth_audience,
+        }
+    except (ValueError, TypeError) as e:
+        logger.debug(f"Configuration loading failed: {e}")
+        return {}
 
 
 def _validate_and_setup_config() -> int:
