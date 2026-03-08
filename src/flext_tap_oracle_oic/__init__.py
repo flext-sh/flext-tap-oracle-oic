@@ -52,8 +52,6 @@ if TYPE_CHECKING:
         FlextTapOracleOicUtilities,
         FlextTapOracleOicUtilities as u,
     )
-
-# Lazy import mapping: export_name -> (module_path, attr_name)
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextLogger": ("flext_core", "FlextLogger"),
     "FlextMeltanoBridge": ("flext_meltano", "FlextMeltanoBridge"),
@@ -107,7 +105,6 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "t": ("flext_tap_oracle_oic.typings", "FlextTapOracleOicTypes"),
     "u": ("flext_tap_oracle_oic.utilities", "FlextTapOracleOicUtilities"),
 }
-
 __all__ = [
     "FlextLogger",
     "FlextMeltanoBridge",
@@ -139,7 +136,7 @@ __all__ = [
 ]
 
 
-def __getattr__(name: str) -> Any:  # noqa: ANN401
+def __getattr__(name: str) -> Any:
     """Lazy-load module attributes on first access (PEP 562)."""
     return lazy_getattr(name, _LAZY_IMPORTS, globals(), __name__)
 

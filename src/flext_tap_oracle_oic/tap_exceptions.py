@@ -21,7 +21,6 @@ from __future__ import annotations
 from flext_core import FlextExceptions
 
 
-# Oracle OIC exception factory using standard pattern
 class OICExceptionFactory:
     """Factory for Oracle OIC specific exceptions."""
 
@@ -46,7 +45,6 @@ class OICExceptionFactory:
         return OICValidationError(message)
 
 
-# Specific Oracle OIC exceptions
 class OICAuthenticationError(FlextExceptions.AuthenticationError):
     """Oracle OIC authentication error."""
 

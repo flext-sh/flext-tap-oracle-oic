@@ -33,7 +33,6 @@ class IntegrationsStream(OICBaseStream):
     requires_design_api: ClassVar[bool] = True
     default_sort: ClassVar[str] = "lastUpdated:desc"
     default_expand: ClassVar[str] = "connections,endpoints"
-
     schema: dict[str, t.JsonValue] = FlextMeltanoTypes.Singer.Typing.PropertiesList(
         FlextMeltanoTypes.Singer.Typing.Property(
             "id",
@@ -93,21 +92,21 @@ class IntegrationsStream(OICBaseStream):
         FlextMeltanoTypes.Singer.Typing.Property(
             "connections",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.ObjectType(),
+                FlextMeltanoTypes.Singer.Typing.ObjectType()
             ),
             description="Used connections",
         ),
         FlextMeltanoTypes.Singer.Typing.Property(
             "endpoints",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.ObjectType(),
+                FlextMeltanoTypes.Singer.Typing.ObjectType()
             ),
             description="Integration endpoints",
         ),
         FlextMeltanoTypes.Singer.Typing.Property(
             "trackingFields",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType()
             ),
             description="Tracking fields",
         ),
@@ -158,7 +157,6 @@ class ConnectionsStream(OICBaseStream):
     api_category: ClassVar[str] = "core"
     requires_design_api: ClassVar[bool] = True
     default_sort: ClassVar[str] = "name:asc"
-
     schema: dict[str, t.JsonValue] = FlextMeltanoTypes.Singer.Typing.PropertiesList(
         FlextMeltanoTypes.Singer.Typing.Property(
             "id",
@@ -266,12 +264,9 @@ class PackagesStream(OICBaseStream):
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "core"
     default_sort: ClassVar[str] = "lastUpdated:desc"
-
     schema: dict[str, t.JsonValue] = FlextMeltanoTypes.Singer.Typing.PropertiesList(
         FlextMeltanoTypes.Singer.Typing.Property(
-            "id",
-            FlextMeltanoTypes.Singer.Typing.StringType(),
-            description="Package ID",
+            "id", FlextMeltanoTypes.Singer.Typing.StringType(), description="Package ID"
         ),
         FlextMeltanoTypes.Singer.Typing.Property(
             "name",
@@ -316,14 +311,14 @@ class PackagesStream(OICBaseStream):
         FlextMeltanoTypes.Singer.Typing.Property(
             "integrations",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.ObjectType(),
+                FlextMeltanoTypes.Singer.Typing.ObjectType()
             ),
             description="Included integrations",
         ),
         FlextMeltanoTypes.Singer.Typing.Property(
             "connections",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.ObjectType(),
+                FlextMeltanoTypes.Singer.Typing.ObjectType()
             ),
             description="Included connections",
         ),
@@ -352,7 +347,6 @@ class LookupsStream(OICBaseStream):
     primary_keys: ClassVar[list[str]] = ["name"]
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "core"
-
     schema: dict[str, t.JsonValue] = FlextMeltanoTypes.Singer.Typing.PropertiesList(
         FlextMeltanoTypes.Singer.Typing.Property(
             "name",
@@ -417,9 +411,6 @@ class LookupsStream(OICBaseStream):
     ).to_dict()
 
 
-# INFRASTRUCTURE STREAMS
-
-
 class LibrariesStream(OICBaseStream):
     """Oracle Integration Cloud Libraries Stream.
 
@@ -432,12 +423,9 @@ class LibrariesStream(OICBaseStream):
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "infrastructure"
-
     schema: dict[str, t.JsonValue] = FlextMeltanoTypes.Singer.Typing.PropertiesList(
         FlextMeltanoTypes.Singer.Typing.Property(
-            "id",
-            FlextMeltanoTypes.Singer.Typing.StringType(),
-            description="Library ID",
+            "id", FlextMeltanoTypes.Singer.Typing.StringType(), description="Library ID"
         ),
         FlextMeltanoTypes.Singer.Typing.Property(
             "name",
@@ -497,7 +485,7 @@ class LibrariesStream(OICBaseStream):
         FlextMeltanoTypes.Singer.Typing.Property(
             "functions",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType()
             ),
             description="Available functions",
         ),
@@ -516,7 +504,6 @@ class CertificatesStream(OICBaseStream):
     primary_keys: ClassVar[list[str]] = ["name"]
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "security"
-
     schema: dict[str, t.JsonValue] = FlextMeltanoTypes.Singer.Typing.PropertiesList(
         FlextMeltanoTypes.Singer.Typing.Property(
             "name",
@@ -598,12 +585,9 @@ class AdaptersStream(OICBaseStream):
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key: str | None = None
     api_category: ClassVar[str] = "infrastructure"
-
     schema: dict[str, t.JsonValue] = FlextMeltanoTypes.Singer.Typing.PropertiesList(
         FlextMeltanoTypes.Singer.Typing.Property(
-            "id",
-            FlextMeltanoTypes.Singer.Typing.StringType(),
-            description="Adapter ID",
+            "id", FlextMeltanoTypes.Singer.Typing.StringType(), description="Adapter ID"
         ),
         FlextMeltanoTypes.Singer.Typing.Property(
             "name",
@@ -638,14 +622,14 @@ class AdaptersStream(OICBaseStream):
         FlextMeltanoTypes.Singer.Typing.Property(
             "capabilities",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType()
             ),
             description="Adapter capabilities",
         ),
         FlextMeltanoTypes.Singer.Typing.Property(
             "connectionTypes",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.StringType(),
+                FlextMeltanoTypes.Singer.Typing.StringType()
             ),
             description="Connection types",
         ),
@@ -667,9 +651,6 @@ class AdaptersStream(OICBaseStream):
     ).to_dict()
 
 
-# EXTENDED BUSINESS STREAMS
-
-
 class ProjectsStream(OICBaseStream):
     """Oracle Integration Cloud Projects Stream.
 
@@ -683,12 +664,9 @@ class ProjectsStream(OICBaseStream):
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "extended"
     requires_design_api: ClassVar[bool] = True
-
     schema: dict[str, t.JsonValue] = FlextMeltanoTypes.Singer.Typing.PropertiesList(
         FlextMeltanoTypes.Singer.Typing.Property(
-            "id",
-            FlextMeltanoTypes.Singer.Typing.StringType(),
-            description="Project ID",
+            "id", FlextMeltanoTypes.Singer.Typing.StringType(), description="Project ID"
         ),
         FlextMeltanoTypes.Singer.Typing.Property(
             "name",
@@ -728,7 +706,7 @@ class ProjectsStream(OICBaseStream):
         FlextMeltanoTypes.Singer.Typing.Property(
             "folders",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.ObjectType(),
+                FlextMeltanoTypes.Singer.Typing.ObjectType()
             ),
             description="Project folders",
         ),
@@ -745,14 +723,11 @@ class ProjectsStream(OICBaseStream):
         FlextMeltanoTypes.Singer.Typing.Property(
             "permissions",
             FlextMeltanoTypes.Singer.Typing.ArrayType(
-                FlextMeltanoTypes.Singer.Typing.ObjectType(),
+                FlextMeltanoTypes.Singer.Typing.ObjectType()
             ),
             description="Project permissions",
         ),
     ).to_dict()
-
-
-# MONITORING STREAMS
 
 
 class ExecutionsStream(OICBaseStream):
@@ -768,7 +743,6 @@ class ExecutionsStream(OICBaseStream):
     replication_key: str = "startTime"
     api_category: ClassVar[str] = "monitoring"
     requires_monitoring_api: ClassVar[bool] = True
-
     schema: dict[str, t.JsonValue] = FlextMeltanoTypes.Singer.Typing.PropertiesList(
         FlextMeltanoTypes.Singer.Typing.Property(
             "instanceId",
@@ -841,7 +815,6 @@ class MetricsStream(OICBaseStream):
     replication_key: str = "timestamp"
     api_category: ClassVar[str] = "monitoring"
     requires_monitoring_api: ClassVar[bool] = True
-
     schema: dict[str, t.JsonValue] = FlextMeltanoTypes.Singer.Typing.PropertiesList(
         FlextMeltanoTypes.Singer.Typing.Property(
             "metricId",
@@ -886,26 +859,18 @@ class MetricsStream(OICBaseStream):
     ).to_dict()
 
 
-# CONSOLIDATED STREAM REGISTRY
-
-
 ALL_STREAMS: dict[str, type[OICBaseStream]] = {
-    # Core business streams
     "integrations": IntegrationsStream,
     "connections": ConnectionsStream,
     "packages": PackagesStream,
     "lookups": LookupsStream,
-    # Infrastructure streams
     "libraries": LibrariesStream,
     "certificates": CertificatesStream,
     "adapters": AdaptersStream,
-    # Extended business streams
     "projects": ProjectsStream,
-    # Monitoring streams
     "executions": ExecutionsStream,
     "metrics": MetricsStream,
 }
-
 CORE_STREAMS = ["integrations", "connections", "packages", "lookups", "libraries"]
 INFRASTRUCTURE_STREAMS = ["certificates", "adapters"]
 EXTENDED_STREAMS = ["projects"]

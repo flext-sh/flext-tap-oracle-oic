@@ -52,56 +52,48 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
 
             @runtime_checkable
             class OicConnectionProtocol(
-                FlextOracleOicProtocols.Service[object],
-                Protocol,
+                FlextOracleOicProtocols.Service[object], Protocol
             ):
                 """Protocol for Oracle OIC connection."""
 
                 def connect(
-                    self,
-                    config: Mapping[str, t.ContainerValue],
+                    self, config: Mapping[str, t.ContainerValue]
                 ) -> FlextMeltanoProtocols.Result[object]:
                     """Connect to Oracle OIC with provided configuration."""
                     ...
 
             @runtime_checkable
             class IntegrationDiscoveryProtocol(
-                FlextOracleOicProtocols.Service[object],
-                Protocol,
+                FlextOracleOicProtocols.Service[object], Protocol
             ):
                 """Protocol for OIC integration discovery."""
 
                 def discover_integrations(
-                    self,
-                    config: Mapping[str, t.ContainerValue],
+                    self, config: Mapping[str, t.ContainerValue]
                 ) -> FlextMeltanoProtocols.Result[list[t.ConfigurationMapping]]:
                     """Discover available integrations in Oracle OIC."""
                     ...
 
             @runtime_checkable
             class DataExtractionProtocol(
-                FlextOracleOicProtocols.Service[object],
-                Protocol,
+                FlextOracleOicProtocols.Service[object], Protocol
             ):
                 """Protocol for OIC data extraction."""
 
                 def extract_integration_data(
-                    self,
-                    integration: str,
+                    self, integration: str
                 ) -> FlextMeltanoProtocols.Result[list[t.ConfigurationMapping]]:
                     """Extract data from an Oracle OIC integration."""
                     ...
 
             @runtime_checkable
             class StreamGenerationProtocol(
-                FlextOracleOicProtocols.Service[object],
-                Protocol,
+                FlextOracleOicProtocols.Service[object], Protocol
             ):
                 """Protocol for Singer stream generation."""
 
                 def generate_catalog(
-                    self,
-                    config: Mapping[str, t.ContainerValue],
+                    self, config: Mapping[str, t.ContainerValue]
                 ) -> FlextMeltanoProtocols.Result[m.Meltano.SingerCatalog]:
                     """Generate Singer catalog for OIC entities."""
                     ...
@@ -111,18 +103,11 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
                 """Protocol for OIC extraction monitoring."""
 
                 def track_progress(
-                    self,
-                    integration: str,
-                    records: int,
+                    self, integration: str, records: int
                 ) -> FlextMeltanoProtocols.Result[bool]:
                     """Track OIC integration data extraction progress."""
                     ...
 
 
-# Runtime alias for simplified usage
 p = FlextTapOracleOicProtocols
-
-__all__ = [
-    "FlextTapOracleOicProtocols",
-    "p",
-]
+__all__ = ["FlextTapOracleOicProtocols", "p"]

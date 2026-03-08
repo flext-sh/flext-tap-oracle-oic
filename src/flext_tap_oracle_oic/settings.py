@@ -38,25 +38,16 @@ def create_oracle_oic_tap_config(
         tap_config: dict[str, t.ContainerValue] = (
             dict(tap_params) if tap_params is not None else {}
         )
-
         tap_config.setdefault(
-            "batch_size",
-            FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE,
+            "batch_size", FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
         )
         tap_config.setdefault("stream_prefix", "oic")
-
-        config_data = {
-            **oauth_params,
-            **connection_params,
-            **tap_config,
-        }
-
+        config_data = {**oauth_params, **connection_params, **tap_config}
         config_instance = FlextTapOracleOicSettings.model_validate(config_data)
         return FlextResult[FlextTapOracleOicSettings].ok(config_instance)
-
     except (ValueError, TypeError, KeyError, AttributeError, OSError) as e:
         return FlextResult[FlextTapOracleOicSettings].fail(
-            f"Oracle OIC tap configuration creation failed: {e}",
+            f"Oracle OIC tap configuration creation failed: {e}"
         )
 
 
@@ -64,7 +55,6 @@ def validate_oracle_oic_tap_configuration(
     config: FlextTapOracleOicSettings,
 ) -> FlextResult[bool]:
     """Validate Oracle Integration Cloud tap configuration using FlextSettings patterns - ZERO DUPLICATION."""
-    # Required string fields validation
     required_fields = [
         (config.oauth_client_id, "OAuth client ID is required"),
         (
@@ -73,24 +63,15 @@ def validate_oracle_oic_tap_configuration(
         ),
         (config.oauth_audience, "OAuth audience is required"),
     ]
-
-    # Validate required string fields
     for field_value, error_message in required_fields:
         if not (field_value and str(field_value).strip()):
             return FlextResult[bool].fail(error_message)
-
-    # Validate timeout constraints
     if config.timeout <= 0:
         return FlextResult[bool].fail("Timeout must be positive")
-
-    # Validate retry constraints
     if config.max_retries < 0:
         return FlextResult[bool].fail("Max retries cannot be negative")
-
-    # Validate page size constraints
     if config.page_size <= 0:
         return FlextResult[bool].fail("Page size must be positive")
-
     return FlextResult[bool].ok(value=True)
 
 

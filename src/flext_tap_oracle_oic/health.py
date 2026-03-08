@@ -36,10 +36,8 @@ class OICHealthChecker:
     def check_health(self) -> Mapping[str, t.ContainerValue]:
         """Check OIC instance health."""
         try:
-            # Try to access the integrations endpoint as a health check
             url = f"{self.base_url}/ic/api/integration/v1/integrations?limit=1"
             response_result = self._make_get_request(url)
-
             if response_result.is_failure:
                 return {
                     "status": "error",
@@ -48,7 +46,6 @@ class OICHealthChecker:
                     "api_accessible": "False",
                     "error": str(response_result.error),
                 }
-
             response = response_result.value
             if response.status_code == c.TapOicHttp.HTTP_OK:
                 return {
@@ -84,10 +81,8 @@ class OICHealthChecker:
     def check_monitoring_health(self) -> Mapping[str, t.ContainerValue]:
         """Check OIC monitoring service health."""
         try:
-            # Try to access monitoring endpoint
             url = f"{self.base_url}/ic/api/monitoring/v1/instances?limit=1"
             response_result = self._make_get_request(url)
-
             if response_result.is_failure:
                 return {
                     "service": "monitoring",
@@ -96,7 +91,6 @@ class OICHealthChecker:
                     "accessible": "False",
                     "error": str(response_result.error),
                 }
-
             response = response_result.value
             if response.status_code == c.TapOicHttp.HTTP_OK:
                 return {
@@ -132,13 +126,8 @@ class OICHealthChecker:
     def test_connection(self, connection_id: str) -> Mapping[str, t.ContainerValue]:
         """Test specific OIC connection."""
         try:
-            # Call the connection test endpoint
             url = f"{self.base_url}/ic/api/integration/v1/connections/{connection_id}/test"
-            response_result = self._api_client.post(
-                url,
-                headers=self._get_headers(),
-            )
-
+            response_result = self._api_client.post(url, headers=self._get_headers())
             if response_result.is_failure:
                 return {
                     "connectionId": connection_id,
@@ -146,7 +135,6 @@ class OICHealthChecker:
                     "timestamp": datetime.now(UTC).isoformat(),
                     "error": str(response_result.error),
                 }
-
             response = response_result.value
             if response.status_code in {200, 202}:
                 match response.body:
@@ -156,7 +144,7 @@ class OICHealthChecker:
                         body = t.ConfigurationMapping()
                 status_val = str(body.get("status", "success"))
                 test_result_val = str(
-                    body.get("testResult", "Connection test successful"),
+                    body.get("testResult", "Connection test successful")
                 )
                 details_val = body.get("details")
                 return {
@@ -191,10 +179,8 @@ class OICHealthChecker:
     def test_integration(self, integration_id: str) -> Mapping[str, t.ContainerValue]:
         """Test specific OIC integration."""
         try:
-            # Get integration details
             url = f"{self.base_url}/ic/api/integration/v1/integrations/{integration_id}"
             response_result = self._make_get_request(url)
-
             if response_result.is_failure:
                 return {
                     "integrationId": integration_id,
@@ -202,7 +188,6 @@ class OICHealthChecker:
                     "timestamp": datetime.now(UTC).isoformat(),
                     "error": str(response_result.error),
                 }
-
             response = response_result.value
             if response.status_code == c.TapOicHttp.HTTP_OK:
                 match response.body:
@@ -211,8 +196,6 @@ class OICHealthChecker:
                     case _:
                         integration = t.ConfigurationMapping()
                 status_val = str(integration.get("status", "UNKNOWN"))
-
-                # Determine health based on status
                 health_status = "unknown"
                 if status_val == "ACTIVATED":
                     health_status = "healthy"
@@ -220,7 +203,6 @@ class OICHealthChecker:
                     health_status = "warning"
                 elif status_val in {"ERROR", "FAILED"}:
                     health_status = "unhealthy"
-
                 name_val = integration.get("name")
                 version_val = integration.get("version")
                 last_updated_val = integration.get("timeUpdated")
@@ -266,7 +248,6 @@ class OICHealthChecker:
             "Accept": c.TapOicHttp.JSON_MIME,
             "Content-Type": c.TapOicHttp.JSON_MIME,
         }
-        # Add auth header from authenticator
         token_result = self.authenticator.get_access_token()
         if token_result.is_success:
             headers["Authorization"] = f"Bearer {token_result.value}"
@@ -274,7 +255,4 @@ class OICHealthChecker:
 
     def _make_get_request(self, url: str) -> FlextResult[FlextApiModels.HttpResponse]:
         """Make authenticated GET request."""
-        return self._api_client.get(
-            url,
-            headers=self._get_headers(),
-        )
+        return self._api_client.get(url, headers=self._get_headers())

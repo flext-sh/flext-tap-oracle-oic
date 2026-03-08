@@ -20,7 +20,6 @@ import pytest
 from flext_tap_oracle_oic import t
 
 
-# Test environment setup
 @pytest.fixture(autouse=True)
 def set_test_environment() -> Generator[None]:
     """Set test environment variables."""
@@ -29,14 +28,12 @@ def set_test_environment() -> Generator[None]:
     os.environ["SINGER_SDK_LOG_LEVEL"] = "DEBUG"
     os.environ["OIC_TEST_MODE"] = "true"
     yield
-    # Cleanup
     os.environ.pop("FLEXT_ENV", None)
     os.environ.pop("FLEXT_LOG_LEVEL", None)
     os.environ.pop("SINGER_SDK_LOG_LEVEL", None)
     os.environ.pop("OIC_TEST_MODE", None)
 
 
-# Oracle OIC configuration fixtures
 @pytest.fixture
 def basic_oic_config() -> dict[str, t.ContainerValue]:
     """Basic Oracle OIC tap configuration."""
@@ -62,18 +59,16 @@ def extended_oic_config(
 ) -> dict[str, t.ContainerValue]:
     """Extended Oracle OIC tap configuration with all streams."""
     config = basic_oic_config.copy()
-    config.update(
-        {
-            "include_extended": True,
-            "include_integration_details": True,
-            "include_connection_properties": False,
-            "include_package_content": False,
-            "stream_categories": ["core", "infrastructure", "security", "metadata"],
-            "concurrent_requests": 5,
-            "enable_caching": True,
-            "cache_ttl": 300,
-        },
-    )
+    config.update({
+        "include_extended": True,
+        "include_integration_details": True,
+        "include_connection_properties": False,
+        "include_package_content": False,
+        "stream_categories": ["core", "infrastructure", "security", "metadata"],
+        "concurrent_requests": 5,
+        "enable_caching": True,
+        "cache_ttl": 300,
+    })
     return config
 
 
@@ -83,13 +78,11 @@ def filtered_oic_config(
 ) -> dict[str, t.ContainerValue]:
     """Oracle OIC tap configuration with filters."""
     config = basic_oic_config.copy()
-    config.update(
-        {
-            "integration_status_filter": ["ACTIVATED", "CONFIGURED"],
-            "connection_type_filter": ["rest", "ftp", "database"],
-            "start_date": "2024-01-01T00:00:00Z",
-        },
-    )
+    config.update({
+        "integration_status_filter": ["ACTIVATED", "CONFIGURED"],
+        "connection_type_filter": ["rest", "ftp", "database"],
+        "start_date": "2024-01-01T00:00:00Z",
+    })
     return config
 
 
@@ -99,21 +92,18 @@ def performance_oic_config(
 ) -> dict[str, t.ContainerValue]:
     """Oracle OIC tap configuration for performance testing."""
     config = basic_oic_config.copy()
-    config.update(
-        {
-            "page_size": 100,
-            "concurrent_requests": 10,
-            "request_timeout": 60,
-            "max_retries": 5,
-            "retry_delay": 2.0,
-            "enable_caching": True,
-            "cache_ttl": 600,
-        },
-    )
+    config.update({
+        "page_size": 100,
+        "concurrent_requests": 10,
+        "request_timeout": 60,
+        "max_retries": 5,
+        "retry_delay": 2.0,
+        "enable_caching": True,
+        "cache_ttl": 600,
+    })
     return config
 
 
-# Mock OIC API response fixtures
 @pytest.fixture
 def mock_oauth_token_response() -> dict[str, t.ContainerValue]:
     """Mock OAuth2 token response."""
@@ -353,7 +343,6 @@ def mock_lookups_response(
     }
 
 
-# Extended stream fixtures
 @pytest.fixture
 def sample_library_data() -> list[dict[str, t.ContainerValue]]:
     """Sample library data for testing."""
@@ -367,7 +356,7 @@ def sample_library_data() -> list[dict[str, t.ContainerValue]]:
             "createdTime": "2024-06-01T11:30:00.000Z",
             "lastUpdatedTime": "2024-06-10T09:45:00.000Z",
             "content": "function formatDate(date) { return date.toISOString(); }",
-        },
+        }
     ]
 
 
@@ -385,7 +374,7 @@ def sample_certificate_data() -> list[dict[str, t.ContainerValue]]:
             "issuer": "CN=CA Authority",
             "subject": "CN=api.example.com",
             "fingerprint": "AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD",
-        },
+        }
     ]
 
 
@@ -402,11 +391,10 @@ def sample_adapter_data() -> list[dict[str, t.ContainerValue]]:
             "category": "Technology",
             "capabilities": ["invoke", "trigger"],
             "connectionTypes": ["outbound", "inbound"],
-        },
+        }
     ]
 
 
-# Singer protocol fixtures
 @pytest.fixture
 def singer_catalog() -> dict[str, t.ContainerValue]:
     """Singer catalog for OIC tap."""
@@ -432,7 +420,7 @@ def singer_catalog() -> dict[str, t.ContainerValue]:
                             "replication-key": "lastUpdatedTime",
                             "selected": True,
                         },
-                    },
+                    }
                 ],
             },
             {
@@ -455,10 +443,10 @@ def singer_catalog() -> dict[str, t.ContainerValue]:
                             "replication-key": "modifiedDate",
                             "selected": True,
                         },
-                    },
+                    }
                 ],
             },
-        ],
+        ]
     }
 
 
@@ -480,7 +468,6 @@ def singer_state() -> dict[str, t.ContainerValue]:
     }
 
 
-# Error handling fixtures
 @pytest.fixture
 def mock_http_error_response() -> Mock:
     """Mock HTTP error response."""
@@ -505,12 +492,10 @@ def mock_rate_limit_response() -> Mock:
     return error_response
 
 
-# Performance testing fixtures
 @pytest.fixture
 def large_integration_dataset() -> list[dict[str, t.ContainerValue]]:
     """Large integration dataset for performance testing."""
     integrations: list[dict[str, t.ContainerValue]] = []
-
     for i in range(1000):
         integration: dict[str, t.ContainerValue] = {
             "id": f"INTEGRATION_{i:04d}",
@@ -519,13 +504,12 @@ def large_integration_dataset() -> list[dict[str, t.ContainerValue]]:
             "status": "ACTIVATED" if i % 2 == 0 else "CONFIGURED",
             "description": f"Test integration number {i}",
             "pattern": "Orchestration" if i % 3 == 0 else "Map Data",
-            "lastUpdatedTime": f"2024-06-{(i % 30) + 1:02d}T{(i % 24):02d}:00:00.000Z",
+            "lastUpdatedTime": f"2024-06-{i % 30 + 1:02d}T{i % 24:02d}:00:00.000Z",
             "createdTime": "2024-06-01T09:00:00.000Z",
             "createdBy": "test.user",
             "lastUpdatedBy": "test.user",
         }
         integrations.append(integration)
-
     return integrations
 
 
@@ -534,14 +518,13 @@ def benchmark_config() -> dict[str, t.ContainerValue]:
     """Configuration for performance benchmarking."""
     return {
         "max_records_to_process": 1000,
-        "expected_processing_time": 30.0,  # seconds
-        "memory_limit": 100 * 1024 * 1024,  # 100MB
+        "expected_processing_time": 30.0,
+        "memory_limit": 100 * 1024 * 1024,
         "page_sizes": [25, 50, 100, 200],
         "concurrent_request_counts": [1, 3, 5, 10],
     }
 
 
-# Pytest markers for test categorization
 def pytest_configure(config: pytest.Config) -> None:
     """Configure pytest markers."""
     config.addinivalue_line("markers", "unit: Unit tests")
@@ -555,7 +538,6 @@ def pytest_configure(config: pytest.Config) -> None:
     config.addinivalue_line("markers", "slow: Slow tests")
 
 
-# Mock services
 @pytest.fixture
 def mock_oic_client() -> type[object]:
     """Mock Oracle OIC client for testing."""
@@ -575,28 +557,16 @@ def mock_oic_client() -> type[object]:
             self.call_count["get_integrations"] = (
                 self.call_count.get("get_integrations", 0) + 1
             )
-            return {
-                "success": True,
-                "items": [],
-                "hasMore": False,
-                "count": 0,
-            }
+            return {"success": True, "items": [], "hasMore": False, "count": 0}
 
         def get_connections(self, **_kwargs: object) -> dict[str, t.ContainerValue]:
             self.call_count["get_connections"] = (
                 self.call_count.get("get_connections", 0) + 1
             )
-            return {
-                "success": True,
-                "items": [],
-                "hasMore": False,
-                "count": 0,
-            }
+            return {"success": True, "items": [], "hasMore": False, "count": 0}
 
         def paginate_request(
-            self,
-            _request_func: object,
-            **_kwargs: object,
+            self, _request_func: object, **_kwargs: object
         ) -> Iterator[object]:
             """Mock pagination."""
             yield from []
@@ -616,10 +586,7 @@ def mock_oauth_authenticator() -> type[object]:
             self.token_expires_at = None
 
         def get_access_token(self) -> dict[str, t.ContainerValue]:
-            return {
-                "success": True,
-                "value": "mock_access_token_12345",
-            }
+            return {"success": True, "value": "mock_access_token_12345"}
 
         def is_token_valid(self) -> bool:
             return True
