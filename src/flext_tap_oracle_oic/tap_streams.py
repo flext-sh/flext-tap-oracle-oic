@@ -16,22 +16,10 @@ import requests
 from flext_api import FlextApi, FlextApiSettings
 from flext_core import FlextExceptions, FlextLogger, t
 from flext_meltano import FlextMeltanoStream
-from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError
+from pydantic import ConfigDict, TypeAdapter, ValidationError
 
 from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
 from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
-
-
-class _OicEnvelope(BaseModel):
-    """Pydantic envelope for OIC response payloads."""
-
-    model_config = ConfigDict(extra="allow")
-
-    items: list[t.ContainerValue] | None = None
-    data: list[t.ContainerValue] | None = None
-    total_size: int | None = Field(default=None, alias="totalSize")
-    count: int | None = None
-
 
 _GENERAL_LIST_ADAPTER = TypeAdapter(
     list[t.ContainerValue],
