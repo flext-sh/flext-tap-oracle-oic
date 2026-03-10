@@ -1,0 +1,25 @@
+src/flext_tap_oracle_oic/domain/entities.py
+  3cf7332713fe10de 132-133
+src/flext_tap_oracle_oic/streams_consolidated.py
+  3cf7332713fe10de 153
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.10",
+  "base_commit_sha": "465cdb78d1657d5d5bc0a66a35bb99878271b960",
+  "prompts": {
+    "3cf7332713fe10de": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_326dfdc42ffeREZIIvgD7p9a1H",
+        "model": "anthropic/claude-haiku-4-5"
+      },
+      "human_author": "FLEXT Bot <team@flext.sh>",
+      "messages": [],
+      "total_additions": 22,
+      "total_deletions": 42,
+      "accepted_lines": 3,
+      "overriden_lines": 1
+    }
+  }
+}
