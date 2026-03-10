@@ -14,15 +14,52 @@ from __future__ import annotations
 from collections.abc import Mapping
 
 from flext_core import FlextConstants, FlextResult
+from flext_oracle_oic.settings import FlextOracleOicSettings
+from pydantic import ConfigDict, Field, SecretStr
 
 from flext_tap_oracle_oic.typings import t
+
+
+class FlextTapOracleOicSettings(FlextOracleOicSettings):
+    """Tap-specific OIC settings contract."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    oauth_client_id: str = Field(default="")
+    oauth_client_secret: SecretStr = Field(default=SecretStr(""))
+    oauth_token_url: str = Field(default="https://localhost/oauth/token")
+    oauth_audience: str = Field(default="")
+    base_url: str = Field(default="https://localhost")
+    timeout: int = Field(default=30, ge=1)
+    max_retries: int = Field(default=3, ge=0)
+    page_size: int = Field(default=100, ge=1)
+
+    def get_api_base_url(self) -> str:
+        """Return base URL without trailing slash."""
+        return self.base_url.rstrip("/")
+
+    def get_headers(self) -> Mapping[str, str]:
+        """Return default headers for OIC requests."""
+        return {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+    def get_token_request_data(self) -> Mapping[str, str]:
+        """Return OAuth2 client credentials payload."""
+        return {
+            "grant_type": "client_credentials",
+            "client_id": self.oauth_client_id,
+            "client_secret": self.oauth_client_secret.get_secret_value(),
+            "audience": self.oauth_audience,
+        }
 
 
 def create_oracle_oic_tap_config(
     oauth_params: Mapping[str, t.ContainerValue],
     connection_params: Mapping[str, t.ContainerValue],
     tap_params: Mapping[str, t.ContainerValue] | None = None,
-) -> FlextResult[FlextTapOracleOicSettings]:  # noqa: F821
+) -> FlextResult[FlextTapOracleOicSettings]:
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
     Args:
@@ -43,16 +80,16 @@ def create_oracle_oic_tap_config(
         )
         tap_config.setdefault("stream_prefix", "oic")
         config_data = {**oauth_params, **connection_params, **tap_config}
-        config_instance = FlextTapOracleOicSettings.model_validate(config_data)  # noqa: F821
-        return FlextResult[FlextTapOracleOicSettings].ok(config_instance)  # noqa: F821
+        config_instance = FlextTapOracleOicSettings.model_validate(config_data)
+        return FlextResult[FlextTapOracleOicSettings].ok(config_instance)
     except (ValueError, TypeError, KeyError, AttributeError, OSError) as e:
-        return FlextResult[FlextTapOracleOicSettings].fail(  # noqa: F821
+        return FlextResult[FlextTapOracleOicSettings].fail(
             f"Oracle OIC tap configuration creation failed: {e}"
         )
 
 
 def validate_oracle_oic_tap_configuration(
-    config: FlextTapOracleOicSettings,  # noqa: F821
+    config: FlextTapOracleOicSettings,
 ) -> FlextResult[bool]:
     """Validate Oracle Integration Cloud tap configuration using FlextSettings patterns - ZERO DUPLICATION."""
     required_fields = [
@@ -76,7 +113,7 @@ def validate_oracle_oic_tap_configuration(
 
 
 __all__: list[str] = [
-    "FlextTapOracleOicSettings",  # noqa: F822
+    "FlextTapOracleOicSettings",
     "create_oracle_oic_tap_config",
     "validate_oracle_oic_tap_configuration",
 ]

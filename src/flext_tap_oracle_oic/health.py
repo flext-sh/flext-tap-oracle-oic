@@ -139,9 +139,9 @@ class OICHealthChecker:
             if response.status_code in {200, 202}:
                 match response.body:
                     case dict() as body_dict:
-                        body = body_dict
+                        body: dict[str, t.ContainerValue] = body_dict
                     case _:
-                        body = t.ConfigurationMapping()
+                        body = {}
                 status_val = str(body.get("status", "success"))
                 test_result_val = str(
                     body.get("testResult", "Connection test successful")
@@ -192,9 +192,9 @@ class OICHealthChecker:
             if response.status_code == c.TapOicHttp.HTTP_OK:
                 match response.body:
                     case dict() as integration_dict:
-                        integration = integration_dict
+                        integration: dict[str, t.ContainerValue] = integration_dict
                     case _:
-                        integration = t.ConfigurationMapping()
+                        integration = {}
                 status_val = str(integration.get("status", "UNKNOWN"))
                 health_status = "unknown"
                 if status_val == "ACTIVATED":
