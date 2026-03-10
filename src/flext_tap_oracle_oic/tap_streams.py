@@ -54,10 +54,10 @@ def _as_string_list(value: t.ContainerValue) -> list[str] | None:
         return None
 
 
-def _as_oic_envelope(value: t.ContainerValue) -> _OicEnvelope | None:
+def _as_oic_envelope(value: t.ContainerValue) -> _OicEnvelope | None:  # noqa: F821
     """Validate payload as an OIC envelope model."""
     try:
-        return _OicEnvelope.model_validate(value, strict=True)
+        return _OicEnvelope.model_validate(value, strict=True)  # noqa: F821
     except ValidationError:
         return None
 

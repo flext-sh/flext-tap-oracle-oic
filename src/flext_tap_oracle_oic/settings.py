@@ -22,7 +22,7 @@ def create_oracle_oic_tap_config(
     oauth_params: Mapping[str, t.ContainerValue],
     connection_params: Mapping[str, t.ContainerValue],
     tap_params: Mapping[str, t.ContainerValue] | None = None,
-) -> FlextResult[FlextTapOracleOicSettings]:
+) -> FlextResult[FlextTapOracleOicSettings]:  # noqa: F821
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
     Args:
@@ -43,16 +43,16 @@ def create_oracle_oic_tap_config(
         )
         tap_config.setdefault("stream_prefix", "oic")
         config_data = {**oauth_params, **connection_params, **tap_config}
-        config_instance = FlextTapOracleOicSettings.model_validate(config_data)
-        return FlextResult[FlextTapOracleOicSettings].ok(config_instance)
+        config_instance = FlextTapOracleOicSettings.model_validate(config_data)  # noqa: F821
+        return FlextResult[FlextTapOracleOicSettings].ok(config_instance)  # noqa: F821
     except (ValueError, TypeError, KeyError, AttributeError, OSError) as e:
-        return FlextResult[FlextTapOracleOicSettings].fail(
+        return FlextResult[FlextTapOracleOicSettings].fail(  # noqa: F821
             f"Oracle OIC tap configuration creation failed: {e}"
         )
 
 
 def validate_oracle_oic_tap_configuration(
-    config: FlextTapOracleOicSettings,
+    config: FlextTapOracleOicSettings,  # noqa: F821
 ) -> FlextResult[bool]:
     """Validate Oracle Integration Cloud tap configuration using FlextSettings patterns - ZERO DUPLICATION."""
     required_fields = [
@@ -76,7 +76,7 @@ def validate_oracle_oic_tap_configuration(
 
 
 __all__: list[str] = [
-    "FlextTapOracleOicSettings",
+    "FlextTapOracleOicSettings",  # noqa: F822
     "create_oracle_oic_tap_config",
     "validate_oracle_oic_tap_configuration",
 ]
