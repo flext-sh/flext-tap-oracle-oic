@@ -149,9 +149,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         "data_source": "oracle_integration_cloud",
                     },
                 }
-            case str() | int() | float() | bool() if (
-                self._include_oic_metadata is not None
-            ):
+            case str() | int() | float() if self._include_oic_metadata is not None:
                 return {
                     "value": value,
                     "_oic_context": {

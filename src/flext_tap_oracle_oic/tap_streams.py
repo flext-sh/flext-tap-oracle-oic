@@ -10,13 +10,13 @@ from __future__ import annotations
 import re
 from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
-from typing import ClassVar, override
+from typing import ClassVar
 
 import requests
 from flext_api import FlextApi, FlextApiSettings
 from flext_core import FlextExceptions, FlextLogger, t
 from flext_meltano import FlextMeltanoStream
-from pydantic import ConfigDict, TypeAdapter, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError
 
 from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
 from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
@@ -25,9 +25,16 @@ _GENERAL_LIST_ADAPTER = TypeAdapter(
     list[t.ContainerValue], config=ConfigDict(strict=True)
 )
 _GENERAL_MAP_ADAPTER = TypeAdapter(
-    t.ConfigurationMapping, config=ConfigDict(strict=True)
+    dict[str, t.ContainerValue], config=ConfigDict(strict=True)
 )
 _STRING_LIST_ADAPTER = TypeAdapter(list[str], config=ConfigDict(strict=True))
+
+
+class _OicEnvelope(BaseModel):
+    items: list[t.ContainerValue] | None = None
+    data: list[t.ContainerValue] | None = None
+    total_size: int | None = Field(default=None, alias="totalSize")
+    count: int | None = None
 
 
 def _as_value_list(value: t.ContainerValue) -> list[t.ContainerValue] | None:
@@ -54,10 +61,10 @@ def _as_string_list(value: t.ContainerValue) -> list[str] | None:
         return None
 
 
-def _as_oic_envelope(value: t.ContainerValue) -> _OicEnvelope | None:  # noqa: F821
+def _as_oic_envelope(value: t.ContainerValue) -> _OicEnvelope | None:
     """Validate payload as an OIC envelope model."""
     try:
-        return _OicEnvelope.model_validate(value, strict=True)  # noqa: F821
+        return _OicEnvelope.model_validate(value, strict=True)
     except ValidationError:
         return None
 
@@ -225,7 +232,6 @@ class OICBaseStream(FlextMeltanoStream):
         """
         return OICPaginator(start_value=0, page_size=self.config.get("page_size", 100))
 
-    @override
     def get_records(
         self, context: Mapping[str, t.ContainerValue] | None = None
     ) -> Iterator[dict[str, t.ContainerValue]]:
@@ -238,6 +244,8 @@ class OICBaseStream(FlextMeltanoStream):
             Records from the OIC API.
 
         """
+        _ = context
+        yield from ()
 
     def get_url_params(
         self,

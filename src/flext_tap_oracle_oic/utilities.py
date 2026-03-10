@@ -24,7 +24,7 @@ _STRICT_LIST_ADAPTER = TypeAdapter(
     list[t.ContainerValue], config=ConfigDict(strict=True)
 )
 _STRICT_MAP_ADAPTER = TypeAdapter(
-    t.ConfigurationMapping, config=ConfigDict(strict=True)
+    dict[str, t.ContainerValue], config=ConfigDict(strict=True)
 )
 _STRICT_INT_ADAPTER = TypeAdapter(int, config=ConfigDict(strict=True))
 
@@ -598,7 +598,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             """
             state_copy: dict[str, t.ContainerValue] = dict(state)
             if "bookmarks" not in state_copy:
-                state_copy["bookmarks"] = t.ConfigurationMapping()
+                state_copy["bookmarks"] = {}
             bookmarks = state_copy["bookmarks"]
             bookmark_map = _as_map(bookmarks)
             if bookmark_map is not None:
@@ -632,7 +632,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             """
             state_copy: dict[str, t.ContainerValue] = dict(state)
             if "bookmarks" not in state_copy:
-                state_copy["bookmarks"] = t.ConfigurationMapping()
+                state_copy["bookmarks"] = {}
             bookmarks = state_copy["bookmarks"]
             bookmark_map = _as_map(bookmarks)
             if bookmark_map is not None:

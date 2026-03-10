@@ -191,7 +191,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
             dict[str, str | int | dict[str, FlextMeltanoTypes.JsonValue]]
         ]
 
-    class Project:
+    class ProjectTypes:
         """Singer Tap Oracle OIC-specific project types.
 
         Adds Singer tap Oracle OIC-specific project types.
