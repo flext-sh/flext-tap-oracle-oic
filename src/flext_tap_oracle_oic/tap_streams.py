@@ -197,7 +197,7 @@ class OICBaseStream(FlextMeltanoStream):
             raise ValueError(msg)
         region = self.config.get("region")
         if not region and "integration.ocp.oraclecloud.com" in base_url:
-            region_match = re.search("(\\w+-\\w+-\\d+)", base_url)
+            region_match = re.search(r"(\\w+-\\w+-\\d+)", base_url)
             region = region_match.group(1) if region_match else "us-ashburn-1"
         if "integration.ocp.oraclecloud.com" in base_url:
             if self.requires_design_api:
