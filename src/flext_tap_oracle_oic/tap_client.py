@@ -14,7 +14,7 @@ from typing import ClassVar
 from flext_api import FlextApi, FlextApiSettings
 from flext_api.models import FlextApiModels
 from flext_core import FlextLogger, FlextResult, t
-from flext_meltano import FlextMeltanoTap as Tap
+from flext_meltano import FlextMeltanoTapAbstractions as Tap
 
 from flext_tap_oracle_oic.constants import c
 from flext_tap_oracle_oic.settings import FlextTapOracleOicSettings
