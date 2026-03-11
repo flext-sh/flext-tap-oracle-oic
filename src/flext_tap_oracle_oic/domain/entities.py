@@ -129,8 +129,9 @@ class OICLookup(FlextModels):
     lookup_id: str = Field(..., min_length=1, description="OIC lookup identifier")
     lookup_name: str = Field(..., min_length=1, description="Lookup table name")
     domain_name: str | None = Field(None, description="Domain name")
-    columns: list[dict[str, t.JsonValue]] = Field(  # type: ignore[assignment]
-        default=[], description="Column definitions"
+    columns: list[dict[str, t.JsonValue]] = Field(
+        default=[],
+        description="Column definitions",
     )
     key_columns: list[str] = Field(default_factory=list, description="Key column names")
     value_columns: list[str] = Field(

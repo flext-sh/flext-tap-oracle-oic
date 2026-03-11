@@ -598,13 +598,15 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             """
             state_copy: dict[str, t.ContainerValue] = dict(state)
             if "bookmarks" not in state_copy:
-                state_copy["bookmarks"] = {}
+                empty_bookmarks: dict[str, t.ContainerValue] = {}
+                state_copy["bookmarks"] = empty_bookmarks
             bookmarks = state_copy["bookmarks"]
             bookmark_map = _as_map(bookmarks)
             if bookmark_map is not None:
                 updated_bookmark_map = dict(bookmark_map)
                 if stream_name not in updated_bookmark_map:
-                    updated_bookmark_map[stream_name] = {}
+                    empty_stream_bookmarks: dict[str, t.ContainerValue] = {}
+                    updated_bookmark_map[stream_name] = empty_stream_bookmarks
                 stream_bookmarks = _as_map(updated_bookmark_map[stream_name])
                 if stream_bookmarks is not None:
                     updated_stream_bookmarks = dict(stream_bookmarks)
@@ -632,7 +634,8 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             """
             state_copy: dict[str, t.ContainerValue] = dict(state)
             if "bookmarks" not in state_copy:
-                state_copy["bookmarks"] = {}
+                empty_bookmarks: dict[str, t.ContainerValue] = {}
+                state_copy["bookmarks"] = empty_bookmarks
             bookmarks = state_copy["bookmarks"]
             bookmark_map = _as_map(bookmarks)
             if bookmark_map is not None:

@@ -11,11 +11,15 @@ from __future__ import annotations
 from typing import ClassVar
 
 from flext_meltano import FlextMeltanoTypes
+from pydantic import TypeAdapter
 
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
 from flext_tap_oracle_oic.typings import t
 
 th = FlextMeltanoTypes()
+_SCHEMA_ADAPTER: TypeAdapter[dict[str, t.JsonValue]] = TypeAdapter(
+    dict[str, t.JsonValue]
+)
 
 
 class IntegrationsStream(OICBaseStream):
@@ -33,7 +37,7 @@ class IntegrationsStream(OICBaseStream):
     requires_design_api: ClassVar[bool] = True
     default_sort: ClassVar[str | None] = "lastUpdated:desc"
     default_expand: ClassVar[str] = "connections,endpoints"
-    schema: dict[str, t.JsonValue] = th.Singer.Typing.PropertiesList(  # type: ignore[assignment]  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = _SCHEMA_ADAPTER.validate_python(th.Singer.Typing.PropertiesList(
         th.Singer.Typing.Property(
             "id",
             th.Singer.Typing.StringType(),
@@ -134,7 +138,7 @@ class IntegrationsStream(OICBaseStream):
             th.Singer.Typing.StringType(),
             description="Folder ID",
         ),
-    ).to_dict()
+    ).to_dict())  # type: ignore[reportUnknownMemberType]  # Singer SDK PropertiesList.to_dict() is untyped (https://github.com/meltanolabs/sdk/issues/...); TypeAdapter validates at runtime
 
 
 class ConnectionsStream(OICBaseStream):
@@ -151,7 +155,7 @@ class ConnectionsStream(OICBaseStream):
     api_category: ClassVar[str] = "core"
     requires_design_api: ClassVar[bool] = True
     default_sort: ClassVar[str | None] = "name:asc"
-    schema: dict[str, t.JsonValue] = th.Singer.Typing.PropertiesList(  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = _SCHEMA_ADAPTER.validate_python(th.Singer.Typing.PropertiesList(
         th.Singer.Typing.Property(
             "id",
             th.Singer.Typing.StringType(),
@@ -242,7 +246,7 @@ class ConnectionsStream(OICBaseStream):
             th.Singer.Typing.BooleanType(),
             description="Is locked",
         ),
-    ).to_dict()
+    ).to_dict())  # type: ignore[reportUnknownMemberType]  # Singer SDK PropertiesList.to_dict() is untyped (https://github.com/meltanolabs/sdk/issues/...); TypeAdapter validates at runtime
 
 
 class PackagesStream(OICBaseStream):
@@ -258,7 +262,7 @@ class PackagesStream(OICBaseStream):
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "core"
     default_sort: ClassVar[str | None] = "lastUpdated:desc"
-    schema: dict[str, t.JsonValue] = th.Singer.Typing.PropertiesList(  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = _SCHEMA_ADAPTER.validate_python(th.Singer.Typing.PropertiesList(
         th.Singer.Typing.Property(
             "id", th.Singer.Typing.StringType(), description="Package ID"
         ),
@@ -322,7 +326,7 @@ class PackagesStream(OICBaseStream):
             th.Singer.Typing.StringType(),
             description="Project ID",
         ),
-    ).to_dict()
+    ).to_dict())  # type: ignore[reportUnknownMemberType]  # Singer SDK PropertiesList.to_dict() is untyped (https://github.com/meltanolabs/sdk/issues/...); TypeAdapter validates at runtime
 
 
 class LookupsStream(OICBaseStream):
@@ -337,7 +341,7 @@ class LookupsStream(OICBaseStream):
     primary_keys: ClassVar[list[str]] = ["name"]
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "core"
-    schema: dict[str, t.JsonValue] = th.Singer.Typing.PropertiesList(  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = _SCHEMA_ADAPTER.validate_python(th.Singer.Typing.PropertiesList(
         th.Singer.Typing.Property(
             "name",
             th.Singer.Typing.StringType(),
@@ -398,7 +402,7 @@ class LookupsStream(OICBaseStream):
             th.Singer.Typing.IntegerType(),
             description="Usage count",
         ),
-    ).to_dict()
+    ).to_dict())  # type: ignore[reportUnknownMemberType]  # Singer SDK PropertiesList.to_dict() is untyped (https://github.com/meltanolabs/sdk/issues/...); TypeAdapter validates at runtime
 
 
 class LibrariesStream(OICBaseStream):
@@ -413,7 +417,7 @@ class LibrariesStream(OICBaseStream):
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "infrastructure"
-    schema: dict[str, t.JsonValue] = th.Singer.Typing.PropertiesList(  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = _SCHEMA_ADAPTER.validate_python(th.Singer.Typing.PropertiesList(
         th.Singer.Typing.Property(
             "id", th.Singer.Typing.StringType(), description="Library ID"
         ),
@@ -477,7 +481,7 @@ class LibrariesStream(OICBaseStream):
             th.Singer.Typing.ArrayType(th.Singer.Typing.StringType()),
             description="Available functions",
         ),
-    ).to_dict()
+    ).to_dict())  # type: ignore[reportUnknownMemberType]  # Singer SDK PropertiesList.to_dict() is untyped (https://github.com/meltanolabs/sdk/issues/...); TypeAdapter validates at runtime
 
 
 class CertificatesStream(OICBaseStream):
@@ -492,7 +496,7 @@ class CertificatesStream(OICBaseStream):
     primary_keys: ClassVar[list[str]] = ["name"]
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "security"
-    schema: dict[str, t.JsonValue] = th.Singer.Typing.PropertiesList(  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = _SCHEMA_ADAPTER.validate_python(th.Singer.Typing.PropertiesList(
         th.Singer.Typing.Property(
             "name",
             th.Singer.Typing.StringType(),
@@ -558,7 +562,7 @@ class CertificatesStream(OICBaseStream):
             th.Singer.Typing.IntegerType(),
             description="Usage count",
         ),
-    ).to_dict()
+    ).to_dict())  # type: ignore[reportUnknownMemberType]  # Singer SDK PropertiesList.to_dict() is untyped (https://github.com/meltanolabs/sdk/issues/...); TypeAdapter validates at runtime
 
 
 class AdaptersStream(OICBaseStream):
@@ -573,7 +577,7 @@ class AdaptersStream(OICBaseStream):
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key: str | None = None
     api_category: ClassVar[str] = "infrastructure"
-    schema: dict[str, t.JsonValue] = th.Singer.Typing.PropertiesList(  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = _SCHEMA_ADAPTER.validate_python(th.Singer.Typing.PropertiesList(
         th.Singer.Typing.Property(
             "id", th.Singer.Typing.StringType(), description="Adapter ID"
         ),
@@ -632,7 +636,7 @@ class AdaptersStream(OICBaseStream):
             th.Singer.Typing.StringType(),
             description="Documentation URL",
         ),
-    ).to_dict()
+    ).to_dict())  # type: ignore[reportUnknownMemberType]  # Singer SDK PropertiesList.to_dict() is untyped (https://github.com/meltanolabs/sdk/issues/...); TypeAdapter validates at runtime
 
 
 class ProjectsStream(OICBaseStream):
@@ -648,7 +652,7 @@ class ProjectsStream(OICBaseStream):
     replication_key: str = "lastUpdated"
     api_category: ClassVar[str] = "extended"
     requires_design_api: ClassVar[bool] = True
-    schema: dict[str, t.JsonValue] = th.Singer.Typing.PropertiesList(  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = _SCHEMA_ADAPTER.validate_python(th.Singer.Typing.PropertiesList(
         th.Singer.Typing.Property(
             "id", th.Singer.Typing.StringType(), description="Project ID"
         ),
@@ -707,7 +711,7 @@ class ProjectsStream(OICBaseStream):
             th.Singer.Typing.ArrayType(th.Singer.Typing.ObjectType()),
             description="Project permissions",
         ),
-    ).to_dict()
+    ).to_dict())  # type: ignore[reportUnknownMemberType]  # Singer SDK PropertiesList.to_dict() is untyped (https://github.com/meltanolabs/sdk/issues/...); TypeAdapter validates at runtime
 
 
 class ExecutionsStream(OICBaseStream):
@@ -723,7 +727,7 @@ class ExecutionsStream(OICBaseStream):
     replication_key: str = "startTime"
     api_category: ClassVar[str] = "monitoring"
     requires_monitoring_api: ClassVar[bool] = True
-    schema: dict[str, t.JsonValue] = th.Singer.Typing.PropertiesList(  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = _SCHEMA_ADAPTER.validate_python(th.Singer.Typing.PropertiesList(
         th.Singer.Typing.Property(
             "instanceId",
             th.Singer.Typing.StringType(),
@@ -779,7 +783,7 @@ class ExecutionsStream(OICBaseStream):
             th.Singer.Typing.IntegerType(),
             description="Processed record count",
         ),
-    ).to_dict()
+    ).to_dict())  # type: ignore[reportUnknownMemberType]  # Singer SDK PropertiesList.to_dict() is untyped (https://github.com/meltanolabs/sdk/issues/...); TypeAdapter validates at runtime
 
 
 class MetricsStream(OICBaseStream):
@@ -795,7 +799,7 @@ class MetricsStream(OICBaseStream):
     replication_key: str = "timestamp"
     api_category: ClassVar[str] = "monitoring"
     requires_monitoring_api: ClassVar[bool] = True
-    schema: dict[str, t.JsonValue] = th.Singer.Typing.PropertiesList(  # type: ignore[assignment]
+    schema: dict[str, t.JsonValue] = _SCHEMA_ADAPTER.validate_python(th.Singer.Typing.PropertiesList(
         th.Singer.Typing.Property(
             "metricId",
             th.Singer.Typing.StringType(),
@@ -836,7 +840,7 @@ class MetricsStream(OICBaseStream):
             th.Singer.Typing.StringType(),
             description="Related connection",
         ),
-    ).to_dict()
+    ).to_dict())  # type: ignore[reportUnknownMemberType]  # Singer SDK PropertiesList.to_dict() is untyped (https://github.com/meltanolabs/sdk/issues/...); TypeAdapter validates at runtime
 
 
 ALL_STREAMS: dict[str, type[OICBaseStream]] = {

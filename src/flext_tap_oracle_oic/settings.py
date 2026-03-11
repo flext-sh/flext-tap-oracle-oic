@@ -15,7 +15,8 @@ from collections.abc import Mapping
 
 from flext_core import FlextConstants, FlextResult
 from flext_oracle_oic.settings import FlextOracleOicSettings
-from pydantic import ConfigDict, Field, SecretStr
+from pydantic import Field, SecretStr
+from pydantic_settings import SettingsConfigDict
 
 from flext_tap_oracle_oic.typings import t
 
@@ -23,7 +24,7 @@ from flext_tap_oracle_oic.typings import t
 class FlextTapOracleOicSettings(FlextOracleOicSettings):
     """Tap-specific OIC settings contract."""
 
-    model_config = ConfigDict(extra="ignore")
+    model_config = SettingsConfigDict(extra="ignore")
 
     oauth_client_id: str = Field(default="")
     oauth_client_secret: SecretStr = Field(default=SecretStr(""))
