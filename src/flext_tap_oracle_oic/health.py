@@ -14,7 +14,7 @@ from collections.abc import Mapping
 from datetime import UTC, datetime
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
-from flext_core import FlextResult
+from flext_core import r
 
 from flext_tap_oracle_oic.constants import c
 from flext_tap_oracle_oic.tap_client import (
@@ -253,6 +253,6 @@ class OICHealthChecker:
             headers["Authorization"] = f"Bearer {token_result.value}"
         return headers
 
-    def _make_get_request(self, url: str) -> FlextResult[FlextApiModels.HttpResponse]:
+    def _make_get_request(self, url: str) -> r[FlextApiModels.HttpResponse]:
         """Make authenticated GET request."""
         return self._api_client.get(url, headers=self._get_headers())

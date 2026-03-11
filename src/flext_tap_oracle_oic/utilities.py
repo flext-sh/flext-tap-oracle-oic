@@ -13,7 +13,7 @@ from datetime import UTC, datetime
 from typing import ClassVar, override
 from urllib.parse import urljoin, urlparse
 
-from flext_core import FlextResult, t
+from flext_core import r, t
 from flext_meltano import FlextMeltanoUtilities, m
 from flext_oracle_oic import FlextOracleOicUtilities
 from pydantic import ConfigDict, TypeAdapter, ValidationError
@@ -165,7 +165,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             base_url: str,
             resource_path: str,
             query_params: Mapping[str, str] | None = None,
-        ) -> FlextResult[str]:
+        ) -> r[str]:
             """Build Oracle OIC API URL with proper formatting.
 
             Args:
@@ -174,7 +174,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             query_params: Optional query parameters
 
             Returns:
-            FlextResult[str]: Complete API URL or error
+            r[str]: Complete API URL or error
 
             """
             try:
@@ -184,7 +184,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                     )
                 )
                 if validation_result.is_failure:
-                    return FlextResult[str].fail(
+                    return r[str].fail(
                         f"Base URL validation failed: {validation_result.error}"
                     )
                 if not resource_path.startswith("/"):
@@ -195,7 +195,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                         (f"{k}={v}" for k, v in query_params.items())
                     )
                     api_url = f"{api_url}?{query_string}"
-                return FlextResult[str].ok(api_url)
+                return r[str].ok(api_url)
             except (
                 ValueError,
                 TypeError,
@@ -205,7 +205,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 RuntimeError,
                 ImportError,
             ) as e:
-                return FlextResult[str].fail(f"URL building error: {e}")
+                return r[str].fail(f"URL building error: {e}")
 
         @staticmethod
         def extract_pagination_info(
@@ -246,20 +246,18 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         @staticmethod
         def parse_oic_response(
             response_data: Mapping[str, t.ContainerValue],
-        ) -> FlextResult[Mapping[str, t.ContainerValue]]:
+        ) -> r[Mapping[str, t.ContainerValue]]:
             """Parse Oracle OIC API response.
 
             Args:
             response_data: Raw API response data
 
             Returns:
-            FlextResult[dict[str, t.ContainerValue]]: Parsed response or error
+            r[dict[str, t.ContainerValue]]: Parsed response or error
 
             """
             if not response_data:
-                return FlextResult[t.ConfigurationMapping].fail(
-                    "Response data cannot be empty"
-                )
+                return r[t.ConfigurationMapping].fail("Response data cannot be empty")
             try:
                 parsed_response = {
                     "items": response_data.get("items", []),
@@ -270,7 +268,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 }
                 if "data" in response_data:
                     parsed_response["items"] = response_data["data"]
-                return FlextResult[t.ConfigurationMapping].ok(parsed_response)
+                return r[t.ConfigurationMapping].ok(parsed_response)
             except (
                 ValueError,
                 TypeError,
@@ -280,32 +278,28 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 RuntimeError,
                 ImportError,
             ) as e:
-                return FlextResult[t.ConfigurationMapping].fail(
-                    f"Response parsing error: {e}"
-                )
+                return r[t.ConfigurationMapping].fail(f"Response parsing error: {e}")
 
         @staticmethod
-        def validate_oic_endpoint(endpoint_url: str) -> FlextResult[str]:
+        def validate_oic_endpoint(endpoint_url: str) -> r[str]:
             """Validate Oracle OIC endpoint URL.
 
             Args:
             endpoint_url: OIC endpoint URL
 
             Returns:
-            FlextResult[str]: Validated URL or error
+            r[str]: Validated URL or error
 
             """
             if not endpoint_url:
-                return FlextResult[str].fail("OIC endpoint URL cannot be empty")
+                return r[str].fail("OIC endpoint URL cannot be empty")
             try:
                 parsed = urlparse(endpoint_url)
                 if not parsed.scheme or not parsed.netloc:
-                    return FlextResult[str].fail("Invalid URL format")
+                    return r[str].fail("Invalid URL format")
                 if "oic" not in parsed.netloc.lower():
-                    return FlextResult[str].fail(
-                        "URL does not appear to be an OIC endpoint"
-                    )
-                return FlextResult[str].ok(endpoint_url)
+                    return r[str].fail("URL does not appear to be an OIC endpoint")
+                return r[str].ok(endpoint_url)
             except (
                 ValueError,
                 TypeError,
@@ -315,7 +309,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 RuntimeError,
                 ImportError,
             ) as e:
-                return FlextResult[str].fail(f"URL validation error: {e}")
+                return r[str].fail(f"URL validation error: {e}")
 
     class OicDataProcessing:
         """Oracle OIC data processing utilities."""
@@ -359,18 +353,18 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             return metadata
 
         @staticmethod
-        def format_oic_timestamp(timestamp_str: str) -> FlextResult[str]:
+        def format_oic_timestamp(timestamp_str: str) -> r[str]:
             """Format Oracle OIC timestamp to ISO format.
 
             Args:
             timestamp_str: OIC timestamp string
 
             Returns:
-            FlextResult[str]: ISO formatted timestamp or error
+            r[str]: ISO formatted timestamp or error
 
             """
             if not timestamp_str:
-                return FlextResult[str].fail("Timestamp string cannot be empty")
+                return r[str].fail("Timestamp string cannot be empty")
             try:
                 formats = [
                     "%Y-%m-%dT%H:%M:%S.%fZ",
@@ -388,12 +382,10 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                             if dt_naive.tzinfo is None
                             else dt_naive
                         )
-                        return FlextResult[str].ok(dt.isoformat())
+                        return r[str].ok(dt.isoformat())
                     except ValueError:
                         continue
-                return FlextResult[str].fail(
-                    f"Unsupported timestamp format: {timestamp_str}"
-                )
+                return r[str].fail(f"Unsupported timestamp format: {timestamp_str}")
             except (
                 ValueError,
                 TypeError,
@@ -403,7 +395,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 RuntimeError,
                 ImportError,
             ) as e:
-                return FlextResult[str].fail(f"Timestamp formatting error: {e}")
+                return r[str].fail(f"Timestamp formatting error: {e}")
 
         @staticmethod
         def normalize_integration_name(integration_name: str) -> str:
@@ -448,20 +440,20 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         @staticmethod
         def validate_oic_connection_config(
             config: Mapping[str, t.ContainerValue],
-        ) -> FlextResult[Mapping[str, t.ContainerValue]]:
+        ) -> r[Mapping[str, t.ContainerValue]]:
             """Validate Oracle OIC connection configuration.
 
             Args:
             config: Configuration dictionary
 
             Returns:
-            FlextResult[dict[str, t.ContainerValue]]: Validated config or error
+            r[dict[str, t.ContainerValue]]: Validated config or error
 
             """
             required_fields = ["oic_base_url", "username", "password"]
             missing_fields = [field for field in required_fields if field not in config]
             if missing_fields:
-                return FlextResult[t.ConfigurationMapping].fail(
+                return r[t.ConfigurationMapping].fail(
                     f"Missing required fields: {', '.join(missing_fields)}"
                 )
             url_validation = (
@@ -470,56 +462,52 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 )
             )
             if url_validation.is_failure:
-                return FlextResult[t.ConfigurationMapping].fail(
+                return r[t.ConfigurationMapping].fail(
                     f"Invalid OIC URL: {url_validation.error}"
                 )
             if not str(config["username"]).strip():
-                return FlextResult[t.ConfigurationMapping].fail(
-                    "Username cannot be empty"
-                )
+                return r[t.ConfigurationMapping].fail("Username cannot be empty")
             if not str(config["password"]).strip():
-                return FlextResult[t.ConfigurationMapping].fail(
-                    "Password cannot be empty"
-                )
+                return r[t.ConfigurationMapping].fail("Password cannot be empty")
             if "timeout" in config:
                 timeout = _as_int(config["timeout"])
                 if timeout is None or timeout <= 0:
-                    return FlextResult[t.ConfigurationMapping].fail(
+                    return r[t.ConfigurationMapping].fail(
                         "Timeout must be a positive integer"
                     )
-            return FlextResult[t.ConfigurationMapping].ok(config)
+            return r[t.ConfigurationMapping].ok(config)
 
         @staticmethod
         def validate_stream_config(
             config: Mapping[str, t.ContainerValue],
-        ) -> FlextResult[Mapping[str, t.ContainerValue]]:
+        ) -> r[Mapping[str, t.ContainerValue]]:
             """Validate OIC tap stream configuration.
 
             Args:
             config: Stream configuration
 
             Returns:
-            FlextResult[dict[str, t.ContainerValue]]: Validated config or error
+            r[dict[str, t.ContainerValue]]: Validated config or error
 
             """
             if "streams" not in config:
-                return FlextResult[t.ConfigurationMapping].fail(
+                return r[t.ConfigurationMapping].fail(
                     "Configuration must include 'streams' section"
                 )
             streams = config["streams"]
             stream_map = _as_map(streams)
             if stream_map is None:
-                return FlextResult[t.ConfigurationMapping].fail(
+                return r[t.ConfigurationMapping].fail(
                     "Streams configuration must be a dictionary"
                 )
             for stream_name, stream_payload in stream_map.items():
                 stream_config = _as_map(stream_payload)
                 if stream_config is None:
-                    return FlextResult[t.ConfigurationMapping].fail(
+                    return r[t.ConfigurationMapping].fail(
                         f"Stream '{stream_name}' configuration must be a dictionary"
                     )
                 if "selected" not in stream_config:
-                    return FlextResult[t.ConfigurationMapping].fail(
+                    return r[t.ConfigurationMapping].fail(
                         f"Stream '{stream_name}' must have 'selected' field"
                     )
                 if "page_size" in stream_config:
@@ -528,10 +516,10 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                         FlextTapOracleOicConstants.TapOicProcessing.MAX_PAGE_SIZE
                     )
                     if page_size is None or page_size <= 0 or page_size > max_page_size:
-                        return FlextResult[t.ConfigurationMapping].fail(
+                        return r[t.ConfigurationMapping].fail(
                             f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}"
                         )
-            return FlextResult[t.ConfigurationMapping].ok(config)
+            return r[t.ConfigurationMapping].ok(config)
 
     class StateManagement:
         """State management utilities for incremental syncs."""
@@ -726,7 +714,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         base_url: str,
         resource_path: str,
         query_params: Mapping[str, str] | None = None,
-    ) -> FlextResult[str]:
+    ) -> r[str]:
         """Proxy method for OicApiProcessing.build_oic_api_url()."""
         return FlextTapOracleOicUtilities.OicApiProcessing.build_oic_api_url(
             base_url, resource_path, query_params
@@ -757,7 +745,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         )
 
     @classmethod
-    def format_oic_timestamp(cls, timestamp_str: str) -> FlextResult[str]:
+    def format_oic_timestamp(cls, timestamp_str: str) -> r[str]:
         """Proxy method for OicDataProcessing.format_oic_timestamp()."""
         return FlextTapOracleOicUtilities.OicDataProcessing.format_oic_timestamp(
             timestamp_str
@@ -795,7 +783,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
     @classmethod
     def validate_oic_connection_config(
         cls, config: Mapping[str, t.ContainerValue]
-    ) -> FlextResult[Mapping[str, t.ContainerValue]]:
+    ) -> r[Mapping[str, t.ContainerValue]]:
         """Proxy method for ConfigValidation.validate_oic_connection_config()."""
         return (
             FlextTapOracleOicUtilities.ConfigValidation.validate_oic_connection_config(
@@ -804,7 +792,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         )
 
     @classmethod
-    def validate_oic_endpoint(cls, endpoint_url: str) -> FlextResult[str]:
+    def validate_oic_endpoint(cls, endpoint_url: str) -> r[str]:
         """Proxy method for OicApiProcessing.validate_oic_endpoint()."""
         return FlextTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
             endpoint_url

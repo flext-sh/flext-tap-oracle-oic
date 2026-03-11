@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Any
 from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 
 if TYPE_CHECKING:
-    from flext_core import FlextLogger, FlextModels, FlextResult
+    from flext_core import FlextLogger, FlextModels, r
     from flext_meltano import (
         FlextMeltanoBridge,
         FlextMeltanoService,
@@ -60,7 +60,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextMeltanoService": ("flext_meltano", "FlextMeltanoService"),
     "FlextMeltanoSettings": ("flext_meltano", "FlextMeltanoSettings"),
     "FlextModels": ("flext_core", "FlextModels"),
-    "FlextResult": ("flext_core", "FlextResult"),
+    "r": ("flext_core", "r"),
     "FlextTapOracleOicConstants": (
         "flext_tap_oracle_oic.constants",
         "FlextTapOracleOicConstants",
@@ -114,7 +114,6 @@ __all__ = [
     "FlextMeltanoService",
     "FlextMeltanoSettings",
     "FlextModels",
-    "FlextResult",
     "FlextTapOracleOicConstants",
     "FlextTapOracleOicModels",
     "FlextTapOracleOicProtocols",
@@ -134,6 +133,7 @@ __all__ = [
     "create_oracle_oic_tap_config",
     "m",
     "p",
+    "r",
     "t",
     "u",
 ]

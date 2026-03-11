@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from flext_core import FlextConstants, FlextResult
+from flext_core import FlextConstants, r
 from flext_oracle_oic.settings import FlextOracleOicSettings
 from pydantic import Field, SecretStr
 from pydantic_settings import SettingsConfigDict
@@ -60,7 +60,7 @@ def create_oracle_oic_tap_config(
     oauth_params: Mapping[str, t.ContainerValue],
     connection_params: Mapping[str, t.ContainerValue],
     tap_params: Mapping[str, t.ContainerValue] | None = None,
-) -> FlextResult[FlextTapOracleOicSettings]:
+) -> r[FlextTapOracleOicSettings]:
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
     Args:
@@ -69,7 +69,7 @@ def create_oracle_oic_tap_config(
         tap_params: Optional tap-specific parameters
 
     Returns:
-        FlextResult containing validated Oracle OIC tap configuration
+        r containing validated Oracle OIC tap configuration
 
     """
     try:
@@ -82,16 +82,16 @@ def create_oracle_oic_tap_config(
         tap_config.setdefault("stream_prefix", "oic")
         config_data = {**oauth_params, **connection_params, **tap_config}
         config_instance = FlextTapOracleOicSettings.model_validate(config_data)
-        return FlextResult[FlextTapOracleOicSettings].ok(config_instance)
+        return r[FlextTapOracleOicSettings].ok(config_instance)
     except (ValueError, TypeError, KeyError, AttributeError, OSError) as e:
-        return FlextResult[FlextTapOracleOicSettings].fail(
+        return r[FlextTapOracleOicSettings].fail(
             f"Oracle OIC tap configuration creation failed: {e}"
         )
 
 
 def validate_oracle_oic_tap_configuration(
     config: FlextTapOracleOicSettings,
-) -> FlextResult[bool]:
+) -> r[bool]:
     """Validate Oracle Integration Cloud tap configuration using FlextSettings patterns - ZERO DUPLICATION."""
     required_fields = [
         (config.oauth_client_id, "OAuth client ID is required"),
@@ -103,14 +103,14 @@ def validate_oracle_oic_tap_configuration(
     ]
     for field_value, error_message in required_fields:
         if not (field_value and str(field_value).strip()):
-            return FlextResult[bool].fail(error_message)
+            return r[bool].fail(error_message)
     if config.timeout <= 0:
-        return FlextResult[bool].fail("Timeout must be positive")
+        return r[bool].fail("Timeout must be positive")
     if config.max_retries < 0:
-        return FlextResult[bool].fail("Max retries cannot be negative")
+        return r[bool].fail("Max retries cannot be negative")
     if config.page_size <= 0:
-        return FlextResult[bool].fail("Page size must be positive")
-    return FlextResult[bool].ok(value=True)
+        return r[bool].fail("Page size must be positive")
+    return r[bool].ok(value=True)
 
 
 __all__: list[str] = [
