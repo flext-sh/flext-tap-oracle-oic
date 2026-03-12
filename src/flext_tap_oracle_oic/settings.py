@@ -18,8 +18,6 @@ from flext_oracle_oic.settings import FlextOracleOicSettings
 from pydantic import Field, SecretStr
 from pydantic_settings import SettingsConfigDict
 
-from flext_tap_oracle_oic.typings import t
-
 
 class FlextTapOracleOicSettings(FlextOracleOicSettings):
     """Tap-specific OIC settings contract."""
@@ -57,9 +55,9 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
 
 
 def create_oracle_oic_tap_config(
-    oauth_params: Mapping[str, t.ContainerValue],
-    connection_params: Mapping[str, t.ContainerValue],
-    tap_params: Mapping[str, t.ContainerValue] | None = None,
+    oauth_params: Mapping[str, object],
+    connection_params: Mapping[str, object],
+    tap_params: Mapping[str, object] | None = None,
 ) -> r[FlextTapOracleOicSettings]:
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
@@ -73,7 +71,7 @@ def create_oracle_oic_tap_config(
 
     """
     try:
-        tap_config: dict[str, t.ContainerValue] = (
+        tap_config: dict[str, object] = (
             dict(tap_params) if tap_params is not None else {}
         )
         tap_config.setdefault(

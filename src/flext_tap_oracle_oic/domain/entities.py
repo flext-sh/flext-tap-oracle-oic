@@ -31,7 +31,7 @@ class OICConnection(FlextModels):
     )
     name: str = Field(..., min_length=1, description="Connection name")
     connection_url: str | None = Field(None, description="Connection endpoint URL")
-    connection_properties: dict[str, t.ContainerValue] = Field(
+    connection_properties: dict[str, object] = Field(
         default_factory=dict, description="Connection properties"
     )
     security_policy: str | None = Field(None, description="Security policy name")
@@ -39,9 +39,7 @@ class OICConnection(FlextModels):
         default=ConnectionStatus.CONFIGURED, description="Connection status"
     )
     last_tested: datetime | None = Field(None, description="Last test timestamp")
-    test_result: dict[str, t.ContainerValue] | None = Field(
-        None, description="Last test result"
-    )
+    test_result: dict[str, object] | None = Field(None, description="Last test result")
     version: str | None = Field(None, description="Connection version")
     locked_by: str | None = Field(None, description="User who locked the connection")
     locked_at: datetime | None = Field(None, description="Lock timestamp")
@@ -177,7 +175,7 @@ class OICMonitoringRecord(FlextModels):
         default=0, ge=0, description="Number of messages processed"
     )
     error_count: int = Field(default=0, ge=0, description="Number of errors")
-    business_identifiers: dict[str, t.ContainerValue] = Field(
+    business_identifiers: dict[str, object] = Field(
         default_factory=dict, description="Business tracking identifiers"
     )
 

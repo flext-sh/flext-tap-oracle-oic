@@ -12,7 +12,7 @@ from __future__ import annotations
 import pytest
 from singer_sdk.exceptions import ConfigValidationError
 
-from flext_tap_oracle_oic import TapOracleOic, t
+from flext_tap_oracle_oic import TapOracleOic
 
 
 class TestTapOracleOic:
@@ -213,7 +213,7 @@ def sample_config_with_extended() -> object:
 class TestTapOracleOicWithFixtures:
     """Tests using fixtures."""
 
-    def test_self(self, sample_config: dict[str, t.ContainerValue]) -> None:
+    def test_self(self, sample_config: dict[str, object]) -> None:
         """Test method."""
         "Test that the tap is initialized correctly with the sample config."
         tap = TapOracleOic(config=sample_config, validate_config=False)
@@ -225,7 +225,7 @@ class TestTapOracleOicWithFixtures:
         assert tap.config["oauth_client_id"] == sample_config["oauth_client_id"]
 
     def test_streams_count_with_extended_config(
-        self, sample_config_with_extended: dict[str, t.ContainerValue]
+        self, sample_config_with_extended: dict[str, object]
     ) -> None:
         """Test that the number of streams is correct with the extended config."""
         tap = TapOracleOic(config=sample_config_with_extended, validate_config=False)
