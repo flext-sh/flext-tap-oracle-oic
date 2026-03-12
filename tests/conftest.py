@@ -17,6 +17,8 @@ from unittest.mock import Mock
 
 import pytest
 
+from flext_tap_oracle_oic import t
+
 
 @pytest.fixture(autouse=True)
 def set_test_environment() -> Generator[None]:
