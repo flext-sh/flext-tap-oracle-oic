@@ -551,20 +551,20 @@ def mock_oic_client() -> type[object]:
             self.authenticated = True
             return True
 
-        def get_integrations(self, **_kwargs: object) -> dict[str, object]:
+        def get_integrations(self, **_kwargs: t.Scalar) -> dict[str, object]:
             self.call_count["get_integrations"] = (
                 self.call_count.get("get_integrations", 0) + 1
             )
             return {"success": True, "items": [], "hasMore": False, "count": 0}
 
-        def get_connections(self, **_kwargs: object) -> dict[str, object]:
+        def get_connections(self, **_kwargs: t.Scalar) -> dict[str, object]:
             self.call_count["get_connections"] = (
                 self.call_count.get("get_connections", 0) + 1
             )
             return {"success": True, "items": [], "hasMore": False, "count": 0}
 
         def paginate_request(
-            self, _request_func: object, **_kwargs: object
+            self, _request_func: object, **_kwargs: t.Scalar
         ) -> Iterator[object]:
             """Mock pagination."""
             yield from []
