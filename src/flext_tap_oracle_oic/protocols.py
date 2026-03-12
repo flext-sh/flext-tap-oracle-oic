@@ -70,7 +70,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
 
                 def discover_integrations(
                     self, config: Mapping[str, object]
-                ) -> FlextMeltanoProtocols.Result[list[t.ConfigurationMapping]]:
+                ) -> FlextMeltanoProtocols.Result[list[object]]:
                     """Discover available integrations in Oracle OIC."""
                     ...
 
@@ -82,7 +82,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
 
                 def extract_integration_data(
                     self, integration: str
-                ) -> FlextMeltanoProtocols.Result[list[t.ConfigurationMapping]]:
+                ) -> FlextMeltanoProtocols.Result[list[object]]:
                     """Extract data from an Oracle OIC integration."""
                     ...
 

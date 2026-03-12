@@ -34,7 +34,7 @@ class _OicEnvelope(BaseModel):
 
 
 def _as_value_list(value: object) -> list[object] | None:
-    """Validate payload as strict list[ContainerValue]."""
+    """Validate payload as strict lisobject]."""
     try:
         return _GENERAL_LIST_ADAPTER.validate_python(value)
     except ValidationError:
@@ -42,7 +42,7 @@ def _as_value_list(value: object) -> list[object] | None:
 
 
 def _as_value_map(value: object) -> Mapping[str, object] | None:
-    """Validate payload as strict dict[str, ContainerValue]."""
+    """Validate payload as strict dict[str, object]."""
     try:
         return _GENERAL_MAP_ADAPTER.validate_python(value)
     except ValidationError:

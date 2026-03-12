@@ -13,7 +13,7 @@ from typing import ClassVar
 
 from flext_api import FlextApi, FlextApiSettings
 from flext_api.models import FlextApiModels
-from flext_core import FlextLogger, r, t
+from flext_core import FlextLogger, r
 from flext_meltano import (
     FlextMeltanoSettings,
     FlextMeltanoTapAbstractions as Tap,
@@ -203,7 +203,7 @@ class TapOracleOic(Tap):
     """
 
     name: ClassVar[str] = "tap-oracle-oic"
-    config_jsonschema: ClassVar[t.JsonDict] = {
+    config_jsonschema: ClassVar[object] = {
         "type": "object",
         "properties": {
             "oauth_client_id": {"type": "string", "description": "OAuth2 client ID"},

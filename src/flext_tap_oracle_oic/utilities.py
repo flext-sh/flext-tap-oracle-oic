@@ -81,7 +81,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         @staticmethod
         def create_record_message(
             stream_name: str,
-            record: Mapping[str, t.JsonValue],
+            record: Mapping[str, object
             time_extracted: datetime | None = None,
         ) -> m.Meltano.SingerRecordMessage:
             """Create Singer record message.
@@ -105,7 +105,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         @staticmethod
         def create_schema_message(
             stream_name: str,
-            schema: Mapping[str, t.JsonValue],
+            schema: Mapping[str, object
             key_properties: list[str] | None = None,
         ) -> m.Meltano.SingerSchemaMessage:
             """Create Singer schema message.
@@ -253,7 +253,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
             """
             if not response_data:
-                return r[t.ConfigurationMapping].fail("Response data cannot be empty")
+                return r[object].fail("Response data cannot be empty")
             try:
                 parsed_response = {
                     "items": response_data.get("items", []),
@@ -264,7 +264,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 }
                 if "data" in response_data:
                     parsed_response["items"] = response_data["data"]
-                return r[t.ConfigurationMapping].ok(parsed_response)
+                return r[object].ok(parsed_response)
             except (
                 ValueError,
                 TypeError,
@@ -274,7 +274,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 RuntimeError,
                 ImportError,
             ) as e:
-                return r[t.ConfigurationMapping].fail(f"Response parsing error: {e}")
+                return r[object].fail(f"Response parsing error: {e}")
 
         @staticmethod
         def validate_oic_endpoint(endpoint_url: str) -> r[str]:
@@ -449,7 +449,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             required_fields = ["oic_base_url", "username", "password"]
             missing_fields = [field for field in required_fields if field not in config]
             if missing_fields:
-                return r[t.ConfigurationMapping].fail(
+                return r[object].fail(
                     f"Missing required fields: {', '.join(missing_fields)}"
                 )
             url_validation = (
@@ -458,20 +458,20 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 )
             )
             if url_validation.is_failure:
-                return r[t.ConfigurationMapping].fail(
+                return r[object].fail(
                     f"Invalid OIC URL: {url_validation.error}"
                 )
             if not str(config["username"]).strip():
-                return r[t.ConfigurationMapping].fail("Username cannot be empty")
+                return r[object].fail("Username cannot be empty")
             if not str(config["password"]).strip():
-                return r[t.ConfigurationMapping].fail("Password cannot be empty")
+                return r[object].fail("Password cannot be empty")
             if "timeout" in config:
                 timeout = _as_int(config["timeout"])
                 if timeout is None or timeout <= 0:
-                    return r[t.ConfigurationMapping].fail(
+                    return r[object].fail(
                         "Timeout must be a positive integer"
                     )
-            return r[t.ConfigurationMapping].ok(config)
+            return r[object].ok(config)
 
         @staticmethod
         def validate_stream_config(
@@ -487,23 +487,23 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
             """
             if "streams" not in config:
-                return r[t.ConfigurationMapping].fail(
+                return r[object].fail(
                     "Configuration must include 'streams' section"
                 )
             streams = config["streams"]
             stream_map = _as_map(streams)
             if stream_map is None:
-                return r[t.ConfigurationMapping].fail(
+                return r[object].fail(
                     "Streams configuration must be a dictionary"
                 )
             for stream_name, stream_payload in stream_map.items():
                 stream_config = _as_map(stream_payload)
                 if stream_config is None:
-                    return r[t.ConfigurationMapping].fail(
+                    return r[object].fail(
                         f"Stream '{stream_name}' configuration must be a dictionary"
                     )
                 if "selected" not in stream_config:
-                    return r[t.ConfigurationMapping].fail(
+                    return r[object].fail(
                         f"Stream '{stream_name}' must have 'selected' field"
                     )
                 if "page_size" in stream_config:
@@ -512,10 +512,10 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                         FlextTapOracleOicConstants.TapOicProcessing.MAX_PAGE_SIZE
                     )
                     if page_size is None or page_size <= 0 or page_size > max_page_size:
-                        return r[t.ConfigurationMapping].fail(
+                        return r[object].fail(
                             f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}"
                         )
-            return r[t.ConfigurationMapping].ok(config)
+            return r[object].ok(config)
 
     class StateManagement:
         """State management utilities for incremental syncs."""
@@ -720,7 +720,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
     def create_record_message(
         cls,
         stream_name: str,
-        record: Mapping[str, t.JsonValue],
+        record: Mapping[str, object
         time_extracted: datetime | None = None,
     ) -> m.Meltano.SingerRecordMessage:
         """Proxy method for SingerUtilities.create_record_message()."""
@@ -732,7 +732,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
     def create_schema_message(
         cls,
         stream_name: str,
-        schema: Mapping[str, t.JsonValue],
+        schema: Mapping[str, object
         key_properties: list[str] | None = None,
     ) -> m.Meltano.SingerSchemaMessage:
         """Proxy method for SingerUtilities.create_schema_message()."""
