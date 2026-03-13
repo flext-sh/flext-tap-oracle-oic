@@ -33,13 +33,13 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
     service: p.Service[str]
 
     # Oracle protocols (inherited)
-    connection: p.OracleOic.ConnectionProtocol
+    connection: p.OracleOic.Connection
 
     # Meltano protocols (inherited)
     tap: p.Meltano.Tap
 
     # Tap Oracle OIC-specific protocols
-    oic_connection: p.Tap.OracleOic.OicConnectionProtocol
+    oic_connection: p.Tap.OracleOic.OicConnection
     """
 
     class TapOracleOic:
@@ -49,9 +49,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
             """Singer Tap Oracle OIC domain protocols."""
 
             @runtime_checkable
-            class OicConnectionProtocol(
-                FlextOracleOicProtocols.Service[object], Protocol
-            ):
+            class OicConnection(FlextOracleOicProtocols.Service[object], Protocol):
                 """Protocol for Oracle OIC connection."""
 
                 def connect(
@@ -61,7 +59,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
                     ...
 
             @runtime_checkable
-            class IntegrationDiscoveryProtocol(
+            class IntegrationDiscovery(
                 FlextOracleOicProtocols.Service[object], Protocol
             ):
                 """Protocol for OIC integration discovery."""
@@ -73,9 +71,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
                     ...
 
             @runtime_checkable
-            class DataExtractionProtocol(
-                FlextOracleOicProtocols.Service[object], Protocol
-            ):
+            class DataExtraction(FlextOracleOicProtocols.Service[object], Protocol):
                 """Protocol for OIC data extraction."""
 
                 def extract_integration_data(
@@ -85,9 +81,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
                     ...
 
             @runtime_checkable
-            class StreamGenerationProtocol(
-                FlextOracleOicProtocols.Service[object], Protocol
-            ):
+            class StreamGeneration(FlextOracleOicProtocols.Service[object], Protocol):
                 """Protocol for Singer stream generation."""
 
                 def generate_catalog(
@@ -97,7 +91,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
                     ...
 
             @runtime_checkable
-            class MonitoringProtocol(FlextOracleOicProtocols.Service[object], Protocol):
+            class Monitoring(FlextOracleOicProtocols.Service[object], Protocol):
                 """Protocol for OIC extraction monitoring."""
 
                 def track_progress(
