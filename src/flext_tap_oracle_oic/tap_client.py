@@ -6,7 +6,6 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-import json
 import sys
 from collections.abc import Mapping, Sequence
 from typing import ClassVar
@@ -20,6 +19,7 @@ from flext_meltano import (
     m,
     t as mt,
 )
+from pydantic import TypeAdapter
 
 from flext_tap_oracle_oic.constants import c
 from flext_tap_oracle_oic.settings import FlextTapOracleOicSettings
@@ -66,7 +66,10 @@ class FlextOracleOicAuthenticator:
                 case dict() as token_dict:
                     token_data = token_dict
                 case str() as body_str:
-                    token_data = json.loads(body_str)
+                    parser: TypeAdapter[dict[str, object]] = TypeAdapter(
+                        dict[str, object]
+                    )
+                    token_data = parser.validate_json(body_str)
                 case _:
                     return r[str].fail("Empty or invalid OAuth response body")
             access_token = token_data.get("access_token")
@@ -153,7 +156,10 @@ class OracleOicClient:
                 f"Failed to get auth headers: {headers_result.error}"
             )
         try:
-            json_body: str | None = json.dumps(data) if data else None
+            serializer: TypeAdapter[dict[str, object]] = TypeAdapter(dict[str, object])
+            json_body: str | None = (
+                serializer.dump_json(dict(data)).decode("utf-8") if data else None
+            )
             response_result = self._api_client.post(
                 url, data=json_body, headers=headers_result.value
             )
