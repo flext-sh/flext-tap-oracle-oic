@@ -60,7 +60,7 @@ def _as_string_list(value: object) -> list[str] | None:
 def _as_oic_envelope(value: object) -> _OicEnvelope | None:
     """Validate payload as an OIC envelope model."""
     try:
-        return _OicEnvelope(value, strict=True)
+        return _OicEnvelope.model_validate(value, strict=True)
     except ValidationError:
         return None
 
@@ -174,7 +174,7 @@ class OICBaseStream(FlextMeltanoStream):
     @property
     def api_client(self) -> FlextApi:
         """Get authenticated API client from parent tap's OIC client."""
-        api_config = FlextApiSettings()
+        api_config = FlextApiSettings.model_validate({})
         return FlextApi(api_config)
 
     @property

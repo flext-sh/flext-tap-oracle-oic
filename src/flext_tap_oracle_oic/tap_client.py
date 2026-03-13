@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import sys
 from collections.abc import Mapping, Sequence
-from typing import ClassVar
+from typing import ClassVar, override
 
 from flext_api import FlextApi, FlextApiSettings
 from flext_api.models import FlextApiModels
@@ -41,7 +41,7 @@ class FlextOracleOicAuthenticator:
         """Initialize authenticator with OAuth2 configuration."""
         self.config = config
         self._access_token: str | None = None
-        api_config = FlextApiSettings()
+        api_config = FlextApiSettings.model_validate({})
         self._api_client = FlextApi(api_config)
 
     def get_access_token(self) -> r[str]:
@@ -106,9 +106,10 @@ class OracleOicClient:
         """Initialize OIC API client."""
         self.config = config
         self.authenticator = authenticator
-        api_config = FlextApiSettings(
-            base_url=config.get_api_base_url(), timeout=config.timeout
-        )
+        api_config = FlextApiSettings.model_validate({
+            "base_url": config.get_api_base_url(),
+            "timeout": config.timeout,
+        })
         self._api_client = FlextApi(api_config)
         self._utilities = FlextTapOracleOicUtilities()
 
@@ -248,7 +249,7 @@ class TapOracleOic(Tap):
         _ = state
         _ = parse_env_config
         _ = validate_config
-        Tap.__init__(self, config=FlextMeltanoSettings())
+        Tap.__init__(self, config=FlextMeltanoSettings.model_validate({}))
         self._tap_config: dict[str, object] = dict(config) if config is not None else {}
         self._client: OracleOicClient | None = None
         self._utilities = FlextTapOracleOicUtilities()
@@ -271,7 +272,7 @@ class TapOracleOic(Tap):
                 ),
                 "max_retries": self._to_positive_int(config_dict.get("max_retries"), 3),
             }
-            oic_config = FlextTapOracleOicSettings(oic_config_data)
+            oic_config = FlextTapOracleOicSettings.model_validate(oic_config_data)
             authenticator = FlextOracleOicAuthenticator(config=oic_config)
             self._client = OracleOicClient(
                 config=oic_config, authenticator=authenticator
@@ -293,6 +294,7 @@ class TapOracleOic(Tap):
         logger.info("Discovered %s streams from Oracle OIC", len(streams))
         return streams
 
+    @override
     def discover_streams(
         self,
         source_config: m.Meltano.DataSourceConfig
@@ -370,7 +372,7 @@ def _build_config_from_env() -> Mapping[str, object]:
     for automatic environment variable loading and validation.
     """
     try:
-        settings = FlextTapOracleOicSettings()
+        settings = FlextTapOracleOicSettings.model_validate({})
         return {
             "oauth_client_id": settings.oauth_client_id,
             "oauth_client_secret": settings.oauth_client_secret.get_secret_value(),

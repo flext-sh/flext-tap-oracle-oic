@@ -96,11 +96,11 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
             """
             extracted_time = time_extracted or datetime.now(UTC)
-            return m.Meltano.SingerRecordMessage(
-                stream=stream_name,
-                record=dict(record),
-                time_extracted=extracted_time.isoformat(),
-            )
+            return m.Meltano.SingerRecordMessage.model_validate({
+                "stream": stream_name,
+                "record": dict(record),
+                "time_extracted": extracted_time.isoformat(),
+            })
 
         @staticmethod
         def create_schema_message(
@@ -119,11 +119,11 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             dict[str, object]: Singer schema message
 
             """
-            return m.Meltano.SingerSchemaMessage(
-                stream=stream_name,
-                schema=dict(schema),
-                key_properties=key_properties or [],
-            )
+            return m.Meltano.SingerSchemaMessage.model_validate({
+                "stream": stream_name,
+                "schema": dict(schema),
+                "key_properties": key_properties or [],
+            })
 
         @staticmethod
         def create_state_message(
@@ -138,7 +138,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             dict[str, object]: Singer state message
 
             """
-            return m.Meltano.SingerStateMessage(value=dict(state))
+            return m.Meltano.SingerStateMessage.model_validate({"value": dict(state)})
 
         @staticmethod
         def write_message(
@@ -152,6 +152,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             message: Singer message to write
 
             """
+            _ = message
 
     class OicApiProcessing:
         """Oracle OIC API processing utilities."""
@@ -253,7 +254,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
             """
             if not response_data:
-                return r[object].fail("Response data cannot be empty")
+                return r[Mapping[str, object]].fail("Response data cannot be empty")
             try:
                 parsed_response = {
                     "items": response_data.get("items", []),
@@ -264,7 +265,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 }
                 if "data" in response_data:
                     parsed_response["items"] = response_data["data"]
-                return r[object].ok(parsed_response)
+                return r[Mapping[str, object]].ok(parsed_response)
             except (
                 ValueError,
                 TypeError,
@@ -274,7 +275,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 RuntimeError,
                 ImportError,
             ) as e:
-                return r[object].fail(f"Response parsing error: {e}")
+                return r[Mapping[str, object]].fail(f"Response parsing error: {e}")
 
         @staticmethod
         def validate_oic_endpoint(endpoint_url: str) -> r[str]:
@@ -449,7 +450,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             required_fields = ["oic_base_url", "username", "password"]
             missing_fields = [field for field in required_fields if field not in config]
             if missing_fields:
-                return r[object].fail(
+                return r[Mapping[str, object]].fail(
                     f"Missing required fields: {', '.join(missing_fields)}"
                 )
             url_validation = (
@@ -458,16 +459,20 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 )
             )
             if url_validation.is_failure:
-                return r[object].fail(f"Invalid OIC URL: {url_validation.error}")
+                return r[Mapping[str, object]].fail(
+                    f"Invalid OIC URL: {url_validation.error}"
+                )
             if not str(config["username"]).strip():
-                return r[object].fail("Username cannot be empty")
+                return r[Mapping[str, object]].fail("Username cannot be empty")
             if not str(config["password"]).strip():
-                return r[object].fail("Password cannot be empty")
+                return r[Mapping[str, object]].fail("Password cannot be empty")
             if "timeout" in config:
                 timeout = _as_int(config["timeout"])
                 if timeout is None or timeout <= 0:
-                    return r[object].fail("Timeout must be a positive integer")
-            return r[object].ok(config)
+                    return r[Mapping[str, object]].fail(
+                        "Timeout must be a positive integer"
+                    )
+            return r[Mapping[str, object]].ok(config)
 
         @staticmethod
         def validate_stream_config(
@@ -483,19 +488,23 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
             """
             if "streams" not in config:
-                return r[object].fail("Configuration must include 'streams' section")
+                return r[Mapping[str, object]].fail(
+                    "Configuration must include 'streams' section"
+                )
             streams = config["streams"]
             stream_map = _as_map(streams)
             if stream_map is None:
-                return r[object].fail("Streams configuration must be a dictionary")
+                return r[Mapping[str, object]].fail(
+                    "Streams configuration must be a dictionary"
+                )
             for stream_name, stream_payload in stream_map.items():
                 stream_config = _as_map(stream_payload)
                 if stream_config is None:
-                    return r[object].fail(
+                    return r[Mapping[str, object]].fail(
                         f"Stream '{stream_name}' configuration must be a dictionary"
                     )
                 if "selected" not in stream_config:
-                    return r[object].fail(
+                    return r[Mapping[str, object]].fail(
                         f"Stream '{stream_name}' must have 'selected' field"
                     )
                 if "page_size" in stream_config:
@@ -504,10 +513,10 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                         FlextTapOracleOicConstants.TapOicProcessing.MAX_PAGE_SIZE
                     )
                     if page_size is None or page_size <= 0 or page_size > max_page_size:
-                        return r[object].fail(
+                        return r[Mapping[str, object]].fail(
                             f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}"
                         )
-            return r[object].ok(config)
+            return r[Mapping[str, object]].ok(config)
 
     class StateManagement:
         """State management utilities for incremental syncs."""
