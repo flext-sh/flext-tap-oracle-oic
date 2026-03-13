@@ -12,6 +12,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Mapping
+from typing import Annotated
 
 from flext_core import FlextConstants, r
 from flext_oracle_oic.settings import FlextOracleOicSettings
@@ -24,14 +25,14 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
 
     model_config = SettingsConfigDict(extra="ignore")
 
-    oauth_client_id: str = Field(default="")
-    oauth_client_secret: SecretStr = Field(default=SecretStr(""))
-    oauth_token_url: str = Field(default="https://localhost/oauth/token")
-    oauth_audience: str = Field(default="")
-    base_url: str = Field(default="https://localhost")
-    timeout: int = Field(default=30, ge=1)
-    max_retries: int = Field(default=3, ge=0)
-    page_size: int = Field(default=100, ge=1)
+    oauth_client_id: Annotated[str, Field(default="")]
+    oauth_client_secret: Annotated[SecretStr, Field(default=SecretStr(""))]
+    oauth_token_url: Annotated[str, Field(default="https://localhost/oauth/token")]
+    oauth_audience: Annotated[str, Field(default="")]
+    base_url: Annotated[str, Field(default="https://localhost")]
+    timeout: Annotated[int, Field(default=30, ge=1)]
+    max_retries: Annotated[int, Field(default=3, ge=0)]
+    page_size: Annotated[int, Field(default=100, ge=1)]
 
     def get_api_base_url(self) -> str:
         """Return base URL without trailing slash."""

@@ -10,7 +10,7 @@ from __future__ import annotations
 import re
 from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
-from typing import ClassVar
+from typing import Annotated, ClassVar
 
 import requests
 from flext_api import FlextApi, FlextApiSettings
@@ -29,7 +29,7 @@ _STRING_LIST_ADAPTER = TypeAdapter(list[str], config=ConfigDict(strict=True))
 class _OicEnvelope(BaseModel):
     items: list[object] | None = None
     data: list[object] | None = None
-    total_size: int | None = Field(default=None, alias="totalSize")
+    total_size: Annotated[int | None, Field(default=None, alias="totalSize")]
     count: int | None = None
 
 
