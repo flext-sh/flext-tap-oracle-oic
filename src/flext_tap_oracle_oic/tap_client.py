@@ -271,7 +271,7 @@ class TapOracleOic(Tap):
                 ),
                 "max_retries": self._to_positive_int(config_dict.get("max_retries"), 3),
             }
-            oic_config = FlextTapOracleOicSettings.model_validate(oic_config_data)
+            oic_config = FlextTapOracleOicSettings(oic_config_data)
             authenticator = FlextOracleOicAuthenticator(config=oic_config)
             self._client = OracleOicClient(
                 config=oic_config, authenticator=authenticator

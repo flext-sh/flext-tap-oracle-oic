@@ -80,7 +80,7 @@ def create_oracle_oic_tap_config(
         )
         tap_config.setdefault("stream_prefix", "oic")
         config_data = {**oauth_params, **connection_params, **tap_config}
-        config_instance = FlextTapOracleOicSettings.model_validate(config_data)
+        config_instance = FlextTapOracleOicSettings(config_data)
         return r[FlextTapOracleOicSettings].ok(config_instance)
     except (ValueError, TypeError, KeyError, AttributeError, OSError) as e:
         return r[FlextTapOracleOicSettings].fail(

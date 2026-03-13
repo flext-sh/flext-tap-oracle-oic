@@ -60,7 +60,7 @@ def _as_string_list(value: object) -> list[str] | None:
 def _as_oic_envelope(value: object) -> _OicEnvelope | None:
     """Validate payload as an OIC envelope model."""
     try:
-        return _OicEnvelope.model_validate(value, strict=True)
+        return _OicEnvelope(value, strict=True)
     except ValidationError:
         return None
 
