@@ -14,26 +14,30 @@ from typing import Annotated, ClassVar
 
 import requests
 from flext_api import FlextApi, FlextApiSettings
-from flext_core import FlextExceptions, FlextLogger
-from flext_meltano import FlextMeltanoStream
+from flext_core import FlextExceptions, FlextLogger, t
+from flext_meltano import FlextMeltanoStream, t as mt
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError
 
 from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
 from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
-_GENERAL_LIST_ADAPTER = TypeAdapter(list[object], config=ConfigDict(strict=True))
-_GENERAL_MAP_ADAPTER = TypeAdapter(dict[str, object], config=ConfigDict(strict=True))
+_GENERAL_LIST_ADAPTER = TypeAdapter(
+    list[mt.ContainerValue], config=ConfigDict(strict=True)
+)
+_GENERAL_MAP_ADAPTER = TypeAdapter(
+    dict[str, mt.ContainerValue], config=ConfigDict(strict=True)
+)
 _STRING_LIST_ADAPTER = TypeAdapter(list[str], config=ConfigDict(strict=True))
 
 
 class _OicEnvelope(BaseModel):
-    items: list[object] | None = None
-    data: list[object] | None = None
+    items: list[mt.ContainerValue] | None = None
+    data: list[mt.ContainerValue] | None = None
     total_size: Annotated[int | None, Field(default=None, alias="totalSize")]
     count: int | None = None
 
 
-def _as_value_list(value: object) -> list[object] | None:
+def _as_value_list(value: mt.ContainerValue) -> list[mt.ContainerValue] | None:
     """Validate payload as strict lisobject]."""
     try:
         return _GENERAL_LIST_ADAPTER.validate_python(value)
@@ -41,15 +45,15 @@ def _as_value_list(value: object) -> list[object] | None:
         return None
 
 
-def _as_value_map(value: object) -> Mapping[str, object] | None:
-    """Validate payload as strict dict[str, object]."""
+def _as_value_map(value: t.ContainerValue) -> Mapping[str, t.ContainerValue] | None:
+    """Validate payload as strict dict[str, t.ContainerValue]."""
     try:
         return _GENERAL_MAP_ADAPTER.validate_python(value)
     except ValidationError:
         return None
 
 
-def _as_string_list(value: object) -> list[str] | None:
+def _as_string_list(value: t.ContainerValue) -> list[str] | None:
     """Validate payload as strict list[str]."""
     try:
         return _STRING_LIST_ADAPTER.validate_python(value)
@@ -57,7 +61,7 @@ def _as_string_list(value: object) -> list[str] | None:
         return None
 
 
-def _as_oic_envelope(value: object) -> _OicEnvelope | None:
+def _as_oic_envelope(value: t.ContainerValue) -> _OicEnvelope | None:
     """Validate payload as an OIC envelope model."""
     try:
         return _OicEnvelope.model_validate(value, strict=True)
@@ -112,14 +116,16 @@ class OICPaginator:
             logger.debug("This indicates end of pagination or malformed OIC response")
             return None
 
-    def _calculate_next_offset(self, data: object) -> int | None:
+    def _calculate_next_offset(self, data: t.ContainerValue) -> int | None:
         """Calculate next offset based on OIC response format."""
         items = self._extract_items_from_response(data)
         if items is None or not items or len(items) < self._page_size:
             return None
         return self.current_value + len(items)
 
-    def _extract_items_from_response(self, data: object) -> list[object] | None:
+    def _extract_items_from_response(
+        self, data: t.ContainerValue
+    ) -> list[t.ContainerValue] | None:
         """Extract items from various OIC response formats."""
         list_payload = _as_value_list(data)
         if list_payload is not None:
@@ -168,7 +174,7 @@ class OICBaseStream(FlextMeltanoStream):
     api_path: ClassVar[str | None] = None
     api_category: ClassVar[str] = "core"
     default_sort: ClassVar[str | None] = None
-    additional_params: ClassVar[dict[str, object] | None] = None
+    additional_params: ClassVar[dict[str, t.ContainerValue] | None] = None
     primary_keys: ClassVar[list[str]] = []
 
     @property
@@ -227,8 +233,8 @@ class OICBaseStream(FlextMeltanoStream):
         return OICPaginator(start_value=0, page_size=self.config.get("page_size", 100))
 
     def get_records(
-        self, context: Mapping[str, object] | None = None
-    ) -> Iterator[dict[str, object]]:
+        self, context: Mapping[str, t.ContainerValue] | None = None
+    ) -> Iterator[dict[str, t.ContainerValue]]:
         """Get records from OIC API.
 
         Args:
@@ -243,9 +249,9 @@ class OICBaseStream(FlextMeltanoStream):
 
     def get_url_params(
         self,
-        context: Mapping[str, object] | None,
+        context: Mapping[str, t.ContainerValue] | None,
         next_page_token: int | None,
-    ) -> Mapping[str, object]:
+    ) -> Mapping[str, t.ContainerValue]:
         """Build URL parameters for Oracle OIC API requests.
 
         Args:
@@ -256,7 +262,7 @@ class OICBaseStream(FlextMeltanoStream):
         Dictionary of URL parameters optimized for OIC API.
 
         """
-        params: dict[str, object] = {}
+        params: dict[str, t.ContainerValue] = {}
         page_size = self.config.get("page_size", 100)
         params["limit"] = min(page_size, 1000)
         params["offset"] = next_page_token or 0
@@ -291,7 +297,7 @@ class OICBaseStream(FlextMeltanoStream):
 
     def parse_response(
         self, response: requests.Response
-    ) -> Iterator[Mapping[str, object]]:
+    ) -> Iterator[Mapping[str, t.ContainerValue]]:
         """Parse Oracle OIC API response and yield records with validation.
 
         Args:
@@ -321,16 +327,18 @@ class OICBaseStream(FlextMeltanoStream):
             if self.config.get("fail_on_parsing_errors", True):
                 raise
 
-    def _enrich_record(self, record: Mapping[str, object]) -> Mapping[str, object]:
+    def _enrich_record(
+        self, record: Mapping[str, t.ContainerValue]
+    ) -> Mapping[str, t.ContainerValue]:
         """Enrich record with tap metadata for traceability."""
-        enriched: dict[str, object] = dict(record)
+        enriched: dict[str, t.ContainerValue] = dict(record)
         enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
         enriched["_tap_stream_name"] = self.name
         return enriched
 
     def _extract_and_yield_records(
-        self, data: object, url: str
-    ) -> Iterator[Mapping[str, object]]:
+        self, data: t.ContainerValue, url: str
+    ) -> Iterator[Mapping[str, t.ContainerValue]]:
         """Extract and yield records with validation and enrichment."""
         records_yielded = 0
         for item in self._extract_items_for_processing(data):
@@ -339,7 +347,7 @@ class OICBaseStream(FlextMeltanoStream):
                 records_yielded += 1
         if records_yielded == 0 and (not self._is_empty_result_expected(data)):
             map_data = _as_value_map(data)
-            payload_descriptor: object = (
+            payload_descriptor: t.ContainerValue = (
                 list(map_data.keys()) if map_data is not None else str(type(data))
             )
             self.logger.warning(
@@ -351,8 +359,8 @@ class OICBaseStream(FlextMeltanoStream):
             )
 
     def _extract_items_for_processing(
-        self, data: object
-    ) -> Iterator[Mapping[str, object]]:
+        self, data: t.ContainerValue
+    ) -> Iterator[Mapping[str, t.ContainerValue]]:
         """Extract items from various OIC response formats for processing."""
         list_payload = _as_value_list(data)
         if list_payload is not None:
@@ -389,7 +397,7 @@ class OICBaseStream(FlextMeltanoStream):
         if raise_for_status is not None:
             raise_for_status()
 
-    def _is_empty_result_expected(self, data: object) -> bool:
+    def _is_empty_result_expected(self, data: t.ContainerValue) -> bool:
         """Check if empty result is expected/normal based on OIC response metadata."""
         envelope = _as_oic_envelope(data)
         if envelope is not None:
@@ -402,8 +410,8 @@ class OICBaseStream(FlextMeltanoStream):
         list_payload = _as_value_list(data)
         return len(list_payload) == 0 if list_payload is not None else False
 
-    def _is_single_record(self, data: Mapping[str, object]) -> bool:
-        """Check if dict[str, object] represents a single record vs OIC metadata container."""
+    def _is_single_record(self, data: Mapping[str, t.ContainerValue]) -> bool:
+        """Check if dict[str, t.ContainerValue] represents a single record vs OIC metadata container."""
         metadata_keys = {
             "totalSize",
             "count",
@@ -416,8 +424,8 @@ class OICBaseStream(FlextMeltanoStream):
         return not any(key in data for key in metadata_keys)
 
     def _process_dict_data(
-        self, data: Mapping[str, object]
-    ) -> Iterator[Mapping[str, object]]:
+        self, data: Mapping[str, t.ContainerValue]
+    ) -> Iterator[Mapping[str, t.ContainerValue]]:
         """Process dict-type response data with OIC format detection."""
         envelope = _as_oic_envelope(data)
         if envelope is not None and envelope.items is not None:
@@ -429,7 +437,9 @@ class OICBaseStream(FlextMeltanoStream):
         if self._is_single_record(data):
             yield data
 
-    def _process_list_data(self, data: list[object]) -> Iterator[Mapping[str, object]]:
+    def _process_list_data(
+        self, data: list[t.ContainerValue]
+    ) -> Iterator[Mapping[str, t.ContainerValue]]:
         """Process list-type response data."""
         for item in data:
             record = _as_value_map(item)
@@ -437,7 +447,7 @@ class OICBaseStream(FlextMeltanoStream):
                 yield record
 
     def _track_response_metrics(
-        self, response: requests.Response, data: object
+        self, response: requests.Response, data: t.ContainerValue
     ) -> None:
         """Track response metrics for monitoring and optimization."""
         if getattr(response, "elapsed", None) is not None:
@@ -454,7 +464,7 @@ class OICBaseStream(FlextMeltanoStream):
         elif envelope.data is not None:
             self.logger.debug("Received %s records", len(envelope.data))
 
-    def _validate_record(self, record: Mapping[str, object]) -> bool:
+    def _validate_record(self, record: Mapping[str, t.ContainerValue]) -> bool:
         """Validate record meets basic requirements for processing."""
         return _as_value_map(record) is not None
 
