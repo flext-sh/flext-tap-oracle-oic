@@ -539,7 +539,7 @@ def pytest_configure(config: pytest.Config) -> None:
 
 
 @pytest.fixture
-def mock_oic_client() -> type[object]:
+def mock_oic_client() -> type:
     """Mock Oracle OIC client for testing."""
 
     class MockOICClient:
@@ -566,8 +566,8 @@ def mock_oic_client() -> type[object]:
             return {"success": True, "items": [], "hasMore": False, "count": 0}
 
         def paginate_request(
-            self, _request_func: object, **_kwargs: t.Scalar
-        ) -> Iterator[object]:
+            self, _request_func, **_kwargs: t.Scalar
+        ) -> Iterator:
             """Mock pagination."""
             yield from []
 
@@ -575,7 +575,7 @@ def mock_oic_client() -> type[object]:
 
 
 @pytest.fixture
-def mock_oauth_authenticator() -> type[object]:
+def mock_oauth_authenticator() -> type:
     """Mock OAuth2 authenticator for testing."""
 
     class MockOAuthAuthenticator:

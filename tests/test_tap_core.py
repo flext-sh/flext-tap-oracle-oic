@@ -185,7 +185,7 @@ class TestTapOracleOicIntegration:
 
 
 @pytest.fixture
-def sample_config() -> object:
+def sample_config():
     """Sample config."""
     return {
         "base_url": "https://test.integration.ocp.oraclecloud.com",
@@ -196,7 +196,7 @@ def sample_config() -> object:
 
 
 @pytest.fixture
-def sample_config_with_extended() -> object:
+def sample_config_with_extended():
     """Sample config with extended streams."""
     return {
         "base_url": "https://test.integration.ocp.oraclecloud.com",
