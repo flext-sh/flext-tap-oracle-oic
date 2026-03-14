@@ -565,9 +565,7 @@ def mock_oic_client() -> type:
             )
             return {"success": True, "items": [], "hasMore": False, "count": 0}
 
-        def paginate_request(
-            self, _request_func, **_kwargs: t.Scalar
-        ) -> Iterator:
+        def paginate_request(self, _request_func, **_kwargs: t.Scalar) -> Iterator:
             """Mock pagination."""
             yield from []
 

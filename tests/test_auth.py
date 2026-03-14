@@ -78,9 +78,7 @@ class TestOICOAuth2Authenticator:
         self, authenticator: FlextOracleOicAuthenticator
     ) -> None:
         """Test token retrieval with HTTP failure."""
-        authenticator._api_client.post.return_value = r.fail(
-            "Connection refused"
-        )
+        authenticator._api_client.post.return_value = r.fail("Connection refused")
         result = authenticator.get_access_token()
         assert result.is_failure
         assert result.error is not None
