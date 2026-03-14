@@ -21,9 +21,13 @@ from __future__ import annotations
 from flext_core import FlextExceptions
 
 
-# Oracle OIC exception factory using standard pattern
 class OICExceptionFactory:
     """Factory for Oracle OIC specific exceptions."""
+
+    @staticmethod
+    def create_api_error(message: str) -> OICAPIError:
+        """Create OIC API error."""
+        return OICAPIError(message)
 
     @staticmethod
     def create_authentication_error(message: str) -> OICAuthenticationError:
@@ -40,13 +44,7 @@ class OICExceptionFactory:
         """Create OIC validation error."""
         return OICValidationError(message)
 
-    @staticmethod
-    def create_api_error(message: str) -> OICAPIError:
-        """Create OIC API error."""
-        return OICAPIError(message)
 
-
-# Specific Oracle OIC exceptions
 class OICAuthenticationError(FlextExceptions.AuthenticationError):
     """Oracle OIC authentication error."""
 
@@ -63,7 +61,6 @@ class OICAPIError(FlextExceptions.OperationError):
     """Oracle OIC API error."""
 
 
-# Export for backward compatibility and module interface
 __all__: list[str] = [
     "OICAPIError",
     "OICAuthenticationError",

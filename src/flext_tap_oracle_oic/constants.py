@@ -12,17 +12,17 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Final
 
-from flext_core import FlextConstants
+from flext_meltano import FlextMeltanoConstants
+from flext_oracle_oic import FlextOracleOicConstants
 from flext_oracle_oic.constants import FlextOracleOicConstants as ParentOicConstants
 
 
-class FlextTapOracleOicConstants(FlextConstants):
+class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants):
     """FLEXT Oracle OIC TAP constants extending flext-core platform constants.
 
     Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
     """
 
-    # Oracle OIC API Constants using composition
     OIC_API_BASE_PATH: Final[str] = (
         ParentOicConstants.API.ENDPOINT_INTEGRATIONS.replace("/integrations", "")
     )
@@ -31,24 +31,18 @@ class FlextTapOracleOicConstants(FlextConstants):
     OIC_PROCESS_API_PATH: Final[str] = "/ic/api/integration/v1/processes"
     OIC_B2B_API_PATH: Final[str] = "/ic/api/integration/v1/b2b"
     OIC_ENVIRONMENT_API_PATH: Final[str] = "/ic/api/integration/v1/environments"
-
-    # Official OIC REST API Endpoints using composition where appropriate
     OIC_ENDPOINTS: Final[dict[str, str]] = {
-        # Core Integration APIs
         "integrations": "/integrations",
         "integrations_detail": "/integrations/{id}",
         "integrations_status": "/integrations/{id}/status",
         "integrations_archive": "/integrations/{id}/archive",
-        # Connection APIs
         "connections": "/connections",
         "connections_detail": "/connections/{id}",
         "connections_test": "/connections/{id}/test",
-        # Package APIs
         "packages": "/packages",
         "packages_detail": "/packages/{id}",
         "packages_export": "/packages/export",
         "packages_import": "/packages/import",
-        # Monitoring APIs (v1) - correct paths according to Oracle docs
         "monitoring_instances": "/monitoring/instances",
         "monitoring_instances_detail": "/monitoring/instances/{id}",
         "monitoring_messages": "/monitoring/messages",
@@ -56,22 +50,16 @@ class FlextTapOracleOicConstants(FlextConstants):
         "monitoring_activity": "/monitoring/activity",
         "audit_records": "/audit/events",
         "usage_analytics": "/monitoring/usage",
-        # Lookup APIs
         "lookups": "/lookups",
         "lookup_values": "/lookups/{name}/values",
-        # Library APIs
         "libraries": "/libraries",
         "libraries_detail": "/libraries/{id}",
-        # Agent Group APIs
         "agent_groups": "/agentGroups",
         "agent_groups_detail": "/agentGroups/{id}",
-        # Certificate APIs
         "certificates": "/certificates",
         "certificates_detail": "/certificates/{alias}",
-        # Adapter APIs
         "adapters": "/adapters",
         "adapters_detail": "/adapters/{id}",
-        # Process Management APIs
         "process_definitions": "/process-definitions",
         "process_definitions_detail": "/process-definitions/{id}",
         "processes": "/processes",
@@ -81,31 +69,30 @@ class FlextTapOracleOicConstants(FlextConstants):
         "tasks_detail": "/tasks/{id}",
         "spaces": "/spaces",
         "spaces_detail": "/spaces/{id}",
-        # B2B Trading Partner APIs
         "trading_partners": "/tpm/partners",
         "trading_partners_detail": "/tpm/partners/{id}",
         "document_types": "/tpm/documents",
         "document_types_detail": "/tpm/documents/{id}",
         "business_messages": "/monitoring/business-messages",
         "wire_messages": "/monitoring/wire-messages",
-        # Environment APIs
         "cors_domains": "/cors-domains",
-        # System APIs
         "health": "/health",
         "metadata": "/metadata",
-        # Execution logs
         "execution_logs": "/monitoring/logs",
         "execution_logs_detail": "/monitoring/logs/{id}",
-        # Lookup details
         "lookup_usage": "/lookups/{name}/usage",
     }
 
     class TapOracleOic:
         """OIC connection configuration."""
 
-        DEFAULT_TIMEOUT: Final[int] = ParentOicConstants.OIC.DEFAULT_TIMEOUT
-        DEFAULT_MAX_RETRIES: Final[int] = ParentOicConstants.OIC.DEFAULT_MAX_RETRIES
-        DEFAULT_VERIFY_SSL: Final[bool] = ParentOicConstants.OIC.DEFAULT_VERIFY_SSL
+        DEFAULT_TIMEOUT: Final[int] = ParentOicConstants.OracleOic.DEFAULT_TIMEOUT
+        DEFAULT_MAX_RETRIES: Final[int] = (
+            ParentOicConstants.OracleOic.DEFAULT_MAX_RETRIES
+        )
+        DEFAULT_VERIFY_SSL: Final[bool] = (
+            ParentOicConstants.OracleOic.DEFAULT_VERIFY_SSL
+        )
 
     class TapOicProcessing:
         """OIC tap processing configuration.
@@ -113,9 +100,13 @@ class FlextTapOracleOicConstants(FlextConstants):
         Note: Does not override parent Processing class to avoid inheritance conflicts.
         """
 
-        DEFAULT_PAGE_SIZE: Final[int] = ParentOicConstants.OIC.DEFAULT_PAGE_SIZE
-        MAX_PAGE_SIZE: Final[int] = ParentOicConstants.OIC.MAX_PAGE_SIZE
-        MIN_PAGE_SIZE: Final[int] = ParentOicConstants.OIC.MIN_PAGE_SIZE
+        DEFAULT_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.DEFAULT_PAGE_SIZE
+        MAX_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.MAX_PAGE_SIZE
+        MIN_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.MIN_PAGE_SIZE
+        DEFAULT_PAGINATOR_START: Final[int] = 0
+        DEFAULT_PAGINATOR_PAGE_SIZE: Final[int] = 100
+        PAGINATOR_MAX_PAGE_SIZE: Final[int] = 1000
+        PAGINATOR_MIN_PAGE_SIZE: Final[int] = 10
 
     class TapOicAuth:
         """OIC authentication configuration.
@@ -133,15 +124,34 @@ class FlextTapOracleOicConstants(FlextConstants):
             ParentOicConstants.Auth.DEFAULT_TOKEN_EXPIRY_SECONDS
         )
 
+    class TapOicHttp:
+        """HTTP status codes and MIME types for OIC API communication."""
+
+        HTTP_OK: Final[int] = 200
+        HTTP_UNAUTHORIZED: Final[int] = 401
+        HTTP_FORBIDDEN: Final[int] = 403
+        HTTP_ERROR_STATUS_THRESHOLD: Final[int] = 400
+        HTTP_RATE_LIMITED: Final[int] = 429
+        JSON_MIME: Final[str] = "application/json"
+
     class TapOicValidation:
         """OIC tap validation constants."""
 
         MAX_STREAM_PREFIX_LENGTH: Final[int] = 255
-        MIN_DATE_LENGTH: Final[int] = 10  # YYYY-MM-DD format
+        MIN_DATE_LENGTH: Final[int] = 10
+        MIN_TOKEN_EXPIRY_BUFFER: Final[int] = 60
+        MIN_PERCENTAGE: Final[float] = 0.0
+        MAX_PERCENTAGE: Final[float] = 100.0
 
-    # =========================================================================
-    # STRENUM CLASSES - Single source of truth for string enumerations
-    # =========================================================================
+    class TapOicPerformance:
+        """OIC tap performance and monitoring constants."""
+
+        RESPONSE_TIME_HISTORY_SIZE: Final[int] = 10
+        MIN_RESPONSE_SAMPLES: Final[int] = 5
+        SLOW_RESPONSE_THRESHOLD: Final[float] = 5.0
+        MAX_SAFE_PARALLEL_STREAMS: Final[int] = 4
+        MIN_PERCENTAGE: Final[float] = 0.0
+        MAX_PERCENTAGE: Final[float] = 100.0
 
     class OICResourceType(StrEnum):
         """Oracle Integration Cloud resource types.
@@ -245,8 +255,4 @@ class FlextTapOracleOicConstants(FlextConstants):
 
 
 c = FlextTapOracleOicConstants
-
-__all__: list[str] = [
-    "FlextTapOracleOicConstants",
-    "c",
-]
+__all__: list[str] = ["FlextTapOracleOicConstants", "c"]

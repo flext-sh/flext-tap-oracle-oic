@@ -18,7 +18,7 @@ class TestTapOracleOic:
 
     def test_tap_initialization(self) -> None:
         """Test method."""
-        """Test tap initialization function."""
+        "Test tap initialization function."
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client",
@@ -33,7 +33,7 @@ class TestTapOracleOic:
 
     def test_discover_streams(self) -> None:
         """Test method."""
-        """Test discover streams function."""
+        "Test discover streams function."
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client",
@@ -42,8 +42,6 @@ class TestTapOracleOic:
         }
         tap = TapOracleOic(config=config, validate_config=False)
         streams = tap.discover_streams()
-
-        # Should have at least core streams
         if len(streams) < 5:
             msg: str = f"Expected {len(streams)} >= {5}"
             raise AssertionError(msg)
@@ -55,17 +53,14 @@ class TestTapOracleOic:
 
     def test_config_validation(self) -> None:
         """Test method."""
-        """Test config validation."""  # MIGRATED: from singer_sdk.exceptions import ConfigValidationError -> use flext_meltano
-        # Missing required fields should raise exception when validation is enabled
-        config = {
-            "base_url": "https://test.integration.ocp.oraclecloud.com",
-        }
+        "Test config validation."
+        config = {"base_url": "https://test.integration.ocp.oraclecloud.com"}
         with pytest.raises(ConfigValidationError):
             TapOracleOic(config=config, validate_config=True)
 
     def test_include_extended_streams(self) -> None:
         """Test method."""
-        """Test include extended streams function."""
+        "Test include extended streams function."
         config = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client",
@@ -75,8 +70,6 @@ class TestTapOracleOic:
         }
         tap = TapOracleOic(config=config, validate_config=False)
         streams = tap.discover_streams()
-
-        # Should include core streams
         stream_names = [s.name for s in streams]
         if "integrations" not in stream_names:
             msg: str = f"Expected {'integrations'} in {stream_names}"
