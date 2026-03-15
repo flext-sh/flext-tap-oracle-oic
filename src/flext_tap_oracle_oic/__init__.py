@@ -1,12 +1,7 @@
 # AUTO-GENERATED FILE — DO NOT EDIT MANUALLY.
 # Regenerate with: make codegen
 #
-"""FLEXT Oracle Integration Cloud (OIC) Tap for Meltano.
-
-Enterprise Oracle Integration Cloud data extraction with FLEXT ecosystem integration.
-
-SPDX-License-Identifier: MIT
-"""
+"""Flext tap oracle oic package."""
 
 from __future__ import annotations
 
@@ -17,6 +12,7 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 if TYPE_CHECKING:
     from flext_core.typings import FlextTypes
 
+    from flext_tap_oracle_oic import domain
     from flext_tap_oracle_oic.__version__ import (
         __all__,
         __author__,
@@ -199,6 +195,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
         "flext_tap_oracle_oic.settings",
         "create_oracle_oic_tap_config",
     ),
+    "domain": ("flext_tap_oracle_oic.domain", ""),
     "logger": ("flext_tap_oracle_oic.tap_client", "logger"),
     "m": ("flext_tap_oracle_oic.models", "m"),
     "main": ("flext_tap_oracle_oic.tap_client", "main"),
@@ -266,6 +263,7 @@ __all__ = [
     "__version_info__",
     "c",
     "create_oracle_oic_tap_config",
+    "domain",
     "logger",
     "m",
     "main",
