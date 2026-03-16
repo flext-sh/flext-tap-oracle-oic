@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from enum import StrEnum
+from enum import StrEnum, unique
 from typing import Final
 
 from flext_meltano import FlextMeltanoConstants
@@ -153,6 +153,7 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         MIN_PERCENTAGE: Final[float] = 0.0
         MAX_PERCENTAGE: Final[float] = 100.0
 
+    @unique
     class OICResourceType(StrEnum):
         """Oracle Integration Cloud resource types.
 
@@ -170,6 +171,7 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         PACKAGE = "package"
         PROJECT = "project"
 
+    @unique
     class IntegrationStatus(StrEnum):
         """Integration lifecycle status.
 
@@ -184,6 +186,7 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         FAILED = "failed"
         LOCKED = "locked"
 
+    @unique
     class ConnectionStatus(StrEnum):
         """Connection status.
 
@@ -196,6 +199,7 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         TESTED = "tested"
         FAILED = "failed"
 
+    @unique
     class OicIntegrationStatus(StrEnum):
         """OIC integration lifecycle status using StrEnum for type safety."""
 
@@ -206,6 +210,7 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         TESTING = "TESTING"
         DEPRECATED = "DEPRECATED"
 
+    @unique
     class OicJobStatus(StrEnum):
         """OIC job execution status using StrEnum for type safety."""
 
@@ -215,6 +220,7 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         ABORTED = "ABORTED"
         SUSPENDED = "SUSPENDED"
 
+    @unique
     class OicIntegrationType(StrEnum):
         """OIC integration type using StrEnum for type safety."""
 
@@ -224,12 +230,14 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         RECIPE = "RECIPE"
         CONNECTIVITY_AGENT = "CONNECTIVITY_AGENT"
 
+    @unique
     class OicAgentType(StrEnum):
         """OIC agent type using StrEnum for type safety."""
 
         ON_PREMISES_AGENT = "ON_PREMISES_AGENT"
         FILE_AGENT = "FILE_AGENT"
 
+    @unique
     class OicAgentStatus(StrEnum):
         """OIC agent operational status using StrEnum for type safety."""
 
@@ -237,15 +245,89 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         OFFLINE = "OFFLINE"
         MAINTENANCE = "MAINTENANCE"
 
+    @unique
     class OicReplicationMethod(StrEnum):
         """Replication method types using StrEnum for type safety."""
 
         FULL_TABLE = "FULL_TABLE"
         INCREMENTAL = "INCREMENTAL"
 
+    @unique
     class OicErrorType(StrEnum):
         """Error type constants using StrEnum for type safety."""
 
+        AUTHENTICATION = "AUTHENTICATION"
+        AUTHORIZATION = "AUTHORIZATION"
+        RATE_LIMIT = "RATE_LIMIT"
+        SERVER_ERROR = "SERVER_ERROR"
+        NETWORK = "NETWORK"
+        VALIDATION = "VALIDATION"
+
+    @unique
+    class ProjectType(StrEnum):
+        LIBRARY = "library"
+        APPLICATION = "application"
+        SERVICE = "service"
+        SINGER_TAP = "singer-tap"
+        OIC_EXTRACTOR = "oic-extractor"
+        INTEGRATION_EXTRACTOR = "integration-extractor"
+        SINGER_TAP_ORACLE_OIC = "singer-tap-oracle-oic"
+        TAP_ORACLE_OIC = "tap-oracle-oic"
+        OIC_CONNECTOR = "oic-connector"
+        INTEGRATION_CONNECTOR = "integration-connector"
+        SINGER_PROTOCOL = "singer-protocol"
+        OIC_INTEGRATION = "oic-integration"
+        ORACLE_OIC = "oracle-oic"
+        CLOUD_INTEGRATION = "cloud-integration"
+        SINGER_STREAM = "singer-stream"
+        ETL_TAP = "etl-tap"
+        DATA_PIPELINE = "data-pipeline"
+        OIC_TAP = "oic-tap"
+        SINGER_INTEGRATION = "singer-integration"
+
+    @unique
+    class OicIntegrationStatusLiteral(StrEnum):
+        ACTIVE = "ACTIVE"
+        INACTIVE = "INACTIVE"
+        DRAFT = "DRAFT"
+        ERROR = "ERROR"
+        TESTING = "TESTING"
+        DEPRECATED = "DEPRECATED"
+
+    @unique
+    class OicJobStatusLiteral(StrEnum):
+        RUNNING = "RUNNING"
+        COMPLETED = "COMPLETED"
+        FAILED = "FAILED"
+        ABORTED = "ABORTED"
+        SUSPENDED = "SUSPENDED"
+
+    @unique
+    class OicIntegrationTypeLiteral(StrEnum):
+        INTEGRATION = "INTEGRATION"
+        LIBRARY = "LIBRARY"
+        TEMPLATE = "TEMPLATE"
+        RECIPE = "RECIPE"
+        CONNECTIVITY_AGENT = "CONNECTIVITY_AGENT"
+
+    @unique
+    class OicAgentTypeLiteral(StrEnum):
+        ON_PREMISES_AGENT = "ON_PREMISES_AGENT"
+        FILE_AGENT = "FILE_AGENT"
+
+    @unique
+    class OicAgentStatusLiteral(StrEnum):
+        ONLINE = "ONLINE"
+        OFFLINE = "OFFLINE"
+        MAINTENANCE = "MAINTENANCE"
+
+    @unique
+    class OicReplicationMethodLiteral(StrEnum):
+        FULL_TABLE = "FULL_TABLE"
+        INCREMENTAL = "INCREMENTAL"
+
+    @unique
+    class OicErrorTypeLiteral(StrEnum):
         AUTHENTICATION = "AUTHENTICATION"
         AUTHORIZATION = "AUTHORIZATION"
         RATE_LIMIT = "RATE_LIMIT"

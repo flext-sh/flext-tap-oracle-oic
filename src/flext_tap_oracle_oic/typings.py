@@ -14,10 +14,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Literal
-
 from flext_meltano import FlextMeltanoTypes
 from flext_oracle_oic import FlextOracleOicTypes
+
+from flext_tap_oracle_oic import c
 
 
 class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
@@ -264,27 +264,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
         Singer tap Oracle OIC domain owns OIC extraction and Singer protocol-specific types.
         """
 
-        type ProjectType = Literal[
-            "library",
-            "application",
-            "service",
-            "singer-tap",
-            "oic-extractor",
-            "integration-extractor",
-            "singer-tap-oracle-oic",
-            "tap-oracle-oic",
-            "oic-connector",
-            "integration-connector",
-            "singer-protocol",
-            "oic-integration",
-            "oracle-oic",
-            "cloud-integration",
-            "singer-stream",
-            "etl-tap",
-            "data-pipeline",
-            "oic-tap",
-            "singer-integration",
-        ]
+        type ProjectType = c.ProjectType
         type SingerTapOracleOicProjectConfig = dict[
             str,
             FlextMeltanoTypes.ContainerValue | None,
@@ -298,26 +278,13 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
             str,
             FlextMeltanoTypes.ContainerValue | None,
         ]
-        type OicIntegrationStatusLiteral = Literal[
-            "ACTIVE", "INACTIVE", "DRAFT", "ERROR", "TESTING", "DEPRECATED"
-        ]
-        type OicJobStatusLiteral = Literal[
-            "RUNNING", "COMPLETED", "FAILED", "ABORTED", "SUSPENDED"
-        ]
-        type OicIntegrationTypeLiteral = Literal[
-            "INTEGRATION", "LIBRARY", "TEMPLATE", "RECIPE", "CONNECTIVITY_AGENT"
-        ]
-        type OicAgentTypeLiteral = Literal["ON_PREMISES_AGENT", "FILE_AGENT"]
-        type OicAgentStatusLiteral = Literal["ONLINE", "OFFLINE", "MAINTENANCE"]
-        type OicReplicationMethodLiteral = Literal["FULL_TABLE", "INCREMENTAL"]
-        type OicErrorTypeLiteral = Literal[
-            "AUTHENTICATION",
-            "AUTHORIZATION",
-            "RATE_LIMIT",
-            "SERVER_ERROR",
-            "NETWORK",
-            "VALIDATION",
-        ]
+        type OicIntegrationStatusLiteral = c.OicIntegrationStatusLiteral
+        type OicJobStatusLiteral = c.OicJobStatusLiteral
+        type OicIntegrationTypeLiteral = c.OicIntegrationTypeLiteral
+        type OicAgentTypeLiteral = c.OicAgentTypeLiteral
+        type OicAgentStatusLiteral = c.OicAgentStatusLiteral
+        type OicReplicationMethodLiteral = c.OicReplicationMethodLiteral
+        type OicErrorTypeLiteral = c.OicErrorTypeLiteral
 
 
 t = FlextTapOracleOicTypes
