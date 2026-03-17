@@ -311,7 +311,11 @@ class TapOracleOic(Tap):
         catalog: mt.Meltano.Singer.StreamCatalog = {
             "streams": [
                 {
-                    "tap_stream_id": getattr(stream, "name", "unknown"),
+                    "tap_stream_id": getattr(
+                        stream,
+                        "name",
+                        c.Mixins.IDENTIFIER_UNKNOWN,
+                    ),
                     "schema": getattr(stream, "schema", {}),
                     "replication_method": "INCREMENTAL"
                     if getattr(stream, "replication_key", None)
@@ -427,7 +431,11 @@ def _execute_discover_command(tap: TapOracleOic) -> int:
     catalog = {
         "streams": [
             {
-                "tap_stream_id": getattr(stream, "name", "unknown"),
+                "tap_stream_id": getattr(
+                    stream,
+                    "name",
+                    c.Mixins.IDENTIFIER_UNKNOWN,
+                ),
                 "schema": getattr(stream, "schema", {}),
                 "key_properties": getattr(stream, "primary_keys", []),
                 "replication_method": "INCREMENTAL"
