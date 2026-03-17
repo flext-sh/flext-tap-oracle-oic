@@ -13,3 +13,11 @@ from flext_tests import FlextTestsModels
 
 class TestsFlextTapOracleOicModels(FlextTestsModels):
     """Test models for flexttaporacleoic."""
+
+
+m = TestsFlextTapOracleOicModels
+
+__all__ = [
+    "TestsFlextTapOracleOicModels",
+    "m",
+]

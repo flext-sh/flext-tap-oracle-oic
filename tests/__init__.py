@@ -52,10 +52,7 @@ if TYPE_CHECKING:
         TestsFlextTapOracleOicConstants,
         TestsFlextTapOracleOicConstants as c,
     )
-    from tests.models import (
-        TestsFlextTapOracleOicModels,
-        TestsFlextTapOracleOicModels as m,
-    )
+    from tests.models import TestsFlextTapOracleOicModels, m
     from tests.protocols import (
         TestsFlextTapOracleOicProtocols,
         TestsFlextTapOracleOicProtocols as p,
@@ -108,7 +105,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "extended_oic_config": ("tests.conftest", "extended_oic_config"),
     "filtered_oic_config": ("tests.conftest", "filtered_oic_config"),
     "large_integration_dataset": ("tests.conftest", "large_integration_dataset"),
-    "m": ("tests.models", "TestsFlextTapOracleOicModels"),
+    "m": ("tests.models", "m"),
     "mock_connections_response": ("tests.conftest", "mock_connections_response"),
     "mock_http_error_response": ("tests.conftest", "mock_http_error_response"),
     "mock_integrations_response": ("tests.conftest", "mock_integrations_response"),
