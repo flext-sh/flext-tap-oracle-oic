@@ -9,7 +9,8 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Protocol, runtime_checkable
 
-from flext_meltano import FlextMeltanoModels as m, FlextMeltanoProtocols, t as mt
+from flext_meltano import FlextMeltanoModels, FlextMeltanoProtocols
+from flext_meltano.typings import t as mt
 from flext_oracle_oic.protocols import FlextOracleOicProtocols
 
 
@@ -92,7 +93,9 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
 
                 def generate_catalog(
                     self, config: Mapping[str, mt.ContainerValue]
-                ) -> FlextMeltanoProtocols.Result[m.Meltano.SingerCatalog]:
+                ) -> FlextMeltanoProtocols.Result[
+                    FlextMeltanoModels.Meltano.SingerCatalog
+                ]:
                     """Generate Singer catalog for OIC entities."""
                     ...
 

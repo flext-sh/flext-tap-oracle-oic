@@ -265,6 +265,8 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
 
     @unique
     class ProjectType(StrEnum):
+        """Project type literals for tap package metadata."""
+
         LIBRARY = "library"
         APPLICATION = "application"
         SERVICE = "service"
@@ -287,6 +289,8 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
 
     @unique
     class OicIntegrationStatusLiteral(StrEnum):
+        """Oracle OIC integration status literals."""
+
         ACTIVE = "ACTIVE"
         INACTIVE = "INACTIVE"
         DRAFT = "DRAFT"
@@ -296,6 +300,8 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
 
     @unique
     class OicJobStatusLiteral(StrEnum):
+        """Oracle OIC job status literals."""
+
         RUNNING = "RUNNING"
         COMPLETED = "COMPLETED"
         FAILED = "FAILED"
@@ -304,6 +310,8 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
 
     @unique
     class OicIntegrationTypeLiteral(StrEnum):
+        """Oracle OIC integration type literals."""
+
         INTEGRATION = "INTEGRATION"
         LIBRARY = "LIBRARY"
         TEMPLATE = "TEMPLATE"
@@ -312,22 +320,30 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
 
     @unique
     class OicAgentTypeLiteral(StrEnum):
+        """Oracle OIC agent type literals."""
+
         ON_PREMISES_AGENT = "ON_PREMISES_AGENT"
         FILE_AGENT = "FILE_AGENT"
 
     @unique
     class OicAgentStatusLiteral(StrEnum):
+        """Oracle OIC agent status literals."""
+
         ONLINE = "ONLINE"
         OFFLINE = "OFFLINE"
         MAINTENANCE = "MAINTENANCE"
 
     @unique
     class OicReplicationMethodLiteral(StrEnum):
+        """Replication strategy literals for OIC extraction."""
+
         FULL_TABLE = "FULL_TABLE"
         INCREMENTAL = "INCREMENTAL"
 
     @unique
     class OicErrorTypeLiteral(StrEnum):
+        """Error category literals for OIC operations."""
+
         AUTHENTICATION = "AUTHENTICATION"
         AUTHORIZATION = "AUTHORIZATION"
         RATE_LIMIT = "RATE_LIMIT"
