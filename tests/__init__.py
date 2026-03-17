@@ -20,7 +20,7 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 if TYPE_CHECKING:
     from flext_core.typings import FlextTypes
 
-    from tests.conftest import (
+    from .conftest import (
         basic_oic_config,
         benchmark_config,
         extended_oic_config,
@@ -48,28 +48,25 @@ if TYPE_CHECKING:
         singer_catalog,
         singer_state,
     )
-    from tests.constants import (
+    from .constants import (
         TestsFlextTapOracleOicConstants,
         TestsFlextTapOracleOicConstants as c,
     )
-    from tests.models import TestsFlextTapOracleOicModels, m
-    from tests.protocols import (
+    from .models import TestsFlextTapOracleOicModels, m
+    from .protocols import (
         TestsFlextTapOracleOicProtocols,
         TestsFlextTapOracleOicProtocols as p,
     )
-    from tests.test_auth import TestOICOAuth2Authenticator
-    from tests.test_tap_core import (
+    from .test_auth import TestOICOAuth2Authenticator
+    from .test_tap_core import (
         TestTapOracleOic,
         TestTapOracleOicIntegration,
         TestTapOracleOicWithFixtures,
         sample_config,
         sample_config_with_extended,
     )
-    from tests.typings import (
-        TestsFlextTapOracleOicTypes,
-        TestsFlextTapOracleOicTypes as t,
-    )
-    from tests.utilities import (
+    from .typings import TestsFlextTapOracleOicTypes, TestsFlextTapOracleOicTypes as t
+    from .utilities import (
         TestsFlextTapOracleOicUtilities,
         TestsFlextTapOracleOicUtilities as u,
     )
