@@ -48,15 +48,9 @@ if TYPE_CHECKING:
         singer_catalog,
         singer_state,
     )
-    from .constants import (
-        TestsFlextTapOracleOicConstants,
-        TestsFlextTapOracleOicConstants as c,
-    )
+    from .constants import TestsFlextTapOracleOicConstants, c
     from .models import TestsFlextTapOracleOicModels, m
-    from .protocols import (
-        TestsFlextTapOracleOicProtocols,
-        TestsFlextTapOracleOicProtocols as p,
-    )
+    from .protocols import TestsFlextTapOracleOicProtocols, p
     from .test_auth import TestOICOAuth2Authenticator
     from .test_tap_core import (
         TestTapOracleOic,
@@ -65,11 +59,8 @@ if TYPE_CHECKING:
         sample_config,
         sample_config_with_extended,
     )
-    from .typings import TestsFlextTapOracleOicTypes, TestsFlextTapOracleOicTypes as t
-    from .utilities import (
-        TestsFlextTapOracleOicUtilities,
-        TestsFlextTapOracleOicUtilities as u,
-    )
+    from .typings import TestsFlextTapOracleOicTypes, t
+    from .utilities import TestsFlextTapOracleOicUtilities, u
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "TestOICOAuth2Authenticator": ("tests.test_auth", "TestOICOAuth2Authenticator"),
@@ -98,7 +89,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     ),
     "basic_oic_config": ("tests.conftest", "basic_oic_config"),
     "benchmark_config": ("tests.conftest", "benchmark_config"),
-    "c": ("tests.constants", "TestsFlextTapOracleOicConstants"),
+    "c": ("tests.constants", "c"),
     "extended_oic_config": ("tests.conftest", "extended_oic_config"),
     "filtered_oic_config": ("tests.conftest", "filtered_oic_config"),
     "large_integration_dataset": ("tests.conftest", "large_integration_dataset"),
@@ -112,7 +103,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "mock_oic_client": ("tests.conftest", "mock_oic_client"),
     "mock_packages_response": ("tests.conftest", "mock_packages_response"),
     "mock_rate_limit_response": ("tests.conftest", "mock_rate_limit_response"),
-    "p": ("tests.protocols", "TestsFlextTapOracleOicProtocols"),
+    "p": ("tests.protocols", "p"),
     "performance_oic_config": ("tests.conftest", "performance_oic_config"),
     "pytest_configure": ("tests.conftest", "pytest_configure"),
     "sample_adapter_data": ("tests.conftest", "sample_adapter_data"),
@@ -130,8 +121,8 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "set_test_environment": ("tests.conftest", "set_test_environment"),
     "singer_catalog": ("tests.conftest", "singer_catalog"),
     "singer_state": ("tests.conftest", "singer_state"),
-    "t": ("tests.typings", "TestsFlextTapOracleOicTypes"),
-    "u": ("tests.utilities", "TestsFlextTapOracleOicUtilities"),
+    "t": ("tests.typings", "t"),
+    "u": ("tests.utilities", "u"),
 }
 
 __all__ = [
