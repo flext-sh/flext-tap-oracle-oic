@@ -393,7 +393,7 @@ def _build_config_from_env() -> dict[str, str]:
             "oauth_scope": settings.oauth_audience,
         }
     except (ValueError, TypeError) as e:
-        logger.debug("Configuration loading failed: %s", str(e))
+        logger.debug("Configuration loading failed: %s", e)
         return {}
 
 
