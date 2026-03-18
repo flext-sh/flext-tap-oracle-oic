@@ -13,3 +13,7 @@ from flext_tests import FlextTestsConstants
 
 class TestsFlextTapOracleOicConstants(FlextTestsConstants):
     """Test constants for flexttaporacleoic."""
+
+
+c = TestsFlextTapOracleOicConstants
+__all__ = ["TestsFlextTapOracleOicConstants", "c"]

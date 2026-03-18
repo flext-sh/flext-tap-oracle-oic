@@ -13,3 +13,7 @@ from flext_tests import FlextTestsProtocols
 
 class TestsFlextTapOracleOicProtocols(FlextTestsProtocols):
     """Test protocols for flexttaporacleoic."""
+
+
+p = TestsFlextTapOracleOicProtocols
+__all__ = ["TestsFlextTapOracleOicProtocols", "p"]
