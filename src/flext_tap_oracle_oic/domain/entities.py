@@ -25,42 +25,51 @@ class OICConnection(FlextModels):
 
     model_config = ConfigDict(frozen=False)
     connection_id: Annotated[
-        str, Field(..., min_length=1, description="OIC connection identifier")
+        str,
+        Field(..., min_length=1, description="OIC connection identifier"),
     ]
     adapter_type: Annotated[
-        str, Field(..., min_length=1, description="Adapter type (e.g., REST, SOAP, DB)")
+        str,
+        Field(..., min_length=1, description="Adapter type (e.g., REST, SOAP, DB)"),
     ]
     name: Annotated[str, Field(..., min_length=1, description="Connection name")]
     connection_url: Annotated[
-        str | None, Field(None, description="Connection endpoint URL")
+        str | None,
+        Field(None, description="Connection endpoint URL"),
     ]
     connection_properties: Annotated[
         dict[str, t.ContainerValue],
         Field(default_factory=dict, description="Connection properties"),
     ]
     security_policy: Annotated[
-        str | None, Field(None, description="Security policy name")
+        str | None,
+        Field(None, description="Security policy name"),
     ]
     connection_status: Annotated[
         ConnectionStatus,
         Field(default=ConnectionStatus.CONFIGURED, description="Connection status"),
     ]
     last_tested: Annotated[
-        datetime | None, Field(None, description="Last test timestamp")
+        datetime | None,
+        Field(None, description="Last test timestamp"),
     ]
     test_result: Annotated[
-        dict[str, t.ContainerValue] | None, Field(None, description="Last test result")
+        dict[str, t.ContainerValue] | None,
+        Field(None, description="Last test result"),
     ]
     version: Annotated[str | None, Field(None, description="Connection version")]
     locked_by: Annotated[
-        str | None, Field(None, description="User who locked the connection")
+        str | None,
+        Field(None, description="User who locked the connection"),
     ]
     locked_at: Annotated[datetime | None, Field(None, description="Lock timestamp")]
     created_at: Annotated[
-        datetime | None, Field(None, description="Creation timestamp")
+        datetime | None,
+        Field(None, description="Creation timestamp"),
     ]
     updated_at: Annotated[
-        datetime | None, Field(None, description="Last update timestamp")
+        datetime | None,
+        Field(None, description="Last update timestamp"),
     ]
 
     def mark_failed(self, _error: str) -> None:
@@ -82,51 +91,63 @@ class OICIntegration(FlextModels):
 
     model_config = ConfigDict(frozen=False)
     integration_id: Annotated[
-        str, Field(..., min_length=1, description="OIC integration identifier")
+        str,
+        Field(..., min_length=1, description="OIC integration identifier"),
     ]
     integration_code: Annotated[
-        str, Field(..., min_length=1, description="Integration code")
+        str,
+        Field(..., min_length=1, description="Integration code"),
     ]
     name: Annotated[str, Field(..., min_length=1, description="Integration name")]
     package_name: Annotated[str | None, Field(None, description="Package name")]
     project_name: Annotated[str | None, Field(None, description="Project name")]
     integration_type: Annotated[
-        str, Field(..., description="Integration type (e.g., APP_DRIVEN, SCHEDULED)")
+        str,
+        Field(..., description="Integration type (e.g., APP_DRIVEN, SCHEDULED)"),
     ]
     pattern: Annotated[str | None, Field(None, description="Integration pattern")]
     style: Annotated[str | None, Field(None, description="Integration style")]
     endpoint_url: Annotated[
-        str | None, Field(None, description="Integration endpoint URL")
+        str | None,
+        Field(None, description="Integration endpoint URL"),
     ]
     tracking_level: Annotated[str | None, Field(None, description="Tracking level")]
     payload_tracking: Annotated[
-        bool, Field(default=False, description="Enable payload tracking")
+        bool,
+        Field(default=False, description="Enable payload tracking"),
     ]
     integration_status: Annotated[
         IntegrationStatus,
         Field(default=IntegrationStatus.CONFIGURED, description="Integration status"),
     ]
     activated_at: Annotated[
-        datetime | None, Field(None, description="Activation timestamp")
+        datetime | None,
+        Field(None, description="Activation timestamp"),
     ]
     deactivated_at: Annotated[
-        datetime | None, Field(None, description="Deactivation timestamp")
+        datetime | None,
+        Field(None, description="Deactivation timestamp"),
     ]
     version: Annotated[
-        str, Field(default="01.00.0000", description="Integration version")
+        str,
+        Field(default="01.00.0000", description="Integration version"),
     ]
     locked_by: Annotated[
-        str | None, Field(None, description="User who locked the integration")
+        str | None,
+        Field(None, description="User who locked the integration"),
     ]
     locked_at: Annotated[datetime | None, Field(None, description="Lock timestamp")]
     connection_ids: Annotated[
-        list[str], Field(default_factory=list, description="Associated connection IDs")
+        list[str],
+        Field(default_factory=list, description="Associated connection IDs"),
     ]
     created_at: Annotated[
-        datetime | None, Field(None, description="Creation timestamp")
+        datetime | None,
+        Field(None, description="Creation timestamp"),
     ]
     updated_at: Annotated[
-        datetime | None, Field(None, description="Last update timestamp")
+        datetime | None,
+        Field(None, description="Last update timestamp"),
     ]
 
     @property
@@ -161,10 +182,12 @@ class OICLookup(FlextModels):
 
     model_config = ConfigDict(frozen=False)
     lookup_id: Annotated[
-        str, Field(..., min_length=1, description="OIC lookup identifier")
+        str,
+        Field(..., min_length=1, description="OIC lookup identifier"),
     ]
     lookup_name: Annotated[
-        str, Field(..., min_length=1, description="Lookup table name")
+        str,
+        Field(..., min_length=1, description="Lookup table name"),
     ]
     domain_name: Annotated[str | None, Field(None, description="Domain name")]
     columns: Annotated[
@@ -175,27 +198,34 @@ class OICLookup(FlextModels):
         ),
     ]
     key_columns: Annotated[
-        list[str], Field(default_factory=list, description="Key column names")
+        list[str],
+        Field(default_factory=list, description="Key column names"),
     ]
     value_columns: Annotated[
-        list[str], Field(default_factory=list, description="Value column names")
+        list[str],
+        Field(default_factory=list, description="Value column names"),
     ]
     row_count: Annotated[int, Field(default=0, ge=0, description="Number of rows")]
     data_size_bytes: Annotated[
-        int | None, Field(None, ge=0, description="Data size in bytes")
+        int | None,
+        Field(None, ge=0, description="Data size in bytes"),
     ]
     locked_by: Annotated[
-        str | None, Field(None, description="User who locked the lookup")
+        str | None,
+        Field(None, description="User who locked the lookup"),
     ]
     locked_at: Annotated[datetime | None, Field(None, description="Lock timestamp")]
     last_imported: Annotated[
-        datetime | None, Field(None, description="Last import timestamp")
+        datetime | None,
+        Field(None, description="Last import timestamp"),
     ]
     created_at: Annotated[
-        datetime | None, Field(None, description="Creation timestamp")
+        datetime | None,
+        Field(None, description="Creation timestamp"),
     ]
     updated_at: Annotated[
-        datetime | None, Field(None, description="Last update timestamp")
+        datetime | None,
+        Field(None, description="Last update timestamp"),
     ]
 
     @property
@@ -217,25 +247,30 @@ class OICMonitoringRecord(FlextModels):
     """OIC monitoring record domain entity using flext-core patterns."""
 
     instance_id: Annotated[
-        str, Field(..., min_length=1, description="Flow instance ID")
+        str,
+        Field(..., min_length=1, description="Flow instance ID"),
     ]
     integration_id: Annotated[str, Field(..., description="Associated integration ID")]
     flow_id: Annotated[str | None, Field(None, description="Flow ID")]
     tracking_level: Annotated[str | None, Field(None, description="Tracking level")]
     started_at: Annotated[datetime, Field(..., description="Execution start time")]
     completed_at: Annotated[
-        datetime | None, Field(None, description="Execution completion time")
+        datetime | None,
+        Field(None, description="Execution completion time"),
     ]
     duration_ms: Annotated[
-        int | None, Field(None, ge=0, description="Duration in milliseconds")
+        int | None,
+        Field(None, ge=0, description="Duration in milliseconds"),
     ]
     execution_status: Annotated[str, Field(..., description="Execution status")]
     error_code: Annotated[str | None, Field(None, description="Error code if failed")]
     error_message: Annotated[
-        str | None, Field(None, description="Error message if failed")
+        str | None,
+        Field(None, description="Error message if failed"),
     ]
     message_count: Annotated[
-        int, Field(default=0, ge=0, description="Number of messages processed")
+        int,
+        Field(default=0, ge=0, description="Number of messages processed"),
     ]
     error_count: Annotated[int, Field(default=0, ge=0, description="Number of errors")]
     business_identifiers: Annotated[
@@ -264,31 +299,39 @@ class OICProject(FlextModels):
 
     model_config = ConfigDict(frozen=False)
     project_id: Annotated[
-        str, Field(..., min_length=1, description="OIC project identifier")
+        str,
+        Field(..., min_length=1, description="OIC project identifier"),
     ]
     project_code: Annotated[str, Field(..., min_length=1, description="Project code")]
     name: Annotated[str, Field(..., min_length=1, description="Project name")]
     integration_ids: Annotated[
-        list[str], Field(default_factory=list, description="Integration IDs in project")
+        list[str],
+        Field(default_factory=list, description="Integration IDs in project"),
     ]
     connection_ids: Annotated[
-        list[str], Field(default_factory=list, description="Connection IDs in project")
+        list[str],
+        Field(default_factory=list, description="Connection IDs in project"),
     ]
     lookup_ids: Annotated[
-        list[str], Field(default_factory=list, description="Lookup IDs in project")
+        list[str],
+        Field(default_factory=list, description="Lookup IDs in project"),
     ]
     deployment_status: Annotated[
-        str | None, Field(None, description="Deployment status")
+        str | None,
+        Field(None, description="Deployment status"),
     ]
     deployed_at: Annotated[
-        datetime | None, Field(None, description="Deployment timestamp")
+        datetime | None,
+        Field(None, description="Deployment timestamp"),
     ]
     deployed_by: Annotated[str | None, Field(None, description="User who deployed")]
     created_at: Annotated[
-        datetime | None, Field(None, description="Creation timestamp")
+        datetime | None,
+        Field(None, description="Creation timestamp"),
     ]
     updated_at: Annotated[
-        datetime | None, Field(None, description="Last update timestamp")
+        datetime | None,
+        Field(None, description="Last update timestamp"),
     ]
 
     @property
@@ -320,15 +363,18 @@ class OICResourceMetadata(FlextModels):
 
     resource_type: Annotated[OICResourceType, Field(..., description="Resource type")]
     resource_id: Annotated[
-        str, Field(..., min_length=1, description="Resource identifier")
+        str,
+        Field(..., min_length=1, description="Resource identifier"),
     ]
     name: Annotated[str, Field(..., min_length=1, description="Resource name")]
     version: Annotated[str | None, Field(None, description="Resource version")]
     created_at: Annotated[
-        datetime | None, Field(None, description="Creation timestamp")
+        datetime | None,
+        Field(None, description="Creation timestamp"),
     ]
     updated_at: Annotated[
-        datetime | None, Field(None, description="Last update timestamp")
+        datetime | None,
+        Field(None, description="Last update timestamp"),
     ]
 
 
@@ -337,19 +383,24 @@ class OICExecutionSummary(FlextModels):
 
     integration_id: Annotated[str, Field(..., description="Integration ID")]
     total_executions: Annotated[
-        int, Field(default=0, ge=0, description="Total number of executions")
+        int,
+        Field(default=0, ge=0, description="Total number of executions"),
     ]
     successful_executions: Annotated[
-        int, Field(default=0, ge=0, description="Successful executions")
+        int,
+        Field(default=0, ge=0, description="Successful executions"),
     ]
     failed_executions: Annotated[
-        int, Field(default=0, ge=0, description="Failed executions")
+        int,
+        Field(default=0, ge=0, description="Failed executions"),
     ]
     average_duration_ms: Annotated[
-        float | None, Field(None, ge=0, description="Average execution duration")
+        float | None,
+        Field(None, ge=0, description="Average execution duration"),
     ]
     last_execution_at: Annotated[
-        datetime | None, Field(None, description="Last execution timestamp")
+        datetime | None,
+        Field(None, description="Last execution timestamp"),
     ]
 
     @property

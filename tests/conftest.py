@@ -12,12 +12,37 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import os
-from collections.abc import Generator, Iterator
+from collections.abc import Callable, Generator, Iterator
 from unittest.mock import Mock
 
 import pytest
 
 from flext_tap_oracle_oic import t
+
+
+def _build_singer_stream(
+    *,
+    tap_stream_id: str,
+    replication_key: str,
+    properties: dict[str, object],
+) -> dict[str, object]:
+    return {
+        "tap_stream_id": tap_stream_id,
+        "schema": {
+            "type": "object",
+            "properties": properties,
+        },
+        "metadata": [
+            {
+                "breadcrumb": [],
+                "metadata": {
+                    "replication-method": "INCREMENTAL",
+                    "replication-key": replication_key,
+                    "selected": True,
+                },
+            }
+        ],
+    }
 
 
 @pytest.fixture(autouse=True)
@@ -400,52 +425,28 @@ def singer_catalog() -> dict[str, object]:
     """Singer catalog for OIC tap."""
     return {
         "streams": [
-            {
-                "tap_stream_id": "integrations",
-                "schema": {
-                    "type": "object",
-                    "properties": {
-                        "id": {"type": "string"},
-                        "name": {"type": "string"},
-                        "version": {"type": "string"},
-                        "status": {"type": "string"},
-                        "lastUpdatedTime": {"type": "string", "format": "date-time"},
-                    },
+            _build_singer_stream(
+                tap_stream_id="integrations",
+                replication_key="lastUpdatedTime",
+                properties={
+                    "id": {"type": "string"},
+                    "name": {"type": "string"},
+                    "version": {"type": "string"},
+                    "status": {"type": "string"},
+                    "lastUpdatedTime": {"type": "string", "format": "date-time"},
                 },
-                "metadata": [
-                    {
-                        "breadcrumb": [],
-                        "metadata": {
-                            "replication-method": "INCREMENTAL",
-                            "replication-key": "lastUpdatedTime",
-                            "selected": True,
-                        },
-                    }
-                ],
-            },
-            {
-                "tap_stream_id": "connections",
-                "schema": {
-                    "type": "object",
-                    "properties": {
-                        "id": {"type": "string"},
-                        "name": {"type": "string"},
-                        "adapterType": {"type": "string"},
-                        "status": {"type": "string"},
-                        "modifiedDate": {"type": "string", "format": "date-time"},
-                    },
+            ),
+            _build_singer_stream(
+                tap_stream_id="connections",
+                replication_key="modifiedDate",
+                properties={
+                    "id": {"type": "string"},
+                    "name": {"type": "string"},
+                    "adapterType": {"type": "string"},
+                    "status": {"type": "string"},
+                    "modifiedDate": {"type": "string", "format": "date-time"},
                 },
-                "metadata": [
-                    {
-                        "breadcrumb": [],
-                        "metadata": {
-                            "replication-method": "INCREMENTAL",
-                            "replication-key": "modifiedDate",
-                            "selected": True,
-                        },
-                    }
-                ],
-            },
+            ),
         ]
     }
 
@@ -565,7 +566,11 @@ def mock_oic_client() -> type:
             )
             return {"success": True, "items": [], "hasMore": False, "count": 0}
 
-        def paginate_request(self, _request_func, **_kwargs: t.Scalar) -> Iterator:
+        def paginate_request(
+            self,
+            _request_func: Callable[..., dict[str, object]],
+            **_kwargs: t.Scalar,
+        ) -> Iterator[dict[str, object]]:
             """Mock pagination."""
             yield from []
 

@@ -48,7 +48,7 @@ class FlextOracleOicAuthenticator:
         """Get OAuth2 access token using client credentials flow."""
         try:
             token_request_data: str = "&".join(
-                (f"{k}={v}" for k, v in self.config.get_token_request_data().items())
+                (f"{k}={v}" for k, v in self.config.get_token_request_data().items()),
             )
             response_result = self._api_client.post(
                 str(self.config.oauth_token_url),
@@ -60,14 +60,14 @@ class FlextOracleOicAuthenticator:
             response = response_result.value
             if response.status_code >= c.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD:
                 return r[str].fail(
-                    f"OAuth2 request failed with status {response.status_code}"
+                    f"OAuth2 request failed with status {response.status_code}",
                 )
             match response.body:
                 case dict() as token_dict:
                     token_data = token_dict
                 case str() as body_str:
                     parser: TypeAdapter[dict[str, mt.ContainerValue]] = TypeAdapter(
-                        dict[str, mt.ContainerValue]
+                        dict[str, mt.ContainerValue],
                     )
                     token_data = parser.validate_json(body_str)
                 case _:
@@ -119,18 +119,18 @@ class OracleOicClient:
         headers_result = self._get_auth_headers()
         if headers_result.is_failure:
             return r[FlextApiModels.Api.HttpResponse].fail(
-                f"Failed to get auth headers: {headers_result.error}"
+                f"Failed to get auth headers: {headers_result.error}",
             )
         try:
             response_result = self._api_client.get(url, headers=headers_result.value)
             if response_result.is_failure:
                 return r[FlextApiModels.Api.HttpResponse].fail(
-                    f"OIC API request failed: {response_result.error}"
+                    f"OIC API request failed: {response_result.error}",
                 )
             response = response_result.value
             if response.status_code >= c.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD:
                 return r[FlextApiModels.Api.HttpResponse].fail(
-                    f"OIC API request failed with status {response.status_code}"
+                    f"OIC API request failed with status {response.status_code}",
                 )
             return r[FlextApiModels.Api.HttpResponse].ok(response)
         except (
@@ -143,37 +143,41 @@ class OracleOicClient:
             ImportError,
         ) as e:
             return r[FlextApiModels.Api.HttpResponse].fail(
-                f"OIC API request failed: {e}"
+                f"OIC API request failed: {e}",
             )
 
     def post(
-        self, endpoint: str, data: Mapping[str, mt.ContainerValue] | None = None
+        self,
+        endpoint: str,
+        data: Mapping[str, mt.ContainerValue] | None = None,
     ) -> r[FlextApiModels.Api.HttpResponse]:
         """Make authenticated POST request to OIC API."""
         url = f"{self.config.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
         headers_result = self._get_auth_headers()
         if headers_result.is_failure:
             return r[FlextApiModels.Api.HttpResponse].fail(
-                f"Failed to get auth headers: {headers_result.error}"
+                f"Failed to get auth headers: {headers_result.error}",
             )
         try:
             serializer: TypeAdapter[dict[str, mt.ContainerValue]] = TypeAdapter(
-                dict[str, mt.ContainerValue]
+                dict[str, mt.ContainerValue],
             )
             json_body: str | None = (
                 serializer.dump_json(dict(data)).decode("utf-8") if data else None
             )
             response_result = self._api_client.post(
-                url, data=json_body, headers=headers_result.value
+                url,
+                data=json_body,
+                headers=headers_result.value,
             )
             if response_result.is_failure:
                 return r[FlextApiModels.Api.HttpResponse].fail(
-                    f"OIC API request failed: {response_result.error}"
+                    f"OIC API request failed: {response_result.error}",
                 )
             response = response_result.value
             if response.status_code >= c.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD:
                 return r[FlextApiModels.Api.HttpResponse].fail(
-                    f"OIC API request failed with status {response.status_code}"
+                    f"OIC API request failed with status {response.status_code}",
                 )
             return r[FlextApiModels.Api.HttpResponse].ok(response)
         except (
@@ -186,7 +190,7 @@ class OracleOicClient:
             ImportError,
         ) as e:
             return r[FlextApiModels.Api.HttpResponse].fail(
-                f"OIC API request failed: {e}"
+                f"OIC API request failed: {e}",
             )
 
     def _get_auth_headers(self) -> r[Mapping[str, str]]:
@@ -194,7 +198,7 @@ class OracleOicClient:
         token_result = self.authenticator.get_access_token()
         if token_result.is_failure:
             return r[Mapping[str, str]].fail(
-                f"Failed to get access token: {token_result.error}"
+                f"Failed to get access token: {token_result.error}",
             )
         headers: dict[str, str] = dict(self.config.get_headers())
         headers["Authorization"] = f"Bearer {token_result.value}"
@@ -268,18 +272,20 @@ class TapOracleOic(Tap):
                 "oauth_client_secret": str(config_dict["oauth_client_secret"]),
                 "oauth_token_url": str(config_dict["oauth_token_url"]),
                 "oauth_audience": str(
-                    config_dict.get("oauth_scope", "urn:opc:resource:consumer:all")
+                    config_dict.get("oauth_scope", "urn:opc:resource:consumer:all"),
                 ),
                 "base_url": str(config_dict["oic_url"]),
                 "timeout": self._to_positive_int(
-                    config_dict.get("request_timeout"), 30
+                    config_dict.get("request_timeout"),
+                    30,
                 ),
                 "max_retries": self._to_positive_int(config_dict.get("max_retries"), 3),
             }
             oic_config = FlextTapOracleOicSettings.model_validate(oic_config_data)
             authenticator = FlextOracleOicAuthenticator(config=oic_config)
             self._client = OracleOicClient(
-                config=oic_config, authenticator=authenticator
+                config=oic_config,
+                authenticator=authenticator,
             )
         return self._client
 
@@ -322,7 +328,7 @@ class TapOracleOic(Tap):
                     else "FULL_TABLE",
                 }
                 for stream in streams
-            ]
+            ],
         }
         return r[mt.Meltano.Singer.StreamCatalog].ok(catalog)
 
@@ -341,7 +347,7 @@ class TapOracleOic(Tap):
         try:
             logger.info("Testing Oracle OIC connection")
             test_result: r[FlextApiModels.Api.HttpResponse] = self.client.get(
-                "integrations"
+                "integrations",
             )
             if test_result.is_success:
                 logger.info("Oracle OIC connection test successful")
@@ -391,7 +397,7 @@ def _build_config_from_env() -> Mapping[str, mt.ContainerValue]:
             "oauth_scope": settings.oauth_audience,
         }
     except (ValueError, TypeError) as e:
-        logger.debug(f"Configuration loading failed: {e}")
+        logger.debug("Configuration loading failed: %s", e)
         return {}
 
 
@@ -444,7 +450,7 @@ def _execute_discover_command(tap: TapOracleOic) -> int:
                 "replication_key": getattr(stream, "replication_key", None),
             }
             for stream in streams
-        ]
+        ],
     }
     logger.info("Generated catalog with %s streams", len(catalog["streams"]))
     return 0

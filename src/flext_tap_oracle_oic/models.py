@@ -232,7 +232,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             oauth_client_secret: Annotated[
-                str, Field(..., description="OAuth2 client secret")
+                str,
+                Field(..., description="OAuth2 client secret"),
             ]
             oauth_token_url: Annotated[
                 str,
@@ -242,7 +243,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             oauth_client_aud: Annotated[
-                str, Field(..., description="OAuth2 audience parameter")
+                str,
+                Field(..., description="OAuth2 audience parameter"),
             ]
             base_url: Annotated[str, Field(..., description="OIC instance base URL")]
 
@@ -344,7 +346,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
             name: Annotated[str, Field(..., description="Integration name")]
             description: Annotated[
-                str | None, Field(None, description="Integration description")
+                str | None,
+                Field(None, description="Integration description"),
             ]
             api_version: Annotated[
                 str,
@@ -386,10 +389,12 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Metadata
             package_id: Annotated[
-                str | None, Field(None, description="Associated package ID")
+                str | None,
+                Field(None, description="Associated package ID"),
             ]
             pattern: Annotated[
-                str | None, Field(None, description="Integration pattern type")
+                str | None,
+                Field(None, description="Integration pattern type"),
             ]
             style: Annotated[str | None, Field(None, description="Integration style")]
 
@@ -402,7 +407,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             error_count: Annotated[
-                int | None, Field(None, description="Total error count")
+                int | None,
+                Field(None, description="Total error count"),
             ]
             last_execution_time: Annotated[
                 datetime | None,
@@ -480,14 +486,17 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             connection_id: Annotated[
-                str, Field(..., description="Unique connection identifier")
+                str,
+                Field(..., description="Unique connection identifier"),
             ]
             name: Annotated[str, Field(..., description="Connection name")]
             description: Annotated[
-                str | None, Field(None, description="Connection description")
+                str | None,
+                Field(None, description="Connection description"),
             ]
             connection_type: Annotated[
-                str, Field(..., description="Connection adapter type")
+                str,
+                Field(..., description="Connection adapter type"),
             ]
 
             # Configuration (sanitized)
@@ -545,7 +554,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             test_result: Annotated[
-                str | None, Field(None, description="Last test result")
+                str | None,
+                Field(None, description="Last test result"),
             ]
 
             # Sanitization markers
@@ -640,15 +650,18 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             integration_id: Annotated[
-                str, Field(..., description="Associated integration ID")
+                str,
+                Field(..., description="Associated integration ID"),
             ]
             instance_id: Annotated[
-                str, Field(..., description="Integration instance ID")
+                str,
+                Field(..., description="Integration instance ID"),
             ]
 
             # Temporal information (for incremental replication)
             start_time: Annotated[
-                datetime, Field(..., description="Activity start timestamp")
+                datetime,
+                Field(..., description="Activity start timestamp"),
             ]
             end_time: Annotated[
                 datetime | None,
@@ -691,7 +704,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             bytes_processed: Annotated[
-                int | None, Field(None, description="Bytes processed")
+                int | None,
+                Field(None, description="Bytes processed"),
             ]
             throughput_mps: Annotated[
                 float | None,
@@ -772,14 +786,17 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             package_id: Annotated[
-                str, Field(..., description="Unique package identifier")
+                str,
+                Field(..., description="Unique package identifier"),
             ]
             name: Annotated[str, Field(..., description="Package name")]
             description: Annotated[
-                str | None, Field(None, description="Package description")
+                str | None,
+                Field(None, description="Package description"),
             ]
             api_version: Annotated[
-                str, Field(..., description="Package version from OIC API")
+                str,
+                Field(..., description="Package version from OIC API"),
             ]
 
             # Package metadata
@@ -791,7 +808,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             created_by: Annotated[
-                str | None, Field(None, description="Package creator")
+                str | None,
+                Field(None, description="Package creator"),
             ]
             created_date: Annotated[
                 datetime | None,
@@ -895,10 +913,12 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             metric_id: Annotated[
-                str, Field(..., description="Unique metrics record identifier")
+                str,
+                Field(..., description="Unique metrics record identifier"),
             ]
             integration_id: Annotated[
-                str, Field(..., description="Associated integration ID")
+                str,
+                Field(..., description="Associated integration ID"),
             ]
             timestamp: Annotated[datetime, Field(..., description="Metrics timestamp")]
 
@@ -941,10 +961,12 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             error_count: Annotated[
-                int | None, Field(None, description="Error message count")
+                int | None,
+                Field(None, description="Error message count"),
             ]
             retry_count: Annotated[
-                int | None, Field(None, description="Retry attempt count")
+                int | None,
+                Field(None, description="Retry attempt count"),
             ]
 
             # Resource utilization
@@ -956,10 +978,12 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             thread_count: Annotated[
-                int | None, Field(None, description="Active thread count")
+                int | None,
+                Field(None, description="Active thread count"),
             ]
             queue_depth: Annotated[
-                int | None, Field(None, description="Message queue depth")
+                int | None,
+                Field(None, description="Message queue depth"),
             ]
 
             @computed_field
@@ -1070,7 +1094,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Configuration
             host_machine: Annotated[
-                str | None, Field(None, description="Host machine name")
+                str | None,
+                Field(None, description="Host machine name"),
             ]
             installation_path: Annotated[
                 str | None,
@@ -1080,7 +1105,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             port: Annotated[
-                int | None, Field(None, description="Agent communication port")
+                int | None,
+                Field(None, description="Agent communication port"),
             ]
 
             # Health metrics
@@ -1099,7 +1125,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             last_error: Annotated[
-                str | None, Field(None, description="Last error message")
+                str | None,
+                Field(None, description="Last error message"),
             ]
 
             @computed_field
@@ -1309,7 +1336,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             success: Annotated[
-                bool, Field(..., description="Response success indicator")
+                bool,
+                Field(..., description="Response success indicator"),
             ]
             data: Annotated[
                 t.ContainerValue | None,
@@ -1326,15 +1354,18 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             page_size: Annotated[
-                int | None, Field(None, description="Current page size")
+                int | None,
+                Field(None, description="Current page size"),
             ]
             page_number: Annotated[
-                int | None, Field(None, description="Current page number")
+                int | None,
+                Field(None, description="Current page number"),
             ]
 
             # Error information
             error_code: Annotated[
-                str | None, Field(None, description="Error code if failed")
+                str | None,
+                Field(None, description="Error code if failed"),
             ]
             error_message: Annotated[
                 str | None,
@@ -1360,10 +1391,12 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             api_version: Annotated[
-                str | None, Field(None, description="OIC API version")
+                str | None,
+                Field(None, description="OIC API version"),
             ]
             request_id: Annotated[
-                str | None, Field(None, description="Request correlation ID")
+                str | None,
+                Field(None, description="Request correlation ID"),
             ]
 
             @computed_field
@@ -1434,10 +1467,12 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             error_type: Annotated[
-                OicErrorTypeLiteral, Field(..., description="Error category")
+                OicErrorTypeLiteral,
+                Field(..., description="Error category"),
             ]
             http_status_code: Annotated[
-                int | None, Field(None, description="HTTP status code")
+                int | None,
+                Field(None, description="HTTP status code"),
             ]
             retry_after_seconds: Annotated[
                 int | None,
@@ -1449,10 +1484,12 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Context information
             endpoint: Annotated[
-                str | None, Field(None, description="API endpoint that failed")
+                str | None,
+                Field(None, description="API endpoint that failed"),
             ]
             request_method: Annotated[
-                str | None, Field(None, description="HTTP method used")
+                str | None,
+                Field(None, description="HTTP method used"),
             ]
             request_params: Annotated[
                 dict[str, t.ContainerValue] | None,

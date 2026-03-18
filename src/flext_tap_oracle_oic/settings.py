@@ -76,7 +76,8 @@ def create_oracle_oic_tap_config(
             dict(tap_params) if tap_params is not None else {}
         )
         tap_config.setdefault(
-            "batch_size", FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE
+            "batch_size",
+            FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE,
         )
         tap_config.setdefault("stream_prefix", "oic")
         config_data = {**oauth_params, **connection_params, **tap_config}
@@ -84,7 +85,7 @@ def create_oracle_oic_tap_config(
         return r[FlextTapOracleOicSettings].ok(config_instance)
     except (ValueError, TypeError, KeyError, AttributeError, OSError) as e:
         return r[FlextTapOracleOicSettings].fail(
-            f"Oracle OIC tap configuration creation failed: {e}"
+            f"Oracle OIC tap configuration creation failed: {e}",
         )
 
 

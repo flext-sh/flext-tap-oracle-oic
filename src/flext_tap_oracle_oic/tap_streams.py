@@ -22,10 +22,12 @@ from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
 from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 _GENERAL_LIST_ADAPTER = TypeAdapter(
-    list[mt.ContainerValue], config=ConfigDict(strict=True)
+    list[mt.ContainerValue],
+    config=ConfigDict(strict=True),
 )
 _GENERAL_MAP_ADAPTER = TypeAdapter(
-    dict[str, mt.ContainerValue], config=ConfigDict(strict=True)
+    dict[str, mt.ContainerValue],
+    config=ConfigDict(strict=True),
 )
 _STRING_LIST_ADAPTER = TypeAdapter(list[str], config=ConfigDict(strict=True))
 
@@ -124,7 +126,8 @@ class OICPaginator:
         return self.current_value + len(items)
 
     def _extract_items_from_response(
-        self, data: t.ContainerValue
+        self,
+        data: t.ContainerValue,
     ) -> list[t.ContainerValue] | None:
         """Extract items from various OIC response formats."""
         list_payload = _as_value_list(data)
@@ -193,7 +196,7 @@ class OICBaseStream(FlextMeltanoStream):
         """
         utilities = FlextTapOracleOicUtilities()
         base_url = str(
-            self.config.get("base_url") or self.config.get("oic_url", "")
+            self.config.get("base_url") or self.config.get("oic_url", ""),
         ).rstrip("/")
         if not base_url:
             msg = "Base URL is required but not configured"
@@ -220,7 +223,8 @@ class OICBaseStream(FlextMeltanoStream):
             "process": FlextTapOracleOicConstants.OIC_PROCESS_API_PATH,
         }
         return base_url + api_paths.get(
-            self.api_category, FlextTapOracleOicConstants.OIC_API_BASE_PATH
+            self.api_category,
+            FlextTapOracleOicConstants.OIC_API_BASE_PATH,
         )
 
     def get_new_paginator(self) -> OICPaginator:
@@ -233,7 +237,8 @@ class OICBaseStream(FlextMeltanoStream):
         return OICPaginator(start_value=0, page_size=self.config.get("page_size", 100))
 
     def get_records(
-        self, context: Mapping[str, t.ContainerValue] | None = None
+        self,
+        context: Mapping[str, t.ContainerValue] | None = None,
     ) -> Iterator[dict[str, t.ContainerValue]]:
         """Get records from OIC API.
 
@@ -296,7 +301,8 @@ class OICBaseStream(FlextMeltanoStream):
         return {k: v for k, v in params.items() if v is not None}
 
     def parse_response(
-        self, response: requests.Response
+        self,
+        response: requests.Response,
     ) -> Iterator[Mapping[str, t.ContainerValue]]:
         """Parse Oracle OIC API response and yield records with validation.
 
@@ -328,7 +334,8 @@ class OICBaseStream(FlextMeltanoStream):
                 raise
 
     def _enrich_record(
-        self, record: Mapping[str, t.ContainerValue]
+        self,
+        record: Mapping[str, t.ContainerValue],
     ) -> Mapping[str, t.ContainerValue]:
         """Enrich record with tap metadata for traceability."""
         enriched: dict[str, t.ContainerValue] = dict(record)
@@ -337,7 +344,9 @@ class OICBaseStream(FlextMeltanoStream):
         return enriched
 
     def _extract_and_yield_records(
-        self, data: t.ContainerValue, url: str
+        self,
+        data: t.ContainerValue,
+        url: str,
     ) -> Iterator[Mapping[str, t.ContainerValue]]:
         """Extract and yield records with validation and enrichment."""
         records_yielded = 0
@@ -351,15 +360,20 @@ class OICBaseStream(FlextMeltanoStream):
                 list(map_data.keys()) if map_data is not None else str(type(data))
             )
             self.logger.warning(
-                "Unknown response format from %s: %s", url, payload_descriptor
+                "Unknown response format from %s: %s",
+                url,
+                payload_descriptor,
             )
         elif records_yielded > 0:
             self.logger.debug(
-                "Successfully parsed %s records from %s", records_yielded, url
+                "Successfully parsed %s records from %s",
+                records_yielded,
+                url,
             )
 
     def _extract_items_for_processing(
-        self, data: t.ContainerValue
+        self,
+        data: t.ContainerValue,
     ) -> Iterator[Mapping[str, t.ContainerValue]]:
         """Extract items from various OIC response formats for processing."""
         list_payload = _as_value_list(data)
@@ -424,7 +438,8 @@ class OICBaseStream(FlextMeltanoStream):
         return not any(key in data for key in metadata_keys)
 
     def _process_dict_data(
-        self, data: Mapping[str, t.ContainerValue]
+        self,
+        data: Mapping[str, t.ContainerValue],
     ) -> Iterator[Mapping[str, t.ContainerValue]]:
         """Process dict-type response data with OIC format detection."""
         envelope = _as_oic_envelope(data)
@@ -438,7 +453,8 @@ class OICBaseStream(FlextMeltanoStream):
             yield data
 
     def _process_list_data(
-        self, data: list[t.ContainerValue]
+        self,
+        data: list[t.ContainerValue],
     ) -> Iterator[Mapping[str, t.ContainerValue]]:
         """Process list-type response data."""
         for item in data:
@@ -447,7 +463,9 @@ class OICBaseStream(FlextMeltanoStream):
                 yield record
 
     def _track_response_metrics(
-        self, response: requests.Response, data: t.ContainerValue
+        self,
+        response: requests.Response,
+        data: t.ContainerValue,
     ) -> None:
         """Track response metrics for monitoring and optimization."""
         if getattr(response, "elapsed", None) is not None:

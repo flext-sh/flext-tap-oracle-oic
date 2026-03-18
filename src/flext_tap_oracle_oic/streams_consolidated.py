@@ -146,8 +146,8 @@ class IntegrationsStream(OICBaseStream):
                     th.Singer.Typing.StringType(),
                     description="Folder ID",
                 ),
-            )
-        )
+            ),
+        ),
     )
 
 
@@ -258,8 +258,8 @@ class ConnectionsStream(OICBaseStream):
                     th.Singer.Typing.BooleanType(),
                     description="Is locked",
                 ),
-            )
-        )
+            ),
+        ),
     )
 
 
@@ -280,7 +280,9 @@ class PackagesStream(OICBaseStream):
         _properties_to_dict(
             th.Singer.Typing.PropertiesList(
                 th.Singer.Typing.Property(
-                    "id", th.Singer.Typing.StringType(), description="Package ID"
+                    "id",
+                    th.Singer.Typing.StringType(),
+                    description="Package ID",
                 ),
                 th.Singer.Typing.Property(
                     "name",
@@ -342,8 +344,8 @@ class PackagesStream(OICBaseStream):
                     th.Singer.Typing.StringType(),
                     description="Project ID",
                 ),
-            )
-        )
+            ),
+        ),
     )
 
 
@@ -422,8 +424,8 @@ class LookupsStream(OICBaseStream):
                     th.Singer.Typing.IntegerType(),
                     description="Usage count",
                 ),
-            )
-        )
+            ),
+        ),
     )
 
 
@@ -443,7 +445,9 @@ class LibrariesStream(OICBaseStream):
         _properties_to_dict(
             th.Singer.Typing.PropertiesList(
                 th.Singer.Typing.Property(
-                    "id", th.Singer.Typing.StringType(), description="Library ID"
+                    "id",
+                    th.Singer.Typing.StringType(),
+                    description="Library ID",
                 ),
                 th.Singer.Typing.Property(
                     "name",
@@ -505,8 +509,8 @@ class LibrariesStream(OICBaseStream):
                     th.Singer.Typing.ArrayType(th.Singer.Typing.StringType()),
                     description="Available functions",
                 ),
-            )
-        )
+            ),
+        ),
     )
 
 
@@ -590,8 +594,8 @@ class CertificatesStream(OICBaseStream):
                     th.Singer.Typing.IntegerType(),
                     description="Usage count",
                 ),
-            )
-        )
+            ),
+        ),
     )
 
 
@@ -611,7 +615,9 @@ class AdaptersStream(OICBaseStream):
         _properties_to_dict(
             th.Singer.Typing.PropertiesList(
                 th.Singer.Typing.Property(
-                    "id", th.Singer.Typing.StringType(), description="Adapter ID"
+                    "id",
+                    th.Singer.Typing.StringType(),
+                    description="Adapter ID",
                 ),
                 th.Singer.Typing.Property(
                     "name",
@@ -668,8 +674,8 @@ class AdaptersStream(OICBaseStream):
                     th.Singer.Typing.StringType(),
                     description="Documentation URL",
                 ),
-            )
-        )
+            ),
+        ),
     )
 
 
@@ -690,7 +696,9 @@ class ProjectsStream(OICBaseStream):
         _properties_to_dict(
             th.Singer.Typing.PropertiesList(
                 th.Singer.Typing.Property(
-                    "id", th.Singer.Typing.StringType(), description="Project ID"
+                    "id",
+                    th.Singer.Typing.StringType(),
+                    description="Project ID",
                 ),
                 th.Singer.Typing.Property(
                     "name",
@@ -747,8 +755,8 @@ class ProjectsStream(OICBaseStream):
                     th.Singer.Typing.ArrayType(th.Singer.Typing.ObjectType()),
                     description="Project permissions",
                 ),
-            )
-        )
+            ),
+        ),
     )
 
 
@@ -823,8 +831,8 @@ class ExecutionsStream(OICBaseStream):
                     th.Singer.Typing.IntegerType(),
                     description="Processed record count",
                 ),
-            )
-        )
+            ),
+        ),
     )
 
 
@@ -884,8 +892,8 @@ class MetricsStream(OICBaseStream):
                     th.Singer.Typing.StringType(),
                     description="Related connection",
                 ),
-            )
-        )
+            ),
+        ),
     )
 
 
