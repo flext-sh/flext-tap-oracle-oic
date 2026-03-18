@@ -15,7 +15,7 @@ from typing import Annotated, ClassVar
 import requests
 from flext_api import FlextApi, FlextApiSettings
 from flext_core import FlextExceptions, FlextLogger, t
-from flext_meltano import FlextMeltanoStream, t as mt
+from flext_meltano import t as mt
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError
 
 from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
@@ -158,7 +158,7 @@ class OICPaginator:
                 self._page_size = min(self._max_page_size, int(self._page_size * 1.2))
 
 
-class OICBaseStream(FlextMeltanoStream):
+class OICBaseStream(BaseModel):
     """Professional base stream class for Oracle Integration Cloud APIs.
 
     stream implementation with:
@@ -171,6 +171,11 @@ class OICBaseStream(FlextMeltanoStream):
     - Incremental extraction with state management
     - Support for all OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
     """
+
+    config: dict[str, t.ContainerValue] = Field(default_factory=dict)
+    name: str = Field(default="")
+    replication_key: str | None = Field(default=None)
+    logger: FlextLogger = Field(default_factory=lambda: FlextLogger(__name__))
 
     requires_design_api: ClassVar[bool] = False
     requires_runtime_api: ClassVar[bool] = False
