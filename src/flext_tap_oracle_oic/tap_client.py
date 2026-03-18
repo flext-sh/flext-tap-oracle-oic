@@ -66,8 +66,8 @@ class FlextOracleOicAuthenticator:
                 case dict() as token_dict:
                     token_data = token_dict
                 case str() as body_str:
-                    parser: TypeAdapter[dict[str, mt.ContainerValue]] = TypeAdapter(
-                        dict[str, mt.ContainerValue],
+                    parser: TypeAdapter[dict[str, dict[str, object]]] = TypeAdapter(
+                        dict[str, Mapping[str, object]],
                     )
                     token_data = parser.validate_json(body_str)
                 case _:
@@ -149,7 +149,7 @@ class OracleOicClient:
     def post(
         self,
         endpoint: str,
-        data: Mapping[str, mt.ContainerValue] | None = None,
+        data: Mapping[str, dict[str, object]] | None = None,
     ) -> r[FlextApiModels.Api.HttpResponse]:
         """Make authenticated POST request to OIC API."""
         url = f"{self.config.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
@@ -159,8 +159,8 @@ class OracleOicClient:
                 f"Failed to get auth headers: {headers_result.error}",
             )
         try:
-            serializer: TypeAdapter[dict[str, mt.ContainerValue]] = TypeAdapter(
-                dict[str, mt.ContainerValue],
+            serializer: TypeAdapter[dict[str, dict[str, object]]] = TypeAdapter(
+                dict[str, Mapping[str, object]],
             )
             json_body: str | None = (
                 serializer.dump_json(dict(data)).decode("utf-8") if data else None
@@ -216,7 +216,7 @@ class TapOracleOic(Tap):
     """
 
     name: ClassVar[str] = "tap-oracle-oic"
-    config_jsonschema: ClassVar[mt.ContainerValue] = {
+    config_jsonschema: ClassVar[dict[str, object]] = {
         "type": "object",
         "properties": {
             "oauth_client_id": {"type": "string", "description": "OAuth2 client ID"},
@@ -244,9 +244,9 @@ class TapOracleOic(Tap):
     def __init__(
         self,
         *,
-        config: Mapping[str, mt.ContainerValue] | None = None,
-        catalog: Mapping[str, mt.ContainerValue] | None = None,
-        state: Mapping[str, mt.ContainerValue] | None = None,
+        config: Mapping[str, dict[str, object]] | None = None,
+        catalog: Mapping[str, dict[str, object]] | None = None,
+        state: Mapping[str, dict[str, object]] | None = None,
         parse_env_config: bool = False,
         validate_config: bool = True,
     ) -> None:
@@ -256,7 +256,7 @@ class TapOracleOic(Tap):
         _ = parse_env_config
         _ = validate_config
         Tap.__init__(self, config=FlextMeltanoSettings.model_validate({}))
-        self._tap_config: dict[str, mt.ContainerValue] = (
+        self._tap_config: dict[str, dict[str, object]] = (
             dict(config) if config is not None else {}
         )
         self._client: OracleOicClient | None = None
@@ -266,8 +266,8 @@ class TapOracleOic(Tap):
     def client(self) -> OracleOicClient:
         """Get Oracle OIC client instance using flext-oracle-oic."""
         if self._client is None:
-            config_dict: dict[str, mt.ContainerValue] = self._tap_config
-            oic_config_data: dict[str, mt.ContainerValue] = {
+            config_dict: dict[str, dict[str, object]] = self._tap_config
+            oic_config_data: dict[str, dict[str, object]] = {
                 "oauth_client_id": str(config_dict["oauth_client_id"]),
                 "oauth_client_secret": str(config_dict["oauth_client_secret"]),
                 "oauth_token_url": str(config_dict["oauth_token_url"]),
@@ -333,7 +333,7 @@ class TapOracleOic(Tap):
         return r[mt.Meltano.Singer.StreamCatalog].ok(catalog)
 
     @staticmethod
-    def _to_positive_int(value: mt.ContainerValue | None, default: int) -> int:
+    def _to_positive_int(value: dict[str, object] | None, default: int) -> int:
         if isinstance(value, int):
             return value
         if isinstance(value, float):
@@ -366,8 +366,8 @@ def main() -> int:
     exit_code = _validate_and_setup_config()
     if exit_code != 0:
         return exit_code
-    config: dict[str, mt.ContainerValue] = dict(_build_config_from_env())
-    config_typed: dict[str, mt.ContainerValue] = {
+    config: dict[str, dict[str, object]] = dict(_build_config_from_env())
+    config_typed: dict[str, dict[str, object]] = {
         k: v for k, v in config.items() if v is not None
     }
     tap = TapOracleOic(config=config_typed)
@@ -381,7 +381,7 @@ def main() -> int:
         return 1
 
 
-def _build_config_from_env() -> Mapping[str, mt.ContainerValue]:
+def _build_config_from_env() -> Mapping[str, dict[str, object]]:
     """Build configuration from environment variables using pydantic-settings.
 
     Uses FlextTapOracleOicSettings with env_prefix='FLEXT_TAP_ORACLE_OIC_'
@@ -403,7 +403,7 @@ def _build_config_from_env() -> Mapping[str, mt.ContainerValue]:
 
 def _validate_and_setup_config() -> int:
     """Validate required configuration. Returns 0 for success, 1 for error."""
-    config: dict[str, mt.ContainerValue] = dict(_build_config_from_env())
+    config: dict[str, dict[str, object]] = dict(_build_config_from_env())
     required_config = [
         "oauth_client_id",
         "oauth_client_secret",

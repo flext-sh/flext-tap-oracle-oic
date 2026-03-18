@@ -38,7 +38,7 @@ class OICConnection(FlextModels):
         Field(None, description="Connection endpoint URL"),
     ]
     connection_properties: Annotated[
-        dict[str, t.ContainerValue],
+        dict[str, dict[str, object]],
         Field(default_factory=dict, description="Connection properties"),
     ]
     security_policy: Annotated[
@@ -54,7 +54,7 @@ class OICConnection(FlextModels):
         Field(None, description="Last test timestamp"),
     ]
     test_result: Annotated[
-        dict[str, t.ContainerValue] | None,
+        dict[str, dict[str, object]] | None,
         Field(None, description="Last test result"),
     ]
     version: Annotated[str | None, Field(None, description="Connection version")]
@@ -274,7 +274,7 @@ class OICMonitoringRecord(FlextModels):
     ]
     error_count: Annotated[int, Field(default=0, ge=0, description="Number of errors")]
     business_identifiers: Annotated[
-        dict[str, t.ContainerValue],
+        dict[str, dict[str, object]],
         Field(default_factory=dict, description="Business tracking identifiers"),
     ]
 
