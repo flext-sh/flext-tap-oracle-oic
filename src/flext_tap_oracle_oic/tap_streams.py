@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import re
-from collections.abc import Iterator, Mapping
+from collections.abc import Iterator, Mapping, Sequence
 from datetime import UTC, datetime
 from typing import Annotated, ClassVar
 
@@ -21,11 +21,11 @@ from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
 from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 _GENERAL_LIST_ADAPTER = TypeAdapter(
-    list[Mapping[str, object]],
+    list[object],
     config=ConfigDict(strict=True),
 )
 _GENERAL_MAP_ADAPTER = TypeAdapter(
-    dict[str, Mapping[str, object]],
+    dict[str, object],
     config=ConfigDict(strict=True),
 )
 _STRING_LIST_ADAPTER = TypeAdapter(list[str], config=ConfigDict(strict=True))
@@ -38,23 +38,23 @@ class _OicEnvelope(BaseModel):
     count: int | None = None
 
 
-def _as_value_list(value: dict[str, object]) -> list[Mapping[str, object]] | None:
-    """Validate payload as strict lisobject]."""
+def _as_value_list(value: object) -> list[object] | None:
+    """Validate payload as strict list[object]."""
     try:
         return _GENERAL_LIST_ADAPTER.validate_python(value)
     except ValidationError:
         return None
 
 
-def _as_value_map(value: dict[str, object]) -> dict[str, Mapping[str, object]] | None:
-    """Validate payload as strict dict[str, t.ContainerValue]."""
+def _as_value_map(value: object) -> dict[str, object] | None:
+    """Validate payload as strict dict[str, object]."""
     try:
         return _GENERAL_MAP_ADAPTER.validate_python(value)
     except ValidationError:
         return None
 
 
-def _as_string_list(value: dict[str, object]) -> list[str] | None:
+def _as_string_list(value: object) -> list[str] | None:
     """Validate payload as strict list[str]."""
     try:
         return _STRING_LIST_ADAPTER.validate_python(value)
@@ -131,7 +131,7 @@ class OICPaginator:
         """Extract items from various OIC response formats."""
         list_payload = _as_value_list(data)
         if list_payload is not None:
-            return list_payload
+            return [item for item in list_payload if isinstance(item, dict)]
         envelope = _as_oic_envelope(data)
         if envelope is None:
             return None
@@ -238,12 +238,14 @@ class OICBaseStream(BaseModel):
         OICPaginator instance configured with settings from tap config.
 
         """
-        return OICPaginator(start_value=0, page_size=self.config.get("page_size", 100))
+        page_size_val = self.config.get("page_size", 100)
+        page_size = page_size_val if isinstance(page_size_val, int) else 100
+        return OICPaginator(start_value=0, page_size=page_size)
 
     def get_records(
         self,
-        context: Mapping[str, dict[str, object]] | None = None,
-    ) -> Iterator[dict[str, dict[str, object]]]:
+        context: Mapping[str, object] | None = None,
+    ) -> Iterator[dict[str, object]]:
         """Get records from OIC API.
 
         Args:
@@ -272,7 +274,8 @@ class OICBaseStream(BaseModel):
 
         """
         params: dict[str, object] = {}
-        page_size = self.config.get("page_size", 100)
+        page_size_val = self.config.get("page_size", 100)
+        page_size = page_size_val if isinstance(page_size_val, int) else 100
         params["limit"] = min(page_size, 1000)
         params["offset"] = next_page_token or 0
         instance_id = self.config.get("instance_id")
@@ -307,7 +310,7 @@ class OICBaseStream(BaseModel):
     def parse_response(
         self,
         response: requests.Response,
-    ) -> Iterator[Mapping[str, dict[str, object]]]:
+    ) -> Iterator[Mapping[str, object]]:
         """Parse Oracle OIC API response and yield records with validation.
 
         Args:
@@ -339,10 +342,10 @@ class OICBaseStream(BaseModel):
 
     def _enrich_record(
         self,
-        record: Mapping[str, dict[str, object]],
-    ) -> Mapping[str, dict[str, object]]:
+        record: Mapping[str, object],
+    ) -> Mapping[str, object]:
         """Enrich record with tap metadata for traceability."""
-        enriched: dict[str, dict[str, object]] = dict(record)
+        enriched: dict[str, object] = dict(record)
         enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
         enriched["_tap_stream_name"] = self.name
         return enriched
@@ -351,7 +354,7 @@ class OICBaseStream(BaseModel):
         self,
         data: dict[str, object],
         url: str,
-    ) -> Iterator[Mapping[str, dict[str, object]]]:
+    ) -> Iterator[Mapping[str, object]]:
         """Extract and yield records with validation and enrichment."""
         records_yielded = 0
         for item in self._extract_items_for_processing(data):
@@ -360,7 +363,7 @@ class OICBaseStream(BaseModel):
                 records_yielded += 1
         if records_yielded == 0 and (not self._is_empty_result_expected(data)):
             map_data = _as_value_map(data)
-            payload_descriptor: dict[str, object] = (
+            payload_descriptor: list[str] | str = (
                 list(map_data.keys()) if map_data is not None else str(type(data))
             )
             self.logger.warning(
@@ -378,7 +381,7 @@ class OICBaseStream(BaseModel):
     def _extract_items_for_processing(
         self,
         data: dict[str, object],
-    ) -> Iterator[Mapping[str, dict[str, object]]]:
+    ) -> Iterator[Mapping[str, object]]:
         """Extract items from various OIC response formats for processing."""
         list_payload = _as_value_list(data)
         if list_payload is not None:
@@ -428,7 +431,7 @@ class OICBaseStream(BaseModel):
         list_payload = _as_value_list(data)
         return len(list_payload) == 0 if list_payload is not None else False
 
-    def _is_single_record(self, data: Mapping[str, dict[str, object]]) -> bool:
+    def _is_single_record(self, data: dict[str, object]) -> bool:
         """Check if dict[str, t.ContainerValue] represents a single record vs OIC metadata container."""
         metadata_keys = {
             "totalSize",
@@ -443,8 +446,8 @@ class OICBaseStream(BaseModel):
 
     def _process_dict_data(
         self,
-        data: Mapping[str, dict[str, object]],
-    ) -> Iterator[Mapping[str, dict[str, object]]]:
+        data: dict[str, object],
+    ) -> Iterator[Mapping[str, object]]:
         """Process dict-type response data with OIC format detection."""
         envelope = _as_oic_envelope(data)
         if envelope is not None and envelope.items is not None:
@@ -458,8 +461,8 @@ class OICBaseStream(BaseModel):
 
     def _process_list_data(
         self,
-        data: list[dict[str, object]],
-    ) -> Iterator[Mapping[str, dict[str, object]]]:
+        data: Sequence[object],
+    ) -> Iterator[Mapping[str, object]]:
         """Process list-type response data."""
         for item in data:
             record = _as_value_map(item)
@@ -486,7 +489,7 @@ class OICBaseStream(BaseModel):
         elif envelope.data is not None:
             self.logger.debug("Received %s records", len(envelope.data))
 
-    def _validate_record(self, record: Mapping[str, dict[str, object]]) -> bool:
+    def _validate_record(self, record: Mapping[str, object]) -> bool:
         """Validate record meets basic requirements for processing."""
         return _as_value_map(record) is not None
 

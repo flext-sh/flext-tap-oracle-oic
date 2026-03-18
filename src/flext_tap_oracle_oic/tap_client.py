@@ -66,8 +66,8 @@ class FlextOracleOicAuthenticator:
                 case dict() as token_dict:
                     token_data = token_dict
                 case str() as body_str:
-                    parser: TypeAdapter[dict[str, dict[str, object]]] = TypeAdapter(
-                        dict[str, Mapping[str, object]],
+                    parser: TypeAdapter[dict[str, object]] = TypeAdapter(
+                        dict[str, object],
                     )
                     token_data = parser.validate_json(body_str)
                 case _:
@@ -159,8 +159,8 @@ class OracleOicClient:
                 f"Failed to get auth headers: {headers_result.error}",
             )
         try:
-            serializer: TypeAdapter[dict[str, dict[str, object]]] = TypeAdapter(
-                dict[str, Mapping[str, object]],
+            serializer: TypeAdapter[dict[str, object]] = TypeAdapter(
+                dict[str, object],
             )
             json_body: str | None = (
                 serializer.dump_json(dict(data)).decode("utf-8") if data else None
@@ -297,7 +297,7 @@ class TapOracleOic(Tap):
         for stream_name in stream_names:
             if stream_name in ALL_STREAMS:
                 stream_class = ALL_STREAMS[stream_name]
-                stream_instance = stream_class(tap=self)
+                stream_instance = stream_class(config=self._tap_config)
                 streams.append(stream_instance)
         logger.info("Discovered %s streams from Oracle OIC", len(streams))
         return streams
@@ -364,10 +364,8 @@ def main() -> int:
     exit_code = _validate_and_setup_config()
     if exit_code != 0:
         return exit_code
-    config: dict[str, dict[str, object]] = dict(_build_config_from_env())
-    config_typed: dict[str, dict[str, object]] = {
-        k: v for k, v in config.items() if v is not None
-    }
+    config: dict[str, str] = dict(_build_config_from_env())
+    config_typed: dict[str, object] = {k: v for k, v in config.items() if v is not None}
     tap = TapOracleOic(config=config_typed)
     try:
         return _execute_tap_command(tap)
@@ -379,7 +377,7 @@ def main() -> int:
         return 1
 
 
-def _build_config_from_env() -> Mapping[str, dict[str, object]]:
+def _build_config_from_env() -> dict[str, str]:
     """Build configuration from environment variables using pydantic-settings.
 
     Uses FlextTapOracleOicSettings with env_prefix='FLEXT_TAP_ORACLE_OIC_'
@@ -395,13 +393,13 @@ def _build_config_from_env() -> Mapping[str, dict[str, object]]:
             "oauth_scope": settings.oauth_audience,
         }
     except (ValueError, TypeError) as e:
-        logger.debug("Configuration loading failed: %s", e)
+        logger.debug("Configuration loading failed: %s", str(e))
         return {}
 
 
 def _validate_and_setup_config() -> int:
     """Validate required configuration. Returns 0 for success, 1 for error."""
-    config: dict[str, dict[str, object]] = dict(_build_config_from_env())
+    config: dict[str, str] = dict(_build_config_from_env())
     required_config = [
         "oauth_client_id",
         "oauth_client_secret",
