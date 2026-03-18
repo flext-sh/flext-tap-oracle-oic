@@ -56,9 +56,9 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
 
 
 def create_oracle_oic_tap_config(
-    oauth_params: Mapping[str, dict[str, object]],
-    connection_params: Mapping[str, dict[str, object]],
-    tap_params: Mapping[str, dict[str, object]] | None = None,
+    oauth_params: Mapping[str, object],
+    connection_params: Mapping[str, object],
+    tap_params: Mapping[str, object] | None = None,
 ) -> r[FlextTapOracleOicSettings]:
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
@@ -72,7 +72,7 @@ def create_oracle_oic_tap_config(
 
     """
     try:
-        tap_config: dict[str, dict[str, object]] = (
+        tap_config: dict[str, object] = (
             dict(tap_params) if tap_params is not None else {}
         )
         tap_config.setdefault(

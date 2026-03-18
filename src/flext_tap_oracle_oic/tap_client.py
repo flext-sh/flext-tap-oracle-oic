@@ -244,9 +244,9 @@ class TapOracleOic(Tap):
     def __init__(
         self,
         *,
-        config: Mapping[str, dict[str, object]] | None = None,
-        catalog: Mapping[str, dict[str, object]] | None = None,
-        state: Mapping[str, dict[str, object]] | None = None,
+        config: Mapping[str, object] | None = None,
+        catalog: Mapping[str, object] | None = None,
+        state: Mapping[str, object] | None = None,
         parse_env_config: bool = False,
         validate_config: bool = True,
     ) -> None:
@@ -256,9 +256,7 @@ class TapOracleOic(Tap):
         _ = parse_env_config
         _ = validate_config
         Tap.__init__(self, config=FlextMeltanoSettings.model_validate({}))
-        self._tap_config: dict[str, dict[str, object]] = (
-            dict(config) if config is not None else {}
-        )
+        self._tap_config: dict[str, object] = dict(config) if config is not None else {}
         self._client: OracleOicClient | None = None
         self._utilities = FlextTapOracleOicUtilities()
 
@@ -266,8 +264,8 @@ class TapOracleOic(Tap):
     def client(self) -> OracleOicClient:
         """Get Oracle OIC client instance using flext-oracle-oic."""
         if self._client is None:
-            config_dict: dict[str, dict[str, object]] = self._tap_config
-            oic_config_data: dict[str, dict[str, object]] = {
+            config_dict: dict[str, object] = self._tap_config
+            oic_config_data: dict[str, object] = {
                 "oauth_client_id": str(config_dict["oauth_client_id"]),
                 "oauth_client_secret": str(config_dict["oauth_client_secret"]),
                 "oauth_token_url": str(config_dict["oauth_token_url"]),
@@ -333,7 +331,7 @@ class TapOracleOic(Tap):
         return r[mt.Meltano.Singer.StreamCatalog].ok(catalog)
 
     @staticmethod
-    def _to_positive_int(value: dict[str, object] | None, default: int) -> int:
+    def _to_positive_int(value: object | None, default: int) -> int:
         if isinstance(value, int):
             return value
         if isinstance(value, float):

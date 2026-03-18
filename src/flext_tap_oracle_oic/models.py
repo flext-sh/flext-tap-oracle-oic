@@ -101,7 +101,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         return self._count_active_oic_tap_models()
 
     @computed_field
-    def oic_tap_system_summary(self) -> Mapping[str, dict[str, object]]:
+    def oic_tap_system_summary(self) -> Mapping[str, object]:
         """Complete Singer Oracle OIC tap system summary with API extraction capabilities."""
         model_count: int = self._count_active_oic_tap_models()
         return {

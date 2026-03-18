@@ -38,7 +38,7 @@ class _OicEnvelope(BaseModel):
     count: int | None = None
 
 
-def _as_value_list(value: dict[str, object]) -> list[dict[str, object]] | None:
+def _as_value_list(value: dict[str, object]) -> list[Mapping[str, object]] | None:
     """Validate payload as strict lisobject]."""
     try:
         return _GENERAL_LIST_ADAPTER.validate_python(value)
@@ -46,7 +46,7 @@ def _as_value_list(value: dict[str, object]) -> list[dict[str, object]] | None:
         return None
 
 
-def _as_value_map(value: dict[str, object]) -> Mapping[str, dict[str, object]] | None:
+def _as_value_map(value: dict[str, object]) -> dict[str, Mapping[str, object]] | None:
     """Validate payload as strict dict[str, t.ContainerValue]."""
     try:
         return _GENERAL_MAP_ADAPTER.validate_python(value)
@@ -171,7 +171,7 @@ class OICBaseStream(BaseModel):
     - Support for all OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
     """
 
-    config: dict[str, dict[str, object]] = Field(default_factory=dict)
+    config: dict[str, object] = Field(default_factory=dict)
     name: str = Field(default="")
     replication_key: str | None = Field(default=None)
     logger: FlextLogger = Field(default_factory=lambda: FlextLogger(__name__))
@@ -181,7 +181,7 @@ class OICBaseStream(BaseModel):
     api_path: ClassVar[str | None] = None
     api_category: ClassVar[str] = "core"
     default_sort: ClassVar[str | None] = None
-    additional_params: ClassVar[dict[str, dict[str, object]] | None] = None
+    additional_params: ClassVar[dict[str, object] | None] = None
     primary_keys: ClassVar[list[str]] = []
 
     @property
@@ -258,9 +258,9 @@ class OICBaseStream(BaseModel):
 
     def get_url_params(
         self,
-        context: Mapping[str, dict[str, object]] | None,
+        context: Mapping[str, object] | None,
         next_page_token: int | None,
-    ) -> Mapping[str, dict[str, object]]:
+    ) -> Mapping[str, object]:
         """Build URL parameters for Oracle OIC API requests.
 
         Args:
@@ -271,7 +271,7 @@ class OICBaseStream(BaseModel):
         Dictionary of URL parameters optimized for OIC API.
 
         """
-        params: dict[str, dict[str, object]] = {}
+        params: dict[str, object] = {}
         page_size = self.config.get("page_size", 100)
         params["limit"] = min(page_size, 1000)
         params["offset"] = next_page_token or 0

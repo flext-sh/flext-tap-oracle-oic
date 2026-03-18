@@ -54,7 +54,7 @@ class OICConnection(FlextModels):
         Field(None, description="Last test timestamp"),
     ]
     test_result: Annotated[
-        dict[str, dict[str, object]] | None,
+        dict[str, str] | None,
         Field(None, description="Last test result"),
     ]
     version: Annotated[str | None, Field(None, description="Connection version")]
