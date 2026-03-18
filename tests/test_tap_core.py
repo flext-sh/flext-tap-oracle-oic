@@ -12,7 +12,25 @@ from __future__ import annotations
 import pytest
 from singer_sdk.exceptions import ConfigValidationError
 
-from flext_tap_oracle_oic import TapOracleOic
+from flext_tap_oracle_oic import TapOracleOic, m
+
+
+def _build_source_config() -> m.Meltano.DataSourceConfig:
+    return m.Meltano.DataSourceConfig(
+        source_type="oracle-oic",
+        connection_config={
+            "base_url": "https://test.integration.ocp.oraclecloud.com",
+        },
+        stream_config={},
+        source_version="latest",
+    )
+
+
+def _discover_stream_names(tap: TapOracleOic) -> list[str]:
+    result = tap.discover_streams(source_config=_build_source_config())
+    assert result.is_success
+    assert result.value is not None
+    return [str(stream["tap_stream_id"]) for stream in result.value["streams"]]
 
 
 class TestTapOracleOic:
@@ -28,7 +46,7 @@ class TestTapOracleOic:
         }
         tap = TapOracleOic(config=config, validate_config=False)
         if tap.name != "tap-oracle-oic":
-            msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
+            msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
         assert tap.config == config
 
@@ -36,7 +54,7 @@ class TestTapOracleOic:
         """Test method."""
         tap = TapOracleOic(validate_config=False)
         if tap.name != "tap-oracle-oic":
-            msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
+            msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
         assert hasattr(tap, "config")
 
@@ -49,11 +67,10 @@ class TestTapOracleOic:
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
         tap = TapOracleOic(config=config, validate_config=False)
-        streams = tap.discover_streams()
-        if len(streams) != 5:
-            msg: str = f"Expected {5}, got {len(streams)}"
+        stream_names = _discover_stream_names(tap)
+        if len(stream_names) != 5:
+            msg = f"Expected {5}, got {len(stream_names)}"
             raise AssertionError(msg)
-        stream_names = [stream.name for stream in streams]
         expected_streams = [
             "integrations",
             "connections",
@@ -63,7 +80,7 @@ class TestTapOracleOic:
         ]
         for expected in expected_streams:
             if expected not in stream_names:
-                msg: str = f"Expected {expected} in {stream_names}"
+                msg = f"Expected {expected} in {stream_names}"
                 raise AssertionError(msg)
 
     def test_extended_streams_discovery(self) -> None:
@@ -76,11 +93,10 @@ class TestTapOracleOic:
             "include_extended": True,
         }
         tap = TapOracleOic(config=config, validate_config=False)
-        all_streams = tap.discover_streams()
-        if len(all_streams) != 5:
-            msg: str = f"Expected {5}, got {len(all_streams)}"
+        stream_names = _discover_stream_names(tap)
+        if len(stream_names) != 5:
+            msg = f"Expected {5}, got {len(stream_names)}"
             raise AssertionError(msg)
-        stream_names = [s.name for s in all_streams]
         expected_streams = [
             "integrations",
             "connections",
@@ -90,7 +106,7 @@ class TestTapOracleOic:
         ]
         for expected in expected_streams:
             if expected not in stream_names:
-                msg: str = f"Expected {expected} in {stream_names}"
+                msg = f"Expected {expected} in {stream_names}"
                 raise AssertionError(msg)
 
     def test_extended_streams_disabled(self) -> None:
@@ -103,10 +119,10 @@ class TestTapOracleOic:
             "include_extended": False,
         }
         tap = TapOracleOic(config=config, validate_config=False)
-        all_streams = tap.discover_streams()
-        streams = [s for s in all_streams if "infrastructure" in s.name.lower()]
+        stream_names = _discover_stream_names(tap)
+        streams = [name for name in stream_names if "infrastructure" in name.lower()]
         if len(streams) != 0:
-            msg: str = f"Expected {0}, got {len(streams)}"
+            msg = f"Expected {0}, got {len(streams)}"
             raise AssertionError(msg)
 
     def test_discover_streams(self) -> None:
@@ -119,9 +135,9 @@ class TestTapOracleOic:
             "include_extended": True,
         }
         tap = TapOracleOic(config=config, validate_config=False)
-        streams = tap.discover_streams()
-        if len(streams) != 5:
-            msg: str = f"Expected {5}, got {len(streams)}"
+        stream_names = _discover_stream_names(tap)
+        if len(stream_names) != 5:
+            msg = f"Expected {5}, got {len(stream_names)}"
             raise AssertionError(msg)
 
     def test_config_validation_warnings(self) -> None:
@@ -136,9 +152,12 @@ class TestTapOracleOic:
         }
         tap = TapOracleOic(config=config, validate_config=False)
         if tap.name != "tap-oracle-oic":
-            msg: str = f"Expected {'tap-oracle-oic'}, got {tap.name}"
+            msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
-        assert tap.config["base_url"] == "http://test.integration.ocp.oraclecloud.com"
+        assert (
+            getattr(tap.config, "base_url", None)
+            == "http://test.integration.ocp.oraclecloud.com"
+        )
 
     def test_missing_required_fields_warning(self) -> None:
         """Test method."""
@@ -148,20 +167,24 @@ class TestTapOracleOic:
             TapOracleOic(config=config, validate_config=True)
         error_message = str(exc_info.value)
         if "oic_host" not in error_message:
-            msg: str = f"Expected {'oic_host'} in {error_message}"
+            msg = f"Expected {'oic_host'} in {error_message}"
             raise AssertionError(msg)
         assert "username" in error_message
         if "password" not in error_message:
-            msg: str = f"Expected {'password'} in {error_message}"
+            msg = f"Expected {'password'} in {error_message}"
             raise AssertionError(msg)
 
     def test_capabilities(self) -> None:
         """Test method."""
-        tap = TapOracleOic(validate_config=False)
         expected_capabilities = ["catalog", "state", "discover"]
+        raw_capabilities = getattr(TapOracleOic, "capabilities", ())
+        capability_values = {
+            str(cap.value) if hasattr(cap, "value") else str(cap)
+            for cap in raw_capabilities
+        }
         for capability in expected_capabilities:
-            if capability not in [cap.value for cap in tap.capabilities]:
-                msg: str = f"Expected {capability} in {[cap.value for cap in tap.capabilities]}"
+            if capability not in capability_values:
+                msg = f"Expected {capability} in {sorted(capability_values)}"
                 raise AssertionError(msg)
 
 
@@ -178,10 +201,9 @@ class TestTapOracleOicIntegration:
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
         tap = TapOracleOic(config=config, validate_config=False)
-        streams = tap.discover_streams()
-        for stream in streams:
-            assert hasattr(stream, "name")
-            assert stream.name is not None
+        stream_names = _discover_stream_names(tap)
+        for stream_name in stream_names:
+            assert stream_name
 
 
 @pytest.fixture
@@ -213,27 +235,29 @@ def sample_config_with_extended() -> dict[str, bool | str]:
 class TestTapOracleOicWithFixtures:
     """Tests using fixtures."""
 
-    def test_self(self, sample_config: dict[str, object]) -> None:
+    def test_self(self, sample_config: dict[str, str]) -> None:
         """Test method."""
         "Test that the tap is initialized correctly with the sample config."
         tap = TapOracleOic(config=sample_config, validate_config=False)
-        if tap.config["base_url"] != sample_config["base_url"]:
-            msg: str = (
-                f"Expected {sample_config['base_url']}, got {tap.config['base_url']}"
-            )
+        configured_base_url = getattr(tap.config, "base_url", None)
+        if configured_base_url != sample_config["base_url"]:
+            msg = f"Expected {sample_config['base_url']}, got {configured_base_url}"
             raise AssertionError(msg)
-        assert tap.config["oauth_client_id"] == sample_config["oauth_client_id"]
+        assert (
+            getattr(tap.config, "oauth_client_id", None)
+            == sample_config["oauth_client_id"]
+        )
 
     def test_streams_count_with_extended_config(
-        self, sample_config_with_extended: dict[str, object]
+        self,
+        sample_config_with_extended: dict[str, bool | str],
     ) -> None:
         """Test that the number of streams is correct with the extended config."""
         tap = TapOracleOic(config=sample_config_with_extended, validate_config=False)
-        all_streams = tap.discover_streams()
-        if len(all_streams) != 5:
-            msg: str = f"Expected {5}, got {len(all_streams)}"
+        stream_names = _discover_stream_names(tap)
+        if len(stream_names) != 5:
+            msg = f"Expected {5}, got {len(stream_names)}"
             raise AssertionError(msg)
-        stream_names = [s.name for s in all_streams]
         expected_core_streams = [
             "integrations",
             "connections",
@@ -243,5 +267,5 @@ class TestTapOracleOicWithFixtures:
         ]
         for expected in expected_core_streams:
             if expected not in stream_names:
-                msg: str = f"Expected {expected} in {stream_names}"
+                msg = f"Expected {expected} in {stream_names}"
                 raise AssertionError(msg)

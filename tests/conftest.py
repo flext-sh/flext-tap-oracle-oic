@@ -585,8 +585,8 @@ def mock_oauth_authenticator() -> type:
         def __init__(self, config: dict[str, object]) -> None:
             """Initialize the instance."""
             self.config = config
-            self.token = None
-            self.token_expires_at = None
+            self.token: str | None = None
+            self.token_expires_at: int | None = None
 
         def get_access_token(self) -> dict[str, object]:
             return {"success": True, "value": "mock_access_token_12345"}
