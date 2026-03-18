@@ -11,7 +11,7 @@ from __future__ import annotations
 from flext_tests import p
 
 
-class TestsFlextTapOracleOicProtocols(FlextTestsProtocols):
+class TestsFlextTapOracleOicProtocols(p):
     """Test protocols for flexttaporacleoic."""
 
 

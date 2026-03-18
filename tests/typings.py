@@ -11,7 +11,7 @@ from __future__ import annotations
 from flext_tests import t
 
 
-class TestsFlextTapOracleOicTypes(FlextTestsTypes):
+class TestsFlextTapOracleOicTypes(t):
     """Test type aliases for flexttaporacleoic."""
 
 

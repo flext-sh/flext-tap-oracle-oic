@@ -12,6 +12,11 @@ from __future__ import annotations
 from enum import StrEnum, unique
 from typing import Final
 
+from flext_core.constants import (
+    PROJECT_KIND_APPLICATION,
+    PROJECT_KIND_LIBRARY,
+    PROJECT_KIND_SERVICE,
+)
 from flext_meltano import FlextMeltanoConstants
 from flext_oracle_oic import FlextOracleOicConstants
 from flext_oracle_oic.constants import FlextOracleOicConstants as ParentOicConstants
@@ -264,12 +269,12 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         VALIDATION = "VALIDATION"
 
     @unique
-    class ProjectType(StrEnum):
+    class TapOracleOicProjectType(StrEnum):
         """Project type literals for tap package metadata."""
 
-        LIBRARY = "library"
-        APPLICATION = "application"
-        SERVICE = "service"
+        LIBRARY = PROJECT_KIND_LIBRARY
+        APPLICATION = PROJECT_KIND_APPLICATION
+        SERVICE = PROJECT_KIND_SERVICE
         SINGER_TAP = "singer-tap"
         OIC_EXTRACTOR = "oic-extractor"
         INTEGRATION_EXTRACTOR = "integration-extractor"
