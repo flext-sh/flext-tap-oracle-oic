@@ -6,7 +6,6 @@ SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
-from flext_tap_oracle_oic import c
 
 import re
 from collections.abc import Mapping
@@ -19,7 +18,7 @@ from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_oic import FlextOracleOicUtilities
 from pydantic import ConfigDict, TypeAdapter, ValidationError
 
-from flext_tap_oracle_oic import m, t
+from flext_tap_oracle_oic import c, m, t
 
 _STRICT_LIST_ADAPTER = TypeAdapter(
     list[t.ContainerValue],
