@@ -11,6 +11,13 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 
 if TYPE_CHECKING:
     from flext_core.typings import FlextTypes
+    from flext_meltano.decorators import d
+    from flext_meltano.exceptions import e
+    from flext_meltano.handlers import h
+    from flext_meltano.mixins import x
+    from flext_meltano.models import m
+    from flext_meltano.result import r
+    from flext_meltano.service import s
 
     from flext_tap_oracle_oic import domain
     from flext_tap_oracle_oic.__version__ import (
@@ -190,10 +197,16 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
         "flext_tap_oracle_oic.settings",
         "create_oracle_oic_tap_config",
     ),
+    "d": ("flext_meltano.decorators", "d"),
     "domain": ("flext_tap_oracle_oic.domain", ""),
+    "e": ("flext_meltano.exceptions", "e"),
+    "h": ("flext_meltano.handlers", "h"),
     "logger": ("flext_tap_oracle_oic.tap_client", "logger"),
+    "m": ("flext_meltano.models", "m"),
     "main": ("flext_tap_oracle_oic.tap_client", "main"),
     "p": ("flext_tap_oracle_oic.protocols", "p"),
+    "r": ("flext_meltano.result", "r"),
+    "s": ("flext_meltano.service", "s"),
     "t": ("flext_tap_oracle_oic.typings", "t"),
     "th": ("flext_tap_oracle_oic.streams_consolidated", "th"),
     "u": ("flext_tap_oracle_oic.utilities", "u"),
@@ -201,6 +214,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
         "flext_tap_oracle_oic.settings",
         "validate_oracle_oic_tap_configuration",
     ),
+    "x": ("flext_meltano.mixins", "x"),
 }
 
 __all__ = [
@@ -256,14 +270,21 @@ __all__ = [
     "__version_info__",
     "c",
     "create_oracle_oic_tap_config",
+    "d",
     "domain",
+    "e",
+    "h",
     "logger",
+    "m",
     "main",
     "p",
+    "r",
+    "s",
     "t",
     "th",
     "u",
     "validate_oracle_oic_tap_configuration",
+    "x",
 ]
 
 
