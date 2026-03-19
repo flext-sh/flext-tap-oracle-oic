@@ -13,8 +13,8 @@ from typing import ClassVar, Protocol
 from flext_meltano import FlextMeltanoTypes
 from pydantic import TypeAdapter
 
+from flext_tap_oracle_oic import t
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
-from flext_tap_oracle_oic.typings import t
 
 th = FlextMeltanoTypes()
 _SCHEMA_ADAPTER: TypeAdapter[dict[str, t.Scalar]] = TypeAdapter(dict[str, t.Scalar])

@@ -23,7 +23,7 @@ from pydantic import (
     model_validator,
 )
 
-from flext_tap_oracle_oic.constants import c
+from flext_tap_oracle_oic import c
 
 # Type aliases for OIC domain literals (PEP 695 `type` stmts in nested classes
 # aren't resolvable by mypy/pyright with `from __future__ import annotations`)

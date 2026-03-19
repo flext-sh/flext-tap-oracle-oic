@@ -13,7 +13,7 @@ from typing import Annotated
 from flext_core import FlextModels, t
 from pydantic import ConfigDict, Field
 
-from flext_tap_oracle_oic.constants import c
+from flext_tap_oracle_oic import c
 
 OICResourceType = c.OICResourceType
 IntegrationStatus = c.IntegrationStatus

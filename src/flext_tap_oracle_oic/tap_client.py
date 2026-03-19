@@ -21,7 +21,7 @@ from flext_meltano import (
 )
 from pydantic import TypeAdapter
 
-from flext_tap_oracle_oic.constants import c
+from flext_tap_oracle_oic import c
 from flext_tap_oracle_oic.settings import FlextTapOracleOicSettings
 from flext_tap_oracle_oic.streams_consolidated import (
     ALL_STREAMS,
