@@ -273,7 +273,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
 
             @computed_field
-        def auth_config_summary(self) -> Mapping[str, dict[str, t.ContainerValue]]:
+            def auth_config_summary(self) -> Mapping[str, dict[str, t.ContainerValue]]:
                 """OAuth2 authentication configuration summary."""
                 return {
                     "oauth_setup": {
@@ -420,9 +420,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
 
             @computed_field
-        def integration_health_summary(
-            self,
-        ) -> Mapping[str, dict[str, t.ContainerValue]]:
+            def integration_health_summary(
+                self,
+            ) -> Mapping[str, dict[str, t.ContainerValue]]:
                 """OIC integration health and performance summary."""
                 error_rate = 0.0
                 if self.execution_count and self.execution_count > 0:
@@ -578,9 +578,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
 
             @computed_field
-        def connection_security_summary(
-            self,
-        ) -> Mapping[str, dict[str, t.ContainerValue]]:
+            def connection_security_summary(
+                self,
+            ) -> Mapping[str, dict[str, t.ContainerValue]]:
                 """OIC connection security and health summary."""
                 return {
                     "connection_identity": {
@@ -721,9 +721,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
 
             @computed_field
-        def activity_performance_summary(
-            self,
-        ) -> Mapping[str, dict[str, t.ContainerValue]]:
+            def activity_performance_summary(
+                self,
+            ) -> Mapping[str, dict[str, t.ContainerValue]]:
                 """OIC activity performance summary."""
                 duration_seconds = 0.0
                 if self.duration_ms:
@@ -859,9 +859,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
 
             @computed_field
-        def package_composition_summary(
-            self,
-        ) -> Mapping[str, dict[str, t.ContainerValue]]:
+            def package_composition_summary(
+                self,
+            ) -> Mapping[str, dict[str, t.ContainerValue]]:
                 """OIC package composition and usage summary."""
                 return {
                     "package_identity": {
@@ -996,9 +996,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
 
             @computed_field
-        def metrics_analysis_summary(
-            self,
-        ) -> Mapping[str, dict[str, t.ContainerValue]]:
+            def metrics_analysis_summary(
+                self,
+            ) -> Mapping[str, dict[str, t.ContainerValue]]:
                 """OIC metrics complete analysis summary."""
                 total_messages = (self.success_count or 0) + (self.error_count or 0)
                 error_rate = 0.0
@@ -1141,7 +1141,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
 
             @computed_field
-        def agent_health_summary(self) -> Mapping[str, dict[str, t.ContainerValue]]:
+            def agent_health_summary(self) -> Mapping[str, dict[str, t.ContainerValue]]:
                 """OIC agent health and connectivity summary."""
                 health_status = "healthy"
                 if self.status in {"ERROR", "OFFLINE"}:
@@ -1280,7 +1280,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
 
             @computed_field
-        def stream_config_summary(self) -> Mapping[str, dict[str, t.ContainerValue]]:
+            def stream_config_summary(
+                self,
+            ) -> Mapping[str, dict[str, t.ContainerValue]]:
                 """OIC stream configuration summary."""
                 return {
                     "stream_identity": {
@@ -1351,7 +1353,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(..., description="Response success indicator"),
             ]
             data: Annotated[
-            dict[str, t.ContainerValue] | None,
+                dict[str, t.ContainerValue] | None,
                 Field(
                     None,
                     description="Response data payload",
@@ -1386,7 +1388,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             error_details: Annotated[
-            dict[str, dict[str, t.ContainerValue]] | None,
+                dict[str, dict[str, t.ContainerValue]] | None,
                 Field(
                     None,
                     description="Detailed error information",
@@ -1411,7 +1413,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
 
             @computed_field
-        def api_response_summary(self) -> Mapping[str, dict[str, t.ContainerValue]]:
+            def api_response_summary(self) -> Mapping[str, dict[str, t.ContainerValue]]:
                 """OIC API response summary."""
                 return {
                     "response_status": {
@@ -1503,7 +1505,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(None, description="HTTP method used"),
             ]
             request_params: Annotated[
-            dict[str, dict[str, t.ContainerValue]] | None,
+                dict[str, dict[str, t.ContainerValue]] | None,
                 Field(
                     None,
                     description="Request parameters",
@@ -1534,7 +1536,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
 
             @computed_field
-        def error_context_summary(self) -> Mapping[str, dict[str, t.ContainerValue]]:
+            def error_context_summary(
+                self,
+            ) -> Mapping[str, dict[str, t.ContainerValue]]:
                 """OIC error context summary."""
                 return {
                     "error_classification": {

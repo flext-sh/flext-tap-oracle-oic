@@ -23,66 +23,6 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
     Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
     """
 
-    OIC_API_BASE_PATH: Final[str] = (
-        ParentOicConstants.API.ENDPOINT_INTEGRATIONS.replace("/integrations", "")
-    )
-    OIC_MONITORING_API_PATH: Final[str] = "/ic/api/integration/v1/monitoring"
-    OIC_DESIGNTIME_API_PATH: Final[str] = "/ic/api/integration/v1/designtime"
-    OIC_PROCESS_API_PATH: Final[str] = "/ic/api/integration/v1/processes"
-    OIC_B2B_API_PATH: Final[str] = "/ic/api/integration/v1/b2b"
-    OIC_ENVIRONMENT_API_PATH: Final[str] = "/ic/api/integration/v1/environments"
-    OIC_ENDPOINTS: Final[dict[str, str]] = {
-        "integrations": "/integrations",
-        "integrations_detail": "/integrations/{id}",
-        "integrations_status": "/integrations/{id}/status",
-        "integrations_archive": "/integrations/{id}/archive",
-        "connections": "/connections",
-        "connections_detail": "/connections/{id}",
-        "connections_test": "/connections/{id}/test",
-        "packages": "/packages",
-        "packages_detail": "/packages/{id}",
-        "packages_export": "/packages/export",
-        "packages_import": "/packages/import",
-        "monitoring_instances": "/monitoring/instances",
-        "monitoring_instances_detail": "/monitoring/instances/{id}",
-        "monitoring_messages": "/monitoring/messages",
-        "monitoring_errors": "/monitoring/errors",
-        "monitoring_activity": "/monitoring/activity",
-        "audit_records": "/audit/events",
-        "usage_analytics": "/monitoring/usage",
-        "lookups": "/lookups",
-        "lookup_values": "/lookups/{name}/values",
-        "libraries": "/libraries",
-        "libraries_detail": "/libraries/{id}",
-        "agent_groups": "/agentGroups",
-        "agent_groups_detail": "/agentGroups/{id}",
-        "certificates": "/certificates",
-        "certificates_detail": "/certificates/{alias}",
-        "adapters": "/adapters",
-        "adapters_detail": "/adapters/{id}",
-        "process_definitions": "/process-definitions",
-        "process_definitions_detail": "/process-definitions/{id}",
-        "processes": "/processes",
-        "processes_detail": "/processes/{id}",
-        "process_instances": "/processes/{id}/instances",
-        "tasks": "/tasks",
-        "tasks_detail": "/tasks/{id}",
-        "spaces": "/spaces",
-        "spaces_detail": "/spaces/{id}",
-        "trading_partners": "/tpm/partners",
-        "trading_partners_detail": "/tpm/partners/{id}",
-        "document_types": "/tpm/documents",
-        "document_types_detail": "/tpm/documents/{id}",
-        "business_messages": "/monitoring/business-messages",
-        "wire_messages": "/monitoring/wire-messages",
-        "cors_domains": "/cors-domains",
-        "health": "/health",
-        "metadata": "/metadata",
-        "execution_logs": "/monitoring/logs",
-        "execution_logs_detail": "/monitoring/logs/{id}",
-        "lookup_usage": "/lookups/{name}/usage",
-    }
-
     class TapOracleOic:
         """OIC connection configuration."""
 
@@ -114,16 +54,6 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         Note: Does not override parent Auth class to avoid inheritance conflicts.
         """
 
-        DEFAULT_OAUTH_CLIENT_ID: Final[str] = (
-            ParentOicConstants.Auth.DEFAULT_OAUTH_CLIENT_ID
-        )
-        DEFAULT_OAUTH_TOKEN_URL: Final[str] = (
-            ParentOicConstants.Auth.DEFAULT_OAUTH_TOKEN_URL
-        )
-        DEFAULT_TOKEN_EXPIRY_SECONDS: Final[int] = (
-            ParentOicConstants.Auth.DEFAULT_TOKEN_EXPIRY_SECONDS
-        )
-
     class TapOicHttp:
         """HTTP status codes and MIME types for OIC API communication."""
 
@@ -137,8 +67,6 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
     class TapOicValidation:
         """OIC tap validation constants."""
 
-        MAX_STREAM_PREFIX_LENGTH: Final[int] = 255
-        MIN_DATE_LENGTH: Final[int] = 10
         MIN_TOKEN_EXPIRY_BUFFER: Final[int] = 60
         MIN_PERCENTAGE: Final[float] = 0.0
         MAX_PERCENTAGE: Final[float] = 100.0
@@ -149,7 +77,6 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         RESPONSE_TIME_HISTORY_SIZE: Final[int] = 10
         MIN_RESPONSE_SAMPLES: Final[int] = 5
         SLOW_RESPONSE_THRESHOLD: Final[float] = 5.0
-        MAX_SAFE_PARALLEL_STREAMS: Final[int] = 4
         MIN_PERCENTAGE: Final[float] = 0.0
         MAX_PERCENTAGE: Final[float] = 100.0
 

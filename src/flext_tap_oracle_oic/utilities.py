@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
+from flext_tap_oracle_oic import c
 
 import re
 from collections.abc import Mapping
@@ -19,7 +20,6 @@ from flext_oracle_oic import FlextOracleOicUtilities
 from pydantic import ConfigDict, TypeAdapter, ValidationError
 
 from flext_tap_oracle_oic import m, t
-from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
 
 _STRICT_LIST_ADAPTER = TypeAdapter(
     list[t.ContainerValue],
@@ -527,9 +527,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                     )
                 if "page_size" in stream_config:
                     page_size = _as_int(stream_config["page_size"])
-                    max_page_size = (
-                        FlextTapOracleOicConstants.TapOicProcessing.MAX_PAGE_SIZE
-                    )
+                    max_page_size = c.TapOicProcessing.MAX_PAGE_SIZE
                     if page_size is None or page_size <= 0 or page_size > max_page_size:
                         return r[Mapping[str, t.ContainerValue]].fail(
                             f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}",
