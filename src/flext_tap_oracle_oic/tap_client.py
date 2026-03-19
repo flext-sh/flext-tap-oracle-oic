@@ -12,7 +12,7 @@ from typing import ClassVar, override
 
 from flext_api import FlextApi, FlextApiSettings
 from flext_api.models import FlextApiModels
-from flext_core import FlextLogger, r
+from flext_core import FlextLogger, r, t
 from flext_meltano import (
     FlextMeltanoSettings,
     FlextMeltanoTapAbstractions as Tap,
@@ -66,7 +66,7 @@ class FlextOracleOicAuthenticator:
                 case dict() as token_dict:
                     token_data = token_dict
                 case str() as body_str:
-                    parser: TypeAdapter[dict[str, object]] = TypeAdapter(
+                    parser: TypeAdapter[dict[str, t.ContainerValue]] = TypeAdapter(
                         dict[str, t.ContainerValue],
                     )
                     token_data = parser.validate_json(body_str)
@@ -149,7 +149,7 @@ class OracleOicClient:
     def post(
         self,
         endpoint: str,
-        data: Mapping[str, dict[str, object]] | None = None,
+        data: Mapping[str, dict[str, t.ContainerValue]] | None = None,
     ) -> r[FlextApiModels.Api.HttpResponse]:
         """Make authenticated POST request to OIC API."""
         url = f"{self.config.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
@@ -159,7 +159,7 @@ class OracleOicClient:
                 f"Failed to get auth headers: {headers_result.error}",
             )
         try:
-            serializer: TypeAdapter[dict[str, object]] = TypeAdapter(
+            serializer: TypeAdapter[dict[str, t.ContainerValue]] = TypeAdapter(
                 dict[str, t.ContainerValue],
             )
             json_body: str | None = (
@@ -216,7 +216,7 @@ class TapOracleOic(Tap):
     """
 
     name: ClassVar[str] = "tap-oracle-oic"
-    config_jsonschema: ClassVar[dict[str, object]] = {
+    config_jsonschema: ClassVar[dict[str, t.ContainerValue]] = {
         "type": "object",
         "properties": {
             "oauth_client_id": {"type": "string", "description": "OAuth2 client ID"},
@@ -244,9 +244,9 @@ class TapOracleOic(Tap):
     def __init__(
         self,
         *,
-        config: Mapping[str, object] | None = None,
-        catalog: Mapping[str, object] | None = None,
-        state: Mapping[str, object] | None = None,
+        config: Mapping[str, t.ContainerValue] | None = None,
+        catalog: Mapping[str, t.ContainerValue] | None = None,
+        state: Mapping[str, t.ContainerValue] | None = None,
         parse_env_config: bool = False,
         validate_config: bool = True,
     ) -> None:
@@ -256,7 +256,9 @@ class TapOracleOic(Tap):
         _ = parse_env_config
         _ = validate_config
         Tap.__init__(self, config=FlextMeltanoSettings.model_validate({}))
-        self._tap_config: dict[str, object] = dict(config) if config is not None else {}
+        self._tap_config: dict[str, t.ContainerValue] = (
+            dict(config) if config is not None else {}
+        )
         self._client: OracleOicClient | None = None
         self._utilities = FlextTapOracleOicUtilities()
 
@@ -264,8 +266,8 @@ class TapOracleOic(Tap):
     def client(self) -> OracleOicClient:
         """Get Oracle OIC client instance using flext-oracle-oic."""
         if self._client is None:
-            config_dict: dict[str, object] = self._tap_config
-            oic_config_data: dict[str, object] = {
+            config_dict: dict[str, t.ContainerValue] = self._tap_config
+            oic_config_data: dict[str, t.ContainerValue] = {
                 "oauth_client_id": str(config_dict["oauth_client_id"]),
                 "oauth_client_secret": str(config_dict["oauth_client_secret"]),
                 "oauth_token_url": str(config_dict["oauth_token_url"]),
@@ -297,7 +299,8 @@ class TapOracleOic(Tap):
         for stream_name in stream_names:
             if stream_name in ALL_STREAMS:
                 stream_class = ALL_STREAMS[stream_name]
-                stream_instance = stream_class(config=self._tap_config)
+                stream_config: dict[str, t.ContainerValue] = dict(self._tap_config)
+                stream_instance = stream_class(config=stream_config)
                 streams.append(stream_instance)
         logger.info("Discovered %s streams from Oracle OIC", len(streams))
         return streams
@@ -331,7 +334,7 @@ class TapOracleOic(Tap):
         return r[mt.Meltano.Singer.StreamCatalog].ok(catalog)
 
     @staticmethod
-    def _to_positive_int(value: object | None, default: int) -> int:
+    def _to_positive_int(value: t.ContainerValue | None, default: int) -> int:
         if isinstance(value, int):
             return value
         if isinstance(value, float):
@@ -365,7 +368,9 @@ def main() -> int:
     if exit_code != 0:
         return exit_code
     config: dict[str, str] = dict(_build_config_from_env())
-    config_typed: dict[str, object] = {k: v for k, v in config.items() if v is not None}
+    config_typed: dict[str, t.ContainerValue] = {
+        k: v for k, v in config.items() if v is not None
+    }
     tap = TapOracleOic(config=config_typed)
     try:
         return _execute_tap_command(tap)
@@ -393,7 +398,7 @@ def _build_config_from_env() -> dict[str, str]:
             "oauth_scope": settings.oauth_audience,
         }
     except (ValueError, TypeError) as e:
-        logger.debug("Configuration loading failed: %s", e)
+        logger.debug(f"Configuration loading failed: {e}")
         return {}
 
 

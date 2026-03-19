@@ -21,17 +21,17 @@ from pydantic import ConfigDict, TypeAdapter, ValidationError
 from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
 
 _STRICT_LIST_ADAPTER = TypeAdapter(
-    list[object],
+    list[t.ContainerValue],
     config=ConfigDict(strict=True),
 )
 _STRICT_MAP_ADAPTER = TypeAdapter(
-    dict[str, object],
+    dict[str, t.ContainerValue],
     config=ConfigDict(strict=True),
 )
 _STRICT_INT_ADAPTER = TypeAdapter(int, config=ConfigDict(strict=True))
 
 
-def _as_list(value: object) -> list[object] | None:
+def _as_list(value: t.ContainerValue | None) -> list[t.ContainerValue] | None:
     """Strict list validation via Pydantic adapter."""
     try:
         return _STRICT_LIST_ADAPTER.validate_python(value)
@@ -39,7 +39,7 @@ def _as_list(value: object) -> list[object] | None:
         return None
 
 
-def _as_map(value: object) -> Mapping[str, object] | None:
+def _as_map(value: t.ContainerValue | None) -> Mapping[str, t.ContainerValue] | None:
     """Strict map validation via Pydantic adapter."""
     try:
         return _STRICT_MAP_ADAPTER.validate_python(value)
@@ -47,7 +47,7 @@ def _as_map(value: object) -> Mapping[str, object] | None:
         return None
 
 
-def _as_int(value: object) -> int | None:
+def _as_int(value: t.ContainerValue | None) -> int | None:
     """Strict integer validation via Pydantic adapter."""
     try:
         return _STRICT_INT_ADAPTER.validate_python(value)
@@ -55,7 +55,7 @@ def _as_int(value: object) -> int | None:
         return None
 
 
-def _coerce_int(value: object) -> int:
+def _coerce_int(value: t.ContainerValue | None) -> int:
     """Coerce potentially numeric values to integer with safe fallback."""
     try:
         return int(str(value))
@@ -133,7 +133,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
         @staticmethod
         def create_state_message(
-            state: Mapping[str, dict[str, object]],
+            state: Mapping[str, dict[str, t.ContainerValue]],
         ) -> m.Meltano.SingerStateMessage:
             """Create Singer state message.
 
@@ -212,8 +212,8 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
         @staticmethod
         def extract_pagination_info(
-            response: Mapping[str, dict[str, object]] | None,
-        ) -> Mapping[str, object]:
+            response: Mapping[str, dict[str, t.ContainerValue]] | None,
+        ) -> Mapping[str, t.ContainerValue]:
             """Extract pagination information from OIC response.
 
             Args:
@@ -233,7 +233,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 }
             items = response.get("items", [])
             items_list_raw = _as_list(items)
-            items_list: list[object] = (
+            items_list: list[t.ContainerValue] = (
                 items_list_raw if items_list_raw is not None else []
             )
             return {
@@ -249,8 +249,8 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
         @staticmethod
         def parse_oic_response(
-            response_data: Mapping[str, object],
-        ) -> r[Mapping[str, object]]:
+            response_data: Mapping[str, t.ContainerValue],
+        ) -> r[Mapping[str, t.ContainerValue]]:
             """Parse Oracle OIC API response.
 
             Args:
@@ -324,8 +324,8 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
         @staticmethod
         def extract_integration_metadata(
-            integration_data: Mapping[str, object] | None,
-        ) -> dict[str, object]:
+            integration_data: Mapping[str, t.ContainerValue] | None,
+        ) -> dict[str, t.ContainerValue]:
             """Extract metadata from Oracle OIC integration data.
 
             Args:
@@ -337,7 +337,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             """
             if not integration_data:
                 return {}
-            metadata: dict[str, object] = {
+            metadata: dict[str, t.ContainerValue | None] = {
                 "id": integration_data.get("id"),
                 "name": integration_data.get("name"),
                 "version": integration_data.get("version"),
@@ -349,16 +349,17 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             }
             connections = integration_data.get("connectionInstances", [])
             connection_list_raw = _as_list(connections)
-            connection_list: list[object] = (
+            connection_list: list[t.ContainerValue] = (
                 connection_list_raw if connection_list_raw is not None else []
             )
             metadata["connection_count"] = len(connection_list)
-            metadata["connection_types"] = [
-                conn_map.get("connectionType")
-                if (conn_map := _as_map(conn)) is not None
-                else None
+            connection_types: list[str] = [
+                str(connection_type)
                 for conn in connection_list
+                if (conn_map := _as_map(conn)) is not None
+                and (connection_type := conn_map.get("connectionType")) is not None
             ]
+            metadata["connection_types"] = connection_types
             return metadata
 
         @staticmethod
@@ -448,8 +449,8 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
         @staticmethod
         def validate_oic_connection_config(
-            config: Mapping[str, dict[str, object]],
-        ) -> r[Mapping[str, object]]:
+            config: Mapping[str, dict[str, t.ContainerValue]],
+        ) -> r[Mapping[str, t.ContainerValue]]:
             """Validate Oracle OIC connection configuration.
 
             Args:
@@ -492,8 +493,8 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
         @staticmethod
         def validate_stream_config(
-            config: Mapping[str, dict[str, object]],
-        ) -> r[Mapping[str, object]]:
+            config: Mapping[str, dict[str, t.ContainerValue]],
+        ) -> r[Mapping[str, t.ContainerValue]]:
             """Validate OIC tap stream configuration.
 
             Args:
@@ -539,10 +540,10 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
         @staticmethod
         def get_bookmark(
-            state: Mapping[str, dict[str, object]],
+            state: Mapping[str, dict[str, t.ContainerValue]],
             stream_name: str,
             bookmark_key: str,
-        ) -> object | None:
+        ) -> t.ContainerValue | None:
             """Get bookmark value for a stream.
 
             Args:
@@ -551,7 +552,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             bookmark_key: Bookmark key
 
             Returns:
-            object: Bookmark value or None
+            t.ContainerValue: Bookmark value or None
 
             """
             stream_state = FlextTapOracleOicUtilities.StateManagement.get_stream_state(
@@ -562,9 +563,9 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
         @staticmethod
         def get_stream_state(
-            state: Mapping[str, dict[str, object]],
+            state: Mapping[str, dict[str, t.ContainerValue]],
             stream_name: str,
-        ) -> Mapping[str, object]:
+        ) -> Mapping[str, t.ContainerValue]:
             """Get state for a specific stream.
 
             Args:
@@ -584,11 +585,11 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
         @staticmethod
         def set_bookmark(
-            state: Mapping[str, dict[str, object]],
+            state: Mapping[str, dict[str, t.ContainerValue]],
             stream_name: str,
             bookmark_key: str,
-            bookmark_value: object,
-        ) -> Mapping[str, object]:
+            bookmark_value: t.ContainerValue,
+        ) -> Mapping[str, t.ContainerValue]:
             """Set bookmark value for a stream.
 
             Args:
@@ -601,16 +602,16 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             dict[str, t.ContainerValue]: Updated state
 
             """
-            state_copy: dict[str, object] = dict(state)
+            state_copy: dict[str, t.ContainerValue] = dict(state)
             if "bookmarks" not in state_copy:
-                empty_bookmarks: dict[str, object] = {}
+                empty_bookmarks: dict[str, t.ContainerValue] = {}
                 state_copy["bookmarks"] = empty_bookmarks
             bookmarks = state_copy["bookmarks"]
             bookmark_map = _as_map(bookmarks)
             if bookmark_map is not None:
                 updated_bookmark_map = dict(bookmark_map)
                 if stream_name not in updated_bookmark_map:
-                    empty_stream_bookmarks: dict[str, object] = {}
+                    empty_stream_bookmarks: dict[str, t.ContainerValue] = {}
                     updated_bookmark_map[stream_name] = empty_stream_bookmarks
                 stream_bookmarks = _as_map(updated_bookmark_map[stream_name])
                 if stream_bookmarks is not None:
@@ -622,10 +623,10 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
         @staticmethod
         def set_stream_state(
-            state: Mapping[str, dict[str, object]],
+            state: Mapping[str, dict[str, t.ContainerValue]],
             stream_name: str,
-            stream_state: Mapping[str, dict[str, object]],
-        ) -> Mapping[str, object]:
+            stream_state: Mapping[str, dict[str, t.ContainerValue]],
+        ) -> Mapping[str, t.ContainerValue]:
             """Set state for a specific stream.
 
             Args:
@@ -637,9 +638,9 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             dict[str, t.ContainerValue]: Updated state
 
             """
-            state_copy: dict[str, object] = dict(state)
+            state_copy: dict[str, t.ContainerValue] = dict(state)
             if "bookmarks" not in state_copy:
-                empty_bookmarks: dict[str, object] = {}
+                empty_bookmarks: dict[str, t.ContainerValue] = {}
                 state_copy["bookmarks"] = empty_bookmarks
             bookmarks = state_copy["bookmarks"]
             bookmark_map = _as_map(bookmarks)
@@ -651,10 +652,10 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
         @staticmethod
         def update_pagination_bookmark(
-            state: Mapping[str, dict[str, object]],
+            state: Mapping[str, dict[str, t.ContainerValue]],
             stream_name: str,
-            pagination_info: Mapping[str, dict[str, object]],
-        ) -> Mapping[str, object]:
+            pagination_info: Mapping[str, dict[str, t.ContainerValue]],
+        ) -> Mapping[str, t.ContainerValue]:
             """Update pagination bookmark for stream.
 
             Args:
@@ -708,7 +709,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         def estimate_extraction_time(
             record_count: int,
             records_per_second: float = 10.0,
-        ) -> Mapping[str, object]:
+        ) -> Mapping[str, t.ContainerValue]:
             """Estimate extraction time for OIC data.
 
             Args:
@@ -782,9 +783,9 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
     @classmethod
     def get_stream_state(
         cls,
-        state: Mapping[str, dict[str, object]],
+        state: Mapping[str, dict[str, t.ContainerValue]],
         stream_name: str,
-    ) -> Mapping[str, object]:
+    ) -> Mapping[str, t.ContainerValue]:
         """Proxy method for StateManagement.get_stream_state()."""
         return FlextTapOracleOicUtilities.StateManagement.get_stream_state(
             state,
@@ -801,11 +802,11 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
     @classmethod
     def set_bookmark(
         cls,
-        state: Mapping[str, dict[str, object]],
+        state: Mapping[str, dict[str, t.ContainerValue]],
         stream_name: str,
         bookmark_key: str,
-        bookmark_value: object,
-    ) -> Mapping[str, object]:
+        bookmark_value: t.ContainerValue,
+    ) -> Mapping[str, t.ContainerValue]:
         """Proxy method for StateManagement.set_bookmark()."""
         return FlextTapOracleOicUtilities.StateManagement.set_bookmark(
             state,
@@ -817,8 +818,8 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
     @classmethod
     def validate_oic_connection_config(
         cls,
-        config: Mapping[str, dict[str, object]],
-    ) -> r[Mapping[str, object]]:
+        config: Mapping[str, dict[str, t.ContainerValue]],
+    ) -> r[Mapping[str, t.ContainerValue]]:
         """Proxy method for ConfigValidation.validate_oic_connection_config()."""
         return (
             FlextTapOracleOicUtilities.ConfigValidation.validate_oic_connection_config(

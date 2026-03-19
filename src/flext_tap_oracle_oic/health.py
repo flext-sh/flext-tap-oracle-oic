@@ -14,7 +14,7 @@ from collections.abc import Mapping
 from datetime import UTC, datetime
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
-from flext_core import r
+from flext_core import r, t
 
 from flext_tap_oracle_oic import c
 from flext_tap_oracle_oic.tap_client import (
@@ -138,7 +138,7 @@ class OICHealthChecker:
             if response.status_code in {200, 202}:
                 match response.body:
                     case dict() as body_dict:
-                        body: dict[str, object] = body_dict
+                        body: dict[str, t.ContainerValue] = body_dict
                     case _:
                         body = {}
                 status_val = str(body.get("status", "success"))
@@ -191,7 +191,7 @@ class OICHealthChecker:
             if response.status_code == c.TapOicHttp.HTTP_OK:
                 match response.body:
                     case dict() as integration_dict:
-                        integration: dict[str, object] = integration_dict
+                        integration: dict[str, t.ContainerValue] = integration_dict
                     case _:
                         integration = {}
                 status_val = str(integration.get("status", "UNKNOWN"))

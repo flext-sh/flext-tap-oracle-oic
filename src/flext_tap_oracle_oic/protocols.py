@@ -12,6 +12,8 @@ from typing import Protocol, runtime_checkable
 from flext_meltano import FlextMeltanoModels, FlextMeltanoProtocols
 from flext_oracle_oic.protocols import FlextOracleOicProtocols
 
+from flext_tap_oracle_oic.typings import t
+
 
 class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols):
     """Singer Tap Oracle OIC protocols extending Oracle and Meltano protocols.
@@ -57,7 +59,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
 
                 def connect(
                     self,
-                    config: Mapping[str, dict[str, object]],
+                    config: Mapping[str, dict[str, t.ContainerValue]],
                 ) -> FlextMeltanoProtocols.Result[Mapping[str, t.ContainerValue]]:
                     """Connect to Oracle OIC with provided configuration."""
                     ...
@@ -71,7 +73,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
 
                 def discover_integrations(
                     self,
-                    config: Mapping[str, dict[str, object]],
+                    config: Mapping[str, dict[str, t.ContainerValue]],
                 ) -> FlextMeltanoProtocols.Result[list[Mapping[str, t.ContainerValue]]]:
                     """Discover available integrations in Oracle OIC."""
                     ...
@@ -99,7 +101,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
 
                 def generate_catalog(
                     self,
-                    config: Mapping[str, dict[str, object]],
+                    config: Mapping[str, dict[str, t.ContainerValue]],
                 ) -> FlextMeltanoProtocols.Result[
                     FlextMeltanoModels.Meltano.SingerCatalog
                 ]:

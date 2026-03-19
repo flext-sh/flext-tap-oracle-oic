@@ -38,7 +38,6 @@ if TYPE_CHECKING:
         OICResourceType,
     )
     from flext_tap_oracle_oic.health import OICHealthChecker
-    from flext_tap_oracle_oic.models import FlextTapOracleOicModels, m
     from flext_tap_oracle_oic.protocols import FlextTapOracleOicProtocols, p
     from flext_tap_oracle_oic.settings import (
         FlextTapOracleOicSettings,
@@ -109,10 +108,6 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextTapOracleOicConstants": (
         "flext_tap_oracle_oic.constants",
         "FlextTapOracleOicConstants",
-    ),
-    "FlextTapOracleOicModels": (
-        "flext_tap_oracle_oic.models",
-        "FlextTapOracleOicModels",
     ),
     "FlextTapOracleOicProtocols": (
         "flext_tap_oracle_oic.protocols",
@@ -197,7 +192,6 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     ),
     "domain": ("flext_tap_oracle_oic.domain", ""),
     "logger": ("flext_tap_oracle_oic.tap_client", "logger"),
-    "m": ("flext_tap_oracle_oic.models", "m"),
     "main": ("flext_tap_oracle_oic.tap_client", "main"),
     "p": ("flext_tap_oracle_oic.protocols", "p"),
     "t": ("flext_tap_oracle_oic.typings", "t"),
@@ -222,7 +216,6 @@ __all__ = [
     "ExecutionsStream",
     "FlextOracleOicAuthenticator",
     "FlextTapOracleOicConstants",
-    "FlextTapOracleOicModels",
     "FlextTapOracleOicProtocols",
     "FlextTapOracleOicSettings",
     "FlextTapOracleOicTypes",
@@ -265,7 +258,6 @@ __all__ = [
     "create_oracle_oic_tap_config",
     "domain",
     "logger",
-    "m",
     "main",
     "p",
     "t",
