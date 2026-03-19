@@ -21,11 +21,11 @@ from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
 from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 _GENERAL_LIST_ADAPTER = TypeAdapter(
-    list[object],
+    list[t.ContainerValue],
     config=ConfigDict(strict=True),
 )
 _GENERAL_MAP_ADAPTER = TypeAdapter(
-    dict[str, object],
+    dict[str, t.ContainerValue],
     config=ConfigDict(strict=True),
 )
 _STRING_LIST_ADAPTER = TypeAdapter(list[str], config=ConfigDict(strict=True))
