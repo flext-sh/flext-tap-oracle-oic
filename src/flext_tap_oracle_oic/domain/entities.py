@@ -10,10 +10,10 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Annotated
 
-from flext_core import FlextModels, t
+from flext_core import FlextModels
 from pydantic import ConfigDict, Field
 
-from flext_tap_oracle_oic import c
+from flext_tap_oracle_oic import c, t
 
 OICResourceType = c.OICResourceType
 IntegrationStatus = c.IntegrationStatus
