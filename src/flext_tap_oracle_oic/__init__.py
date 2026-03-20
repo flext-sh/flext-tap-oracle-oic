@@ -25,7 +25,10 @@ if TYPE_CHECKING:
         __version__,
         __version_info__,
     )
-    from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
+    from flext_tap_oracle_oic.constants import (
+        FlextTapOracleOicConstants,
+        FlextTapOracleOicConstants as c,
+    )
     from flext_tap_oracle_oic.domain.entities import (
         ConnectionStatus,
         IntegrationStatus,
@@ -39,8 +42,14 @@ if TYPE_CHECKING:
         OICResourceType,
     )
     from flext_tap_oracle_oic.health import OICHealthChecker
-    from flext_tap_oracle_oic.models import FlextTapOracleOicModels, m
-    from flext_tap_oracle_oic.protocols import FlextTapOracleOicProtocols, p
+    from flext_tap_oracle_oic.models import (
+        FlextTapOracleOicModels,
+        FlextTapOracleOicModels as m,
+    )
+    from flext_tap_oracle_oic.protocols import (
+        FlextTapOracleOicProtocols,
+        FlextTapOracleOicProtocols as p,
+    )
     from flext_tap_oracle_oic.settings import (
         FlextTapOracleOicSettings,
         create_oracle_oic_tap_config,
@@ -79,8 +88,14 @@ if TYPE_CHECKING:
         OICValidationError,
     )
     from flext_tap_oracle_oic.tap_streams import OICBaseStream, OICPaginator
-    from flext_tap_oracle_oic.typings import FlextTapOracleOicTypes, t
-    from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities, u
+    from flext_tap_oracle_oic.typings import (
+        FlextTapOracleOicTypes,
+        FlextTapOracleOicTypes as t,
+    )
+    from flext_tap_oracle_oic.utilities import (
+        FlextTapOracleOicUtilities,
+        FlextTapOracleOicUtilities as u,
+    )
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "ALL_STREAMS": ("flext_tap_oracle_oic.streams_consolidated", "ALL_STREAMS"),
@@ -191,7 +206,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "__url__": ("flext_tap_oracle_oic.__version__", "__url__"),
     "__version__": ("flext_tap_oracle_oic.__version__", "__version__"),
     "__version_info__": ("flext_tap_oracle_oic.__version__", "__version_info__"),
-    "c": ("flext_tap_oracle_oic.constants", "c"),
+    "c": ("flext_tap_oracle_oic.constants", "FlextTapOracleOicConstants"),
     "create_oracle_oic_tap_config": (
         "flext_tap_oracle_oic.settings",
         "create_oracle_oic_tap_config",
@@ -201,14 +216,14 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "e": ("flext_meltano", "e"),
     "h": ("flext_meltano", "h"),
     "logger": ("flext_tap_oracle_oic.tap_client", "logger"),
-    "m": ("flext_tap_oracle_oic.models", "m"),
+    "m": ("flext_tap_oracle_oic.models", "FlextTapOracleOicModels"),
     "main": ("flext_tap_oracle_oic.tap_client", "main"),
-    "p": ("flext_tap_oracle_oic.protocols", "p"),
+    "p": ("flext_tap_oracle_oic.protocols", "FlextTapOracleOicProtocols"),
     "r": ("flext_meltano", "r"),
     "s": ("flext_meltano", "s"),
-    "t": ("flext_tap_oracle_oic.typings", "t"),
+    "t": ("flext_tap_oracle_oic.typings", "FlextTapOracleOicTypes"),
     "th": ("flext_tap_oracle_oic.streams_consolidated", "th"),
-    "u": ("flext_tap_oracle_oic.utilities", "u"),
+    "u": ("flext_tap_oracle_oic.utilities", "FlextTapOracleOicUtilities"),
     "validate_oracle_oic_tap_configuration": (
         "flext_tap_oracle_oic.settings",
         "validate_oracle_oic_tap_configuration",
