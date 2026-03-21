@@ -278,11 +278,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 return {
                     "oauth_setup": {
                         "client_id": self.oauth_client_id[
-                            : FlextConstants.Validation.MIN_NAME_LENGTH
+                            : FlextConstants.MIN_NAME_LENGTH
                         ]
                         + "..."
-                        if len(self.oauth_client_id)
-                        > FlextConstants.Validation.MIN_NAME_LENGTH
+                        if len(self.oauth_client_id) > FlextConstants.MIN_NAME_LENGTH
                         else self.oauth_client_id,
                         "token_endpoint": self.oauth_token_url,
                         "audience": self.oauth_client_aud,
@@ -618,9 +617,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     msg = "Connection name is required"
                     raise ValueError(msg)
                 if self.port is not None and not (
-                    FlextConstants.Network.MIN_PORT
-                    <= self.port
-                    <= FlextConstants.Network.MAX_PORT
+                    FlextConstants.MIN_PORT <= self.port <= FlextConstants.MAX_PORT
                 ):
                     msg = "Port must be between 1 and 65535"
                     raise ValueError(msg)
@@ -1184,9 +1181,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     msg = "Agent name is required"
                     raise ValueError(msg)
                 if self.port is not None and not (
-                    FlextConstants.Network.MIN_PORT
-                    <= self.port
-                    <= FlextConstants.Network.MAX_PORT
+                    FlextConstants.MIN_PORT <= self.port <= FlextConstants.MAX_PORT
                 ):
                     msg = "Port must be between 1 and 65535"
                     raise ValueError(msg)
@@ -1321,7 +1316,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 if (
                     self.page_size <= 0
-                    or self.page_size > FlextConstants.Performance.MAX_BATCH_SIZE
+                    or self.page_size > FlextConstants.MAX_BATCH_SIZE
                 ):
                     msg = "Page size must be between 1 and 1000"
                     raise ValueError(msg)
@@ -1565,9 +1560,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             def validate_error_context(self) -> Self:
                 """Validate OIC error context."""
                 if self.http_status_code is not None and not (
-                    FlextConstants.Network.HTTP_STATUS_MIN
+                    FlextConstants.HTTP_STATUS_MIN
                     <= self.http_status_code
-                    <= FlextConstants.Network.HTTP_STATUS_MAX
+                    <= FlextConstants.HTTP_STATUS_MAX
                 ):
                     msg = "HTTP status code must be between 100 and 599"
                     raise ValueError(msg)

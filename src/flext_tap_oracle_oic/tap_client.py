@@ -322,7 +322,7 @@ class TapOracleOic(Tap):
                     "tap_stream_id": getattr(
                         stream,
                         "name",
-                        c.Mixins.IDENTIFIER_UNKNOWN,
+                        c.IDENTIFIER_UNKNOWN,
                     ),
                     "schema": getattr(stream, "schema", {}),
                     "replication_method": "INCREMENTAL"
@@ -442,7 +442,7 @@ def _execute_discover_command(tap: TapOracleOic) -> int:
                 "tap_stream_id": getattr(
                     stream,
                     "name",
-                    c.Mixins.IDENTIFIER_UNKNOWN,
+                    c.IDENTIFIER_UNKNOWN,
                 ),
                 "schema": getattr(stream, "schema", {}),
                 "key_properties": getattr(stream, "primary_keys", []),

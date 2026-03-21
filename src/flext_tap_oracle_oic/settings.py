@@ -78,7 +78,7 @@ def create_oracle_oic_tap_config(
         )
         tap_config.setdefault(
             "batch_size",
-            FlextConstants.Performance.BatchProcessing.DEFAULT_SIZE,
+            FlextConstants.DEFAULT_SIZE,
         )
         tap_config.setdefault("stream_prefix", "oic")
         config_data = {**oauth_params, **connection_params, **tap_config}
