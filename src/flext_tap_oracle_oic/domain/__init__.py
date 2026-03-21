@@ -17,8 +17,6 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 if TYPE_CHECKING:
     from flext_core.typings import FlextTypes
 
-
-if TYPE_CHECKING:
     from flext_tap_oracle_oic.domain.entities import (
         ConnectionStatus,
         IntegrationStatus,
