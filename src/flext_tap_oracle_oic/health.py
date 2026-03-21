@@ -15,8 +15,9 @@ from datetime import UTC, datetime
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 from flext_core import r
+from flext_core.constants import c
+from flext_core.typings import t
 
-from flext_tap_oracle_oic import c, t
 from flext_tap_oracle_oic.tap_client import (
     FlextOracleOicAuthenticator as OAuthAuthenticator,
 )

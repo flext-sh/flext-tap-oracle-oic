@@ -10,10 +10,10 @@ from __future__ import annotations
 
 from typing import ClassVar, Protocol
 
+from flext_core.typings import t
 from flext_meltano import FlextMeltanoTypes
 from pydantic import TypeAdapter
 
-from flext_tap_oracle_oic import t
 from flext_tap_oracle_oic.tap_streams import OICBaseStream
 
 th = FlextMeltanoTypes()

@@ -13,6 +13,9 @@ from typing import ClassVar, override
 from flext_api import FlextApi, FlextApiSettings
 from flext_api.models import FlextApiModels
 from flext_core import FlextLogger, r
+from flext_core.constants import c
+from flext_core.models import m
+from flext_core.typings import t
 from flext_meltano import (
     FlextMeltanoSettings,
     FlextMeltanoTapAbstractions as Tap,
@@ -20,7 +23,6 @@ from flext_meltano import (
 )
 from pydantic import TypeAdapter
 
-from flext_tap_oracle_oic import c, m, t
 from flext_tap_oracle_oic.settings import FlextTapOracleOicSettings
 from flext_tap_oracle_oic.streams_consolidated import (
     ALL_STREAMS,

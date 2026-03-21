@@ -14,11 +14,12 @@ from typing import ClassVar, override
 from urllib.parse import urljoin, urlparse
 
 from flext_core import r
+from flext_core.constants import c
+from flext_core.models import m
+from flext_core.typings import t
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_oic import FlextOracleOicUtilities
 from pydantic import ConfigDict, TypeAdapter, ValidationError
-
-from flext_tap_oracle_oic import c, m, t
 
 _STRICT_LIST_ADAPTER = TypeAdapter(
     list[t.ContainerValue],

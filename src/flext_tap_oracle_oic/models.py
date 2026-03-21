@@ -12,6 +12,7 @@ from datetime import UTC, datetime
 from typing import Annotated, Literal, Self
 
 from flext_core import FlextConstants, FlextModels
+from flext_core.constants import c
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic.models import FlextOracleOicModels
 from pydantic import (
@@ -23,7 +24,6 @@ from pydantic import (
     model_validator,
 )
 
-from flext_tap_oracle_oic import c
 from flext_tap_oracle_oic.typings import t
 
 # Type aliases for OIC domain literals (PEP 695 `type` stmts in nested classes
