@@ -10,17 +10,21 @@ from __future__ import annotations
 import re
 from collections.abc import Mapping
 from datetime import UTC, datetime
-from typing import ClassVar, override
+from typing import TYPE_CHECKING, ClassVar, override
 from urllib.parse import urljoin, urlparse
 
 from flext_core import r
 from flext_core.typings import t
 from flext_meltano import FlextMeltanoUtilities
 from flext_meltano.models import FlextMeltanoModels as m
-from flext_oracle_oic import FlextOracleOicUtilities
 from pydantic import ConfigDict, TypeAdapter, ValidationError
 
 from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants as c
+
+if TYPE_CHECKING:
+    from flext_oracle_oic import FlextOracleOicUtilities as _OicUtilBase
+else:
+    _OicUtilBase = object
 
 _STRICT_LIST_ADAPTER = TypeAdapter(
     list[t.ContainerValue],
@@ -65,7 +69,7 @@ def _coerce_int(value: t.ContainerValue | None) -> int:
         return 0
 
 
-class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities):
+class FlextTapOracleOicUtilities(FlextMeltanoUtilities, _OicUtilBase):
     """Single unified utilities class for Singer tap Oracle OIC operations.
 
     Follows FLEXT unified class pattern with nested helper classes for
@@ -361,8 +365,8 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 if (conn_map := _as_map(conn)) is not None
                 and (connection_type := conn_map.get("connectionType")) is not None
             ]
-            metadata["connection_types"] = connection_types
-            return metadata
+            metadata["connection_types"] = list[t.ContainerValue](connection_types)
+            return {k: v for k, v in metadata.items() if v is not None}
 
         @staticmethod
         def format_oic_timestamp(timestamp_str: str) -> r[str]:

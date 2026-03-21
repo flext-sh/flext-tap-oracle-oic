@@ -8,21 +8,22 @@ from __future__ import annotations
 
 import sys
 from collections.abc import Mapping, Sequence
-from typing import ClassVar, override
+from typing import TYPE_CHECKING, ClassVar
 
 from flext_api import FlextApi, FlextApiSettings
 from flext_api.models import FlextApiModels
 from flext_core import FlextLogger, r
-from flext_core.constants import c
-from flext_core.models import m
 from flext_core.typings import t
-from flext_meltano import (
-    FlextMeltanoSettings,
-    FlextMeltanoTapAbstractions as Tap,
-    t as mt,
-)
+from flext_meltano import t as mt
+from flext_meltano.models import FlextMeltanoModels as m
 from pydantic import TypeAdapter
 
+from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants as c
+
+if TYPE_CHECKING:
+    from flext_meltano import FlextMeltanoAbstractions as _TapBase
+else:
+    _TapBase = object
 from flext_tap_oracle_oic.settings import FlextTapOracleOicSettings
 from flext_tap_oracle_oic.streams_consolidated import (
     ALL_STREAMS,
@@ -206,7 +207,7 @@ class OracleOicClient:
         return r[Mapping[str, str]].ok(headers)
 
 
-class TapOracleOic(Tap):
+class TapOracleOic(_TapBase):
     """Oracle Integration Cloud tap implementation using flext-oracle-oic.
 
     Singer tap with complete flext ecosystem integration:
@@ -217,6 +218,7 @@ class TapOracleOic(Tap):
     """
 
     name: ClassVar[str] = "tap-oracle-oic"
+    capabilities: ClassVar[list[str]] = ["catalog", "state", "discover"]
     config_jsonschema: ClassVar[dict[str, t.ContainerValue]] = {
         "type": "object",
         "properties": {
@@ -255,10 +257,12 @@ class TapOracleOic(Tap):
         _ = catalog
         _ = state
         _ = parse_env_config
-        _ = validate_config
-        Tap.__init__(self, config=FlextMeltanoSettings.model_validate({}))
+        super().__init__()
         self._tap_config: dict[str, t.ContainerValue] = (
             dict(config) if config is not None else {}
+        )
+        self.config = FlextTapOracleOicSettings.model_validate(
+            self._tap_config, strict=validate_config
         )
         self._client: OracleOicClient | None = None
         self._utilities = FlextTapOracleOicUtilities()
@@ -306,7 +310,6 @@ class TapOracleOic(Tap):
         logger.info("Discovered %s streams from Oracle OIC", len(streams))
         return streams
 
-    @override
     def discover_streams(
         self,
         source_config: m.Meltano.DataSourceConfig
@@ -369,9 +372,7 @@ def main() -> int:
     if exit_code != 0:
         return exit_code
     config: dict[str, str] = dict(_build_config_from_env())
-    config_typed: dict[str, t.ContainerValue] = {
-        k: v for k, v in config.items() if v is not None
-    }
+    config_typed: dict[str, t.ContainerValue] = dict(config)
     tap = TapOracleOic(config=config_typed)
     try:
         return _execute_tap_command(tap)

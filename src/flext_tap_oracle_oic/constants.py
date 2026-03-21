@@ -23,6 +23,11 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
     Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
     """
 
+    OIC_API_BASE_PATH: Final[str] = "/ic/api/integration/v1"
+    OIC_MONITORING_API_PATH: Final[str] = "/ic/api/monitoring/v1"
+    OIC_B2B_API_PATH: Final[str] = "/ic/api/b2b/v1"
+    OIC_PROCESS_API_PATH: Final[str] = "/ic/api/process/v1"
+
     class TapOracleOic:
         """OIC connection configuration."""
 

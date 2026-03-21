@@ -177,6 +177,8 @@ class OICBaseStream(BaseModel):
     - Support for all OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
     """
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     config: dict[str, t.ContainerValue] = Field(default_factory=dict)
     name: str = Field(default="")
     replication_key: str | None = Field(default=None)
@@ -311,7 +313,7 @@ class OICBaseStream(BaseModel):
             )
         if self.additional_params is not None:
             params.update(self.additional_params)
-        return {k: v for k, v in params.items() if v is not None}
+        return dict(params)
 
     def parse_response(
         self,
@@ -369,8 +371,8 @@ class OICBaseStream(BaseModel):
                 records_yielded += 1
         if records_yielded == 0 and (not self._is_empty_result_expected(data)):
             map_data = _as_value_map(data)
-            payload_descriptor: list[str] | str = (
-                list(map_data.keys()) if map_data is not None else str(type(data))
+            payload_descriptor: str = (
+                str(list(map_data.keys())) if map_data is not None else str(type(data))
             )
             self.logger.warning(
                 "Unknown response format from %s: %s",
@@ -497,7 +499,7 @@ class OICBaseStream(BaseModel):
 
     def _validate_record(self, record: Mapping[str, t.ContainerValue]) -> bool:
         """Validate record meets basic requirements for processing."""
-        return _as_value_map(record) is not None
+        return _as_value_map(dict(record)) is not None
 
 
 __all__: list[str] = ["OICBaseStream", "OICPaginator"]

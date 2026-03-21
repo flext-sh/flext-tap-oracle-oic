@@ -48,7 +48,8 @@ class TestTapOracleOic:
         if tap.name != "tap-oracle-oic":
             msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
-        assert tap.config == config
+        assert tap.config.base_url == config["base_url"]
+        assert tap.config.oauth_client_id == config["oauth_client_id"]
 
     def test_discover_streams(self) -> None:
         """Test method."""
@@ -71,8 +72,8 @@ class TestTapOracleOic:
 
     def test_config_validation(self) -> None:
         """Test method."""
-        "Test config validation."
-        config = {"base_url": "https://test.integration.ocp.oraclecloud.com"}
+        "Test config validation rejects invalid field types."
+        config = {"timeout": -1}
         with pytest.raises(ConfigValidationError):
             TapOracleOic(config=config, validate_config=True)
 

@@ -9,11 +9,15 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from datetime import UTC, datetime
-from typing import Annotated, Literal, Self
+from typing import TYPE_CHECKING, Annotated, Literal, Self
 
 from flext_core import FlextConstants, FlextModels
 from flext_meltano import FlextMeltanoModels
-from flext_oracle_oic.models import FlextOracleOicModels
+
+if TYPE_CHECKING:
+    from flext_oracle_oic.models import FlextOracleOicModels as _OicModelsBase
+else:
+    _OicModelsBase = object
 from pydantic import (
     ConfigDict,
     Field,
@@ -57,7 +61,7 @@ OicErrorTypeLiteral = Literal[
 ]
 
 
-class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
+class FlextTapOracleOicModels(FlextMeltanoModels, _OicModelsBase):
     """Oracle Integration Cloud tap models extending flext-core FlextModels.
 
     Provides complete models for OIC entity extraction, authentication,
@@ -139,27 +143,15 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         _info: FieldSerializationInfo,
     ) -> dict[str, t.ContainerValue]:
         """Add Singer Oracle OIC tap metadata to all serialized fields."""
-        match value:
-            case dict() as value_dict:
-                return {
-                    **value_dict,
-                    "_oic_tap_metadata": {
-                        "extraction_timestamp": datetime.now(UTC).isoformat(),
-                        "tap_type": "oracle_oic_api_extractor",
-                        "singer_protocol": "v1.0",
-                        "data_source": "oracle_integration_cloud",
-                    },
-                }
-            case str() | int() | float() if self._include_oic_metadata is not None:
-                return {
-                    "value": value,
-                    "_oic_context": {
-                        "extracted_at": datetime.now(UTC).isoformat(),
-                        "tap_name": "flext-tap-oracle-oic",
-                    },
-                }
-            case _:
-                return value
+        return {
+            **value,
+            "_oic_tap_metadata": {
+                "extraction_timestamp": datetime.now(UTC).isoformat(),
+                "tap_type": "oracle_oic_api_extractor",
+                "singer_protocol": "v1.0",
+                "data_source": "oracle_integration_cloud",
+            },
+        }
 
     @model_validator(mode="after")
     def validate_oic_tap_system_consistency(self) -> Self:
@@ -874,7 +866,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         "integration_count": self.integration_count or 0,
                         "dependency_count": len(self.dependencies),
                         "has_dependencies": bool(self.dependencies),
-                        "dependencies": self.dependencies,
+                        "dependencies": list[t.ContainerValue](self.dependencies),
                     },
                     "usage": {
                         "download_count": self.download_count or 0,

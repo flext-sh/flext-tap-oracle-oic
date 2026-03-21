@@ -30,7 +30,7 @@ class OICHealthChecker:
         """Initialize health checker with base URL and authenticator."""
         self.base_url = base_url.rstrip("/")
         self.authenticator = authenticator
-        api_config = FlextApiSettings(base_url=base_url)
+        api_config = FlextApiSettings.model_validate({"base_url": base_url})
         self._api_client = FlextApi(api_config)
 
     def check_health(self) -> dict[str, str]:
