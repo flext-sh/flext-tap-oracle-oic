@@ -38,12 +38,12 @@ class IntegrationsStream(OICBaseStream):
     name: str = "integrations"
     path: str = "/integrations"
     primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: str = "lastUpdated"
+    replication_key: str | None = "lastUpdated"
     api_category: ClassVar[str] = "core"
     requires_design_api: ClassVar[bool] = True
     default_sort: ClassVar[str | None] = "lastUpdated:desc"
     default_expand: ClassVar[str] = "connections,endpoints"
-    schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
+    stream_schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
         _properties_to_dict(
             th.Singer.Typing.PropertiesList(
                 th.Singer.Typing.Property(
@@ -161,11 +161,11 @@ class ConnectionsStream(OICBaseStream):
     name: str = "connections"
     path: str = "/connections"
     primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: str = "lastUpdated"
+    replication_key: str | None = "lastUpdated"
     api_category: ClassVar[str] = "core"
     requires_design_api: ClassVar[bool] = True
     default_sort: ClassVar[str | None] = "name:asc"
-    schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
+    stream_schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
         _properties_to_dict(
             th.Singer.Typing.PropertiesList(
                 th.Singer.Typing.Property(
@@ -273,10 +273,10 @@ class PackagesStream(OICBaseStream):
     name: str = "packages"
     path: str = "/packages"
     primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: str = "lastUpdated"
+    replication_key: str | None = "lastUpdated"
     api_category: ClassVar[str] = "core"
     default_sort: ClassVar[str | None] = "lastUpdated:desc"
-    schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
+    stream_schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
         _properties_to_dict(
             th.Singer.Typing.PropertiesList(
                 th.Singer.Typing.Property(
@@ -359,9 +359,9 @@ class LookupsStream(OICBaseStream):
     name: str = "lookups"
     path: str = "/lookups"
     primary_keys: ClassVar[list[str]] = ["name"]
-    replication_key: str = "lastUpdated"
+    replication_key: str | None = "lastUpdated"
     api_category: ClassVar[str] = "core"
-    schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
+    stream_schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
         _properties_to_dict(
             th.Singer.Typing.PropertiesList(
                 th.Singer.Typing.Property(
@@ -439,9 +439,9 @@ class LibrariesStream(OICBaseStream):
     name: str = "libraries"
     path: str = "/libraries"
     primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: str = "lastUpdated"
+    replication_key: str | None = "lastUpdated"
     api_category: ClassVar[str] = "infrastructure"
-    schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
+    stream_schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
         _properties_to_dict(
             th.Singer.Typing.PropertiesList(
                 th.Singer.Typing.Property(
@@ -524,9 +524,9 @@ class CertificatesStream(OICBaseStream):
     name: str = "certificates"
     path: str = "/certificates"
     primary_keys: ClassVar[list[str]] = ["name"]
-    replication_key: str = "lastUpdated"
+    replication_key: str | None = "lastUpdated"
     api_category: ClassVar[str] = "security"
-    schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
+    stream_schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
         _properties_to_dict(
             th.Singer.Typing.PropertiesList(
                 th.Singer.Typing.Property(
@@ -611,7 +611,7 @@ class AdaptersStream(OICBaseStream):
     primary_keys: ClassVar[list[str]] = ["id"]
     replication_key: str | None = None
     api_category: ClassVar[str] = "infrastructure"
-    schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
+    stream_schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
         _properties_to_dict(
             th.Singer.Typing.PropertiesList(
                 th.Singer.Typing.Property(
@@ -689,10 +689,10 @@ class ProjectsStream(OICBaseStream):
     name: str = "projects"
     path: str = "/projects"
     primary_keys: ClassVar[list[str]] = ["id"]
-    replication_key: str = "lastUpdated"
+    replication_key: str | None = "lastUpdated"
     api_category: ClassVar[str] = "extended"
     requires_design_api: ClassVar[bool] = True
-    schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
+    stream_schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
         _properties_to_dict(
             th.Singer.Typing.PropertiesList(
                 th.Singer.Typing.Property(
@@ -770,10 +770,10 @@ class ExecutionsStream(OICBaseStream):
     name: str = "executions"
     path: str = "/monitoring/v1/integrations"
     primary_keys: ClassVar[list[str]] = ["instanceId"]
-    replication_key: str = "startTime"
+    replication_key: str | None = "startTime"
     api_category: ClassVar[str] = "monitoring"
     requires_monitoring_api: ClassVar[bool] = True
-    schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
+    stream_schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
         _properties_to_dict(
             th.Singer.Typing.PropertiesList(
                 th.Singer.Typing.Property(
@@ -846,10 +846,10 @@ class MetricsStream(OICBaseStream):
     name: str = "metrics"
     path: str = "/monitoring/v1/metrics"
     primary_keys: ClassVar[list[str]] = ["metricId", "timestamp"]
-    replication_key: str = "timestamp"
+    replication_key: str | None = "timestamp"
     api_category: ClassVar[str] = "monitoring"
     requires_monitoring_api: ClassVar[bool] = True
-    schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
+    stream_schema: dict[str, t.Scalar] = _SCHEMA_ADAPTER.validate_python(
         _properties_to_dict(
             th.Singer.Typing.PropertiesList(
                 th.Singer.Typing.Property(

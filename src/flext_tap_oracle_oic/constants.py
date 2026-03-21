@@ -27,12 +27,8 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         """OIC connection configuration."""
 
         DEFAULT_TIMEOUT: Final[int] = ParentOicConstants.OracleOic.DEFAULT_TIMEOUT
-        DEFAULT_MAX_RETRIES: Final[int] = (
-            ParentOicConstants.OracleOic.DEFAULT_MAX_RETRIES
-        )
-        DEFAULT_VERIFY_SSL: Final[bool] = (
-            ParentOicConstants.OracleOic.DEFAULT_VERIFY_SSL
-        )
+        DEFAULT_MAX_RETRIES: Final[int] = 3
+        DEFAULT_VERIFY_SSL: Final[bool] = True
 
     class TapOicProcessing:
         """OIC tap processing configuration.
@@ -41,7 +37,7 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         """
 
         DEFAULT_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.DEFAULT_PAGE_SIZE
-        MAX_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.MAX_PAGE_SIZE
+        MAX_PAGE_SIZE: Final[int] = 1000
         MIN_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.MIN_PAGE_SIZE
         DEFAULT_PAGINATOR_START: Final[int] = 0
         DEFAULT_PAGINATOR_PAGE_SIZE: Final[int] = 100

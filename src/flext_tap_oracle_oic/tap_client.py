@@ -324,7 +324,7 @@ class TapOracleOic(Tap):
                         "name",
                         c.IDENTIFIER_UNKNOWN,
                     ),
-                    "schema": getattr(stream, "schema", {}),
+                    "schema": getattr(stream, "stream_schema", {}),
                     "replication_method": "INCREMENTAL"
                     if getattr(stream, "replication_key", None)
                     else "FULL_TABLE",

@@ -15,11 +15,13 @@ from typing import Annotated, ClassVar
 import requests
 from flext_api import FlextApi, FlextApiSettings
 from flext_core import FlextExceptions, FlextLogger
-from flext_core.constants import c
 from flext_core.typings import t
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, ValidationError
 
-from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants
+from flext_tap_oracle_oic.constants import (
+    FlextTapOracleOicConstants,
+    FlextTapOracleOicConstants as c,
+)
 from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 _GENERAL_LIST_ADAPTER = TypeAdapter(
