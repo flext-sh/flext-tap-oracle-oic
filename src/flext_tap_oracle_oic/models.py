@@ -103,7 +103,7 @@ _STRING_LIST_ADAPTER = TypeAdapter(list[str], config=ConfigDict(strict=True))
 
 
 def _as_value_list(value: t.ContainerValue | None) -> list[t.ContainerValue] | None:
-    """Validate payload as strict list[object]."""
+    """Validate payload as strict list[t.NormalizedValue]."""
     try:
         return _GENERAL_LIST_ADAPTER.validate_python(value)
     except ValidationError:
@@ -113,7 +113,7 @@ def _as_value_list(value: t.ContainerValue | None) -> list[t.ContainerValue] | N
 def _as_value_map(
     value: t.ContainerValue | None,
 ) -> dict[str, t.ContainerValue] | None:
-    """Validate payload as strict dict[str, object]."""
+    """Validate payload as strict dict[str, t.NormalizedValue]."""
     try:
         return _GENERAL_MAP_ADAPTER.validate_python(value)
     except ValidationError:
@@ -150,7 +150,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     _include_oic_metadata: dict[str, t.ContainerValue] | None = None
 
     # Pydantic 2.11 Configuration - Enterprise Singer Oracle OIC Tap Features
-    model_config = ConfigDict(
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         validate_assignment=True,
         use_enum_values=True,
         arbitrary_types_allowed=True,
@@ -286,7 +286,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             - Support for all OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
             """
 
-            model_config = ConfigDict(arbitrary_types_allowed=True)
+            model_config: ClassVar[ConfigDict] = ConfigDict(arbitrary_types_allowed=True)
 
             config: dict[str, t.ContainerValue] = Field(default_factory=dict)
             name: str = Field(default="")
@@ -635,7 +635,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OAuth2/IDCS authentication configuration for OIC API access."""
 
             # Pydantic 2.11 Configuration - Authentication Features
-            model_config = ConfigDict(
+            model_config: ClassVar[ConfigDict] = ConfigDict(
                 validate_assignment=True,
                 extra="forbid",
                 frozen=False,
@@ -748,7 +748,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Integration entity with complete metadata."""
 
             # Pydantic 2.11 Configuration - Integration Features
-            model_config = ConfigDict(
+            model_config: ClassVar[ConfigDict] = ConfigDict(
                 validate_assignment=True,
                 extra="forbid",
                 frozen=False,
@@ -898,7 +898,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Connection entity with security sanitization."""
 
             # Pydantic 2.11 Configuration - Connection Features
-            model_config = ConfigDict(
+            model_config: ClassVar[ConfigDict] = ConfigDict(
                 validate_assignment=True,
                 extra="forbid",
                 frozen=False,
@@ -1055,7 +1055,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Activity monitoring record for incremental replication."""
 
             # Pydantic 2.11 Configuration - Activity Features
-            model_config = ConfigDict(
+            model_config: ClassVar[ConfigDict] = ConfigDict(
                 validate_assignment=True,
                 extra="forbid",
                 frozen=False,
@@ -1200,7 +1200,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Package entity for integration packages."""
 
             # Pydantic 2.11 Configuration - Package Features
-            model_config = ConfigDict(
+            model_config: ClassVar[ConfigDict] = ConfigDict(
                 validate_assignment=True,
                 extra="forbid",
                 frozen=False,
@@ -1329,7 +1329,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Metrics record for performance monitoring."""
 
             # Pydantic 2.11 Configuration - Metrics Features
-            model_config = ConfigDict(
+            model_config: ClassVar[ConfigDict] = ConfigDict(
                 validate_assignment=True,
                 extra="forbid",
                 frozen=False,
@@ -1478,7 +1478,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Agent entity for connectivity agents."""
 
             # Pydantic 2.11 Configuration - Agent Features
-            model_config = ConfigDict(
+            model_config: ClassVar[ConfigDict] = ConfigDict(
                 validate_assignment=True,
                 extra="forbid",
                 frozen=False,
@@ -1621,7 +1621,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """Configuration for OIC tap streams."""
 
             # Pydantic 2.11 Configuration - Stream Features
-            model_config = ConfigDict(
+            model_config: ClassVar[ConfigDict] = ConfigDict(
                 validate_assignment=True,
                 extra="forbid",
                 frozen=False,
@@ -1756,7 +1756,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """Standardized OIC API response wrapper."""
 
             # Pydantic 2.11 Configuration - API Response Features
-            model_config = ConfigDict(
+            model_config: ClassVar[ConfigDict] = ConfigDict(
                 validate_assignment=True,
                 extra="forbid",
                 frozen=False,
@@ -1889,7 +1889,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """Error context for OIC API error handling."""
 
             # Pydantic 2.11 Configuration - Error Context Features
-            model_config = ConfigDict(
+            model_config: ClassVar[ConfigDict] = ConfigDict(
                 validate_assignment=True,
                 extra="forbid",
                 frozen=False,
@@ -2034,7 +2034,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         class OICConnection(FlextModels):
             """OIC connection domain entity using flext-core patterns."""
 
-            model_config = ConfigDict(frozen=False)
+            model_config: ClassVar[ConfigDict] = ConfigDict(frozen=False)
             connection_id: Annotated[
                 str,
                 Field(..., min_length=1, description="OIC connection identifier"),
@@ -2110,7 +2110,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         class OICIntegration(FlextModels):
             """OIC integration domain entity using flext-core patterns."""
 
-            model_config = ConfigDict(frozen=False)
+            model_config: ClassVar[ConfigDict] = ConfigDict(frozen=False)
             integration_id: Annotated[
                 str,
                 Field(..., min_length=1, description="OIC integration identifier"),
@@ -2213,7 +2213,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         class OICLookup(FlextModels):
             """OIC lookup table domain entity using flext-core patterns."""
 
-            model_config = ConfigDict(frozen=False)
+            model_config: ClassVar[ConfigDict] = ConfigDict(frozen=False)
             lookup_id: Annotated[
                 str,
                 Field(..., min_length=1, description="OIC lookup identifier"),
@@ -2348,7 +2348,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         class OICProject(FlextModels):
             """OIC project domain entity using flext-core patterns."""
 
-            model_config = ConfigDict(frozen=False)
+            model_config: ClassVar[ConfigDict] = ConfigDict(frozen=False)
             project_id: Annotated[
                 str,
                 Field(..., min_length=1, description="OIC project identifier"),
@@ -2415,7 +2415,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     self.integration_ids.remove(integration_id)
 
         class OICResourceMetadata(FlextModels):
-            """OIC resource metadata value object."""
+            """OIC resource metadata value t.NormalizedValue."""
 
             resource_type: Annotated[
                 c.OICResourceType,
@@ -2437,7 +2437,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
 
         class OICExecutionSummary(FlextModels):
-            """OIC execution summary value object."""
+            """OIC execution summary value t.NormalizedValue."""
 
             integration_id: Annotated[str, Field(..., description="Integration ID")]
             total_executions: Annotated[

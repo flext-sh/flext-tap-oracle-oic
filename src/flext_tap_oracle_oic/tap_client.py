@@ -23,7 +23,7 @@ from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants as c
 if TYPE_CHECKING:
     from flext_meltano import FlextMeltanoAbstractions as _TapBase
 else:
-    _TapBase = object
+    _TapBase = t.NormalizedValue
 from flext_tap_oracle_oic.settings import FlextTapOracleOicSettings
 from flext_tap_oracle_oic.streams_consolidated import (
     ALL_STREAMS,
@@ -220,7 +220,7 @@ class TapOracleOic(_TapBase):
     name: ClassVar[str] = "tap-oracle-oic"
     capabilities: ClassVar[list[str]] = ["catalog", "state", "discover"]
     config_jsonschema: ClassVar[dict[str, t.ContainerValue]] = {
-        "type": "object",
+        "type": "t.NormalizedValue",
         "properties": {
             "oauth_client_id": {"type": "string", "description": "OAuth2 client ID"},
             "oauth_client_secret": {
