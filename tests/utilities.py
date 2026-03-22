@@ -1,6 +1,6 @@
-"""Module skeleton for TestsFlextTapOracleOicUtilities.
+"""Module skeleton for FlextTapOracleOicTestUtilities.
 
-Test utilities for flexttaporacleoic.
+Test utilities for flext-tap-oracle-oic.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -8,12 +8,20 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tests import u
+from flext_tests import FlextTestsUtilities
+
+from flext_tap_oracle_oic import FlextTapOracleOicUtilities
 
 
-class TestsFlextTapOracleOicUtilities(u):
-    """Test utilities for flexttaporacleoic."""
+class FlextTapOracleOicTestUtilities(FlextTestsUtilities, FlextTapOracleOicUtilities):
+    """Test utilities for flext-tap-oracle-oic."""
+
+    class TapOracleOic(FlextTapOracleOicUtilities.TapOracleOic):
+        """TapOracleOic test utilities namespace."""
+
+        class Tests:
+            """Internal tests declarations."""
 
 
-u = TestsFlextTapOracleOicUtilities
-__all__ = ["TestsFlextTapOracleOicUtilities", "u"]
+u = FlextTapOracleOicTestUtilities
+__all__ = ["FlextTapOracleOicTestUtilities", "u"]

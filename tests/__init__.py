@@ -19,6 +19,7 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 
 if TYPE_CHECKING:
     from flext_core.typings import FlextTypes
+    from flext_tests import d, e, h, r, s, x
 
     from .conftest import (
         basic_oic_config,
@@ -49,13 +50,13 @@ if TYPE_CHECKING:
         singer_state,
     )
     from .constants import (
-        TestsFlextTapOracleOicConstants,
-        TestsFlextTapOracleOicConstants as c,
+        FlextTapOracleOicTestConstants,
+        FlextTapOracleOicTestConstants as c,
     )
-    from .models import TestsFlextTapOracleOicModels, TestsFlextTapOracleOicModels as m
+    from .models import FlextTapOracleOicTestModels, FlextTapOracleOicTestModels as m
     from .protocols import (
-        TestsFlextTapOracleOicProtocols,
-        TestsFlextTapOracleOicProtocols as p,
+        FlextTapOracleOicTestProtocols,
+        FlextTapOracleOicTestProtocols as p,
     )
     from .test_auth import TestOICOAuth2Authenticator
     from .test_tap_core import (
@@ -65,13 +66,27 @@ if TYPE_CHECKING:
         sample_config,
         sample_config_with_extended,
     )
-    from .typings import TestsFlextTapOracleOicTypes, TestsFlextTapOracleOicTypes as t
+    from .typings import FlextTapOracleOicTestTypes, FlextTapOracleOicTestTypes as t
     from .utilities import (
-        TestsFlextTapOracleOicUtilities,
-        TestsFlextTapOracleOicUtilities as u,
+        FlextTapOracleOicTestUtilities,
+        FlextTapOracleOicTestUtilities as u,
     )
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
+    "FlextTapOracleOicTestConstants": (
+        "tests.constants",
+        "FlextTapOracleOicTestConstants",
+    ),
+    "FlextTapOracleOicTestModels": ("tests.models", "FlextTapOracleOicTestModels"),
+    "FlextTapOracleOicTestProtocols": (
+        "tests.protocols",
+        "FlextTapOracleOicTestProtocols",
+    ),
+    "FlextTapOracleOicTestTypes": ("tests.typings", "FlextTapOracleOicTestTypes"),
+    "FlextTapOracleOicTestUtilities": (
+        "tests.utilities",
+        "FlextTapOracleOicTestUtilities",
+    ),
     "TestOICOAuth2Authenticator": ("tests.test_auth", "TestOICOAuth2Authenticator"),
     "TestTapOracleOic": ("tests.test_tap_core", "TestTapOracleOic"),
     "TestTapOracleOicIntegration": (
@@ -82,27 +97,16 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
         "tests.test_tap_core",
         "TestTapOracleOicWithFixtures",
     ),
-    "TestsFlextTapOracleOicConstants": (
-        "tests.constants",
-        "TestsFlextTapOracleOicConstants",
-    ),
-    "TestsFlextTapOracleOicModels": ("tests.models", "TestsFlextTapOracleOicModels"),
-    "TestsFlextTapOracleOicProtocols": (
-        "tests.protocols",
-        "TestsFlextTapOracleOicProtocols",
-    ),
-    "TestsFlextTapOracleOicTypes": ("tests.typings", "TestsFlextTapOracleOicTypes"),
-    "TestsFlextTapOracleOicUtilities": (
-        "tests.utilities",
-        "TestsFlextTapOracleOicUtilities",
-    ),
     "basic_oic_config": ("tests.conftest", "basic_oic_config"),
     "benchmark_config": ("tests.conftest", "benchmark_config"),
-    "c": ("tests.constants", "TestsFlextTapOracleOicConstants"),
+    "c": ("tests.constants", "FlextTapOracleOicTestConstants"),
+    "d": ("flext_tests", "d"),
+    "e": ("flext_tests", "e"),
     "extended_oic_config": ("tests.conftest", "extended_oic_config"),
     "filtered_oic_config": ("tests.conftest", "filtered_oic_config"),
+    "h": ("flext_tests", "h"),
     "large_integration_dataset": ("tests.conftest", "large_integration_dataset"),
-    "m": ("tests.models", "TestsFlextTapOracleOicModels"),
+    "m": ("tests.models", "FlextTapOracleOicTestModels"),
     "mock_connections_response": ("tests.conftest", "mock_connections_response"),
     "mock_http_error_response": ("tests.conftest", "mock_http_error_response"),
     "mock_integrations_response": ("tests.conftest", "mock_integrations_response"),
@@ -112,9 +116,11 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "mock_oic_client": ("tests.conftest", "mock_oic_client"),
     "mock_packages_response": ("tests.conftest", "mock_packages_response"),
     "mock_rate_limit_response": ("tests.conftest", "mock_rate_limit_response"),
-    "p": ("tests.protocols", "TestsFlextTapOracleOicProtocols"),
+    "p": ("tests.protocols", "FlextTapOracleOicTestProtocols"),
     "performance_oic_config": ("tests.conftest", "performance_oic_config"),
     "pytest_configure": ("tests.conftest", "pytest_configure"),
+    "r": ("flext_tests", "r"),
+    "s": ("flext_tests", "s"),
     "sample_adapter_data": ("tests.conftest", "sample_adapter_data"),
     "sample_certificate_data": ("tests.conftest", "sample_certificate_data"),
     "sample_config": ("tests.test_tap_core", "sample_config"),
@@ -130,25 +136,29 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "set_test_environment": ("tests.conftest", "set_test_environment"),
     "singer_catalog": ("tests.conftest", "singer_catalog"),
     "singer_state": ("tests.conftest", "singer_state"),
-    "t": ("tests.typings", "TestsFlextTapOracleOicTypes"),
-    "u": ("tests.utilities", "TestsFlextTapOracleOicUtilities"),
+    "t": ("tests.typings", "FlextTapOracleOicTestTypes"),
+    "u": ("tests.utilities", "FlextTapOracleOicTestUtilities"),
+    "x": ("flext_tests", "x"),
 }
 
 __all__ = [
+    "FlextTapOracleOicTestConstants",
+    "FlextTapOracleOicTestModels",
+    "FlextTapOracleOicTestProtocols",
+    "FlextTapOracleOicTestTypes",
+    "FlextTapOracleOicTestUtilities",
     "TestOICOAuth2Authenticator",
     "TestTapOracleOic",
     "TestTapOracleOicIntegration",
     "TestTapOracleOicWithFixtures",
-    "TestsFlextTapOracleOicConstants",
-    "TestsFlextTapOracleOicModels",
-    "TestsFlextTapOracleOicProtocols",
-    "TestsFlextTapOracleOicTypes",
-    "TestsFlextTapOracleOicUtilities",
     "basic_oic_config",
     "benchmark_config",
     "c",
+    "d",
+    "e",
     "extended_oic_config",
     "filtered_oic_config",
+    "h",
     "large_integration_dataset",
     "m",
     "mock_connections_response",
@@ -163,6 +173,8 @@ __all__ = [
     "p",
     "performance_oic_config",
     "pytest_configure",
+    "r",
+    "s",
     "sample_adapter_data",
     "sample_certificate_data",
     "sample_config",
@@ -177,6 +189,7 @@ __all__ = [
     "singer_state",
     "t",
     "u",
+    "x",
 ]
 
 

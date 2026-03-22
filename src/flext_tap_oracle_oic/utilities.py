@@ -10,21 +10,15 @@ from __future__ import annotations
 import re
 from collections.abc import Mapping
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, ClassVar, override
+from typing import ClassVar, override
 from urllib.parse import urljoin, urlparse
 
 from flext_core import r
-from flext_core.typings import t
 from flext_meltano import FlextMeltanoUtilities
-from flext_meltano.models import FlextMeltanoModels as m
+from flext_oracle_oic import FlextOracleOicUtilities
 from pydantic import ConfigDict, TypeAdapter, ValidationError
 
-from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants as c
-
-if TYPE_CHECKING:
-    from flext_oracle_oic import FlextOracleOicUtilities as _OicUtilBase
-else:
-    _OicUtilBase = object
+from flext_tap_oracle_oic import c, m, t
 
 _STRICT_LIST_ADAPTER = TypeAdapter(
     list[t.ContainerValue],
@@ -69,7 +63,7 @@ def _coerce_int(value: t.ContainerValue | None) -> int:
         return 0
 
 
-class FlextTapOracleOicUtilities(FlextMeltanoUtilities, _OicUtilBase):
+class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities):
     """Single unified utilities class for Singer tap Oracle OIC operations.
 
     Follows FLEXT unified class pattern with nested helper classes for

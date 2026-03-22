@@ -1,6 +1,6 @@
-"""Module skeleton for TestsFlextTapOracleOicProtocols.
+"""Module skeleton for FlextTapOracleOicTestProtocols.
 
-Test protocols for flexttaporacleoic.
+Test protocols for flext-tap-oracle-oic.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -8,12 +8,20 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tests import p
+from flext_tests import FlextTestsProtocols
+
+from flext_tap_oracle_oic import FlextTapOracleOicProtocols
 
 
-class TestsFlextTapOracleOicProtocols(p):
-    """Test protocols for flexttaporacleoic."""
+class FlextTapOracleOicTestProtocols(FlextTestsProtocols, FlextTapOracleOicProtocols):
+    """Test protocols for flext-tap-oracle-oic."""
+
+    class TapOracleOic(FlextTapOracleOicProtocols.TapOracleOic):
+        """TapOracleOic test protocols namespace."""
+
+        class Tests:
+            """Internal tests declarations."""
 
 
-p = TestsFlextTapOracleOicProtocols
-__all__ = ["TestsFlextTapOracleOicProtocols", "p"]
+p = FlextTapOracleOicTestProtocols
+__all__ = ["FlextTapOracleOicTestProtocols", "p"]
