@@ -7,11 +7,15 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+import re
+from collections.abc import Iterator, Mapping, Sequence
 from datetime import UTC, datetime
-from typing import Annotated, Literal, Self
+from typing import Annotated, ClassVar, Literal, Self
 
-from flext_core import FlextConstants, FlextModels
+import requests
+from flext_api import FlextApi, FlextApiSettings
+from flext_core import FlextConstants, FlextExceptions, FlextLogger, FlextModels
+from flext_core.typings import t as _core_t
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import FlextOracleOicModels
 from pydantic import (
@@ -19,12 +23,18 @@ from pydantic import (
     ConfigDict,
     Field,
     FieldSerializationInfo,
+    TypeAdapter,
+    ValidationError,
     computed_field,
     field_serializer,
     model_validator,
 )
 
 from flext_tap_oracle_oic import c, t
+from flext_tap_oracle_oic.constants import (
+    FlextTapOracleOicConstants,
+)
+from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 # Type aliases for OIC domain literals (PEP 695 `type` stmts in nested classes
 # aren't resolvable by mypy/pyright with `from __future__ import annotations`)
@@ -68,6 +78,51 @@ class OicEnvelope(BaseModel):
     data: list[dict[str, t.ContainerValue]] | None = None
     total_size: Annotated[int | None, Field(default=None, alias="totalSize")]
     count: int | None = None
+
+
+_GENERAL_LIST_ADAPTER = TypeAdapter(
+    list[_core_t.ContainerValue],
+    config=ConfigDict(strict=True),
+)
+_GENERAL_MAP_ADAPTER = TypeAdapter(
+    dict[str, _core_t.ContainerValue],
+    config=ConfigDict(strict=True),
+)
+_STRING_LIST_ADAPTER = TypeAdapter(list[str], config=ConfigDict(strict=True))
+
+
+def _as_value_list(value: t.ContainerValue | None) -> list[t.ContainerValue] | None:
+    """Validate payload as strict list[object]."""
+    try:
+        return _GENERAL_LIST_ADAPTER.validate_python(value)
+    except ValidationError:
+        return None
+
+
+def _as_value_map(
+    value: t.ContainerValue | None,
+) -> dict[str, t.ContainerValue] | None:
+    """Validate payload as strict dict[str, object]."""
+    try:
+        return _GENERAL_MAP_ADAPTER.validate_python(value)
+    except ValidationError:
+        return None
+
+
+def _as_string_list(value: t.ContainerValue | None) -> list[str] | None:
+    """Validate payload as strict list[str]."""
+    try:
+        return _STRING_LIST_ADAPTER.validate_python(value)
+    except ValidationError:
+        return None
+
+
+def _as_oic_envelope(value: dict[str, t.ContainerValue]) -> OicEnvelope | None:
+    """Validate payload as an OIC envelope model."""
+    try:
+        return OicEnvelope.model_validate(value, strict=True)
+    except ValidationError:
+        return None
 
 
 class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
@@ -1598,6 +1653,455 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 }:
                     return "warning"
                 return "unknown"
+
+    class OracleOic:
+        """Domain entity models for Oracle OIC resources.
+
+        Canonical home for OIC entity classes, migrated from domain/entities.py
+        per MRO policy: all FlextModels subclasses live under [Project]Models.
+        """
+
+        class OICConnection(FlextModels):
+            """OIC connection domain entity using flext-core patterns."""
+
+            model_config = ConfigDict(frozen=False)
+            connection_id: Annotated[
+                str,
+                Field(..., min_length=1, description="OIC connection identifier"),
+            ]
+            adapter_type: Annotated[
+                str,
+                Field(
+                    ..., min_length=1, description="Adapter type (e.g., REST, SOAP, DB)"
+                ),
+            ]
+            name: Annotated[
+                str, Field(..., min_length=1, description="Connection name")
+            ]
+            connection_url: Annotated[
+                str | None,
+                Field(None, description="Connection endpoint URL"),
+            ]
+            connection_properties: Annotated[
+                dict[str, dict[str, t.ContainerValue]],
+                Field(default_factory=dict, description="Connection properties"),
+            ]
+            security_policy: Annotated[
+                str | None,
+                Field(None, description="Security policy name"),
+            ]
+            connection_status: Annotated[
+                c.ConnectionStatus,
+                Field(
+                    default=c.ConnectionStatus.CONFIGURED,
+                    description="Connection status",
+                ),
+            ]
+            last_tested: Annotated[
+                datetime | None,
+                Field(None, description="Last test timestamp"),
+            ]
+            test_result: Annotated[
+                dict[str, str] | None,
+                Field(None, description="Last test result"),
+            ]
+            version: Annotated[
+                str | None, Field(None, description="Connection version")
+            ]
+            locked_by: Annotated[
+                str | None,
+                Field(None, description="User who locked the connection"),
+            ]
+            locked_at: Annotated[
+                datetime | None, Field(None, description="Lock timestamp")
+            ]
+            created_at: Annotated[
+                datetime | None,
+                Field(None, description="Creation timestamp"),
+            ]
+            updated_at: Annotated[
+                datetime | None,
+                Field(None, description="Last update timestamp"),
+            ]
+
+            def mark_failed(self, _error: str) -> None:
+                """Mark connection as failed with error details."""
+                self.connection_status = c.ConnectionStatus.FAILED
+                self.test_result = {
+                    "error": "error",
+                    "timestamp": datetime.now(UTC).isoformat(),
+                }
+
+            def test_connection(self) -> None:
+                """Mark connection as tested."""
+                self.last_tested = datetime.now(UTC)
+                self.connection_status = c.ConnectionStatus.TESTED
+
+        class OICIntegration(FlextModels):
+            """OIC integration domain entity using flext-core patterns."""
+
+            model_config = ConfigDict(frozen=False)
+            integration_id: Annotated[
+                str,
+                Field(..., min_length=1, description="OIC integration identifier"),
+            ]
+            integration_code: Annotated[
+                str,
+                Field(..., min_length=1, description="Integration code"),
+            ]
+            name: Annotated[
+                str, Field(..., min_length=1, description="Integration name")
+            ]
+            package_name: Annotated[str | None, Field(None, description="Package name")]
+            project_name: Annotated[str | None, Field(None, description="Project name")]
+            integration_type: Annotated[
+                str,
+                Field(
+                    ..., description="Integration type (e.g., APP_DRIVEN, SCHEDULED)"
+                ),
+            ]
+            pattern: Annotated[
+                str | None, Field(None, description="Integration pattern")
+            ]
+            style: Annotated[str | None, Field(None, description="Integration style")]
+            endpoint_url: Annotated[
+                str | None,
+                Field(None, description="Integration endpoint URL"),
+            ]
+            tracking_level: Annotated[
+                str | None, Field(None, description="Tracking level")
+            ]
+            payload_tracking: Annotated[
+                bool,
+                Field(default=False, description="Enable payload tracking"),
+            ]
+            integration_status: Annotated[
+                c.IntegrationStatus,
+                Field(
+                    default=c.IntegrationStatus.CONFIGURED,
+                    description="Integration status",
+                ),
+            ]
+            activated_at: Annotated[
+                datetime | None,
+                Field(None, description="Activation timestamp"),
+            ]
+            deactivated_at: Annotated[
+                datetime | None,
+                Field(None, description="Deactivation timestamp"),
+            ]
+            version: Annotated[
+                str,
+                Field(default="01.00.0000", description="Integration version"),
+            ]
+            locked_by: Annotated[
+                str | None,
+                Field(None, description="User who locked the integration"),
+            ]
+            locked_at: Annotated[
+                datetime | None, Field(None, description="Lock timestamp")
+            ]
+            connection_ids: Annotated[
+                list[str],
+                Field(default_factory=list, description="Associated connection IDs"),
+            ]
+            created_at: Annotated[
+                datetime | None,
+                Field(None, description="Creation timestamp"),
+            ]
+            updated_at: Annotated[
+                datetime | None,
+                Field(None, description="Last update timestamp"),
+            ]
+
+            @property
+            def is_active(self) -> bool:
+                """Check if integration is active."""
+                return self.integration_status == c.IntegrationStatus.ACTIVATED
+
+            def activate(self) -> None:
+                """Activate the integration."""
+                self.integration_status = c.IntegrationStatus.ACTIVATED
+                self.activated_at = datetime.now(UTC)
+
+            def deactivate(self) -> None:
+                """Deactivate the integration."""
+                self.integration_status = c.IntegrationStatus.DEACTIVATED
+                self.deactivated_at = datetime.now(UTC)
+
+            def lock(self, user: str) -> None:
+                """Lock the integration for a specific user."""
+                self.locked_by = user
+                self.locked_at = datetime.now(UTC)
+                self.integration_status = c.IntegrationStatus.LOCKED
+
+            def unlock(self) -> None:
+                """Unlock the integration."""
+                self.locked_by = None
+                self.locked_at = None
+
+        class OICLookup(FlextModels):
+            """OIC lookup table domain entity using flext-core patterns."""
+
+            model_config = ConfigDict(frozen=False)
+            lookup_id: Annotated[
+                str,
+                Field(..., min_length=1, description="OIC lookup identifier"),
+            ]
+            lookup_name: Annotated[
+                str,
+                Field(..., min_length=1, description="Lookup table name"),
+            ]
+            domain_name: Annotated[str | None, Field(None, description="Domain name")]
+            columns: Annotated[
+                list[dict[str, t.Container]],
+                Field(
+                    default_factory=list,
+                    description="Column definitions",
+                ),
+            ]
+            key_columns: Annotated[
+                list[str],
+                Field(default_factory=list, description="Key column names"),
+            ]
+            value_columns: Annotated[
+                list[str],
+                Field(default_factory=list, description="Value column names"),
+            ]
+            row_count: Annotated[
+                int, Field(default=0, ge=0, description="Number of rows")
+            ]
+            data_size_bytes: Annotated[
+                int | None,
+                Field(None, ge=0, description="Data size in bytes"),
+            ]
+            locked_by: Annotated[
+                str | None,
+                Field(None, description="User who locked the lookup"),
+            ]
+            locked_at: Annotated[
+                datetime | None, Field(None, description="Lock timestamp")
+            ]
+            last_imported: Annotated[
+                datetime | None,
+                Field(None, description="Last import timestamp"),
+            ]
+            created_at: Annotated[
+                datetime | None,
+                Field(None, description="Creation timestamp"),
+            ]
+            updated_at: Annotated[
+                datetime | None,
+                Field(None, description="Last update timestamp"),
+            ]
+
+            @property
+            def is_empty(self) -> bool:
+                """Check if lookup is empty."""
+                return self.row_count == 0
+
+            def record_import(self) -> None:
+                """Record successful import."""
+                self.last_imported = datetime.now(UTC)
+
+            def update_statistics(
+                self, row_count: int, data_size: int | None = None
+            ) -> None:
+                """Update lookup statistics."""
+                self.row_count = row_count
+                self.data_size_bytes = data_size
+
+        class OICMonitoringRecord(FlextModels):
+            """OIC monitoring record domain entity using flext-core patterns."""
+
+            instance_id: Annotated[
+                str,
+                Field(..., min_length=1, description="Flow instance ID"),
+            ]
+            integration_id: Annotated[
+                str, Field(..., description="Associated integration ID")
+            ]
+            flow_id: Annotated[str | None, Field(None, description="Flow ID")]
+            tracking_level: Annotated[
+                str | None, Field(None, description="Tracking level")
+            ]
+            started_at: Annotated[
+                datetime, Field(..., description="Execution start time")
+            ]
+            completed_at: Annotated[
+                datetime | None,
+                Field(None, description="Execution completion time"),
+            ]
+            duration_ms: Annotated[
+                int | None,
+                Field(None, ge=0, description="Duration in milliseconds"),
+            ]
+            execution_status: Annotated[str, Field(..., description="Execution status")]
+            error_code: Annotated[
+                str | None, Field(None, description="Error code if failed")
+            ]
+            error_message: Annotated[
+                str | None,
+                Field(None, description="Error message if failed"),
+            ]
+            message_count: Annotated[
+                int,
+                Field(default=0, ge=0, description="Number of messages processed"),
+            ]
+            error_count: Annotated[
+                int, Field(default=0, ge=0, description="Number of errors")
+            ]
+            business_identifiers: Annotated[
+                dict[str, dict[str, t.ContainerValue]],
+                Field(
+                    default_factory=dict, description="Business tracking identifiers"
+                ),
+            ]
+
+            @property
+            def duration_seconds(self) -> float | None:
+                """Get duration in seconds."""
+                return (
+                    self.duration_ms / 1000.0 if self.duration_ms is not None else None
+                )
+
+            @property
+            def is_failed(self) -> bool:
+                """Check if execution failed."""
+                return self.execution_status.lower() in {"failed", "faulted", "aborted"}
+
+            @property
+            def successful(self) -> bool:
+                """Check if execution was successful."""
+                return self.execution_status.lower() in {"completed", "succeeded"}
+
+        class OICProject(FlextModels):
+            """OIC project domain entity using flext-core patterns."""
+
+            model_config = ConfigDict(frozen=False)
+            project_id: Annotated[
+                str,
+                Field(..., min_length=1, description="OIC project identifier"),
+            ]
+            project_code: Annotated[
+                str, Field(..., min_length=1, description="Project code")
+            ]
+            name: Annotated[str, Field(..., min_length=1, description="Project name")]
+            integration_ids: Annotated[
+                list[str],
+                Field(default_factory=list, description="Integration IDs in project"),
+            ]
+            connection_ids: Annotated[
+                list[str],
+                Field(default_factory=list, description="Connection IDs in project"),
+            ]
+            lookup_ids: Annotated[
+                list[str],
+                Field(default_factory=list, description="Lookup IDs in project"),
+            ]
+            deployment_status: Annotated[
+                str | None,
+                Field(None, description="Deployment status"),
+            ]
+            deployed_at: Annotated[
+                datetime | None,
+                Field(None, description="Deployment timestamp"),
+            ]
+            deployed_by: Annotated[
+                str | None, Field(None, description="User who deployed")
+            ]
+            created_at: Annotated[
+                datetime | None,
+                Field(None, description="Creation timestamp"),
+            ]
+            updated_at: Annotated[
+                datetime | None,
+                Field(None, description="Last update timestamp"),
+            ]
+
+            @property
+            def total_resources(self) -> int:
+                """Get total number of resources in project."""
+                return (
+                    len(self.integration_ids)
+                    + len(self.connection_ids)
+                    + len(self.lookup_ids)
+                )
+
+            def add_integration(self, integration_id: str) -> None:
+                """Add integration to project."""
+                if integration_id not in self.integration_ids:
+                    self.integration_ids.append(integration_id)
+
+            def deploy(self, user: str) -> None:
+                """Deploy the project."""
+                self.deployment_status = "deployed"
+                self.deployed_at = datetime.now(UTC)
+                self.deployed_by = user
+
+            def remove_integration(self, integration_id: str) -> None:
+                """Remove integration from project."""
+                if integration_id in self.integration_ids:
+                    self.integration_ids.remove(integration_id)
+
+        class OICResourceMetadata(FlextModels):
+            """OIC resource metadata value object."""
+
+            resource_type: Annotated[
+                c.OICResourceType,
+                Field(..., description="Resource type"),
+            ]
+            resource_id: Annotated[
+                str,
+                Field(..., min_length=1, description="Resource identifier"),
+            ]
+            name: Annotated[str, Field(..., min_length=1, description="Resource name")]
+            version: Annotated[str | None, Field(None, description="Resource version")]
+            created_at: Annotated[
+                datetime | None,
+                Field(None, description="Creation timestamp"),
+            ]
+            updated_at: Annotated[
+                datetime | None,
+                Field(None, description="Last update timestamp"),
+            ]
+
+        class OICExecutionSummary(FlextModels):
+            """OIC execution summary value object."""
+
+            integration_id: Annotated[str, Field(..., description="Integration ID")]
+            total_executions: Annotated[
+                int,
+                Field(default=0, ge=0, description="Total number of executions"),
+            ]
+            successful_executions: Annotated[
+                int,
+                Field(default=0, ge=0, description="Successful executions"),
+            ]
+            failed_executions: Annotated[
+                int,
+                Field(default=0, ge=0, description="Failed executions"),
+            ]
+            average_duration_ms: Annotated[
+                float | None,
+                Field(None, ge=0, description="Average execution duration"),
+            ]
+            last_execution_at: Annotated[
+                datetime | None,
+                Field(None, description="Last execution timestamp"),
+            ]
+
+            @property
+            def failure_rate(self) -> float:
+                """Calculate failure rate percentage."""
+                return 100.0 - self.success_rate
+
+            @property
+            def success_rate(self) -> float:
+                """Calculate success rate percentage."""
+                if self.total_executions == 0:
+                    return 0.0
+                return self.successful_executions / self.total_executions * 100.0
 
 
 # Short alias
