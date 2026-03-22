@@ -286,7 +286,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             - Support for all OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
             """
 
-            model_config: ClassVar[ConfigDict] = ConfigDict(arbitrary_types_allowed=True)
+            model_config: ClassVar[ConfigDict] = ConfigDict(
+                arbitrary_types_allowed=True
+            )
 
             config: dict[str, t.ContainerValue] = Field(default_factory=dict)
             name: str = Field(default="")
