@@ -129,7 +129,9 @@ class TapOracleOicPrivate:
     class PropertiesListLike(Protocol):
         """Structural protocol for singer PropertiesList-compatible objects."""
 
-        def to_dict(self) -> dict[str, t.ContainerValue]: ...
+        def to_dict(self) -> dict[str, t.ContainerValue]:
+            """Convert properties list to dictionary representation."""
+            ...
 
 
 p = FlextTapOracleOicProtocols
