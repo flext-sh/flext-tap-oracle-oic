@@ -123,5 +123,14 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
                     ...
 
 
+class TapOracleOicPrivate:
+    """Private structural protocols for internal flext-tap-oracle-oic use."""
+
+    class PropertiesListLike(Protocol):
+        """Structural protocol for singer PropertiesList-compatible objects."""
+
+        def to_dict(self) -> dict[str, t.ContainerValue]: ...
+
+
 p = FlextTapOracleOicProtocols
-__all__ = ["FlextTapOracleOicProtocols", "p"]
+__all__ = ["FlextTapOracleOicProtocols", "TapOracleOicPrivate", "p"]

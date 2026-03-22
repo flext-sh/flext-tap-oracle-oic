@@ -8,26 +8,20 @@ Copyright (c) 2025 FLEXT Team. All rights reserved.
 
 from __future__ import annotations
 
-from typing import ClassVar, Protocol
+from typing import ClassVar
 
-from flext_core.typings import t
-from flext_meltano import FlextMeltanoTypes
 from pydantic import TypeAdapter
 
-from flext_tap_oracle_oic.tap_streams import OICBaseStream
+from flext_tap_oracle_oic import OICBaseStream, TapOracleOicPrivate, t
 
-th = FlextMeltanoTypes()
+th = t()
 _SCHEMA_ADAPTER: TypeAdapter[dict[str, t.ContainerValue]] = TypeAdapter(
     dict[str, t.ContainerValue]
 )
 
 
-class _PropertiesListLike(Protocol):
-    def to_dict(self) -> dict[str, t.ContainerValue]: ...
-
-
 def _properties_to_dict(
-    properties: _PropertiesListLike,
+    properties: TapOracleOicPrivate.PropertiesListLike,
 ) -> dict[str, t.ContainerValue]:
     return _SCHEMA_ADAPTER.validate_python(dict(properties.to_dict()))
 

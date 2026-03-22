@@ -45,10 +45,12 @@ if TYPE_CHECKING:
     from flext_tap_oracle_oic.models import (
         FlextTapOracleOicModels,
         FlextTapOracleOicModels as m,
+        OicEnvelope,
     )
     from flext_tap_oracle_oic.protocols import (
         FlextTapOracleOicProtocols,
         FlextTapOracleOicProtocols as p,
+        TapOracleOicPrivate,
     )
     from flext_tap_oracle_oic.settings import (
         FlextTapOracleOicSettings,
@@ -193,10 +195,12 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     ),
     "OICResourceType": ("flext_tap_oracle_oic.domain.entities", "OICResourceType"),
     "OICValidationError": ("flext_tap_oracle_oic.tap_exceptions", "OICValidationError"),
+    "OicEnvelope": ("flext_tap_oracle_oic.models", "OicEnvelope"),
     "OracleOicClient": ("flext_tap_oracle_oic.tap_client", "OracleOicClient"),
     "PackagesStream": ("flext_tap_oracle_oic.streams_consolidated", "PackagesStream"),
     "ProjectsStream": ("flext_tap_oracle_oic.streams_consolidated", "ProjectsStream"),
     "TapOracleOic": ("flext_tap_oracle_oic.tap_client", "TapOracleOic"),
+    "TapOracleOicPrivate": ("flext_tap_oracle_oic.protocols", "TapOracleOicPrivate"),
     "__all__": ("flext_tap_oracle_oic.__version__", "__all__"),
     "__author__": ("flext_tap_oracle_oic.__version__", "__author__"),
     "__author_email__": ("flext_tap_oracle_oic.__version__", "__author_email__"),
@@ -270,10 +274,12 @@ __all__ = [
     "OICResourceMetadata",
     "OICResourceType",
     "OICValidationError",
+    "OicEnvelope",
     "OracleOicClient",
     "PackagesStream",
     "ProjectsStream",
     "TapOracleOic",
+    "TapOracleOicPrivate",
     "__all__",
     "__author__",
     "__author_email__",

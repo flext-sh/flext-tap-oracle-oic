@@ -10,7 +10,7 @@ from __future__ import annotations
 import re
 from collections.abc import Iterator, Mapping, Sequence
 from datetime import UTC, datetime
-from typing import Annotated, ClassVar
+from typing import ClassVar
 
 import requests
 from flext_api import FlextApi, FlextApiSettings
@@ -22,6 +22,7 @@ from flext_tap_oracle_oic.constants import (
     FlextTapOracleOicConstants,
     FlextTapOracleOicConstants as c,
 )
+from flext_tap_oracle_oic.models import OicEnvelope as _OicEnvelope
 from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 _GENERAL_LIST_ADAPTER = TypeAdapter(
@@ -33,13 +34,6 @@ _GENERAL_MAP_ADAPTER = TypeAdapter(
     config=ConfigDict(strict=True),
 )
 _STRING_LIST_ADAPTER = TypeAdapter(list[str], config=ConfigDict(strict=True))
-
-
-class _OicEnvelope(BaseModel):
-    items: list[dict[str, t.ContainerValue]] | None = None
-    data: list[dict[str, t.ContainerValue]] | None = None
-    total_size: Annotated[int | None, Field(default=None, alias="totalSize")]
-    count: int | None = None
 
 
 def _as_value_list(value: t.ContainerValue | None) -> list[t.ContainerValue] | None:

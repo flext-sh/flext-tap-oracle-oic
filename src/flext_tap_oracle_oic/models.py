@@ -9,16 +9,13 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Annotated, Literal, Self
+from typing import Annotated, Literal, Self
 
 from flext_core import FlextConstants, FlextModels
 from flext_meltano import FlextMeltanoModels
-
-if TYPE_CHECKING:
-    from flext_oracle_oic.models import FlextOracleOicModels as _OicModelsBase
-else:
-    _OicModelsBase = object
+from flext_oracle_oic import FlextOracleOicModels
 from pydantic import (
+    BaseModel,
     ConfigDict,
     Field,
     FieldSerializationInfo,
@@ -27,8 +24,7 @@ from pydantic import (
     model_validator,
 )
 
-from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants as c
-from flext_tap_oracle_oic.typings import t
+from flext_tap_oracle_oic import c, t
 
 # Type aliases for OIC domain literals (PEP 695 `type` stmts in nested classes
 # aren't resolvable by mypy/pyright with `from __future__ import annotations`)
@@ -61,7 +57,20 @@ OicErrorTypeLiteral = Literal[
 ]
 
 
-class FlextTapOracleOicModels(FlextMeltanoModels, _OicModelsBase):
+class OicEnvelope(BaseModel):
+    """OIC API response envelope for paginated list endpoints.
+
+    Parses the outer wrapper that Oracle OIC returns for list responses,
+    normalizing between 'items', 'data', 'count', and 'totalSize' fields.
+    """
+
+    items: list[dict[str, t.ContainerValue]] | None = None
+    data: list[dict[str, t.ContainerValue]] | None = None
+    total_size: Annotated[int | None, Field(default=None, alias="totalSize")]
+    count: int | None = None
+
+
+class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     """Oracle Integration Cloud tap models extending flext-core FlextModels.
 
     Provides complete models for OIC entity extraction, authentication,
@@ -1596,5 +1605,6 @@ m = FlextTapOracleOicModels
 
 __all__ = [
     "FlextTapOracleOicModels",
+    "OicEnvelope",
     "m",
 ]
