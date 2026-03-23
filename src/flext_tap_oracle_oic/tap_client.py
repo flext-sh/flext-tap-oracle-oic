@@ -199,7 +199,7 @@ class OracleOicClient:
             return r[Mapping[str, str]].fail(
                 f"Failed to get access token: {token_result.error}",
             )
-        headers: Mapping[str, str] = dict(self.config.get_headers())
+        headers: dict[str, str] = dict(self.config.get_headers())
         headers["Authorization"] = f"Bearer {token_result.value}"
         return r[Mapping[str, str]].ok(headers)
 
@@ -297,11 +297,11 @@ class TapOracleOic(_TapBase):
         stream_names = CORE_STREAMS.copy()
         if self._tap_config.get("include_infrastructure", False):
             stream_names.extend(INFRASTRUCTURE_STREAMS)
-        streams: Sequence[OICBaseStream] = []
+        streams: list[OICBaseStream] = []
         for stream_name in stream_names:
             if stream_name in ALL_STREAMS:
                 stream_class = ALL_STREAMS[stream_name]
-                stream_config: Mapping[str, t.ContainerValue] = dict(self._tap_config)
+                stream_config: dict[str, t.ContainerValue] = dict(self._tap_config)
                 stream_instance = stream_class(config=stream_config)
                 streams.append(stream_instance)
         logger.info("Discovered %s streams from Oracle OIC", len(streams))

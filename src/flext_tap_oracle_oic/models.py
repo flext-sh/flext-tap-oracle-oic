@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import re
-from collections.abc import Iterator, Mapping, Sequence
+from collections.abc import Iterator, Mapping, MutableSequence, Sequence
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar, Literal, Self
 
@@ -406,7 +406,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Dictionary of URL parameters optimized for OIC API.
 
                 """
-                params: Mapping[str, t.ContainerValue] = {}
+                params: dict[str, t.ContainerValue] = {}
                 page_size_val = self.config.get("page_size", 100)
                 page_size = page_size_val if isinstance(page_size_val, int) else 100
                 params["limit"] = min(page_size, 1000)
@@ -486,7 +486,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 record: Mapping[str, t.ContainerValue],
             ) -> Mapping[str, t.ContainerValue]:
                 """Enrich record with tap metadata for traceability."""
-                enriched: Mapping[str, t.ContainerValue] = dict(record)
+                enriched: dict[str, t.ContainerValue] = dict(record)
                 enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
                 enriched["_tap_stream_name"] = self.name
                 return enriched
@@ -1309,7 +1309,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         "integration_count": self.integration_count or 0,
                         "dependency_count": len(self.dependencies),
                         "has_dependencies": bool(self.dependencies),
-                        "dependencies": Sequence[t.ContainerValue](self.dependencies),
+                        "dependencies": [v for v in self.dependencies],  # noqa: C416
                     },
                     "usage": {
                         "download_count": self.download_count or 0,
@@ -2367,7 +2367,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
             name: Annotated[str, Field(..., min_length=1, description="Project name")]
             integration_ids: Annotated[
-                Sequence[str],
+                MutableSequence[str],
                 Field(default_factory=list, description="Integration IDs in project"),
             ]
             connection_ids: Annotated[

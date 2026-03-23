@@ -72,7 +72,7 @@ def create_oracle_oic_tap_config(
 
     """
     try:
-        tap_config: Mapping[str, t.ContainerValue] = (
+        tap_config: dict[str, t.ContainerValue] = (
             dict(tap_params) if tap_params is not None else {}
         )
         tap_config.setdefault(

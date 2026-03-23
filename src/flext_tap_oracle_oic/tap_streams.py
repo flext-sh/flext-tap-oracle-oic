@@ -47,7 +47,7 @@ class OICPaginator:
         self._max_page_size: int = c.TapOicProcessing.PAGINATOR_MAX_PAGE_SIZE
         self._min_page_size: int = c.TapOicProcessing.PAGINATOR_MIN_PAGE_SIZE
         self._adaptive_sizing: bool = True
-        self._response_times: Sequence[float] = []
+        self._response_times: list[float] = []
 
     def get_next(self, response: requests.Response) -> int | None:
         """Calculate next offset for Oracle OIC pagination.

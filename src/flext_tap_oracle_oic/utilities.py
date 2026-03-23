@@ -337,7 +337,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             """
             if not integration_data:
                 return {}
-            metadata: Mapping[str, t.ContainerValue | None] = {
+            metadata: dict[str, t.ContainerValue | None] = {
                 "id": integration_data.get("id"),
                 "name": integration_data.get("name"),
                 "version": integration_data.get("version"),
@@ -359,7 +359,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 if (conn_map := _as_map(conn)) is not None
                 and (connection_type := conn_map.get("connectionType")) is not None
             ]
-            metadata["connection_types"] = Sequence[t.ContainerValue](connection_types)
+            metadata["connection_types"] = [v for v in connection_types]  # noqa: C416
             return {k: v for k, v in metadata.items() if v is not None}
 
         @staticmethod
@@ -600,16 +600,16 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             Mapping[str, t.ContainerValue]: Updated state
 
             """
-            state_copy: Mapping[str, t.ContainerValue] = dict(state)
+            state_copy: dict[str, t.ContainerValue] = dict(state)
             if "bookmarks" not in state_copy:
-                empty_bookmarks: Mapping[str, t.ContainerValue] = {}
+                empty_bookmarks: dict[str, t.ContainerValue] = {}
                 state_copy["bookmarks"] = empty_bookmarks
             bookmarks = state_copy["bookmarks"]
             bookmark_map = _as_map(bookmarks)
             if bookmark_map is not None:
                 updated_bookmark_map = dict(bookmark_map)
                 if stream_name not in updated_bookmark_map:
-                    empty_stream_bookmarks: Mapping[str, t.ContainerValue] = {}
+                    empty_stream_bookmarks: dict[str, t.ContainerValue] = {}
                     updated_bookmark_map[stream_name] = empty_stream_bookmarks
                 stream_bookmarks = _as_map(updated_bookmark_map[stream_name])
                 if stream_bookmarks is not None:
@@ -636,9 +636,9 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             Mapping[str, t.ContainerValue]: Updated state
 
             """
-            state_copy: Mapping[str, t.ContainerValue] = dict(state)
+            state_copy: dict[str, t.ContainerValue] = dict(state)
             if "bookmarks" not in state_copy:
-                empty_bookmarks: Mapping[str, t.ContainerValue] = {}
+                empty_bookmarks: dict[str, t.ContainerValue] = {}
                 state_copy["bookmarks"] = empty_bookmarks
             bookmarks = state_copy["bookmarks"]
             bookmark_map = _as_map(bookmarks)

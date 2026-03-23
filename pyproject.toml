@@ -557,8 +557,10 @@ split-on-trailing-comma = true
   "S105",
 ]
 "**/models.py" = [
+  "PLC0415",
   "PLC2801",
   "S102",
+  "S105",
 ]
 "**/output.py" = [
   "FBT001",
