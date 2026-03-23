@@ -10,7 +10,7 @@ This module re-exports them for backwards compatibility with existing callers.
 
 from __future__ import annotations
 
-from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants as c
+from flext_tap_oracle_oic.constants import c
 from flext_tap_oracle_oic.models import FlextTapOracleOicModels as _m
 
 OICResourceType = c.OICResourceType

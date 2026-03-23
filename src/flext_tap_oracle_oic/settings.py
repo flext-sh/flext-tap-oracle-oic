@@ -14,8 +14,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Annotated, ClassVar
 
-from flext_core import FlextConstants, r
-from flext_core.typings import t
+from flext_core import FlextConstants, r, t
 from flext_oracle_oic.settings import FlextOracleOicSettings
 from pydantic import Field, SecretStr
 from pydantic_settings import SettingsConfigDict

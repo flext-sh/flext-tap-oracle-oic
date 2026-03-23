@@ -14,8 +14,13 @@ from typing import TYPE_CHECKING, Annotated, ClassVar, Literal, Self
 
 import requests
 from flext_api import FlextApi, FlextApiSettings
-from flext_core import FlextConstants, FlextExceptions, FlextLogger, FlextModels
-from flext_core.typings import t as _core_t
+from flext_core import (
+    FlextConstants,
+    FlextExceptions,
+    FlextLogger,
+    FlextModels,
+    t as _core_t,
+)
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import FlextOracleOicModels
 from pydantic import (

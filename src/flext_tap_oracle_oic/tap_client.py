@@ -10,15 +10,12 @@ import sys
 from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING, ClassVar
 
-from flext_api import FlextApi, FlextApiSettings
-from flext_api.models import FlextApiModels
-from flext_core import FlextLogger, r
-from flext_core.typings import t
-from flext_meltano import t as mt
-from flext_meltano.models import FlextMeltanoModels as m
+from flext_api import FlextApi, FlextApiModels, FlextApiSettings
+from flext_core import FlextLogger, r, t
+from flext_meltano import m, t as mt
 from pydantic import TypeAdapter
 
-from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants as c
+from flext_tap_oracle_oic.constants import c
 
 if TYPE_CHECKING:
     from flext_meltano import FlextMeltanoAbstractions as _TapBase

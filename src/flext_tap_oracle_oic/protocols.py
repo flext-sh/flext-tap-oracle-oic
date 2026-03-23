@@ -9,7 +9,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Protocol, runtime_checkable
 
-from flext_core.typings import t
+from flext_core import t
 from flext_meltano import FlextMeltanoModels, FlextMeltanoProtocols
 from flext_oracle_oic.protocols import FlextOracleOicProtocols
 

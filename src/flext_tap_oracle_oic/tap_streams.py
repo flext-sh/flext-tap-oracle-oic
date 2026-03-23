@@ -8,16 +8,15 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import requests
-from flext_core import FlextLogger
-from flext_core.typings import t
+from flext_core import FlextLogger, t
 
 from flext_tap_oracle_oic.constants import (
-    FlextTapOracleOicConstants as c,
+    c,
 )
 from flext_tap_oracle_oic.models import (
-    FlextTapOracleOicModels as m,
     _as_oic_envelope,
     _as_value_list,
+    m,
 )
 
 # Re-export OICBaseStream from canonical location in models.py
