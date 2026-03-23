@@ -65,8 +65,8 @@ class FlextOracleOicAuthenticator:
                 case dict() as token_dict:
                     token_data = token_dict
                 case str() as body_str:
-                    parser: TypeAdapter[dict[str, t.ContainerValue]] = TypeAdapter(
-                        dict[str, t.ContainerValue],
+                    parser: TypeAdapter[Mapping[str, t.ContainerValue]] = TypeAdapter(
+                        Mapping[str, t.ContainerValue],
                     )
                     token_data = parser.validate_json(body_str)
                 case _:
@@ -148,7 +148,7 @@ class OracleOicClient:
     def post(
         self,
         endpoint: str,
-        data: Mapping[str, dict[str, t.ContainerValue]] | None = None,
+        data: Mapping[str, Mapping[str, t.ContainerValue]] | None = None,
     ) -> r[FlextApiModels.Api.HttpResponse]:
         """Make authenticated POST request to OIC API."""
         url = f"{self.config.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
@@ -158,8 +158,8 @@ class OracleOicClient:
                 f"Failed to get auth headers: {headers_result.error}",
             )
         try:
-            serializer: TypeAdapter[dict[str, t.ContainerValue]] = TypeAdapter(
-                dict[str, t.ContainerValue],
+            serializer: TypeAdapter[Mapping[str, t.ContainerValue]] = TypeAdapter(
+                Mapping[str, t.ContainerValue],
             )
             json_body: str | None = (
                 serializer.dump_json(dict(data)).decode("utf-8") if data else None
@@ -199,7 +199,7 @@ class OracleOicClient:
             return r[Mapping[str, str]].fail(
                 f"Failed to get access token: {token_result.error}",
             )
-        headers: dict[str, str] = dict(self.config.get_headers())
+        headers: Mapping[str, str] = dict(self.config.get_headers())
         headers["Authorization"] = f"Bearer {token_result.value}"
         return r[Mapping[str, str]].ok(headers)
 
@@ -215,8 +215,8 @@ class TapOracleOic(_TapBase):
     """
 
     name: ClassVar[str] = "tap-oracle-oic"
-    capabilities: ClassVar[list[str]] = ["catalog", "state", "discover"]
-    config_jsonschema: ClassVar[dict[str, t.ContainerValue]] = {
+    capabilities: ClassVar[Sequence[str]] = ["catalog", "state", "discover"]
+    config_jsonschema: ClassVar[Mapping[str, t.ContainerValue]] = {
         "type": "t.NormalizedValue",
         "properties": {
             "oauth_client_id": {"type": "string", "description": "OAuth2 client ID"},
@@ -255,7 +255,7 @@ class TapOracleOic(_TapBase):
         _ = state
         _ = parse_env_config
         super().__init__()
-        self._tap_config: dict[str, t.ContainerValue] = (
+        self._tap_config: Mapping[str, t.ContainerValue] = (
             dict(config) if config is not None else {}
         )
         self.config = FlextTapOracleOicSettings.model_validate(
@@ -268,8 +268,8 @@ class TapOracleOic(_TapBase):
     def client(self) -> OracleOicClient:
         """Get Oracle OIC client instance using flext-oracle-oic."""
         if self._client is None:
-            config_dict: dict[str, t.ContainerValue] = self._tap_config
-            oic_config_data: dict[str, t.ContainerValue] = {
+            config_dict: Mapping[str, t.ContainerValue] = self._tap_config
+            oic_config_data: Mapping[str, t.ContainerValue] = {
                 "oauth_client_id": str(config_dict["oauth_client_id"]),
                 "oauth_client_secret": str(config_dict["oauth_client_secret"]),
                 "oauth_token_url": str(config_dict["oauth_token_url"]),
@@ -297,11 +297,11 @@ class TapOracleOic(_TapBase):
         stream_names = CORE_STREAMS.copy()
         if self._tap_config.get("include_infrastructure", False):
             stream_names.extend(INFRASTRUCTURE_STREAMS)
-        streams: list[OICBaseStream] = []
+        streams: Sequence[OICBaseStream] = []
         for stream_name in stream_names:
             if stream_name in ALL_STREAMS:
                 stream_class = ALL_STREAMS[stream_name]
-                stream_config: dict[str, t.ContainerValue] = dict(self._tap_config)
+                stream_config: Mapping[str, t.ContainerValue] = dict(self._tap_config)
                 stream_instance = stream_class(config=stream_config)
                 streams.append(stream_instance)
         logger.info("Discovered %s streams from Oracle OIC", len(streams))
@@ -368,8 +368,8 @@ def main() -> int:
     exit_code = _validate_and_setup_config()
     if exit_code != 0:
         return exit_code
-    config: dict[str, str] = dict(_build_config_from_env())
-    config_typed: dict[str, t.ContainerValue] = dict(config)
+    config: Mapping[str, str] = dict(_build_config_from_env())
+    config_typed: Mapping[str, t.ContainerValue] = dict(config)
     tap = TapOracleOic(config=config_typed)
     try:
         return _execute_tap_command(tap)
@@ -381,7 +381,7 @@ def main() -> int:
         return 1
 
 
-def _build_config_from_env() -> dict[str, str]:
+def _build_config_from_env() -> Mapping[str, str]:
     """Build configuration from environment variables using pydantic-settings.
 
     Uses FlextTapOracleOicSettings with env_prefix='FLEXT_TAP_ORACLE_OIC_'
@@ -403,14 +403,16 @@ def _build_config_from_env() -> dict[str, str]:
 
 def _validate_and_setup_config() -> int:
     """Validate required configuration. Returns 0 for success, 1 for error."""
-    config: dict[str, str] = dict(_build_config_from_env())
+    config: Mapping[str, str] = dict(_build_config_from_env())
     required_config = [
         "oauth_client_id",
         "oauth_client_secret",
         "oauth_token_url",
         "oic_url",
     ]
-    missing_config: list[str] = [key for key in required_config if not config.get(key)]
+    missing_config: Sequence[str] = [
+        key for key in required_config if not config.get(key)
+    ]
     if missing_config:
         logger.error("Missing required configuration: ")
         for key in missing_config:
@@ -471,4 +473,4 @@ def _execute_run_command(_tap: TapOracleOic) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-__all__: list[str] = ["OracleOicClient", "TapOracleOic", "main"]
+__all__: Sequence[str] = ["OracleOicClient", "TapOracleOic", "main"]

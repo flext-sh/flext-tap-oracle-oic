@@ -32,7 +32,7 @@ class OICHealthChecker:
         api_config = FlextApiSettings.model_validate({"base_url": base_url})
         self._api_client = FlextApi(api_config)
 
-    def check_health(self) -> dict[str, str]:
+    def check_health(self) -> Mapping[str, str]:
         """Check OIC instance health."""
         try:
             url = f"{self.base_url}/ic/api/integration/v1/integrations?limit=1"
@@ -77,7 +77,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def check_monitoring_health(self) -> dict[str, str]:
+    def check_monitoring_health(self) -> Mapping[str, str]:
         """Check OIC monitoring service health."""
         try:
             url = f"{self.base_url}/ic/api/monitoring/v1/instances?limit=1"
@@ -122,7 +122,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_connection(self, connection_id: str) -> dict[str, str]:
+    def test_connection(self, connection_id: str) -> Mapping[str, str]:
         """Test specific OIC connection."""
         try:
             url = f"{self.base_url}/ic/api/integration/v1/connections/{connection_id}/test"
@@ -138,7 +138,7 @@ class OICHealthChecker:
             if response.status_code in {200, 202}:
                 match response.body:
                     case dict() as body_dict:
-                        body: dict[str, t.ContainerValue] = body_dict
+                        body: Mapping[str, t.ContainerValue] = body_dict
                     case _:
                         body = {}
                 status_val = str(body.get("status", "success"))
@@ -175,7 +175,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_integration(self, integration_id: str) -> dict[str, str | None]:
+    def test_integration(self, integration_id: str) -> Mapping[str, str | None]:
         """Test specific OIC integration."""
         try:
             url = f"{self.base_url}/ic/api/integration/v1/integrations/{integration_id}"
@@ -191,7 +191,7 @@ class OICHealthChecker:
             if response.status_code == c.TapOicHttp.HTTP_OK:
                 match response.body:
                     case dict() as integration_dict:
-                        integration: dict[str, t.ContainerValue] = integration_dict
+                        integration: Mapping[str, t.ContainerValue] = integration_dict
                     case _:
                         integration = {}
                 status_val = str(integration.get("status", "UNKNOWN"))

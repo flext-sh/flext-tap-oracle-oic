@@ -12,7 +12,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import os
-from collections.abc import Callable, Generator, Iterator
+from collections.abc import Callable, Generator, Iterator, Mapping, Sequence
 from unittest.mock import Mock
 
 import pytest
@@ -24,8 +24,8 @@ def _build_singer_stream(
     *,
     tap_stream_id: str,
     replication_key: str,
-    properties: dict[str, t.NormalizedValue],
-) -> dict[str, t.NormalizedValue]:
+    properties: Mapping[str, t.NormalizedValue],
+) -> Mapping[str, t.NormalizedValue]:
     return {
         "tap_stream_id": tap_stream_id,
         "schema": {
@@ -60,7 +60,7 @@ def set_test_environment() -> Generator[None]:
 
 
 @pytest.fixture
-def basic_oic_config() -> dict[str, t.NormalizedValue]:
+def basic_oic_config() -> Mapping[str, t.NormalizedValue]:
     """Basic Oracle OIC tap configuration."""
     return {
         "base_url": "https://oic-test.integration.ocp.oraclecloud.com",
@@ -80,8 +80,8 @@ def basic_oic_config() -> dict[str, t.NormalizedValue]:
 
 @pytest.fixture
 def extended_oic_config(
-    basic_oic_config: dict[str, t.NormalizedValue],
-) -> dict[str, t.NormalizedValue]:
+    basic_oic_config: Mapping[str, t.NormalizedValue],
+) -> Mapping[str, t.NormalizedValue]:
     """Extended Oracle OIC tap configuration with all streams."""
     config = basic_oic_config.copy()
     config.update({
@@ -99,8 +99,8 @@ def extended_oic_config(
 
 @pytest.fixture
 def filtered_oic_config(
-    basic_oic_config: dict[str, t.NormalizedValue],
-) -> dict[str, t.NormalizedValue]:
+    basic_oic_config: Mapping[str, t.NormalizedValue],
+) -> Mapping[str, t.NormalizedValue]:
     """Oracle OIC tap configuration with filters."""
     config = basic_oic_config.copy()
     config.update({
@@ -113,8 +113,8 @@ def filtered_oic_config(
 
 @pytest.fixture
 def performance_oic_config(
-    basic_oic_config: dict[str, t.NormalizedValue],
-) -> dict[str, t.NormalizedValue]:
+    basic_oic_config: Mapping[str, t.NormalizedValue],
+) -> Mapping[str, t.NormalizedValue]:
     """Oracle OIC tap configuration for performance testing."""
     config = basic_oic_config.copy()
     config.update({
@@ -130,7 +130,7 @@ def performance_oic_config(
 
 
 @pytest.fixture
-def mock_oauth_token_response() -> dict[str, t.NormalizedValue]:
+def mock_oauth_token_response() -> Mapping[str, t.NormalizedValue]:
     """Mock OAuth2 token response."""
     return {
         "access_token": "mock_access_token_12345",
@@ -141,7 +141,7 @@ def mock_oauth_token_response() -> dict[str, t.NormalizedValue]:
 
 
 @pytest.fixture
-def sample_integration_data() -> list[dict[str, t.NormalizedValue]]:
+def sample_integration_data() -> Sequence[Mapping[str, t.NormalizedValue]]:
     """Sample integration data for testing."""
     return [
         {
@@ -197,8 +197,8 @@ def sample_integration_data() -> list[dict[str, t.NormalizedValue]]:
 
 @pytest.fixture
 def mock_integrations_response(
-    sample_integration_data: list[dict[str, t.NormalizedValue]],
-) -> dict[str, t.NormalizedValue]:
+    sample_integration_data: Sequence[Mapping[str, t.NormalizedValue]],
+) -> Mapping[str, t.NormalizedValue]:
     """Mock integrations API response."""
     return {
         "items": sample_integration_data,
@@ -210,7 +210,7 @@ def mock_integrations_response(
 
 
 @pytest.fixture
-def sample_connection_data() -> list[dict[str, t.NormalizedValue]]:
+def sample_connection_data() -> Sequence[Mapping[str, t.NormalizedValue]]:
     """Sample connection data for testing."""
     return [
         {
@@ -260,8 +260,8 @@ def sample_connection_data() -> list[dict[str, t.NormalizedValue]]:
 
 @pytest.fixture
 def mock_connections_response(
-    sample_connection_data: list[dict[str, t.NormalizedValue]],
-) -> dict[str, t.NormalizedValue]:
+    sample_connection_data: Sequence[Mapping[str, t.NormalizedValue]],
+) -> Mapping[str, t.NormalizedValue]:
     """Mock connections API response."""
     return {
         "items": sample_connection_data,
@@ -273,7 +273,7 @@ def mock_connections_response(
 
 
 @pytest.fixture
-def sample_package_data() -> list[dict[str, t.NormalizedValue]]:
+def sample_package_data() -> Sequence[Mapping[str, t.NormalizedValue]]:
     """Sample package data for testing."""
     return [
         {
@@ -309,8 +309,8 @@ def sample_package_data() -> list[dict[str, t.NormalizedValue]]:
 
 @pytest.fixture
 def mock_packages_response(
-    sample_package_data: list[dict[str, t.NormalizedValue]],
-) -> dict[str, t.NormalizedValue]:
+    sample_package_data: Sequence[Mapping[str, t.NormalizedValue]],
+) -> Mapping[str, t.NormalizedValue]:
     """Mock packages API response."""
     return {
         "items": sample_package_data,
@@ -322,7 +322,7 @@ def mock_packages_response(
 
 
 @pytest.fixture
-def sample_lookup_data() -> list[dict[str, t.NormalizedValue]]:
+def sample_lookup_data() -> Sequence[Mapping[str, t.NormalizedValue]]:
     """Sample lookup data for testing."""
     return [
         {
@@ -356,8 +356,8 @@ def sample_lookup_data() -> list[dict[str, t.NormalizedValue]]:
 
 @pytest.fixture
 def mock_lookups_response(
-    sample_lookup_data: list[dict[str, t.NormalizedValue]],
-) -> dict[str, t.NormalizedValue]:
+    sample_lookup_data: Sequence[Mapping[str, t.NormalizedValue]],
+) -> Mapping[str, t.NormalizedValue]:
     """Mock lookups API response."""
     return {
         "items": sample_lookup_data,
@@ -369,7 +369,7 @@ def mock_lookups_response(
 
 
 @pytest.fixture
-def sample_library_data() -> list[dict[str, t.NormalizedValue]]:
+def sample_library_data() -> Sequence[Mapping[str, t.NormalizedValue]]:
     """Sample library data for testing."""
     return [
         {
@@ -386,7 +386,7 @@ def sample_library_data() -> list[dict[str, t.NormalizedValue]]:
 
 
 @pytest.fixture
-def sample_certificate_data() -> list[dict[str, t.NormalizedValue]]:
+def sample_certificate_data() -> Sequence[Mapping[str, t.NormalizedValue]]:
     """Sample certificate data for testing."""
     return [
         {
@@ -404,7 +404,7 @@ def sample_certificate_data() -> list[dict[str, t.NormalizedValue]]:
 
 
 @pytest.fixture
-def sample_adapter_data() -> list[dict[str, t.NormalizedValue]]:
+def sample_adapter_data() -> Sequence[Mapping[str, t.NormalizedValue]]:
     """Sample adapter data for testing."""
     return [
         {
@@ -421,7 +421,7 @@ def sample_adapter_data() -> list[dict[str, t.NormalizedValue]]:
 
 
 @pytest.fixture
-def singer_catalog() -> dict[str, t.NormalizedValue]:
+def singer_catalog() -> Mapping[str, t.NormalizedValue]:
     """Singer catalog for OIC tap."""
     return {
         "streams": [
@@ -452,7 +452,7 @@ def singer_catalog() -> dict[str, t.NormalizedValue]:
 
 
 @pytest.fixture
-def singer_state() -> dict[str, t.NormalizedValue]:
+def singer_state() -> Mapping[str, t.NormalizedValue]:
     """Singer state for OIC tap."""
     return {
         "currently_syncing": None,
@@ -494,11 +494,11 @@ def mock_rate_limit_response() -> Mock:
 
 
 @pytest.fixture
-def large_integration_dataset() -> list[dict[str, t.NormalizedValue]]:
+def large_integration_dataset() -> Sequence[Mapping[str, t.NormalizedValue]]:
     """Large integration dataset for performance testing."""
-    integrations: list[dict[str, t.NormalizedValue]] = []
+    integrations: Sequence[Mapping[str, t.NormalizedValue]] = []
     for i in range(1000):
-        integration: dict[str, t.NormalizedValue] = {
+        integration: Mapping[str, t.NormalizedValue] = {
             "id": f"INTEGRATION_{i:04d}",
             "name": f"Integration{i:04d}",
             "version": "01.00.0000",
@@ -515,7 +515,7 @@ def large_integration_dataset() -> list[dict[str, t.NormalizedValue]]:
 
 
 @pytest.fixture
-def benchmark_config() -> dict[str, t.NormalizedValue]:
+def benchmark_config() -> Mapping[str, t.NormalizedValue]:
     """Configuration for performance benchmarking."""
     return {
         "max_records_to_process": 1000,
@@ -544,23 +544,27 @@ def mock_oic_client() -> type:
     """Mock Oracle OIC client for testing."""
 
     class MockOICClient:
-        def __init__(self, config: dict[str, t.NormalizedValue]) -> None:
+        def __init__(self, config: Mapping[str, t.NormalizedValue]) -> None:
             """Initialize the instance."""
             self.config = config
             self.authenticated = False
-            self.call_count: dict[str, int] = {}
+            self.call_count: Mapping[str, int] = {}
 
         def authenticate(self) -> bool:
             self.authenticated = True
             return True
 
-        def get_integrations(self, **_kwargs: t.Scalar) -> dict[str, t.NormalizedValue]:
+        def get_integrations(
+            self, **_kwargs: t.Scalar
+        ) -> Mapping[str, t.NormalizedValue]:
             self.call_count["get_integrations"] = (
                 self.call_count.get("get_integrations", 0) + 1
             )
             return {"success": True, "items": [], "hasMore": False, "count": 0}
 
-        def get_connections(self, **_kwargs: t.Scalar) -> dict[str, t.NormalizedValue]:
+        def get_connections(
+            self, **_kwargs: t.Scalar
+        ) -> Mapping[str, t.NormalizedValue]:
             self.call_count["get_connections"] = (
                 self.call_count.get("get_connections", 0) + 1
             )
@@ -568,9 +572,9 @@ def mock_oic_client() -> type:
 
         def paginate_request(
             self,
-            _request_func: Callable[..., dict[str, t.NormalizedValue]],
+            _request_func: Callable[..., Mapping[str, t.NormalizedValue]],
             **_kwargs: t.Scalar,
-        ) -> Iterator[dict[str, t.NormalizedValue]]:
+        ) -> Iterator[Mapping[str, t.NormalizedValue]]:
             """Mock pagination."""
             yield from []
 
@@ -582,19 +586,19 @@ def mock_oauth_authenticator() -> type:
     """Mock OAuth2 authenticator for testing."""
 
     class MockOAuthAuthenticator:
-        def __init__(self, config: dict[str, t.NormalizedValue]) -> None:
+        def __init__(self, config: Mapping[str, t.NormalizedValue]) -> None:
             """Initialize the instance."""
             self.config = config
             self.token: str | None = None
             self.token_expires_at: int | None = None
 
-        def get_access_token(self) -> dict[str, t.NormalizedValue]:
+        def get_access_token(self) -> Mapping[str, t.NormalizedValue]:
             return {"success": True, "value": "mock_access_token_12345"}
 
         def is_token_valid(self) -> bool:
             return True
 
-        def refresh_token(self) -> dict[str, t.NormalizedValue]:
+        def refresh_token(self) -> Mapping[str, t.NormalizedValue]:
             return self.get_access_token()
 
     return MockOAuthAuthenticator

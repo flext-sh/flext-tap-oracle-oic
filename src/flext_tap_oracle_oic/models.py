@@ -90,25 +90,25 @@ class OicEnvelope(BaseModel):
     normalizing between 'items', 'data', 'count', and 'totalSize' fields.
     """
 
-    items: list[dict[str, t.ContainerValue]] | None = None
-    data: list[dict[str, t.ContainerValue]] | None = None
+    items: Sequence[Mapping[str, t.ContainerValue]] | None = None
+    data: Sequence[Mapping[str, t.ContainerValue]] | None = None
     total_size: Annotated[int | None, Field(default=None, alias="totalSize")]
     count: int | None = None
 
 
 _GENERAL_LIST_ADAPTER = TypeAdapter(
-    list[_core_t.ContainerValue],
+    Sequence[_core_t.ContainerValue],
     config=ConfigDict(strict=True),
 )
 _GENERAL_MAP_ADAPTER = TypeAdapter(
-    dict[str, _core_t.ContainerValue],
+    Mapping[str, _core_t.ContainerValue],
     config=ConfigDict(strict=True),
 )
-_STRING_LIST_ADAPTER = TypeAdapter(list[str], config=ConfigDict(strict=True))
+_STRING_LIST_ADAPTER = TypeAdapter(Sequence[str], config=ConfigDict(strict=True))
 
 
-def _as_value_list(value: t.ContainerValue | None) -> list[t.ContainerValue] | None:
-    """Validate payload as strict list[t.NormalizedValue]."""
+def _as_value_list(value: t.ContainerValue | None) -> Sequence[t.ContainerValue] | None:
+    """Validate payload as strict Sequence[t.NormalizedValue]."""
     try:
         return _GENERAL_LIST_ADAPTER.validate_python(value)
     except ValidationError:
@@ -117,23 +117,23 @@ def _as_value_list(value: t.ContainerValue | None) -> list[t.ContainerValue] | N
 
 def _as_value_map(
     value: t.ContainerValue | None,
-) -> dict[str, t.ContainerValue] | None:
-    """Validate payload as strict dict[str, t.NormalizedValue]."""
+) -> Mapping[str, t.ContainerValue] | None:
+    """Validate payload as strict Mapping[str, t.NormalizedValue]."""
     try:
         return _GENERAL_MAP_ADAPTER.validate_python(value)
     except ValidationError:
         return None
 
 
-def _as_string_list(value: t.ContainerValue | None) -> list[str] | None:
-    """Validate payload as strict list[str]."""
+def _as_string_list(value: t.ContainerValue | None) -> Sequence[str] | None:
+    """Validate payload as strict Sequence[str]."""
     try:
         return _STRING_LIST_ADAPTER.validate_python(value)
     except ValidationError:
         return None
 
 
-def _as_oic_envelope(value: dict[str, t.ContainerValue]) -> OicEnvelope | None:
+def _as_oic_envelope(value: Mapping[str, t.ContainerValue]) -> OicEnvelope | None:
     """Validate payload as an OIC envelope model."""
     try:
         return OicEnvelope.model_validate(value, strict=True)
@@ -149,10 +149,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     """
 
     # Dynamic attributes for runtime configuration (accessed via hasattr checks)
-    _oic_authentication: dict[str, t.ContainerValue] | None = None
-    _stream_configurations: dict[str, t.ContainerValue] | None = None
-    _singer_mode: dict[str, t.ContainerValue] | None = None
-    _include_oic_metadata: dict[str, t.ContainerValue] | None = None
+    _oic_authentication: Mapping[str, t.ContainerValue] | None = None
+    _stream_configurations: Mapping[str, t.ContainerValue] | None = None
+    _singer_mode: Mapping[str, t.ContainerValue] | None = None
+    _include_oic_metadata: Mapping[str, t.ContainerValue] | None = None
 
     # Pydantic 2.11 Configuration - Enterprise Singer Oracle OIC Tap Features
     model_config: ClassVar[ConfigDict] = ConfigDict(
@@ -219,9 +219,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     @field_serializer("*", when_used="json")
     def serialize_with_oic_metadata(
         self,
-        value: dict[str, t.ContainerValue],
+        value: Mapping[str, t.ContainerValue],
         _info: FieldSerializationInfo,
-    ) -> dict[str, t.ContainerValue]:
+    ) -> Mapping[str, t.ContainerValue]:
         """Add Singer Oracle OIC tap metadata to all serialized fields."""
         return {
             **value,
@@ -295,7 +295,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 arbitrary_types_allowed=True
             )
 
-            config: dict[str, t.ContainerValue] = Field(default_factory=dict)
+            config: Mapping[str, t.ContainerValue] = Field(default_factory=dict)
             name: str = Field(default="")
             replication_key: str | None = Field(default=None)
             logger: FlextLogger = Field(default_factory=lambda: FlextLogger(__name__))
@@ -305,8 +305,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             api_path: ClassVar[str | None] = None
             api_category: ClassVar[str] = "core"
             default_sort: ClassVar[str | None] = None
-            additional_params: ClassVar[dict[str, t.ContainerValue] | None] = None
-            primary_keys: ClassVar[list[str]] = []
+            additional_params: ClassVar[Mapping[str, t.ContainerValue] | None] = None
+            primary_keys: ClassVar[Sequence[str]] = []
 
             @property
             def api_client(self) -> FlextApi:
@@ -376,7 +376,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             def get_records(
                 self,
                 context: Mapping[str, t.ContainerValue] | None = None,
-            ) -> Iterator[dict[str, t.ContainerValue]]:
+            ) -> Iterator[Mapping[str, t.ContainerValue]]:
                 """Get records from OIC API.
 
                 Args:
@@ -404,7 +404,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Dictionary of URL parameters optimized for OIC API.
 
                 """
-                params: dict[str, t.ContainerValue] = {}
+                params: Mapping[str, t.ContainerValue] = {}
                 page_size_val = self.config.get("page_size", 100)
                 page_size = page_size_val if isinstance(page_size_val, int) else 100
                 params["limit"] = min(page_size, 1000)
@@ -484,14 +484,14 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 record: Mapping[str, t.ContainerValue],
             ) -> Mapping[str, t.ContainerValue]:
                 """Enrich record with tap metadata for traceability."""
-                enriched: dict[str, t.ContainerValue] = dict(record)
+                enriched: Mapping[str, t.ContainerValue] = dict(record)
                 enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
                 enriched["_tap_stream_name"] = self.name
                 return enriched
 
             def _extract_and_yield_records(
                 self,
-                data: dict[str, t.ContainerValue],
+                data: Mapping[str, t.ContainerValue],
                 url: str,
             ) -> Iterator[Mapping[str, t.ContainerValue]]:
                 """Extract and yield records with validation and enrichment."""
@@ -521,7 +521,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             def _extract_items_for_processing(
                 self,
-                data: dict[str, t.ContainerValue],
+                data: Mapping[str, t.ContainerValue],
             ) -> Iterator[Mapping[str, t.ContainerValue]]:
                 """Extract items from various OIC response formats for processing."""
                 list_payload = _as_value_list(data)
@@ -560,7 +560,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise_for_status()
 
             def _is_empty_result_expected(
-                self, data: dict[str, t.ContainerValue]
+                self, data: Mapping[str, t.ContainerValue]
             ) -> bool:
                 """Check if empty result is expected/normal based on OIC response metadata."""
                 envelope = _as_oic_envelope(data)
@@ -574,7 +574,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 list_payload = _as_value_list(data)
                 return len(list_payload) == 0 if list_payload is not None else False
 
-            def _is_single_record(self, data: dict[str, t.ContainerValue]) -> bool:
+            def _is_single_record(self, data: Mapping[str, t.ContainerValue]) -> bool:
                 """Check if dict represents a single record vs OIC metadata container."""
                 metadata_keys = {
                     "totalSize",
@@ -589,7 +589,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             def _process_dict_data(
                 self,
-                data: dict[str, t.ContainerValue],
+                data: Mapping[str, t.ContainerValue],
             ) -> Iterator[Mapping[str, t.ContainerValue]]:
                 """Process dict-type response data with OIC format detection."""
                 envelope = _as_oic_envelope(data)
@@ -615,7 +615,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             def _track_response_metrics(
                 self,
                 response: requests.Response,
-                data: dict[str, t.ContainerValue],
+                data: Mapping[str, t.ContainerValue],
             ) -> None:
                 """Track response metrics for monitoring and optimization."""
                 if getattr(response, "elapsed", None) is not None:
@@ -708,7 +708,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             @computed_field
             def auth_config_summary(
                 self,
-            ) -> Mapping[str, dict[str, t.ContainerValue | None]]:
+            ) -> Mapping[str, Mapping[str, t.ContainerValue | None]]:
                 """OAuth2 authentication configuration summary."""
                 return {
                     "oauth_setup": {
@@ -856,7 +856,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             @computed_field
             def integration_health_summary(
                 self,
-            ) -> Mapping[str, dict[str, t.ContainerValue | None]]:
+            ) -> Mapping[str, Mapping[str, t.ContainerValue | None]]:
                 """OIC integration health and performance summary."""
                 error_rate = 0.0
                 if self.execution_count and self.execution_count > 0:
@@ -1014,7 +1014,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             @computed_field
             def connection_security_summary(
                 self,
-            ) -> Mapping[str, dict[str, t.ContainerValue | None]]:
+            ) -> Mapping[str, Mapping[str, t.ContainerValue | None]]:
                 """OIC connection security and health summary."""
                 return {
                     "connection_identity": {
@@ -1155,7 +1155,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             @computed_field
             def activity_performance_summary(
                 self,
-            ) -> Mapping[str, dict[str, t.ContainerValue | None]]:
+            ) -> Mapping[str, Mapping[str, t.ContainerValue | None]]:
                 """OIC activity performance summary."""
                 duration_seconds = 0.0
                 if self.duration_ms:
@@ -1260,7 +1260,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Dependencies and relationships
             dependencies: Annotated[
-                list[str],
+                Sequence[str],
                 Field(
                     default_factory=list,
                     description="List of dependent package IDs",
@@ -1293,7 +1293,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             @computed_field
             def package_composition_summary(
                 self,
-            ) -> Mapping[str, dict[str, t.ContainerValue | None]]:
+            ) -> Mapping[str, Mapping[str, t.ContainerValue | None]]:
                 """OIC package composition and usage summary."""
                 return {
                     "package_identity": {
@@ -1307,7 +1307,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         "integration_count": self.integration_count or 0,
                         "dependency_count": len(self.dependencies),
                         "has_dependencies": bool(self.dependencies),
-                        "dependencies": list[t.ContainerValue](self.dependencies),
+                        "dependencies": Sequence[t.ContainerValue](self.dependencies),
                     },
                     "usage": {
                         "download_count": self.download_count or 0,
@@ -1430,7 +1430,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             @computed_field
             def metrics_analysis_summary(
                 self,
-            ) -> Mapping[str, dict[str, t.ContainerValue | None]]:
+            ) -> Mapping[str, Mapping[str, t.ContainerValue | None]]:
                 """OIC metrics complete analysis summary."""
                 total_messages = (self.success_count or 0) + (self.error_count or 0)
                 error_rate = 0.0
@@ -1575,7 +1575,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             @computed_field
             def agent_health_summary(
                 self,
-            ) -> Mapping[str, dict[str, t.ContainerValue | None]]:
+            ) -> Mapping[str, Mapping[str, t.ContainerValue | None]]:
                 """OIC agent health and connectivity summary."""
                 health_status = "healthy"
                 if self.status in {"ERROR", "OFFLINE"}:
@@ -1681,7 +1681,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Filtering
             status_filter: Annotated[
-                list[str] | None,
+                Sequence[str] | None,
                 Field(
                     None,
                     description="Filter by entity status values",
@@ -1714,7 +1714,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             @computed_field
             def stream_config_summary(
                 self,
-            ) -> Mapping[str, dict[str, t.ContainerValue | None]]:
+            ) -> Mapping[str, Mapping[str, t.ContainerValue | None]]:
                 """OIC stream configuration summary."""
                 return {
                     "stream_identity": {
@@ -1785,7 +1785,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(..., description="Response success indicator"),
             ]
             data: Annotated[
-                dict[str, t.ContainerValue] | None,
+                Mapping[str, t.ContainerValue] | None,
                 Field(
                     None,
                     description="Response data payload",
@@ -1820,7 +1820,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             error_details: Annotated[
-                dict[str, dict[str, t.ContainerValue]] | None,
+                Mapping[str, Mapping[str, t.ContainerValue]] | None,
                 Field(
                     None,
                     description="Detailed error information",
@@ -1847,7 +1847,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             @computed_field
             def api_response_summary(
                 self,
-            ) -> Mapping[str, dict[str, t.ContainerValue | None]]:
+            ) -> Mapping[str, Mapping[str, t.ContainerValue | None]]:
                 """OIC API response summary."""
                 return {
                     "response_status": {
@@ -1939,7 +1939,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(None, description="HTTP method used"),
             ]
             request_params: Annotated[
-                dict[str, dict[str, t.ContainerValue]] | None,
+                Mapping[str, Mapping[str, t.ContainerValue]] | None,
                 Field(
                     None,
                     description="Request parameters",
@@ -1972,7 +1972,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             @computed_field
             def error_context_summary(
                 self,
-            ) -> Mapping[str, dict[str, t.ContainerValue | None]]:
+            ) -> Mapping[str, Mapping[str, t.ContainerValue | None]]:
                 """OIC error context summary."""
                 return {
                     "error_classification": {
@@ -2060,7 +2060,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(None, description="Connection endpoint URL"),
             ]
             connection_properties: Annotated[
-                dict[str, dict[str, t.ContainerValue]],
+                Mapping[str, Mapping[str, t.ContainerValue]],
                 Field(default_factory=dict, description="Connection properties"),
             ]
             security_policy: Annotated[
@@ -2079,7 +2079,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(None, description="Last test timestamp"),
             ]
             test_result: Annotated[
-                dict[str, str] | None,
+                Mapping[str, str] | None,
                 Field(None, description="Last test result"),
             ]
             version: Annotated[
@@ -2179,7 +2179,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 datetime | None, Field(None, description="Lock timestamp")
             ]
             connection_ids: Annotated[
-                list[str],
+                Sequence[str],
                 Field(default_factory=list, description="Associated connection IDs"),
             ]
             created_at: Annotated[
@@ -2231,18 +2231,18 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
             domain_name: Annotated[str | None, Field(None, description="Domain name")]
             columns: Annotated[
-                list[dict[str, t.Container]],
+                Sequence[Mapping[str, t.Container]],
                 Field(
                     default_factory=list,
                     description="Column definitions",
                 ),
             ]
             key_columns: Annotated[
-                list[str],
+                Sequence[str],
                 Field(default_factory=list, description="Key column names"),
             ]
             value_columns: Annotated[
-                list[str],
+                Sequence[str],
                 Field(default_factory=list, description="Value column names"),
             ]
             row_count: Annotated[
@@ -2329,7 +2329,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 int, Field(default=0, ge=0, description="Number of errors")
             ]
             business_identifiers: Annotated[
-                dict[str, dict[str, t.ContainerValue]],
+                Mapping[str, Mapping[str, t.ContainerValue]],
                 Field(
                     default_factory=dict, description="Business tracking identifiers"
                 ),
@@ -2365,15 +2365,15 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
             name: Annotated[str, Field(..., min_length=1, description="Project name")]
             integration_ids: Annotated[
-                list[str],
+                Sequence[str],
                 Field(default_factory=list, description="Integration IDs in project"),
             ]
             connection_ids: Annotated[
-                list[str],
+                Sequence[str],
                 Field(default_factory=list, description="Connection IDs in project"),
             ]
             lookup_ids: Annotated[
-                list[str],
+                Sequence[str],
                 Field(default_factory=list, description="Lookup IDs in project"),
             ]
             deployment_status: Annotated[

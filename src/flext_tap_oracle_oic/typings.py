@@ -14,6 +14,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
+
 from flext_meltano import FlextMeltanoTypes
 from flext_oracle_oic import FlextOracleOicTypes
 
@@ -31,228 +33,228 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
     class TapOracleOic:
         """Singer tap protocol complex types."""
 
-        type TapConfiguration = dict[
+        type TapConfiguration = Mapping[
             str,
-            str | int | bool | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | int | bool | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type StreamConfiguration = dict[
+        type StreamConfiguration = Mapping[
             str,
-            str | bool | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | bool | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type CatalogDefinition = dict[
+        type CatalogDefinition = Mapping[
             str,
-            str | list[dict[str, FlextMeltanoTypes.ContainerValue | None]],
+            str | Sequence[Mapping[str, FlextMeltanoTypes.ContainerValue | None]],
         ]
-        type SchemaDefinition = dict[
+        type SchemaDefinition = Mapping[
             str,
-            str | dict[str, FlextMeltanoTypes.ContainerValue | None] | bool,
+            str | Mapping[str, FlextMeltanoTypes.ContainerValue | None] | bool,
         ]
-        type MessageOutput = dict[
+        type MessageOutput = Mapping[
             str,
-            str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type StateManagement = dict[
+        type StateManagement = Mapping[
             str,
-            str | int | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | int | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
 
     class OicIntegration:
         """Oracle OIC integration complex types."""
 
-        type IntegrationConfiguration = dict[
+        type IntegrationConfiguration = Mapping[
             str,
-            str | int | bool | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | int | bool | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type IntegrationDefinition = dict[
+        type IntegrationDefinition = Mapping[
             str,
-            str | list[str] | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Sequence[str] | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type IntegrationFlow = dict[
+        type IntegrationFlow = Mapping[
             str,
-            str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type IntegrationMapping = dict[
+        type IntegrationMapping = Mapping[
             str,
-            str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type IntegrationMetadata = dict[
+        type IntegrationMetadata = Mapping[
             str,
-            str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type IntegrationStatus = dict[
+        type IntegrationStatus = Mapping[
             str,
-            str | bool | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | bool | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
 
     class OicConnection:
         """Oracle OIC connection complex types."""
 
-        type ConnectionConfiguration = dict[
+        type ConnectionConfiguration = Mapping[
             str,
-            str | int | bool | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | int | bool | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type ConnectionCredentials = dict[
+        type ConnectionCredentials = Mapping[
             str,
-            str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type ConnectionSecurity = dict[
+        type ConnectionSecurity = Mapping[
             str,
-            str | bool | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | bool | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type ConnectionValidation = dict[
+        type ConnectionValidation = Mapping[
             str,
-            bool | str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            bool | str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type ConnectionMetadata = dict[
+        type ConnectionMetadata = Mapping[
             str,
-            str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type ConnectionPool = dict[
+        type ConnectionPool = Mapping[
             str,
-            int | bool | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            int | bool | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
 
     class OicAuthentication:
         """Oracle OIC authentication complex types."""
 
-        type OAuth2Configuration = dict[
+        type OAuth2Configuration = Mapping[
             str,
-            str | int | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | int | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type IdcsConfiguration = dict[
+        type IdcsConfiguration = Mapping[
             str,
-            str | bool | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | bool | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type TokenManagement = dict[
+        type TokenManagement = Mapping[
             str,
-            str | int | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | int | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type AuthenticationFlow = dict[
+        type AuthenticationFlow = Mapping[
             str,
-            str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type SecuritySettings = dict[
+        type SecuritySettings = Mapping[
             str,
-            bool | str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            bool | str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type AuthenticationCache = dict[
+        type AuthenticationCache = Mapping[
             str,
-            str | int | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | int | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
 
     class OicMonitoring:
         """Oracle OIC monitoring complex types."""
 
-        type ActivityConfiguration = dict[
+        type ActivityConfiguration = Mapping[
             str,
-            str | bool | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | bool | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type MetricsCollection = dict[
+        type MetricsCollection = Mapping[
             str,
-            int | float | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            int | float | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type TrackingData = dict[
+        type TrackingData = Mapping[
             str,
-            str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type AlertConfiguration = dict[
+        type AlertConfiguration = Mapping[
             str,
-            bool | str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            bool | str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type MonitoringMetrics = dict[
+        type MonitoringMetrics = Mapping[
             str,
-            int | float | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            int | float | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type AuditTrail = dict[
+        type AuditTrail = Mapping[
             str,
-            str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
 
     class DataExtraction:
         """Data extraction complex types."""
 
-        type ExtractionConfiguration = dict[
+        type ExtractionConfiguration = Mapping[
             str,
-            str | bool | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | bool | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type ExtractionFilter = dict[
+        type ExtractionFilter = Mapping[
             str,
-            str | list[str] | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Sequence[str] | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type ExtractionMapping = dict[
+        type ExtractionMapping = Mapping[
             str,
-            str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type ExtractionResult = dict[
+        type ExtractionResult = Mapping[
             str,
-            bool | list[dict[str, FlextMeltanoTypes.ContainerValue | None]],
+            bool | Sequence[Mapping[str, FlextMeltanoTypes.ContainerValue | None]],
         ]
-        type ExtractionMetrics = dict[
+        type ExtractionMetrics = Mapping[
             str,
-            int | float | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            int | float | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type ExtractionState = dict[
+        type ExtractionState = Mapping[
             str,
-            str | int | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | int | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
 
     class StreamProcessing:
         """Stream processing complex types."""
 
-        type StreamConfiguration = dict[
+        type StreamConfiguration = Mapping[
             str,
-            str | bool | int | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | bool | int | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type StreamMetadata = dict[
+        type StreamMetadata = Mapping[
             str,
-            str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type StreamRecord = dict[
+        type StreamRecord = Mapping[
             str,
             FlextMeltanoTypes.ContainerValue
             | None
-            | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type StreamState = dict[
+        type StreamState = Mapping[
             str,
-            str | int | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | int | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type StreamBookmark = dict[
+        type StreamBookmark = Mapping[
             str,
-            str | int | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | int | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type StreamSchema = dict[
+        type StreamSchema = Mapping[
             str,
-            str | dict[str, FlextMeltanoTypes.ContainerValue | None] | bool,
+            str | Mapping[str, FlextMeltanoTypes.ContainerValue | None] | bool,
         ]
 
     class ErrorHandling:
         """Error handling complex types."""
 
-        type ErrorConfiguration = dict[
+        type ErrorConfiguration = Mapping[
             str,
-            bool | str | int | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            bool | str | int | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type ErrorRecovery = dict[
+        type ErrorRecovery = Mapping[
             str,
-            str | bool | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | bool | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type ErrorReporting = dict[
+        type ErrorReporting = Mapping[
             str,
-            str | int | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | int | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type ErrorClassification = dict[
+        type ErrorClassification = Mapping[
             str,
-            str | int | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            str | int | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type ErrorMetrics = dict[
+        type ErrorMetrics = Mapping[
             str,
-            int | float | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            int | float | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type ErrorTracking = list[
-            dict[
+        type ErrorTracking = Sequence[
+            Mapping[
                 str,
-                str | int | dict[str, FlextMeltanoTypes.ContainerValue | None],
+                str | int | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
             ]
         ]
 
@@ -265,16 +267,16 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
         """
 
         type ProjectType = c.ProjectType
-        type SingerTapOracleOicProjectConfig = dict[
+        type SingerTapOracleOicProjectConfig = Mapping[
             str,
             FlextMeltanoTypes.ContainerValue | None,
         ]
-        type OicExtractorConfig = dict[str, str | int | bool | list[str]]
-        type SingerProtocolConfig = dict[
+        type OicExtractorConfig = Mapping[str, str | int | bool | Sequence[str]]
+        type SingerProtocolConfig = Mapping[
             str,
-            bool | str | dict[str, FlextMeltanoTypes.ContainerValue | None],
+            bool | str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
-        type TapOracleOicPipelineConfig = dict[
+        type TapOracleOicPipelineConfig = Mapping[
             str,
             FlextMeltanoTypes.ContainerValue | None,
         ]

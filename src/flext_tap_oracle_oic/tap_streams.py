@@ -7,6 +7,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
+
 import requests
 from flext_core import FlextLogger, t
 
@@ -45,7 +47,7 @@ class OICPaginator:
         self._max_page_size: int = c.TapOicProcessing.PAGINATOR_MAX_PAGE_SIZE
         self._min_page_size: int = c.TapOicProcessing.PAGINATOR_MIN_PAGE_SIZE
         self._adaptive_sizing: bool = True
-        self._response_times: list[float] = []
+        self._response_times: Sequence[float] = []
 
     def get_next(self, response: requests.Response) -> int | None:
         """Calculate next offset for Oracle OIC pagination.
@@ -70,7 +72,9 @@ class OICPaginator:
             logger.debug("This indicates end of pagination or malformed OIC response")
             return None
 
-    def _calculate_next_offset(self, data: dict[str, t.ContainerValue]) -> int | None:
+    def _calculate_next_offset(
+        self, data: Mapping[str, t.ContainerValue]
+    ) -> int | None:
         """Calculate next offset based on OIC response format."""
         items = self._extract_items_from_response(data)
         if items is None or not items or len(items) < self._page_size:
@@ -79,8 +83,8 @@ class OICPaginator:
 
     def _extract_items_from_response(
         self,
-        data: dict[str, t.ContainerValue],
-    ) -> list[dict[str, t.ContainerValue]] | None:
+        data: Mapping[str, t.ContainerValue],
+    ) -> Sequence[Mapping[str, t.ContainerValue]] | None:
         """Extract items from various OIC response formats."""
         list_payload = _as_value_list(data)
         if list_payload is not None:
@@ -110,4 +114,4 @@ class OICPaginator:
                 self._page_size = min(self._max_page_size, int(self._page_size * 1.2))
 
 
-__all__: list[str] = ["OICBaseStream", "OICPaginator"]
+__all__: Sequence[str] = ["OICBaseStream", "OICPaginator"]
