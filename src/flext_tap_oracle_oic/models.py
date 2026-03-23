@@ -47,7 +47,7 @@ if TYPE_CHECKING:
 
 def _get_oic_paginator_class() -> type[OICPaginator]:
     """Lazy import to break circular dependency between models and tap_streams."""
-    from flext_tap_oracle_oic.tap_streams import OICPaginator as _Cls  # noqa: PLC0415
+    from flext_tap_oracle_oic.tap_streams import OICPaginator as _Cls
 
     return _Cls
 
