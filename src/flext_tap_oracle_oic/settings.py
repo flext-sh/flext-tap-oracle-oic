@@ -12,7 +12,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Annotated
+from typing import Annotated, ClassVar
 
 from flext_core import FlextConstants, r
 from flext_core.typings import t
@@ -24,7 +24,7 @@ from pydantic_settings import SettingsConfigDict
 class FlextTapOracleOicSettings(FlextOracleOicSettings):
     """Tap-specific OIC settings contract."""
 
-    model_config = SettingsConfigDict(extra="ignore")
+    model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(extra="ignore")
 
     oauth_client_id: Annotated[str, Field(default="")]
     oauth_client_secret: Annotated[SecretStr, Field(default=SecretStr(""))]

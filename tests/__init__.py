@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from flext_core import FlextTypes
     from flext_tests import d, e, h, r, s, x
 
-    from .conftest import (
+    from tests.conftest import (
         basic_oic_config,
         benchmark_config,
         extended_oic_config,
@@ -49,25 +49,31 @@ if TYPE_CHECKING:
         singer_catalog,
         singer_state,
     )
-    from .constants import (
+    from tests.constants import (
         FlextTapOracleOicTestConstants,
         FlextTapOracleOicTestConstants as c,
     )
-    from .models import FlextTapOracleOicTestModels, FlextTapOracleOicTestModels as m
-    from .protocols import (
+    from tests.models import (
+        FlextTapOracleOicTestModels,
+        FlextTapOracleOicTestModels as m,
+    )
+    from tests.protocols import (
         FlextTapOracleOicTestProtocols,
         FlextTapOracleOicTestProtocols as p,
     )
-    from .test_auth import TestOICOAuth2Authenticator
-    from .test_tap_core import (
+    from tests.test_auth import TestOICOAuth2Authenticator
+    from tests.test_tap_core import (
         TestTapOracleOic,
         TestTapOracleOicIntegration,
         TestTapOracleOicWithFixtures,
         sample_config,
         sample_config_with_extended,
     )
-    from .typings import FlextTapOracleOicTestTypes, FlextTapOracleOicTestTypes as t
-    from .utilities import (
+    from tests.typings import (
+        FlextTapOracleOicTestTypes,
+        FlextTapOracleOicTestTypes as t,
+    )
+    from tests.utilities import (
         FlextTapOracleOicTestUtilities,
         FlextTapOracleOicTestUtilities as u,
     )
