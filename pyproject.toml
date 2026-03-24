@@ -1,7 +1,7 @@
 # [MANAGED] FLEXT pyproject standardization
 # Sections with [MANAGED] are enforced by flext_infra.deps.modernizer.
+# Run `make mod` to regenerate all managed pyproject sections.
 # Sections with [CUSTOM] are project-specific extension points.
-# Sections with [AUTO] are derived from workspace layout and dependencies.
 # [MANAGED] build system
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -9,15 +9,8 @@ requires = [ "poetry-core>=2" ]
 
 # [CUSTOM] project metadata
 [project]
-name = "flext-tap-oracle-oic"
-version = "0.12.0-dev"
-description = "FLEXT Tap Oracle OIC - Singer Tap for Oracle Integration Cloud"
-readme = "README.md"
-keywords = [ "data-extraction", "enterprise", "etl", "flext", "singer", "tap", "typed" ]
-license = "MIT"
-maintainers = [ {email = "team@flext.sh", name = "FLEXT Team"} ]
+
 authors = [ {email = "team@flext.sh", name = "FLEXT Team"} ]
-requires-python = ">=3.13,<3.14"
 classifiers = [
   "Development Status :: 4 - Beta",
   "Development Status :: 5 - Production/Stable",
@@ -39,9 +32,20 @@ dependencies = [
   "pydantic>=2.12.3",
   "requests>=2.31",
 ]
+description = "FLEXT Tap Oracle OIC - Singer Tap for Oracle Integration Cloud"
+keywords = [ "data-extraction", "enterprise", "etl", "flext", "singer", "tap", "typed" ]
+license = "MIT"
+maintainers = [ {email = "team@flext.sh", name = "FLEXT Team"} ]
+name = "flext-tap-oracle-oic"
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+scripts = {"flext-tap-oracle-oic" = "flext_tap_oracle_oic.tap:TapOracleOic.cli", "tap-oracle-oic" = "flext_tap_oracle_oic.tap:TapOracleOic.cli"}
+urls = {Documentation = "https://github.com/flext-sh/flext/blob/main/README.md", Homepage = "https://github.com/flext-sh/flext"}
+version = "0.12.0-dev"
+
 # [MANAGED] consolidated development dependencies
-# [AUTO] merged from dev/docs/security/test/typings
-optional-dependencies.dev = [
+[project.optional-dependencies]
+dev = [
   "autoflake>=2.3.1",
   "bandit>=1.8",
   "black>=25.1",
@@ -101,24 +105,169 @@ optional-dependencies.dev = [
   "types-toml>=0.10.8.20240310",
   "vulture>=2.13",
 ]
-urls = {Documentation = "https://github.com/flext-sh/flext/blob/main/README.md", Homepage = "https://github.com/flext-sh/flext"}
-scripts = {"flext-tap-oracle-oic" = "flext_tap_oracle_oic.tap:TapOracleOic.cli", "tap-oracle-oic" = "flext_tap_oracle_oic.tap:TapOracleOic.cli"}
 
-[tool.poetry]
+# [MANAGED] coverage
+[tool.coverage.report]
+fail_under = 20
+precision = 2
+show_missing = true
+skip_covered = false
 
 # [MANAGED] deptry
-
-# [CUSTOM] poetry dev extensions
 [tool.deptry]
 known_first_party = [
   "flext_tap_oracle_oic",
 ]
 pep621_dev_dependency_groups = [ "dev" ]
 
-[tool.pytest]
+# [MANAGED] mypy
+[tool.mypy]
+
+disable_error_code = [
+  "prop-decorator",
+]
+explicit_package_bases = true
+ignore_missing_imports = true
+mypy_path = [ ".", "../typings", "../typings/generated", "src" ]
+namespace_packages = true
+plugins = [
+  "pydantic.mypy",
+]
+python_version = "3.13"
+
+[tool.poetry]
+
+# [MANAGED] pydantic-mypy
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+# [MANAGED] pyrefly
+[tool.pyrefly]
+ignore-errors-in-generated-code = true
+project-excludes = [
+  "**/*_pb2*.py",
+  "**/*_pb2_grpc*.py",
+  "**/.venv/**",
+  "**/_pb2.py",
+  "**/_pb2_grpc.py",
+  "**/typings/**",
+  "**/vendor/**",
+  "../typings/**",
+  ".venv/**",
+  "typings/**",
+  "vendor/**",
+]
+python-version = "3.13"
+search-path = [
+  ".",
+  "src",
+]
+
+[tool.pyrefly.errors]
+bad-override = false
+deprecated = true
+implicit-abstract-class = true
+implicit-any = true
+implicitly-defined-attribute = true
+missing-override-decorator = true
+missing-source = true
+not-required-key-access = true
+open-unpacking = true
+protocol-implicitly-defined-attribute = true
+redundant-cast = true
+unannotated-attribute = true
+unannotated-parameter = true
+unannotated-return = true
+
+# [MANAGED] pyright
+[tool.pyright]
+exclude = [
+  "**/.*",
+  "**/__pycache__",
+  "**/node_modules",
+  ".mypy_cache",
+  ".pytest_cache",
+  ".ruff_cache",
+  ".venv",
+]
+extraPaths = [
+  ".",
+  "../typings",
+  "../typings/generated",
+  "src",
+]
+ignore = [
+  "../typings",
+  "../typings/generated",
+]
+pythonPlatform = "Linux"
+pythonVersion = "3.13"
+reportCallIssue = "none"
+reportConstantRedefinition = "error"
+reportIncompatibleMethodOverride = "error"
+reportIncompatibleVariableOverride = "error"
+reportInconsistentConstructor = "error"
+reportMissingImports = "error"
+reportMissingModuleSource = "none"
+reportMissingTypeStubs = "none"
+reportPrivateUsage = "warning"
+reportUnnecessaryCast = "error"
+reportUnnecessaryComparison = "warning"
+reportUnnecessaryIsInstance = "warning"
+reportUnusedClass = "error"
+reportUnusedFunction = "error"
+reportUnusedImport = "error"
+reportUnusedVariable = "error"
+typeCheckingMode = "strict"
+
+[[tool.pyright.executionEnvironments]]
+extraPaths = [ "src" ]
+reportPrivateUsage = "error"
+root = "src"
+
+[[tool.pyright.executionEnvironments]]
+extraPaths = [ ".", "src" ]
+reportPrivateUsage = "none"
+root = "tests"
+
+[[tool.pyright.executionEnvironments]]
+extraPaths = [ ".", "src" ]
+reportPrivateUsage = "none"
+root = "examples"
+
 # [MANAGED] pytest
+[tool.pytest]
 
 [tool.pytest.ini_options]
+
+addopts = [
+  "--strict-markers",
+]
+enable_assertion_pass_hook = true
+markers = [
+  "docker: tests requiring Docker",
+  "e2e: end-to-end integration tests",
+  "edge_cases: edge case tests",
+  "integration: integration tests",
+  "performance: performance and benchmark tests",
+  "resilience: resilience tests",
+  "slow: slow-running tests",
+  "stress: stress tests",
+  "unit: unit tests",
+]
+minversion = "8.0"
+python_classes = [
+  "Test*",
+]
+python_files = [
+  "*_test.py",
+  "*_tests.py",
+  "test_*.py",
+]
+
+[tool.pytest.ini_options.tool.pytest.ini_options]
 addopts = [
   "--strict-markers",
 ]
@@ -142,112 +291,6 @@ python_files = [
   "*_tests.py",
   "test_*.py",
 ]
-tool.pytest.ini_options.addopts = [
-  "--strict-markers",
-]
-tool.pytest.ini_options.markers = [
-  "docker: tests requiring Docker",
-  "e2e: end-to-end integration tests",
-  "edge_cases: edge case tests",
-  "integration: integration tests",
-  "performance: performance and benchmark tests",
-  "resilience: resilience tests",
-  "slow: slow-running tests",
-  "stress: stress tests",
-  "unit: unit tests",
-]
-tool.pytest.ini_options.minversion = "8.0"
-tool.pytest.ini_options.python_classes = [
-  "Test*",
-]
-tool.pytest.ini_options.python_files = [
-  "*_test.py",
-  "*_tests.py",
-  "test_*.py",
-]
-
-# [MANAGED] pyrefly
-enable_assertion_pass_hook = true
-[tool.pyrefly]
-project-excludes = [
-  "**/*_pb2*.py",
-  "**/*_pb2_grpc*.py",
-  "**/_pb2.py",
-  "**/_pb2_grpc.py",
-]
-
-ignore-errors-in-generated-code = true
-python-version = "3.13"
-search-path = [
-  ".",
-  "../flext-core/examples",
-  "../flext-core/src",
-  "../flext-core/tests",
-  "../flext-meltano/docs",
-  "../flext-meltano/examples",
-  "../flext-meltano/src",
-  "../flext-meltano/tests",
-  "../flext-oracle-oic/docs",
-  "../flext-oracle-oic/src",
-  "../flext-oracle-oic/tests",
-  "docs",
-  "src",
-  "tests",
-]
-
-[tool.pyrefly.errors]
-bad-override = false
-deprecated = true
-implicit-abstract-class = true
-implicit-any = true
-implicitly-defined-attribute = true
-missing-override-decorator = true
-missing-source = true
-not-required-key-access = true
-open-unpacking = true
-protocol-implicitly-defined-attribute = true
-redundant-cast = true
-unannotated-attribute = true
-unannotated-parameter = true
-unannotated-return = true
-
-# [MANAGED] mypy
-[tool.mypy]
-disable_error_code = [
-  "prop-decorator",
-]
-mypy_path = [
-  ".",
-  "../flext-core/examples",
-  "../flext-core/src",
-  "../flext-core/tests",
-  "../flext-meltano/docs",
-  "../flext-meltano/examples",
-  "../flext-meltano/src",
-  "../flext-meltano/tests",
-  "../flext-oracle-oic/docs",
-  "../flext-oracle-oic/src",
-  "../flext-oracle-oic/tests",
-  "../typings",
-  "../typings/generated",
-  "docs",
-  "src",
-  "tests",
-]
-plugins = [
-  "pydantic.mypy",
-]
-python_version = "3.13"
-
-# [MANAGED] pydantic-mypy
-explicit_package_bases = true
-ignore_missing_imports = true
-namespace_packages = true
-
-[tool.pydantic-mypy]
-init_forbid_extra = true
-init_typed = true
-warn_required_dynamic_aliases = true
 
 # [MANAGED] ruff
 [tool.ruff]
@@ -279,6 +322,12 @@ src = [
   "tests",
 ]
 target-version = "py313"
+
+[tool.ruff.format]
+docstring-code-format = true
+indent-style = "space"
+line-ending = "lf"
+quote-style = "double"
 
 [tool.ruff.lint]
 ignore = [
@@ -340,16 +389,16 @@ select = [
 ]
 
 [tool.ruff.lint.isort]
+
+combine-as-imports = true
+force-single-line = false
 known-first-party = [
   "flext_tap_oracle_oic",
 ]
-
-# [MANAGED] pyright
-combine-as-imports = true
-force-single-line = false
 split-on-trailing-comma = true
 
 [tool.ruff.lint.per-file-ignores]
+
 "**/.vulture_whitelist.py" = [
   "ALL",
 ]
@@ -464,6 +513,7 @@ split-on-trailing-comma = true
   "D102",
   "D103",
   "D104",
+  "D106",
   "D107",
   "EM102",
   "F822",
@@ -523,6 +573,8 @@ split-on-trailing-comma = true
 ]
 "**/*utilities*" = [
   "C901",
+  "E402",
+  "PLC2801",
   "PLW1510",
   "S404",
   "S603",
@@ -532,11 +584,15 @@ split-on-trailing-comma = true
   "D107",
   "F822",
   "N999",
+  "PLC2701",
   "RUF067",
 ]
 "**/_utilities/parser.py" = [
   "ARG004",
   "FBT001",
+]
+"**/alert_manager*.py" = [
+  "S310",
 ]
 "**/config.py" = [
   "ANN401",
@@ -550,6 +606,10 @@ split-on-trailing-comma = true
   "ANN401",
   "SLF001",
 ]
+"**/external_command*.py" = [
+  "S404",
+  "S603",
+]
 "**/file_tools.py" = [
   "D102",
 ]
@@ -562,6 +622,10 @@ split-on-trailing-comma = true
   "S102",
   "S105",
 ]
+"**/orchestrator*.py" = [
+  "S404",
+  "S603",
+]
 "**/output.py" = [
   "FBT001",
 ]
@@ -573,6 +637,9 @@ split-on-trailing-comma = true
   "S607",
   "TID252",
 ]
+"**/protocol_impls/*.py" = [
+  "SLF001",
+]
 "**/providers/*.py" = [
   "S106",
   "S107",
@@ -583,6 +650,8 @@ split-on-trailing-comma = true
 ]
 "**/settings.py" = [
   "ANN401",
+  "PLC0415",
+  "S105",
 ]
 "**/singer/*.py" = [
   "S404",
@@ -613,45 +682,12 @@ split-on-trailing-comma = true
 "**/typings.py" = [
   "RUF036",
 ]
-
-[tool.ruff.format]
-docstring-code-format = true
-indent-style = "space"
-line-ending = "lf"
-quote-style = "double"
-[tool.pyright]
-extraPaths = [".", "../flext-core/examples", "../flext-core/src", "../flext-core/tests", "../flext-meltano/docs", "../flext-meltano/examples", "../flext-meltano/src", "../flext-meltano/tests", "../flext-oracle-oic/docs", "../flext-oracle-oic/src", "../flext-oracle-oic/tests", "../typings", "../typings/generated", "docs", "src", "tests", "../flext-tests/src", "../flext-infra/src"]
-pythonPlatform = "Linux"
-pythonVersion = "3.13"
-reportCallIssue = "none"
-reportConstantRedefinition = "error"
-reportIncompatibleMethodOverride = "error"
-reportIncompatibleVariableOverride = "error"
-reportInconsistentConstructor = "error"
-reportMissingImports = "error"
-reportMissingModuleSource = "none"
-reportMissingTypeStubs = "none"
-reportPrivateUsage = "warning"
-reportUnnecessaryCast = "error"
-reportUnnecessaryComparison = "warning"
-reportUnnecessaryIsInstance = "warning"
-reportUnusedClass = "error"
-reportUnusedFunction = "error"
-reportUnusedImport = "error"
-reportUnusedVariable = "error"
-typeCheckingMode = "strict"
-
-[[tool.pyright.executionEnvironments]]
-reportPrivateUsage = "none"
-root = "docs"
-
-[[tool.pyright.executionEnvironments]]
-reportPrivateUsage = "error"
-root = "src"
-
-[[tool.pyright.executionEnvironments]]
-reportPrivateUsage = "none"
-root = "tests"
+"**/workspace/*.py" = [
+  "PLC0415",
+  "S404",
+  "S603",
+  "S607",
+]
 
 # [MANAGED] tomlsort
 [tool.tomlsort]
@@ -671,9 +707,3 @@ line_length = 88
 preserve_quotes = true
 section_whitelines = 1
 whitelines = 1
-
-[tool.coverage.report]
-fail_under = 20
-precision = 2
-show_missing = true
-skip_covered = false
