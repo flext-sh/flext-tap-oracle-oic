@@ -13,7 +13,7 @@ from typing import ClassVar
 
 from pydantic import TypeAdapter
 
-from flext_tap_oracle_oic import OICBaseStream, p, t
+from flext_tap_oracle_oic import m, p, t
 
 th = t()
 _SCHEMA_ADAPTER: TypeAdapter[Mapping[str, t.ContainerValue]] = TypeAdapter(
@@ -27,7 +27,7 @@ def _properties_to_dict(
     return _SCHEMA_ADAPTER.validate_python(dict(properties.to_dict()))
 
 
-class FlextTapOracleOicIntegrationsStream(OICBaseStream):
+class FlextTapOracleOicIntegrationsStream(m.TapOracleOic.OICBaseStream):
     """Oracle Integration Cloud Integrations Stream.
 
     Extracts complete integration metadata including configurations,
@@ -156,7 +156,7 @@ class FlextTapOracleOicIntegrationsStream(OICBaseStream):
     )
 
 
-class FlextTapOracleOicConnectionsStream(OICBaseStream):
+class FlextTapOracleOicConnectionsStream(m.TapOracleOic.OICBaseStream):
     """Oracle Integration Cloud Connections Stream.
 
     Extracts adapter connection configurations, security policies,
@@ -268,7 +268,7 @@ class FlextTapOracleOicConnectionsStream(OICBaseStream):
     )
 
 
-class FlextTapOracleOicPackagesStream(OICBaseStream):
+class FlextTapOracleOicPackagesStream(m.TapOracleOic.OICBaseStream):
     """Oracle Integration Cloud Packages Stream.
 
     Extracts integration packages for deployment and versioning,
@@ -358,7 +358,7 @@ class FlextTapOracleOicPackagesStream(OICBaseStream):
     )
 
 
-class FlextTapOracleOicLookupsStream(OICBaseStream):
+class FlextTapOracleOicLookupsStream(m.TapOracleOic.OICBaseStream):
     """Oracle Integration Cloud Lookups Stream.
 
     Extracts data transformation lookup tables used in mappings
@@ -438,7 +438,7 @@ class FlextTapOracleOicLookupsStream(OICBaseStream):
     )
 
 
-class FlextTapOracleOicLibrariesStream(OICBaseStream):
+class FlextTapOracleOicLibrariesStream(m.TapOracleOic.OICBaseStream):
     """Oracle Integration Cloud Libraries Stream.
 
     Extracts reusable libraries including JavaScript libraries,
@@ -525,7 +525,7 @@ class FlextTapOracleOicLibrariesStream(OICBaseStream):
     )
 
 
-class FlextTapOracleOicCertificatesStream(OICBaseStream):
+class FlextTapOracleOicCertificatesStream(m.TapOracleOic.OICBaseStream):
     """Oracle Integration Cloud Certificates Stream.
 
     Extracts security certificates used for SSL/TLS connections,
@@ -610,7 +610,7 @@ class FlextTapOracleOicCertificatesStream(OICBaseStream):
     )
 
 
-class FlextTapOracleOicAdaptersStream(OICBaseStream):
+class FlextTapOracleOicAdaptersStream(m.TapOracleOic.OICBaseStream):
     """Oracle Integration Cloud Adapters Stream.
 
     Extracts available adapter information including versions,
@@ -694,7 +694,7 @@ class FlextTapOracleOicAdaptersStream(OICBaseStream):
     )
 
 
-class FlextTapOracleOicProjectsStream(OICBaseStream):
+class FlextTapOracleOicProjectsStream(m.TapOracleOic.OICBaseStream):
     """Oracle Integration Cloud Projects Stream.
 
     Extracts project organization data including folder structure,
@@ -779,7 +779,7 @@ class FlextTapOracleOicProjectsStream(OICBaseStream):
     )
 
 
-class FlextTapOracleOicExecutionsStream(OICBaseStream):
+class FlextTapOracleOicExecutionsStream(m.TapOracleOic.OICBaseStream):
     """Oracle Integration Cloud Executions Stream.
 
     Extracts integration execution data including status,
@@ -855,7 +855,7 @@ class FlextTapOracleOicExecutionsStream(OICBaseStream):
     )
 
 
-class FlextTapOracleOicMetricsStream(OICBaseStream):
+class FlextTapOracleOicMetricsStream(m.TapOracleOic.OICBaseStream):
     """Oracle Integration Cloud Metrics Stream.
 
     Extracts performance and usage metrics for integrations,
@@ -916,7 +916,7 @@ class FlextTapOracleOicMetricsStream(OICBaseStream):
     )
 
 
-ALL_STREAMS: Mapping[str, type[OICBaseStream]] = {
+ALL_STREAMS: Mapping[str, type[m.TapOracleOic.OICBaseStream]] = {
     "integrations": FlextTapOracleOicIntegrationsStream,
     "connections": FlextTapOracleOicConnectionsStream,
     "packages": FlextTapOracleOicPackagesStream,

@@ -12,7 +12,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import os
-from collections.abc import Callable, Generator, Iterator, Mapping, Sequence
+from collections.abc import Callable, Generator, Iterator, MutableMapping, Sequence
 from unittest.mock import Mock
 
 import pytest
@@ -83,7 +83,7 @@ def extended_oic_config(
     basic_oic_config: t.ContainerMapping,
 ) -> t.ContainerMapping:
     """Extended Oracle OIC tap configuration with all streams."""
-    config = basic_oic_config.copy()
+    config: t.MutableContainerMapping = dict(basic_oic_config)
     config.update({
         "include_extended": True,
         "include_integration_details": True,
@@ -102,7 +102,7 @@ def filtered_oic_config(
     basic_oic_config: t.ContainerMapping,
 ) -> t.ContainerMapping:
     """Oracle OIC tap configuration with filters."""
-    config = basic_oic_config.copy()
+    config: t.MutableContainerMapping = dict(basic_oic_config)
     config.update({
         "integration_status_filter": ["ACTIVATED", "CONFIGURED"],
         "connection_type_filter": ["rest", "ftp", "database"],
@@ -116,7 +116,7 @@ def performance_oic_config(
     basic_oic_config: t.ContainerMapping,
 ) -> t.ContainerMapping:
     """Oracle OIC tap configuration for performance testing."""
-    config = basic_oic_config.copy()
+    config: t.MutableContainerMapping = dict(basic_oic_config)
     config.update({
         "page_size": 100,
         "concurrent_requests": 10,
@@ -548,7 +548,7 @@ def mock_oic_client() -> type:
             """Initialize the instance."""
             self.config = config
             self.authenticated = False
-            self.call_count: Mapping[str, int] = {}
+            self.call_count: MutableMapping[str, int] = {}
 
         def authenticate(self) -> bool:
             self.authenticated = True

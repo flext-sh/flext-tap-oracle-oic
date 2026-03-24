@@ -15,15 +15,15 @@ from flext_core import FlextLogger, r, t
 from flext_meltano import m, t as mt
 from pydantic import TypeAdapter
 
-from flext_tap_oracle_oic.constants import c
-from flext_tap_oracle_oic.settings import FlextTapOracleOicSettings
-from flext_tap_oracle_oic.streams_consolidated import (
+from flext_tap_oracle_oic import (
     ALL_STREAMS,
     CORE_STREAMS,
     INFRASTRUCTURE_STREAMS,
+    FlextTapOracleOicSettings,
+    c,
+    m,
+    u,
 )
-from flext_tap_oracle_oic.tap_streams import OICBaseStream
-from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 _CONTAINER_VALUE_MAP_ADAPTER: TypeAdapter[t.ContainerValueMapping] = TypeAdapter(
     t.ContainerValueMapping,
@@ -111,7 +111,7 @@ class FlextTapOracleOicClient:
             "timeout": config.timeout,
         })
         self._api_client = FlextApi(api_config)
-        self._utilities = FlextTapOracleOicUtilities()
+        self._utilities = u()
 
     def get(self, endpoint: str) -> r[FlextApiModels.Api.HttpResponse]:
         """Make authenticated GET request to OIC API."""
@@ -263,7 +263,7 @@ class FlextTapOracleOic(_TapBase):
             strict=validate_config,
         )
         self._client: FlextTapOracleOicClient | None = None
-        self._utilities = FlextTapOracleOicUtilities()
+        self._utilities = u()
 
     @property
     def client(self) -> FlextTapOracleOicClient:
@@ -292,13 +292,13 @@ class FlextTapOracleOic(_TapBase):
             )
         return self._client
 
-    def discover_oic_streams(self) -> Sequence[OICBaseStream]:
+    def discover_oic_streams(self) -> Sequence[m.TapOracleOic.OICBaseStream]:
         """Discover OIC stream class instances for this tap."""
         logger.info("Discovering Oracle OIC streams using consolidated streams")
         stream_names = CORE_STREAMS.copy()
         if self._tap_config.get("include_infrastructure", False):
             stream_names.extend(INFRASTRUCTURE_STREAMS)
-        streams: list[OICBaseStream] = []
+        streams: list[m.TapOracleOic.OICBaseStream] = []
         for stream_name in stream_names:
             if stream_name in ALL_STREAMS:
                 stream_class = ALL_STREAMS[stream_name]
@@ -317,7 +317,7 @@ class FlextTapOracleOic(_TapBase):
     ) -> r[mt.Meltano.Singer.StreamCatalog]:
         """Discover stream catalog matching FlextMeltanoTapAbstractions contract."""
         _ = source_config
-        streams: Sequence[OICBaseStream] = self.discover_oic_streams()
+        streams: Sequence[m.TapOracleOic.OICBaseStream] = self.discover_oic_streams()
         catalog: mt.Meltano.Singer.StreamCatalog = {
             "streams": [
                 {
@@ -437,7 +437,7 @@ def _execute_tap_command(tap: FlextTapOracleOic) -> int:
 def _execute_discover_command(tap: FlextTapOracleOic) -> int:
     """Execute discovery command."""
     logger.info("Discovering Oracle OIC streams")
-    streams: Sequence[OICBaseStream] = tap.discover_oic_streams()
+    streams: Sequence[m.TapOracleOic.OICBaseStream] = tap.discover_oic_streams()
     catalog = {
         "streams": [
             {
