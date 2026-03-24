@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import re
-from collections.abc import Iterator, Mapping, MutableSequence, Sequence
+from collections.abc import Iterator, Mapping, MutableMapping, MutableSequence, Sequence
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
@@ -374,7 +374,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Dictionary of URL parameters optimized for OIC API.
 
                 """
-                params: dict[str, t.ContainerValue] = {}
+                params: MutableMapping[str, t.ContainerValue] = {}
                 page_size_val = self.config.get("page_size", 100)
                 page_size = page_size_val if isinstance(page_size_val, int) else 100
                 params["limit"] = min(page_size, 1000)
@@ -456,7 +456,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 record: Mapping[str, t.ContainerValue],
             ) -> Mapping[str, t.ContainerValue]:
                 """Enrich record with tap metadata for traceability."""
-                enriched: dict[str, t.ContainerValue] = dict(record)
+                enriched: MutableMapping[str, t.ContainerValue] = dict(record)
                 enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
                 enriched["_tap_stream_name"] = self.name
                 return enriched

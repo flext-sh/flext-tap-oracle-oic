@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, MutableMapping
 from typing import Annotated, ClassVar
 
 from flext_core import FlextConstants, r, t
@@ -72,7 +72,7 @@ def flext_tap_oracle_oic_create_config(
 
     """
     try:
-        tap_config: dict[str, t.ContainerValue] = (
+        tap_config: MutableMapping[str, t.ContainerValue] = (
             dict(tap_params) if tap_params is not None else {}
         )
         tap_config.setdefault(

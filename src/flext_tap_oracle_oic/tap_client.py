@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT.
 from __future__ import annotations
 
 import sys
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping, MutableMapping, MutableSequence, Sequence
 from typing import TYPE_CHECKING, ClassVar
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
@@ -199,7 +199,7 @@ class FlextTapOracleOicClient:
             return r[t.StrMapping].fail(
                 f"Failed to get access token: {token_result.error}",
             )
-        headers: dict[str, str] = dict(self.config.get_headers())
+        headers: MutableMapping[str, str] = dict(self.config.get_headers())
         headers["Authorization"] = f"Bearer {token_result.value}"
         return r[t.StrMapping].ok(headers)
 
@@ -298,7 +298,7 @@ class FlextTapOracleOic(_TapBase):
         stream_names = CORE_STREAMS.copy()
         if self._tap_config.get("include_infrastructure", False):
             stream_names.extend(INFRASTRUCTURE_STREAMS)
-        streams: list[m.TapOracleOic.OICBaseStream] = []
+        streams: MutableSequence[m.TapOracleOic.OICBaseStream] = []
         for stream_name in stream_names:
             if stream_name in ALL_STREAMS:
                 stream_class = ALL_STREAMS[stream_name]

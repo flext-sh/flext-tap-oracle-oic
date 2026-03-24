@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import re
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping, MutableMapping, Sequence
 from datetime import UTC, datetime
 from typing import ClassVar, override
 from urllib.parse import urljoin, urlparse
@@ -344,7 +344,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             """
             if not integration_data:
                 return {}
-            metadata: dict[str, t.ContainerValue | None] = {
+            metadata: MutableMapping[str, t.ContainerValue | None] = {
                 "id": integration_data.get("id"),
                 "name": integration_data.get("name"),
                 "version": integration_data.get("version"),
@@ -611,16 +611,16 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             Mapping[str, t.ContainerValue]: Updated state
 
             """
-            state_copy: dict[str, t.ContainerValue] = dict(state)
+            state_copy: MutableMapping[str, t.ContainerValue] = dict(state)
             if "bookmarks" not in state_copy:
-                empty_bookmarks: dict[str, t.ContainerValue] = {}
+                empty_bookmarks: MutableMapping[str, t.ContainerValue] = {}
                 state_copy["bookmarks"] = empty_bookmarks
             bookmarks = state_copy["bookmarks"]
             bookmark_map = FlextTapOracleOicUtilities._as_map(bookmarks)
             if bookmark_map is not None:
                 updated_bookmark_map = dict(bookmark_map)
                 if stream_name not in updated_bookmark_map:
-                    empty_stream_bookmarks: dict[str, t.ContainerValue] = {}
+                    empty_stream_bookmarks: MutableMapping[str, t.ContainerValue] = {}
                     updated_bookmark_map[stream_name] = empty_stream_bookmarks
                 stream_bookmarks = FlextTapOracleOicUtilities._as_map(
                     updated_bookmark_map[stream_name],
@@ -649,9 +649,9 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             Mapping[str, t.ContainerValue]: Updated state
 
             """
-            state_copy: dict[str, t.ContainerValue] = dict(state)
+            state_copy: MutableMapping[str, t.ContainerValue] = dict(state)
             if "bookmarks" not in state_copy:
-                empty_bookmarks: dict[str, t.ContainerValue] = {}
+                empty_bookmarks: MutableMapping[str, t.ContainerValue] = {}
                 state_copy["bookmarks"] = empty_bookmarks
             bookmarks = state_copy["bookmarks"]
             bookmark_map = FlextTapOracleOicUtilities._as_map(bookmarks)
