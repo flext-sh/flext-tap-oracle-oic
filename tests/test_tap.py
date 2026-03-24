@@ -11,7 +11,7 @@ import pytest
 from pydantic import ValidationError as ConfigValidationError
 
 from flext_tap_oracle_oic import m, t
-from flext_tap_oracle_oic.tap_client import TapOracleOic
+from flext_tap_oracle_oic.tap_client import FlextTapOracleOic as TapOracleOic
 
 
 def _build_source_config() -> m.Meltano.DataSourceConfig:

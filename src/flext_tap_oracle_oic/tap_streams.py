@@ -14,14 +14,14 @@ from flext_core import FlextLogger, t
 
 from flext_tap_oracle_oic import c, m
 
-_as_oic_envelope = m._as_oic_envelope
-_as_value_list = m._as_value_list
+_as_oic_envelope = m._as_oic_envelope  # noqa: SLF001
+_as_value_list = m._as_value_list  # noqa: SLF001
 
 # Re-export OICBaseStream from canonical location in models.py
 OICBaseStream = m.TapOracleOic.OICBaseStream
 
 
-class OICPaginator:
+class FlextTapOracleOicPaginator:
     """Intelligent Oracle OIC API paginator with adaptive optimization.
 
     pagination features:
@@ -110,4 +110,7 @@ class OICPaginator:
                 self._page_size = min(self._max_page_size, int(self._page_size * 1.2))
 
 
-__all__: t.StrSequence = ["OICBaseStream", "OICPaginator"]
+# Backward-compatible alias
+OICPaginator = FlextTapOracleOicPaginator
+
+__all__: t.StrSequence = ["FlextTapOracleOicPaginator", "OICBaseStream", "OICPaginator"]
