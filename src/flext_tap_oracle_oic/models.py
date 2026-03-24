@@ -10,7 +10,7 @@ from __future__ import annotations
 import re
 from collections.abc import Iterator, Mapping, MutableSequence, Sequence
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Annotated, ClassVar, Literal, Self
+from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
 import requests
 from flext_api import FlextApi, FlextApiSettings
@@ -45,37 +45,6 @@ if TYPE_CHECKING:
     from flext_tap_oracle_oic.tap_streams import (
         FlextTapOracleOicPaginator as OICPaginator,
     )
-
-
-# Type aliases for OIC domain literals (PEP 695 `type` stmts in nested classes
-# aren't resolvable by mypy/pyright with `from __future__ import annotations`)
-OicIntegrationStatusLiteral = Literal[
-    "ACTIVE",
-    "INACTIVE",
-    "DRAFT",
-    "ERROR",
-    "TESTING",
-    "DEPRECATED",
-]
-OicJobStatusLiteral = Literal["RUNNING", "COMPLETED", "FAILED", "ABORTED", "SUSPENDED"]
-OicIntegrationTypeLiteral = Literal[
-    "INTEGRATION",
-    "LIBRARY",
-    "TEMPLATE",
-    "RECIPE",
-    "CONNECTIVITY_AGENT",
-]
-OicAgentTypeLiteral = Literal["ON_PREMISES_AGENT", "FILE_AGENT"]
-OicAgentStatusLiteral = Literal["ONLINE", "OFFLINE", "MAINTENANCE"]
-OicReplicationMethodLiteral = Literal["FULL_TABLE", "INCREMENTAL"]
-OicErrorTypeLiteral = Literal[
-    "AUTHENTICATION",
-    "AUTHORIZATION",
-    "RATE_LIMIT",
-    "SERVER_ERROR",
-    "NETWORK",
-    "VALIDATION",
-]
 
 
 class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
@@ -119,7 +88,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         return _Cls
 
     @staticmethod
-    def _as_value_list(
+    def as_value_list(
         value: t.ContainerValue | None,
     ) -> Sequence[t.ContainerValue] | None:
         """Validate payload as strict t.ContainerList."""
@@ -147,7 +116,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             return None
 
     @staticmethod
-    def _as_oic_envelope(
+    def as_oic_envelope(
         value: Mapping[str, t.ContainerValue],
     ) -> FlextTapOracleOicModels.OicEnvelope | None:
         """Validate payload as an OIC envelope model."""
@@ -280,10 +249,15 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 arbitrary_types_allowed=True,
             )
 
-            config: Mapping[str, t.ContainerValue] = Field(default_factory=dict)
-            name: str = Field(default="")
-            replication_key: str | None = Field(default=None)
-            logger: FlextLogger = Field(default_factory=lambda: FlextLogger(__name__))
+            config: Annotated[
+                Mapping[str, t.ContainerValue],
+                Field(default_factory=dict),
+            ]
+            name: Annotated[str, Field(default="")]
+            replication_key: Annotated[str | None, Field(default=None)]
+            logger: Annotated[
+                FlextLogger, Field(default_factory=lambda: FlextLogger(__name__))
+            ]
 
             requires_design_api: ClassVar[bool] = False
             requires_runtime_api: ClassVar[bool] = False
@@ -511,7 +485,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 data: Mapping[str, t.ContainerValue],
             ) -> Iterator[Mapping[str, t.ContainerValue]]:
                 """Extract items from various OIC response formats for processing."""
-                list_payload = FlextTapOracleOicModels._as_value_list(data)
+                list_payload = FlextTapOracleOicModels.as_value_list(data)
                 if list_payload is not None:
                     yield from self._process_list_data(list_payload)
                     return
@@ -553,7 +527,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 data: Mapping[str, t.ContainerValue],
             ) -> bool:
                 """Check if empty result is expected/normal based on OIC response metadata."""
-                envelope = FlextTapOracleOicModels._as_oic_envelope(data)
+                envelope = FlextTapOracleOicModels.as_oic_envelope(data)
                 if envelope is not None:
                     return (
                         envelope.total_size == 0
@@ -561,7 +535,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         or (envelope.items is not None and not envelope.items)
                         or (envelope.data is not None and not envelope.data)
                     )
-                list_payload = FlextTapOracleOicModels._as_value_list(data)
+                list_payload = FlextTapOracleOicModels.as_value_list(data)
                 return not list_payload if list_payload is not None else False
 
             def _is_single_record(self, data: Mapping[str, t.ContainerValue]) -> bool:
@@ -582,7 +556,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 data: Mapping[str, t.ContainerValue],
             ) -> Iterator[Mapping[str, t.ContainerValue]]:
                 """Process dict-type response data with OIC format detection."""
-                envelope = FlextTapOracleOicModels._as_oic_envelope(data)
+                envelope = FlextTapOracleOicModels.as_oic_envelope(data)
                 if envelope is not None and envelope.items is not None:
                     yield from self._process_list_data(envelope.items)
                     return
@@ -613,11 +587,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         "Response time: %.2fs",
                         response.elapsed.total_seconds(),
                     )
-                list_payload = FlextTapOracleOicModels._as_value_list(data)
+                list_payload = FlextTapOracleOicModels.as_value_list(data)
                 if list_payload is not None:
                     self.logger.debug("Received %s records", len(list_payload))
                     return
-                envelope = FlextTapOracleOicModels._as_oic_envelope(data)
+                envelope = FlextTapOracleOicModels.as_oic_envelope(data)
                 if envelope is None:
                     return
                 if envelope.items is not None:
@@ -777,7 +751,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             status: Annotated[
-                OicIntegrationStatusLiteral,
+                t.TapOracleOic.OicIntegrationStatusLiteral,
                 Field(
                     ...,
                     description="Integration status",
@@ -959,7 +933,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Status and health
             status: Annotated[
-                OicIntegrationStatusLiteral,
+                t.TapOracleOic.OicIntegrationStatusLiteral,
                 Field(
                     ...,
                     description="Connection status",
@@ -1096,7 +1070,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Status and results
             status: Annotated[
-                OicJobStatusLiteral,
+                t.TapOracleOic.OicJobStatusLiteral,
                 Field(
                     ...,
                     description="Activity status",
@@ -1216,7 +1190,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Package metadata
             package_type: Annotated[
-                OicIntegrationTypeLiteral,
+                t.TapOracleOic.OicIntegrationTypeLiteral,
                 Field(
                     ...,
                     description="Package type",
@@ -1252,7 +1226,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Status
             status: Annotated[
-                OicIntegrationStatusLiteral,
+                t.TapOracleOic.OicIntegrationStatusLiteral,
                 Field(
                     ...,
                     description="Package status",
@@ -1475,7 +1449,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             agent_id: Annotated[str, Field(..., description="Unique agent identifier")]
             agent_name: Annotated[str, Field(..., description="Agent display name")]
             agent_type: Annotated[
-                OicAgentTypeLiteral,
+                t.TapOracleOic.OicAgentTypeLiteral,
                 Field(
                     ...,
                     description="Agent type",
@@ -1484,7 +1458,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Agent status and health
             status: Annotated[
-                OicAgentStatusLiteral,
+                t.TapOracleOic.OicAgentStatusLiteral,
                 Field(
                     ...,
                     description="Agent status",
@@ -1614,7 +1588,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             stream_name: Annotated[str, Field(..., description="Singer stream name")]
             replication_method: Annotated[
-                OicReplicationMethodLiteral,
+                t.TapOracleOic.OicReplicationMethodLiteral,
                 Field(
                     default="FULL_TABLE",
                     description="Replication method",
@@ -1875,7 +1849,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             error_type: Annotated[
-                OicErrorTypeLiteral,
+                t.TapOracleOic.OicErrorTypeLiteral,
                 Field(..., description="Error category"),
             ]
             http_status_code: Annotated[
@@ -1992,7 +1966,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     return "warning"
                 return "unknown"
 
-    class OracleOic:
+    class OracleOic(FlextOracleOicModels.OracleOic):
         """Domain entity models for Oracle OIC resources.
 
         Canonical home for OIC entity classes, migrated from domain/entities.py
