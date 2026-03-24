@@ -80,15 +80,30 @@ if TYPE_CHECKING:
     )
 
 _LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
-    "FlextTapOracleOicTestConstants": ("tests.constants", "FlextTapOracleOicTestConstants"),
+    "FlextTapOracleOicTestConstants": (
+        "tests.constants",
+        "FlextTapOracleOicTestConstants",
+    ),
     "FlextTapOracleOicTestModels": ("tests.models", "FlextTapOracleOicTestModels"),
-    "FlextTapOracleOicTestProtocols": ("tests.protocols", "FlextTapOracleOicTestProtocols"),
+    "FlextTapOracleOicTestProtocols": (
+        "tests.protocols",
+        "FlextTapOracleOicTestProtocols",
+    ),
     "FlextTapOracleOicTestTypes": ("tests.typings", "FlextTapOracleOicTestTypes"),
-    "FlextTapOracleOicTestUtilities": ("tests.utilities", "FlextTapOracleOicTestUtilities"),
+    "FlextTapOracleOicTestUtilities": (
+        "tests.utilities",
+        "FlextTapOracleOicTestUtilities",
+    ),
     "TestOICOAuth2Authenticator": ("tests.test_auth", "TestOICOAuth2Authenticator"),
     "TestTapOracleOic": ("tests.test_tap_core", "TestTapOracleOic"),
-    "TestTapOracleOicIntegration": ("tests.test_tap_core", "TestTapOracleOicIntegration"),
-    "TestTapOracleOicWithFixtures": ("tests.test_tap_core", "TestTapOracleOicWithFixtures"),
+    "TestTapOracleOicIntegration": (
+        "tests.test_tap_core",
+        "TestTapOracleOicIntegration",
+    ),
+    "TestTapOracleOicWithFixtures": (
+        "tests.test_tap_core",
+        "TestTapOracleOicWithFixtures",
+    ),
     "basic_oic_config": ("tests.conftest", "basic_oic_config"),
     "benchmark_config": ("tests.conftest", "benchmark_config"),
     "c": ("tests.constants", "FlextTapOracleOicTestConstants"),
@@ -116,7 +131,10 @@ _LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
     "sample_adapter_data": ("tests.conftest", "sample_adapter_data"),
     "sample_certificate_data": ("tests.conftest", "sample_certificate_data"),
     "sample_config": ("tests.test_tap_core", "sample_config"),
-    "sample_config_with_extended": ("tests.test_tap_core", "sample_config_with_extended"),
+    "sample_config_with_extended": (
+        "tests.test_tap_core",
+        "sample_config_with_extended",
+    ),
     "sample_connection_data": ("tests.conftest", "sample_connection_data"),
     "sample_integration_data": ("tests.conftest", "sample_integration_data"),
     "sample_library_data": ("tests.conftest", "sample_library_data"),
