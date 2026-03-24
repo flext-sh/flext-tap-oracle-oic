@@ -40,6 +40,7 @@ from flext_tap_oracle_oic.constants import (
     FlextTapOracleOicConstants,
     FlextTapOracleOicConstants as _c,
 )
+from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 # Module-level aliases for StrEnum types used in Annotated fields
 OicIntegrationStatusLiteral = _c.OicIntegrationStatusLiteral
@@ -49,7 +50,6 @@ OicAgentTypeLiteral = _c.OicAgentTypeLiteral
 OicAgentStatusLiteral = _c.OicAgentStatusLiteral
 OicReplicationMethodLiteral = _c.OicReplicationMethodLiteral
 OicErrorTypeLiteral = _c.OicErrorTypeLiteral
-from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic.tap_streams import (

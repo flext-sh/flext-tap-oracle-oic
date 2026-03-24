@@ -18,7 +18,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tap_oracle_oic.tap_client import TapOracleOic
+from flext_tap_oracle_oic.tap_client import FlextTapOracleOic
 
 
 def main() -> None:
@@ -61,7 +61,7 @@ def main() -> None:
         SystemExit: On configuration errors or execution failures
 
     """
-    tap_cli = getattr(TapOracleOic, "cli", None)
+    tap_cli = getattr(FlextTapOracleOic, "cli", None)
     if callable(tap_cli):
         tap_cli()
 

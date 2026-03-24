@@ -160,7 +160,9 @@ class FlextTapOracleOicClient:
             )
         try:
             json_body: str | None = (
-                _CONTAINER_VALUE_MAP_ADAPTER.dump_json(dict(data)).decode("utf-8") if data else None
+                _CONTAINER_VALUE_MAP_ADAPTER.dump_json(dict(data)).decode("utf-8")
+                if data
+                else None
             )
             response_result = self._api_client.post(
                 url,
@@ -474,13 +476,8 @@ def _execute_run_command(_tap: FlextTapOracleOic) -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-OracleOicClient = FlextTapOracleOicClient
-TapOracleOic = FlextTapOracleOic
-
 __all__: t.StrSequence = [
     "FlextTapOracleOic",
     "FlextTapOracleOicClient",
-    "OracleOicClient",
-    "TapOracleOic",
     "main",
 ]
