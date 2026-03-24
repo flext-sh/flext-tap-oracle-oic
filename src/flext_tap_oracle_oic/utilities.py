@@ -14,11 +14,12 @@ from typing import ClassVar, override
 from urllib.parse import urljoin, urlparse
 
 from flext_core import r
-from flext_meltano import FlextMeltanoUtilities
+from flext_meltano import FlextMeltanoModels as m, FlextMeltanoUtilities
 from flext_oracle_oic import FlextOracleOicUtilities
 from pydantic import ConfigDict, TypeAdapter, ValidationError
 
-from flext_tap_oracle_oic import c, m, t
+from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants as c
+from flext_tap_oracle_oic.typings import FlextTapOracleOicTypes as t
 
 _STRICT_LIST_ADAPTER = TypeAdapter(
     t.ContainerValueList,
@@ -87,7 +88,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         @staticmethod
         def create_record_message(
             stream_name: str,
-            record: Mapping[str, t.Scalar],
+            record: t.ConfigurationMapping,
             time_extracted: datetime | None = None,
         ) -> m.Meltano.SingerRecordMessage:
             """Create Singer record message.
@@ -111,7 +112,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         @staticmethod
         def create_schema_message(
             stream_name: str,
-            schema: Mapping[str, t.Container],
+            schema: t.FlatContainerMapping,
             key_properties: Sequence[str] | None = None,
         ) -> m.Meltano.SingerSchemaMessage:
             """Create Singer schema message.
@@ -167,7 +168,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         def build_oic_api_url(
             base_url: str,
             resource_path: str,
-            query_params: Mapping[str, str] | None = None,
+            query_params: t.StrMapping | None = None,
         ) -> r[str]:
             """Build Oracle OIC API URL with proper formatting.
 
@@ -734,7 +735,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         cls,
         base_url: str,
         resource_path: str,
-        query_params: Mapping[str, str] | None = None,
+        query_params: t.StrMapping | None = None,
     ) -> r[str]:
         """Proxy method for OicApiProcessing.build_oic_api_url()."""
         return FlextTapOracleOicUtilities.OicApiProcessing.build_oic_api_url(
@@ -747,7 +748,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
     def create_record_message(
         cls,
         stream_name: str,
-        record: Mapping[str, t.Scalar],
+        record: t.ConfigurationMapping,
         time_extracted: datetime | None = None,
     ) -> m.Meltano.SingerRecordMessage:
         """Proxy method for SingerUtilities.create_record_message()."""
@@ -761,7 +762,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
     def create_schema_message(
         cls,
         stream_name: str,
-        schema: Mapping[str, t.Container],
+        schema: t.FlatContainerMapping,
         key_properties: Sequence[str] | None = None,
     ) -> m.Meltano.SingerSchemaMessage:
         """Proxy method for SingerUtilities.create_schema_message()."""

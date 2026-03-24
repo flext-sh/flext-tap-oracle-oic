@@ -156,32 +156,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     _singer_mode: Mapping[str, t.ContainerValue] | None = None
     _include_oic_metadata: Mapping[str, t.ContainerValue] | None = None
 
-    # Pydantic 2.11 Configuration - Enterprise Singer Oracle OIC Tap Features
-    model_config: ClassVar[ConfigDict] = ConfigDict(
-        validate_assignment=True,
-        use_enum_values=True,
-        arbitrary_types_allowed=True,
-        extra="forbid",
-        frozen=False,
-        validate_return=True,
-        ser_json_timedelta="iso8601",
-        ser_json_bytes="base64",
-        hide_input_in_errors=True,
-        json_schema_extra={
-            "title": "FLEXT Singer Oracle OIC Tap Models",
-            "description": "Enterprise Oracle Integration Cloud API extraction models with Singer protocol compliance",
-            "examples": [
-                {
-                    "tap_name": "tap-oracle-oic",
-                    "extraction_mode": "api_incremental_replication",
-                    "oic_instance": "https://mycompany-oic.integration.ocp.oraclecloud.com",
-                },
-            ],
-            "tags": ["singer", "oracle-oic", "tap", "extraction", "integration-cloud"],
-            "version": "2.11.0",
-        },
-    )
-
     @computed_field
     def active_oic_tap_models_count(self) -> int:
         """Count of active Oracle OIC tap models with API extraction capabilities."""
@@ -645,9 +619,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Pydantic 2.11 Configuration - Authentication Features
             model_config: ClassVar[ConfigDict] = ConfigDict(
-                validate_assignment=True,
-                extra="forbid",
-                frozen=False,
                 json_schema_extra={
                     "description": "OAuth2/IDCS authentication for Oracle OIC API",
                     "examples": [
@@ -758,9 +729,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Pydantic 2.11 Configuration - Integration Features
             model_config: ClassVar[ConfigDict] = ConfigDict(
-                validate_assignment=True,
-                extra="forbid",
-                frozen=False,
                 json_schema_extra={
                     "description": "Oracle OIC integration with complete metadata",
                     "examples": [
@@ -908,9 +876,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Pydantic 2.11 Configuration - Connection Features
             model_config: ClassVar[ConfigDict] = ConfigDict(
-                validate_assignment=True,
-                extra="forbid",
-                frozen=False,
                 json_schema_extra={
                     "description": "Oracle OIC connection with security sanitization",
                     "examples": [
@@ -1065,9 +1030,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Pydantic 2.11 Configuration - Activity Features
             model_config: ClassVar[ConfigDict] = ConfigDict(
-                validate_assignment=True,
-                extra="forbid",
-                frozen=False,
                 json_schema_extra={
                     "description": "Oracle OIC activity record with performance tracking",
                     "examples": [
@@ -1210,9 +1172,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Pydantic 2.11 Configuration - Package Features
             model_config: ClassVar[ConfigDict] = ConfigDict(
-                validate_assignment=True,
-                extra="forbid",
-                frozen=False,
                 json_schema_extra={
                     "description": "Oracle OIC package with dependency tracking",
                     "examples": [
@@ -1339,9 +1298,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Pydantic 2.11 Configuration - Metrics Features
             model_config: ClassVar[ConfigDict] = ConfigDict(
-                validate_assignment=True,
-                extra="forbid",
-                frozen=False,
                 json_schema_extra={
                     "description": "Oracle OIC performance metrics with resource monitoring",
                     "examples": [
@@ -1488,9 +1444,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Pydantic 2.11 Configuration - Agent Features
             model_config: ClassVar[ConfigDict] = ConfigDict(
-                validate_assignment=True,
-                extra="forbid",
-                frozen=False,
                 json_schema_extra={
                     "description": "Oracle OIC connectivity agent with health monitoring",
                     "examples": [
@@ -1631,9 +1584,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Pydantic 2.11 Configuration - Stream Features
             model_config: ClassVar[ConfigDict] = ConfigDict(
-                validate_assignment=True,
-                extra="forbid",
-                frozen=False,
                 json_schema_extra={
                     "description": "Oracle OIC tap stream configuration with filtering",
                     "examples": [
@@ -1766,9 +1716,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Pydantic 2.11 Configuration - API Response Features
             model_config: ClassVar[ConfigDict] = ConfigDict(
-                validate_assignment=True,
-                extra="forbid",
-                frozen=False,
                 json_schema_extra={
                     "description": "Oracle OIC API response with pagination and error handling",
                     "examples": [
@@ -1899,9 +1846,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Pydantic 2.11 Configuration - Error Context Features
             model_config: ClassVar[ConfigDict] = ConfigDict(
-                validate_assignment=True,
-                extra="forbid",
-                frozen=False,
                 json_schema_extra={
                     "description": "Oracle OIC API error context with recovery guidance",
                     "examples": [
@@ -2043,7 +1987,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         class OICConnection(FlextModels):
             """OIC connection domain entity using flext-core patterns."""
 
-            model_config: ClassVar[ConfigDict] = ConfigDict(frozen=False)
             connection_id: Annotated[
                 str,
                 Field(..., min_length=1, description="OIC connection identifier"),
@@ -2081,7 +2024,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(None, description="Last test timestamp"),
             ]
             test_result: Annotated[
-                Mapping[str, str] | None,
+                t.StrMapping | None,
                 Field(None, description="Last test result"),
             ]
             version: Annotated[
@@ -2119,7 +2062,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         class OICIntegration(FlextModels):
             """OIC integration domain entity using flext-core patterns."""
 
-            model_config: ClassVar[ConfigDict] = ConfigDict(frozen=False)
             integration_id: Annotated[
                 str,
                 Field(..., min_length=1, description="OIC integration identifier"),
@@ -2222,7 +2164,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         class OICLookup(FlextModels):
             """OIC lookup table domain entity using flext-core patterns."""
 
-            model_config: ClassVar[ConfigDict] = ConfigDict(frozen=False)
             lookup_id: Annotated[
                 str,
                 Field(..., min_length=1, description="OIC lookup identifier"),
@@ -2233,7 +2174,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
             domain_name: Annotated[str | None, Field(None, description="Domain name")]
             columns: Annotated[
-                Sequence[Mapping[str, t.Container]],
+                Sequence[t.FlatContainerMapping],
                 Field(
                     default_factory=list,
                     description="Column definitions",
@@ -2248,11 +2189,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(default_factory=list, description="Value column names"),
             ]
             row_count: Annotated[
-                int, Field(default=0, ge=0, description="Number of rows")
+                t.NonNegativeInt, Field(default=0, description="Number of rows")
             ]
             data_size_bytes: Annotated[
-                int | None,
-                Field(None, ge=0, description="Data size in bytes"),
+                t.NonNegativeInt | None,
+                Field(None, description="Data size in bytes"),
             ]
             locked_by: Annotated[
                 str | None,
@@ -2324,11 +2265,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(None, description="Error message if failed"),
             ]
             message_count: Annotated[
-                int,
-                Field(default=0, ge=0, description="Number of messages processed"),
+                t.NonNegativeInt,
+                Field(default=0, description="Number of messages processed"),
             ]
             error_count: Annotated[
-                int, Field(default=0, ge=0, description="Number of errors")
+                t.NonNegativeInt, Field(default=0, description="Number of errors")
             ]
             business_identifiers: Annotated[
                 Mapping[str, Mapping[str, t.ContainerValue]],
@@ -2357,15 +2298,14 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         class OICProject(FlextModels):
             """OIC project domain entity using flext-core patterns."""
 
-            model_config: ClassVar[ConfigDict] = ConfigDict(frozen=False)
             project_id: Annotated[
-                str,
-                Field(..., min_length=1, description="OIC project identifier"),
+                t.NonEmptyStr,
+                Field(..., description="OIC project identifier"),
             ]
             project_code: Annotated[
-                str, Field(..., min_length=1, description="Project code")
+                t.NonEmptyStr, Field(..., description="Project code")
             ]
-            name: Annotated[str, Field(..., min_length=1, description="Project name")]
+            name: Annotated[t.NonEmptyStr, Field(..., description="Project name")]
             integration_ids: Annotated[
                 MutableSequence[str],
                 Field(default_factory=list, description="Integration IDs in project"),
@@ -2431,10 +2371,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(..., description="Resource type"),
             ]
             resource_id: Annotated[
-                str,
-                Field(..., min_length=1, description="Resource identifier"),
+                t.NonEmptyStr,
+                Field(..., description="Resource identifier"),
             ]
-            name: Annotated[str, Field(..., min_length=1, description="Resource name")]
+            name: Annotated[t.NonEmptyStr, Field(..., description="Resource name")]
             version: Annotated[str | None, Field(None, description="Resource version")]
             created_at: Annotated[
                 datetime | None,
@@ -2450,20 +2390,20 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             integration_id: Annotated[str, Field(..., description="Integration ID")]
             total_executions: Annotated[
-                int,
-                Field(default=0, ge=0, description="Total number of executions"),
+                t.NonNegativeInt,
+                Field(default=0, description="Total number of executions"),
             ]
             successful_executions: Annotated[
-                int,
-                Field(default=0, ge=0, description="Successful executions"),
+                t.NonNegativeInt,
+                Field(default=0, description="Successful executions"),
             ]
             failed_executions: Annotated[
-                int,
-                Field(default=0, ge=0, description="Failed executions"),
+                t.NonNegativeInt,
+                Field(default=0, description="Failed executions"),
             ]
             average_duration_ms: Annotated[
-                float | None,
-                Field(None, ge=0, description="Average execution duration"),
+                t.NonNegativeFloat | None,
+                Field(None, description="Average execution duration"),
             ]
             last_execution_at: Annotated[
                 datetime | None,

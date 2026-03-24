@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
 from typing import Annotated, ClassVar
 
 from flext_core import FlextConstants, r, t
@@ -30,22 +30,22 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
     oauth_token_url: Annotated[str, Field(default="https://localhost/oauth/token")]
     oauth_audience: Annotated[str, Field(default="")]
     base_url: Annotated[str, Field(default="https://localhost")]
-    timeout: Annotated[int, Field(default=30, ge=1)]
-    max_retries: Annotated[int, Field(default=3, ge=0)]
-    page_size: Annotated[int, Field(default=100, ge=1)]
+    timeout: Annotated[t.PositiveInt, Field(default=30)]
+    max_retries: Annotated[t.NonNegativeInt, Field(default=3)]
+    page_size: Annotated[t.PositiveInt, Field(default=100)]
 
     def get_api_base_url(self) -> str:
         """Return base URL without trailing slash."""
         return self.base_url.rstrip("/")
 
-    def get_headers(self) -> Mapping[str, str]:
+    def get_headers(self) -> t.StrMapping:
         """Return default headers for OIC requests."""
         return {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
-    def get_token_request_data(self) -> Mapping[str, str]:
+    def get_token_request_data(self) -> t.StrMapping:
         """Return OAuth2 client credentials payload."""
         return {
             "grant_type": "client_credentials",
@@ -113,7 +113,7 @@ def validate_oracle_oic_tap_configuration(
     return r[bool].ok(value=True)
 
 
-__all__: Sequence[str] = [
+__all__: t.StrSequence = [
     "FlextTapOracleOicSettings",
     "create_oracle_oic_tap_config",
     "validate_oracle_oic_tap_configuration",

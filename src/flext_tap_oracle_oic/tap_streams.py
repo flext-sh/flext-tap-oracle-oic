@@ -114,4 +114,4 @@ class OICPaginator:
                 self._page_size = min(self._max_page_size, int(self._page_size * 1.2))
 
 
-__all__: Sequence[str] = ["OICBaseStream", "OICPaginator"]
+__all__: t.StrSequence = ["OICBaseStream", "OICPaginator"]
