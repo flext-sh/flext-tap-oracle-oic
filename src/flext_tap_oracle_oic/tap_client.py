@@ -16,6 +16,14 @@ from flext_meltano import m, t as mt
 from pydantic import TypeAdapter
 
 from flext_tap_oracle_oic.constants import c
+from flext_tap_oracle_oic.settings import FlextTapOracleOicSettings
+from flext_tap_oracle_oic.streams_consolidated import (
+    ALL_STREAMS,
+    CORE_STREAMS,
+    INFRASTRUCTURE_STREAMS,
+)
+from flext_tap_oracle_oic.tap_streams import OICBaseStream
+from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 _CONTAINER_VALUE_MAP_ADAPTER: TypeAdapter[t.ContainerValueMapping] = TypeAdapter(
     t.ContainerValueMapping,
@@ -25,14 +33,6 @@ if TYPE_CHECKING:
     from flext_meltano import FlextMeltanoAbstractions as _TapBase
 else:
     _TapBase = t.NormalizedValue
-from flext_tap_oracle_oic.settings import FlextTapOracleOicSettings
-from flext_tap_oracle_oic.streams_consolidated import (
-    ALL_STREAMS,
-    CORE_STREAMS,
-    INFRASTRUCTURE_STREAMS,
-)
-from flext_tap_oracle_oic.tap_streams import OICBaseStream
-from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 logger = FlextLogger(__name__)
 
@@ -397,7 +397,7 @@ def _build_config_from_env() -> t.StrMapping:
             "oauth_scope": settings.oauth_audience,
         }
     except (ValueError, TypeError) as e:
-        logger.debug("Configuration loading failed: %s", e)
+        logger.debug("Configuration loading failed: %s", str(e))  # noqa: RUF065 - str() needed for type safety
         return {}
 
 
