@@ -279,7 +279,8 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
             FlextMeltanoTypes.ContainerValue | None,
         ]
         type OicExtractorConfig = Mapping[
-            str, FlextMeltanoTypes.Scalar | FlextMeltanoTypes.StrSequence
+            str,
+            FlextMeltanoTypes.Scalar | FlextMeltanoTypes.StrSequence,
         ]
         type SingerProtocolConfig = Mapping[
             str,

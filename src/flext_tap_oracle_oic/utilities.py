@@ -43,7 +43,8 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         config=ConfigDict(strict=True),
     )
     _STRICT_INT_ADAPTER: ClassVar[TypeAdapter[int]] = TypeAdapter(
-        int, config=ConfigDict(strict=True)
+        int,
+        config=ConfigDict(strict=True),
     )
 
     @staticmethod
@@ -51,7 +52,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         """Strict list validation via Pydantic adapter."""
         try:
             return FlextTapOracleOicUtilities._STRICT_LIST_ADAPTER.validate_python(
-                value
+                value,
             )
         except ValidationError:
             return None
@@ -532,7 +533,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                     )
                 if "page_size" in stream_config:
                     page_size = FlextTapOracleOicUtilities._as_int(
-                        stream_config["page_size"]
+                        stream_config["page_size"],
                     )
                     max_page_size = c.TapOicProcessing.MAX_PAGE_SIZE
                     if page_size is None or page_size <= 0 or page_size > max_page_size:
@@ -587,7 +588,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             if bookmark_map is None:
                 return {}
             stream_bookmarks = FlextTapOracleOicUtilities._as_map(
-                bookmark_map.get(stream_name, {})
+                bookmark_map.get(stream_name, {}),
             )
             return stream_bookmarks if stream_bookmarks is not None else {}
 
@@ -622,7 +623,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                     empty_stream_bookmarks: dict[str, t.ContainerValue] = {}
                     updated_bookmark_map[stream_name] = empty_stream_bookmarks
                 stream_bookmarks = FlextTapOracleOicUtilities._as_map(
-                    updated_bookmark_map[stream_name]
+                    updated_bookmark_map[stream_name],
                 )
                 if stream_bookmarks is not None:
                     updated_stream_bookmarks = dict(stream_bookmarks)

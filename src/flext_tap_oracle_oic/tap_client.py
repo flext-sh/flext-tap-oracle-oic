@@ -259,7 +259,8 @@ class FlextTapOracleOic(_TapBase):
             dict(config) if config is not None else {}
         )
         self.config = FlextTapOracleOicSettings.model_validate(
-            self._tap_config, strict=validate_config
+            self._tap_config,
+            strict=validate_config,
         )
         self._client: FlextTapOracleOicClient | None = None
         self._utilities = FlextTapOracleOicUtilities()
@@ -398,7 +399,7 @@ def _build_config_from_env() -> t.StrMapping:
             "oauth_scope": settings.oauth_audience,
         }
     except (ValueError, TypeError) as e:
-        logger.debug(f"Configuration loading failed: {e}")
+        logger.debug("Configuration loading failed: %s", e)
         return {}
 
 

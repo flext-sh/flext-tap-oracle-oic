@@ -255,7 +255,3 @@ class FlextTapOracleOicHealthChecker:
     def _make_get_request(self, url: str) -> r[FlextApiModels.HttpResponse]:
         """Make authenticated GET request."""
         return self._api_client.get(url, headers=self._get_headers())
-
-
-# Backward-compatible alias
-OICHealthChecker = FlextTapOracleOicHealthChecker

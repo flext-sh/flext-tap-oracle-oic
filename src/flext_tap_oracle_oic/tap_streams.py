@@ -69,7 +69,8 @@ class FlextTapOracleOicPaginator:
             return None
 
     def _calculate_next_offset(
-        self, data: Mapping[str, t.ContainerValue]
+        self,
+        data: Mapping[str, t.ContainerValue],
     ) -> int | None:
         """Calculate next offset based on OIC response format."""
         items = self._extract_items_from_response(data)
@@ -110,7 +111,4 @@ class FlextTapOracleOicPaginator:
                 self._page_size = min(self._max_page_size, int(self._page_size * 1.2))
 
 
-# Backward-compatible alias
-OICPaginator = FlextTapOracleOicPaginator
-
-__all__: t.StrSequence = ["FlextTapOracleOicPaginator", "OICBaseStream", "OICPaginator"]
+__all__: t.StrSequence = ["FlextTapOracleOicPaginator", "OICBaseStream"]

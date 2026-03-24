@@ -40,7 +40,7 @@ def _build_singer_stream(
                     "replication-key": replication_key,
                     "selected": True,
                 },
-            }
+            },
         ],
     }
 
@@ -381,7 +381,7 @@ def sample_library_data() -> Sequence[t.ContainerMapping]:
             "createdTime": "2024-06-01T11:30:00.000Z",
             "lastUpdatedTime": "2024-06-10T09:45:00.000Z",
             "content": "function formatDate(date) { return date.toISOString(); }",
-        }
+        },
     ]
 
 
@@ -399,7 +399,7 @@ def sample_certificate_data() -> Sequence[t.ContainerMapping]:
             "issuer": "CN=CA Authority",
             "subject": "CN=api.example.com",
             "fingerprint": "AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD",
-        }
+        },
     ]
 
 
@@ -416,7 +416,7 @@ def sample_adapter_data() -> Sequence[t.ContainerMapping]:
             "category": "Technology",
             "capabilities": ["invoke", "trigger"],
             "connectionTypes": ["outbound", "inbound"],
-        }
+        },
     ]
 
 
@@ -447,7 +447,7 @@ def singer_catalog() -> t.ContainerMapping:
                     "modifiedDate": {"type": "string", "format": "date-time"},
                 },
             ),
-        ]
+        ],
     }
 
 

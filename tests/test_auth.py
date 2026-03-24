@@ -52,14 +52,17 @@ class TestOICOAuth2Authenticator:
         return auth
 
     def test_authenticator_initialization(
-        self, authenticator: FlextOracleOicAuthenticator, mock_config: MagicMock
+        self,
+        authenticator: FlextOracleOicAuthenticator,
+        mock_config: MagicMock,
     ) -> None:
         """Test authenticator stores config."""
         assert authenticator.config is mock_config
         assert authenticator._access_token is None
 
     def test_get_access_token_success(
-        self, authenticator: FlextOracleOicAuthenticator
+        self,
+        authenticator: FlextOracleOicAuthenticator,
     ) -> None:
         """Test successful token retrieval."""
         mock_response = MagicMock()
@@ -70,7 +73,7 @@ class TestOICOAuth2Authenticator:
             "expires_in": 3600,
         }
         cast("MagicMock", authenticator._api_client).post.return_value = r.ok(
-            mock_response
+            mock_response,
         )
         result = authenticator.get_access_token()
         assert result.is_success
@@ -78,11 +81,12 @@ class TestOICOAuth2Authenticator:
         assert authenticator._access_token == "test_token_123"
 
     def test_get_access_token_http_failure(
-        self, authenticator: FlextOracleOicAuthenticator
+        self,
+        authenticator: FlextOracleOicAuthenticator,
     ) -> None:
         """Test token retrieval with HTTP failure."""
         cast("MagicMock", authenticator._api_client).post.return_value = r.fail(
-            "Connection refused"
+            "Connection refused",
         )
         result = authenticator.get_access_token()
         assert result.is_failure
@@ -90,14 +94,15 @@ class TestOICOAuth2Authenticator:
         assert "OAuth2 request failed" in result.error
 
     def test_get_access_token_bad_status_code(
-        self, authenticator: FlextOracleOicAuthenticator
+        self,
+        authenticator: FlextOracleOicAuthenticator,
     ) -> None:
         """Test token retrieval with non-200 status code."""
         mock_response = MagicMock()
         mock_response.status_code = 401
         mock_response.body = {"error": "invalid_client"}
         cast("MagicMock", authenticator._api_client).post.return_value = r.ok(
-            mock_response
+            mock_response,
         )
         result = authenticator.get_access_token()
         assert result.is_failure
@@ -105,35 +110,38 @@ class TestOICOAuth2Authenticator:
         assert "status" in result.error
 
     def test_get_access_token_empty_body(
-        self, authenticator: FlextOracleOicAuthenticator
+        self,
+        authenticator: FlextOracleOicAuthenticator,
     ) -> None:
         """Test token retrieval with empty response body."""
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.body = None
         cast("MagicMock", authenticator._api_client).post.return_value = r.ok(
-            mock_response
+            mock_response,
         )
         result = authenticator.get_access_token()
         assert result.is_failure
         assert result.error is not None
 
     def test_get_access_token_missing_token_in_response(
-        self, authenticator: FlextOracleOicAuthenticator
+        self,
+        authenticator: FlextOracleOicAuthenticator,
     ) -> None:
         """Test token retrieval when response has no access_token field."""
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.body = {"token_type": "Bearer", "expires_in": 3600}
         cast("MagicMock", authenticator._api_client).post.return_value = r.ok(
-            mock_response
+            mock_response,
         )
         result = authenticator.get_access_token()
         assert result.is_failure
         assert result.error is not None
 
     def test_get_access_token_string_body(
-        self, authenticator: FlextOracleOicAuthenticator
+        self,
+        authenticator: FlextOracleOicAuthenticator,
     ) -> None:
         """Test token retrieval with JSON string body."""
         mock_response = MagicMock()
@@ -143,18 +151,19 @@ class TestOICOAuth2Authenticator:
             "token_type": "Bearer",
         })
         cast("MagicMock", authenticator._api_client).post.return_value = r.ok(
-            mock_response
+            mock_response,
         )
         result = authenticator.get_access_token()
         assert result.is_success
         assert result.value == "string_body_token"
 
     def test_get_access_token_exception_handling(
-        self, authenticator: FlextOracleOicAuthenticator
+        self,
+        authenticator: FlextOracleOicAuthenticator,
     ) -> None:
         """Test token retrieval handles unexpected exceptions."""
         cast("MagicMock", authenticator._api_client).post.side_effect = RuntimeError(
-            "Unexpected error"
+            "Unexpected error",
         )
         result = authenticator.get_access_token()
         assert result.is_failure

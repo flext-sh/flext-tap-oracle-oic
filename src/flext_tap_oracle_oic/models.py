@@ -42,7 +42,9 @@ from flext_tap_oracle_oic.constants import (
 from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 if TYPE_CHECKING:
-    from flext_tap_oracle_oic.tap_streams import OICPaginator
+    from flext_tap_oracle_oic.tap_streams import (
+        FlextTapOracleOicPaginator as OICPaginator,
+    )
 
 
 # Type aliases for OIC domain literals (PEP 695 `type` stmts in nested classes
@@ -101,16 +103,18 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     _GENERAL_MAP_ADAPTER: ClassVar[
         TypeAdapter[Mapping[str, _core_t.ContainerValue]]
     ] = TypeAdapter(
-        Mapping[str, _core_t.ContainerValue], config=ConfigDict(strict=True)
+        Mapping[str, _core_t.ContainerValue],
+        config=ConfigDict(strict=True),
     )
     _STRING_LIST_ADAPTER: ClassVar[TypeAdapter[Sequence[str]]] = TypeAdapter(
-        Sequence[str], config=ConfigDict(strict=True)
+        Sequence[str],
+        config=ConfigDict(strict=True),
     )
 
     @staticmethod
     def _get_oic_paginator_class() -> type[OICPaginator]:
         """Lazy import to break circular dependency between models and tap_streams."""
-        from flext_tap_oracle_oic.tap_streams import OICPaginator as _Cls
+        from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator as _Cls
 
         return _Cls
 
@@ -149,7 +153,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         """Validate payload as an OIC envelope model."""
         try:
             return FlextTapOracleOicModels.OicEnvelope.model_validate(
-                value, strict=True
+                value,
+                strict=True,
             )
         except ValidationError:
             return None
@@ -272,7 +277,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """
 
             model_config: ClassVar[ConfigDict] = ConfigDict(
-                arbitrary_types_allowed=True
+                arbitrary_types_allowed=True,
             )
 
             config: Mapping[str, t.ContainerValue] = Field(default_factory=dict)
@@ -310,7 +315,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     msg = "Base URL is required but not configured"
                     raise ValueError(msg)
                 validation_result = utilities.OicApiProcessing.validate_oic_endpoint(
-                    base_url
+                    base_url,
                 )
                 if validation_result.is_failure:
                     msg = f"Invalid OIC endpoint: {validation_result.error}"
@@ -443,7 +448,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         data = response.json()
                     except (ValueError, TypeError, KeyError):
                         self.logger.exception(
-                            "Failed to parse JSON from %s", response.url
+                            "Failed to parse JSON from %s",
+                            response.url,
                         )
                         if self.config.get("fail_on_parsing_errors", True):
                             raise
@@ -454,7 +460,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 except (ValueError, TypeError, KeyError, AttributeError):
                     response_url_err = str(getattr(response, "url", "unknown"))
                     self.logger.exception(
-                        "Error parsing response from %s", response_url_err
+                        "Error parsing response from %s",
+                        response_url_err,
                     )
                     if self.config.get("fail_on_parsing_errors", True):
                         raise
@@ -542,7 +549,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise_for_status()
 
             def _is_empty_result_expected(
-                self, data: Mapping[str, t.ContainerValue]
+                self,
+                data: Mapping[str, t.ContainerValue],
             ) -> bool:
                 """Check if empty result is expected/normal based on OIC response metadata."""
                 envelope = FlextTapOracleOicModels._as_oic_envelope(data)
@@ -602,7 +610,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 """Track response metrics for monitoring and optimization."""
                 if getattr(response, "elapsed", None) is not None:
                     self.logger.debug(
-                        "Response time: %.2fs", response.elapsed.total_seconds()
+                        "Response time: %.2fs",
+                        response.elapsed.total_seconds(),
                     )
                 list_payload = FlextTapOracleOicModels._as_value_list(data)
                 if list_payload is not None:
@@ -2000,11 +2009,14 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             adapter_type: Annotated[
                 str,
                 Field(
-                    ..., min_length=1, description="Adapter type (e.g., REST, SOAP, DB)"
+                    ...,
+                    min_length=1,
+                    description="Adapter type (e.g., REST, SOAP, DB)",
                 ),
             ]
             name: Annotated[
-                str, Field(..., min_length=1, description="Connection name")
+                str,
+                Field(..., min_length=1, description="Connection name"),
             ]
             connection_url: Annotated[
                 str | None,
@@ -2034,14 +2046,16 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(None, description="Last test result"),
             ]
             version: Annotated[
-                str | None, Field(None, description="Connection version")
+                str | None,
+                Field(None, description="Connection version"),
             ]
             locked_by: Annotated[
                 str | None,
                 Field(None, description="User who locked the connection"),
             ]
             locked_at: Annotated[
-                datetime | None, Field(None, description="Lock timestamp")
+                datetime | None,
+                Field(None, description="Lock timestamp"),
             ]
             created_at: Annotated[
                 datetime | None,
@@ -2077,18 +2091,21 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(..., min_length=1, description="Integration code"),
             ]
             name: Annotated[
-                str, Field(..., min_length=1, description="Integration name")
+                str,
+                Field(..., min_length=1, description="Integration name"),
             ]
             package_name: Annotated[str | None, Field(None, description="Package name")]
             project_name: Annotated[str | None, Field(None, description="Project name")]
             integration_type: Annotated[
                 str,
                 Field(
-                    ..., description="Integration type (e.g., APP_DRIVEN, SCHEDULED)"
+                    ...,
+                    description="Integration type (e.g., APP_DRIVEN, SCHEDULED)",
                 ),
             ]
             pattern: Annotated[
-                str | None, Field(None, description="Integration pattern")
+                str | None,
+                Field(None, description="Integration pattern"),
             ]
             style: Annotated[str | None, Field(None, description="Integration style")]
             endpoint_url: Annotated[
@@ -2096,7 +2113,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(None, description="Integration endpoint URL"),
             ]
             tracking_level: Annotated[
-                str | None, Field(None, description="Tracking level")
+                str | None,
+                Field(None, description="Tracking level"),
             ]
             payload_tracking: Annotated[
                 bool,
@@ -2126,7 +2144,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(None, description="User who locked the integration"),
             ]
             locked_at: Annotated[
-                datetime | None, Field(None, description="Lock timestamp")
+                datetime | None,
+                Field(None, description="Lock timestamp"),
             ]
             connection_ids: Annotated[
                 Sequence[str],
@@ -2195,7 +2214,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(default_factory=list, description="Value column names"),
             ]
             row_count: Annotated[
-                t.NonNegativeInt, Field(default=0, description="Number of rows")
+                t.NonNegativeInt,
+                Field(default=0, description="Number of rows"),
             ]
             data_size_bytes: Annotated[
                 t.NonNegativeInt | None,
@@ -2206,7 +2226,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(None, description="User who locked the lookup"),
             ]
             locked_at: Annotated[
-                datetime | None, Field(None, description="Lock timestamp")
+                datetime | None,
+                Field(None, description="Lock timestamp"),
             ]
             last_imported: Annotated[
                 datetime | None,
@@ -2231,7 +2252,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 self.last_imported = datetime.now(UTC)
 
             def update_statistics(
-                self, row_count: int, data_size: int | None = None
+                self,
+                row_count: int,
+                data_size: int | None = None,
             ) -> None:
                 """Update lookup statistics."""
                 self.row_count = row_count
@@ -2245,14 +2268,17 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(..., min_length=1, description="Flow instance ID"),
             ]
             integration_id: Annotated[
-                str, Field(..., description="Associated integration ID")
+                str,
+                Field(..., description="Associated integration ID"),
             ]
             flow_id: Annotated[str | None, Field(None, description="Flow ID")]
             tracking_level: Annotated[
-                str | None, Field(None, description="Tracking level")
+                str | None,
+                Field(None, description="Tracking level"),
             ]
             started_at: Annotated[
-                datetime, Field(..., description="Execution start time")
+                datetime,
+                Field(..., description="Execution start time"),
             ]
             completed_at: Annotated[
                 datetime | None,
@@ -2264,7 +2290,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
             execution_status: Annotated[str, Field(..., description="Execution status")]
             error_code: Annotated[
-                str | None, Field(None, description="Error code if failed")
+                str | None,
+                Field(None, description="Error code if failed"),
             ]
             error_message: Annotated[
                 str | None,
@@ -2275,12 +2302,14 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(default=0, description="Number of messages processed"),
             ]
             error_count: Annotated[
-                t.NonNegativeInt, Field(default=0, description="Number of errors")
+                t.NonNegativeInt,
+                Field(default=0, description="Number of errors"),
             ]
             business_identifiers: Annotated[
                 Mapping[str, Mapping[str, t.ContainerValue]],
                 Field(
-                    default_factory=dict, description="Business tracking identifiers"
+                    default_factory=dict,
+                    description="Business tracking identifiers",
                 ),
             ]
 
@@ -2309,7 +2338,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(..., description="OIC project identifier"),
             ]
             project_code: Annotated[
-                t.NonEmptyStr, Field(..., description="Project code")
+                t.NonEmptyStr,
+                Field(..., description="Project code"),
             ]
             name: Annotated[t.NonEmptyStr, Field(..., description="Project name")]
             integration_ids: Annotated[
@@ -2333,7 +2363,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(None, description="Deployment timestamp"),
             ]
             deployed_by: Annotated[
-                str | None, Field(None, description="User who deployed")
+                str | None,
+                Field(None, description="User who deployed"),
             ]
             created_at: Annotated[
                 datetime | None,
