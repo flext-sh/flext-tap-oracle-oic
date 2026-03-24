@@ -110,7 +110,7 @@ _STRING_LIST_ADAPTER = TypeAdapter(Sequence[str], config=ConfigDict(strict=True)
 
 
 def _as_value_list(value: t.ContainerValue | None) -> Sequence[t.ContainerValue] | None:
-    """Validate payload as strict Sequence[t.NormalizedValue]."""
+    """Validate payload as strict t.ContainerList."""
     try:
         return _GENERAL_LIST_ADAPTER.validate_python(value)
     except ValidationError:
@@ -120,7 +120,7 @@ def _as_value_list(value: t.ContainerValue | None) -> Sequence[t.ContainerValue]
 def _as_value_map(
     value: t.ContainerValue | None,
 ) -> Mapping[str, t.ContainerValue] | None:
-    """Validate payload as strict Mapping[str, t.NormalizedValue]."""
+    """Validate payload as strict t.ContainerMapping."""
     try:
         return _GENERAL_MAP_ADAPTER.validate_python(value)
     except ValidationError:
