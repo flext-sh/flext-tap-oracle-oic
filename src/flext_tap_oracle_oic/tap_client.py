@@ -301,8 +301,9 @@ class TapOracleOic(_TapBase):
         for stream_name in stream_names:
             if stream_name in ALL_STREAMS:
                 stream_class = ALL_STREAMS[stream_name]
-                stream_config: dict[str, t.ContainerValue] = dict(self._tap_config)
-                stream_instance = stream_class(config=stream_config)
+                stream_instance = stream_class.model_validate(
+                    {"config": self._tap_config},
+                )
                 streams.append(stream_instance)
         logger.info("Discovered %s streams from Oracle OIC", len(streams))
         return streams
