@@ -366,7 +366,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 if (conn_map := FlextTapOracleOicUtilities._as_map(conn)) is not None
                 and (connection_type := conn_map.get("connectionType")) is not None
             ]
-            metadata["connection_types"] = [v for v in connection_types]  # noqa: C416
+            metadata["connection_types"] = list(connection_types)
             return {k: v for k, v in metadata.items() if v is not None}
 
         @staticmethod

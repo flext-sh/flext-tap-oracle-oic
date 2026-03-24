@@ -1268,7 +1268,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         "integration_count": self.integration_count or 0,
                         "dependency_count": len(self.dependencies),
                         "has_dependencies": bool(self.dependencies),
-                        "dependencies": [v for v in self.dependencies],  # noqa: C416
+                        "dependencies": list(self.dependencies),
                     },
                     "usage": {
                         "download_count": self.download_count or 0,
