@@ -66,7 +66,7 @@ class FlextOracleOicAuthenticator:
                     token_data = token_dict
                 case str() as body_str:
                     parser: TypeAdapter[Mapping[str, t.ContainerValue]] = TypeAdapter(
-                        Mapping[str, t.ContainerValue],
+                        t.ContainerValueMapping,
                     )
                     token_data = parser.validate_json(body_str)
                 case _:
@@ -159,7 +159,7 @@ class OracleOicClient:
             )
         try:
             serializer: TypeAdapter[Mapping[str, t.ContainerValue]] = TypeAdapter(
-                Mapping[str, t.ContainerValue],
+                t.ContainerValueMapping,
             )
             json_body: str | None = (
                 serializer.dump_json(dict(data)).decode("utf-8") if data else None

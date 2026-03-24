@@ -17,7 +17,7 @@ from flext_tap_oracle_oic import OICBaseStream, TapOracleOicPrivate, t
 
 th = t()
 _SCHEMA_ADAPTER: TypeAdapter[Mapping[str, t.ContainerValue]] = TypeAdapter(
-    Mapping[str, t.ContainerValue]
+    t.ContainerValueMapping
 )
 
 

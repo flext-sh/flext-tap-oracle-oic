@@ -25,7 +25,7 @@ _STRICT_LIST_ADAPTER = TypeAdapter(
     config=ConfigDict(strict=True),
 )
 _STRICT_MAP_ADAPTER = TypeAdapter(
-    Mapping[str, t.ContainerValue],
+    t.ContainerValueMapping,
     config=ConfigDict(strict=True),
 )
 _STRICT_INT_ADAPTER = TypeAdapter(int, config=ConfigDict(strict=True))
@@ -261,7 +261,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
             """
             if not response_data:
-                return r[Mapping[str, t.ContainerValue]].fail(
+                return r[t.ContainerValueMapping].fail(
                     "Response data cannot be empty",
                 )
             try:
@@ -274,7 +274,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 }
                 if "data" in response_data:
                     parsed_response["items"] = response_data["data"]
-                return r[Mapping[str, t.ContainerValue]].ok(parsed_response)
+                return r[t.ContainerValueMapping].ok(parsed_response)
             except (
                 ValueError,
                 TypeError,
@@ -284,7 +284,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 RuntimeError,
                 ImportError,
             ) as e:
-                return r[Mapping[str, t.ContainerValue]].fail(
+                return r[t.ContainerValueMapping].fail(
                     f"Response parsing error: {e}",
                 )
 
@@ -463,7 +463,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             required_fields = ["oic_base_url", "username", "password"]
             missing_fields = [field for field in required_fields if field not in config]
             if missing_fields:
-                return r[Mapping[str, t.ContainerValue]].fail(
+                return r[t.ContainerValueMapping].fail(
                     f"Missing required fields: {', '.join(missing_fields)}",
                 )
             url_validation = (
@@ -472,24 +472,24 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 )
             )
             if url_validation.is_failure:
-                return r[Mapping[str, t.ContainerValue]].fail(
+                return r[t.ContainerValueMapping].fail(
                     f"Invalid OIC URL: {url_validation.error}",
                 )
             if not str(config["username"]).strip():
-                return r[Mapping[str, t.ContainerValue]].fail(
+                return r[t.ContainerValueMapping].fail(
                     "Username cannot be empty",
                 )
             if not str(config["password"]).strip():
-                return r[Mapping[str, t.ContainerValue]].fail(
+                return r[t.ContainerValueMapping].fail(
                     "Password cannot be empty",
                 )
             if "timeout" in config:
                 timeout = _as_int(config["timeout"])
                 if timeout is None or timeout <= 0:
-                    return r[Mapping[str, t.ContainerValue]].fail(
+                    return r[t.ContainerValueMapping].fail(
                         "Timeout must be a positive integer",
                     )
-            return r[Mapping[str, t.ContainerValue]].ok(config)
+            return r[t.ContainerValueMapping].ok(config)
 
         @staticmethod
         def validate_stream_config(
@@ -505,33 +505,33 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
             """
             if "streams" not in config:
-                return r[Mapping[str, t.ContainerValue]].fail(
+                return r[t.ContainerValueMapping].fail(
                     "Configuration must include 'streams' section",
                 )
             streams = config["streams"]
             stream_map = _as_map(streams)
             if stream_map is None:
-                return r[Mapping[str, t.ContainerValue]].fail(
+                return r[t.ContainerValueMapping].fail(
                     "Streams configuration must be a dictionary",
                 )
             for stream_name, stream_payload in stream_map.items():
                 stream_config = _as_map(stream_payload)
                 if stream_config is None:
-                    return r[Mapping[str, t.ContainerValue]].fail(
+                    return r[t.ContainerValueMapping].fail(
                         f"Stream '{stream_name}' configuration must be a dictionary",
                     )
                 if "selected" not in stream_config:
-                    return r[Mapping[str, t.ContainerValue]].fail(
+                    return r[t.ContainerValueMapping].fail(
                         f"Stream '{stream_name}' must have 'selected' field",
                     )
                 if "page_size" in stream_config:
                     page_size = _as_int(stream_config["page_size"])
                     max_page_size = c.TapOicProcessing.MAX_PAGE_SIZE
                     if page_size is None or page_size <= 0 or page_size > max_page_size:
-                        return r[Mapping[str, t.ContainerValue]].fail(
+                        return r[t.ContainerValueMapping].fail(
                             f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}",
                         )
-            return r[Mapping[str, t.ContainerValue]].ok(config)
+            return r[t.ContainerValueMapping].ok(config)
 
     class StateManagement:
         """State management utilities for incremental syncs."""
