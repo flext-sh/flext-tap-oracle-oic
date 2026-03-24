@@ -38,7 +38,17 @@ from pydantic import (
 from flext_tap_oracle_oic import c, t
 from flext_tap_oracle_oic.constants import (
     FlextTapOracleOicConstants,
+    FlextTapOracleOicConstants as _c,
 )
+
+# Module-level aliases for StrEnum types used in Annotated fields
+OicIntegrationStatusLiteral = _c.OicIntegrationStatusLiteral
+OicJobStatusLiteral = _c.OicJobStatusLiteral
+OicIntegrationTypeLiteral = _c.OicIntegrationTypeLiteral
+OicAgentTypeLiteral = _c.OicAgentTypeLiteral
+OicAgentStatusLiteral = _c.OicAgentStatusLiteral
+OicReplicationMethodLiteral = _c.OicReplicationMethodLiteral
+OicErrorTypeLiteral = _c.OicErrorTypeLiteral
 from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 if TYPE_CHECKING:
@@ -751,7 +761,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             status: Annotated[
-                t.TapOracleOic.OicIntegrationStatusLiteral,
+                OicIntegrationStatusLiteral,
                 Field(
                     ...,
                     description="Integration status",
@@ -933,7 +943,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Status and health
             status: Annotated[
-                t.TapOracleOic.OicIntegrationStatusLiteral,
+                OicIntegrationStatusLiteral,
                 Field(
                     ...,
                     description="Connection status",
@@ -1070,7 +1080,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Status and results
             status: Annotated[
-                t.TapOracleOic.OicJobStatusLiteral,
+                OicJobStatusLiteral,
                 Field(
                     ...,
                     description="Activity status",
@@ -1190,7 +1200,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Package metadata
             package_type: Annotated[
-                t.TapOracleOic.OicIntegrationTypeLiteral,
+                OicIntegrationTypeLiteral,
                 Field(
                     ...,
                     description="Package type",
@@ -1226,7 +1236,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Status
             status: Annotated[
-                t.TapOracleOic.OicIntegrationStatusLiteral,
+                OicIntegrationStatusLiteral,
                 Field(
                     ...,
                     description="Package status",
@@ -1449,7 +1459,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             agent_id: Annotated[str, Field(..., description="Unique agent identifier")]
             agent_name: Annotated[str, Field(..., description="Agent display name")]
             agent_type: Annotated[
-                t.TapOracleOic.OicAgentTypeLiteral,
+                OicAgentTypeLiteral,
                 Field(
                     ...,
                     description="Agent type",
@@ -1458,7 +1468,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Agent status and health
             status: Annotated[
-                t.TapOracleOic.OicAgentStatusLiteral,
+                OicAgentStatusLiteral,
                 Field(
                     ...,
                     description="Agent status",
@@ -1588,7 +1598,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             stream_name: Annotated[str, Field(..., description="Singer stream name")]
             replication_method: Annotated[
-                t.TapOracleOic.OicReplicationMethodLiteral,
+                OicReplicationMethodLiteral,
                 Field(
                     default="FULL_TABLE",
                     description="Replication method",
@@ -1849,7 +1859,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             error_type: Annotated[
-                t.TapOracleOic.OicErrorTypeLiteral,
+                OicErrorTypeLiteral,
                 Field(..., description="Error category"),
             ]
             http_status_code: Annotated[
