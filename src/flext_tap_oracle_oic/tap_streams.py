@@ -12,14 +12,10 @@ from collections.abc import Mapping, Sequence
 import requests
 from flext_core import FlextLogger, t
 
-from flext_tap_oracle_oic.constants import (
-    c,
-)
-from flext_tap_oracle_oic.models import (
-    _as_oic_envelope,
-    _as_value_list,
-    m,
-)
+from flext_tap_oracle_oic import c, m
+
+_as_oic_envelope = m._as_oic_envelope
+_as_value_list = m._as_value_list
 
 # Re-export OICBaseStream from canonical location in models.py
 OICBaseStream = m.TapOracleOic.OICBaseStream

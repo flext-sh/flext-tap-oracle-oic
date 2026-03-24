@@ -13,7 +13,7 @@ from typing import ClassVar
 
 from pydantic import TypeAdapter
 
-from flext_tap_oracle_oic import OICBaseStream, TapOracleOicPrivate, t
+from flext_tap_oracle_oic import OICBaseStream, p, t
 
 th = t()
 _SCHEMA_ADAPTER: TypeAdapter[Mapping[str, t.ContainerValue]] = TypeAdapter(
@@ -22,7 +22,7 @@ _SCHEMA_ADAPTER: TypeAdapter[Mapping[str, t.ContainerValue]] = TypeAdapter(
 
 
 def _properties_to_dict(
-    properties: TapOracleOicPrivate.PropertiesListLike,
+    properties: p.TapOracleOicPrivate.PropertiesListLike,
 ) -> Mapping[str, t.ContainerValue]:
     return _SCHEMA_ADAPTER.validate_python(dict(properties.to_dict()))
 

@@ -45,15 +45,6 @@ if TYPE_CHECKING:
     from flext_tap_oracle_oic.tap_streams import OICPaginator
 
 
-def _get_oic_paginator_class() -> type[OICPaginator]:
-    """Lazy import to break circular dependency between models and tap_streams."""
-    from flext_tap_oracle_oic.tap_streams import (
-        OICPaginator as _Cls,
-    )
-
-    return _Cls
-
-
 # Type aliases for OIC domain literals (PEP 695 `type` stmts in nested classes
 # aren't resolvable by mypy/pyright with `from __future__ import annotations`)
 OicIntegrationStatusLiteral = Literal[
@@ -85,70 +76,83 @@ OicErrorTypeLiteral = Literal[
 ]
 
 
-class OicEnvelope(BaseModel):
-    """OIC API response envelope for paginated list endpoints.
-
-    Parses the outer wrapper that Oracle OIC returns for list responses,
-    normalizing between 'items', 'data', 'count', and 'totalSize' fields.
-    """
-
-    items: Sequence[Mapping[str, t.ContainerValue]] | None = None
-    data: Sequence[Mapping[str, t.ContainerValue]] | None = None
-    total_size: Annotated[int | None, Field(default=None, alias="totalSize")]
-    count: int | None = None
-
-
-_GENERAL_LIST_ADAPTER = TypeAdapter(
-    Sequence[_core_t.ContainerValue],
-    config=ConfigDict(strict=True),
-)
-_GENERAL_MAP_ADAPTER = TypeAdapter(
-    Mapping[str, _core_t.ContainerValue],
-    config=ConfigDict(strict=True),
-)
-_STRING_LIST_ADAPTER = TypeAdapter(Sequence[str], config=ConfigDict(strict=True))
-
-
-def _as_value_list(value: t.ContainerValue | None) -> Sequence[t.ContainerValue] | None:
-    """Validate payload as strict t.ContainerList."""
-    try:
-        return _GENERAL_LIST_ADAPTER.validate_python(value)
-    except ValidationError:
-        return None
-
-
-def _as_value_map(
-    value: t.ContainerValue | None,
-) -> Mapping[str, t.ContainerValue] | None:
-    """Validate payload as strict t.ContainerMapping."""
-    try:
-        return _GENERAL_MAP_ADAPTER.validate_python(value)
-    except ValidationError:
-        return None
-
-
-def _as_string_list(value: t.ContainerValue | None) -> Sequence[str] | None:
-    """Validate payload as strict Sequence[str]."""
-    try:
-        return _STRING_LIST_ADAPTER.validate_python(value)
-    except ValidationError:
-        return None
-
-
-def _as_oic_envelope(value: Mapping[str, t.ContainerValue]) -> OicEnvelope | None:
-    """Validate payload as an OIC envelope model."""
-    try:
-        return OicEnvelope.model_validate(value, strict=True)
-    except ValidationError:
-        return None
-
-
 class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     """Oracle Integration Cloud tap models extending flext-core FlextModels.
 
     Provides complete models for OIC entity extraction, authentication,
     monitoring, and Singer protocol compliance following standardized patterns.
     """
+
+    class OicEnvelope(BaseModel):
+        """OIC API response envelope for paginated list endpoints.
+
+        Parses the outer wrapper that Oracle OIC returns for list responses,
+        normalizing between 'items', 'data', 'count', and 'totalSize' fields.
+        """
+
+        items: Sequence[Mapping[str, t.ContainerValue]] | None = None
+        data: Sequence[Mapping[str, t.ContainerValue]] | None = None
+        total_size: Annotated[int | None, Field(default=None, alias="totalSize")]
+        count: int | None = None
+
+    _GENERAL_LIST_ADAPTER: ClassVar[TypeAdapter[Sequence[_core_t.ContainerValue]]] = (
+        TypeAdapter(Sequence[_core_t.ContainerValue], config=ConfigDict(strict=True))
+    )
+    _GENERAL_MAP_ADAPTER: ClassVar[
+        TypeAdapter[Mapping[str, _core_t.ContainerValue]]
+    ] = TypeAdapter(
+        Mapping[str, _core_t.ContainerValue], config=ConfigDict(strict=True)
+    )
+    _STRING_LIST_ADAPTER: ClassVar[TypeAdapter[Sequence[str]]] = TypeAdapter(
+        Sequence[str], config=ConfigDict(strict=True)
+    )
+
+    @staticmethod
+    def _get_oic_paginator_class() -> type[OICPaginator]:
+        """Lazy import to break circular dependency between models and tap_streams."""
+        from flext_tap_oracle_oic.tap_streams import OICPaginator as _Cls
+
+        return _Cls
+
+    @staticmethod
+    def _as_value_list(
+        value: t.ContainerValue | None,
+    ) -> Sequence[t.ContainerValue] | None:
+        """Validate payload as strict t.ContainerList."""
+        try:
+            return FlextTapOracleOicModels._GENERAL_LIST_ADAPTER.validate_python(value)
+        except ValidationError:
+            return None
+
+    @staticmethod
+    def _as_value_map(
+        value: t.ContainerValue | None,
+    ) -> Mapping[str, t.ContainerValue] | None:
+        """Validate payload as strict t.ContainerMapping."""
+        try:
+            return FlextTapOracleOicModels._GENERAL_MAP_ADAPTER.validate_python(value)
+        except ValidationError:
+            return None
+
+    @staticmethod
+    def _as_string_list(value: t.ContainerValue | None) -> Sequence[str] | None:
+        """Validate payload as strict Sequence[str]."""
+        try:
+            return FlextTapOracleOicModels._STRING_LIST_ADAPTER.validate_python(value)
+        except ValidationError:
+            return None
+
+    @staticmethod
+    def _as_oic_envelope(
+        value: Mapping[str, t.ContainerValue],
+    ) -> FlextTapOracleOicModels.OicEnvelope | None:
+        """Validate payload as an OIC envelope model."""
+        try:
+            return FlextTapOracleOicModels.OicEnvelope.model_validate(
+                value, strict=True
+            )
+        except ValidationError:
+            return None
 
     # Dynamic attributes for runtime configuration (accessed via hasattr checks)
     _oic_authentication: Mapping[str, t.ContainerValue] | None = None
@@ -344,7 +348,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 OICPaginator instance configured with settings from tap config.
 
                 """
-                paginator_cls = _get_oic_paginator_class()
+                paginator_cls = FlextTapOracleOicModels._get_oic_paginator_class()
                 page_size_val = self.config.get("page_size", 100)
                 page_size = page_size_val if isinstance(page_size_val, int) else 100
                 return paginator_cls(start_value=0, page_size=page_size)
@@ -408,7 +412,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     params[f"{self.replication_key}>="] = start_date
                 select_fields = self.config.get("select_fields")
                 if select_fields:
-                    field_list = _as_string_list(select_fields)
+                    field_list = FlextTapOracleOicModels._as_string_list(select_fields)
                     params["fields"] = (
                         ",".join(field_list)
                         if field_list is not None
@@ -477,7 +481,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         yield self._enrich_record(item)
                         records_yielded += 1
                 if records_yielded == 0 and (not self._is_empty_result_expected(data)):
-                    map_data = _as_value_map(data)
+                    map_data = FlextTapOracleOicModels._as_value_map(data)
                     payload_descriptor: str = (
                         str(list(map_data.keys()))
                         if map_data is not None
@@ -500,18 +504,20 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 data: Mapping[str, t.ContainerValue],
             ) -> Iterator[Mapping[str, t.ContainerValue]]:
                 """Extract items from various OIC response formats for processing."""
-                list_payload = _as_value_list(data)
+                list_payload = FlextTapOracleOicModels._as_value_list(data)
                 if list_payload is not None:
                     yield from self._process_list_data(list_payload)
                     return
-                map_payload = _as_value_map(data)
+                map_payload = FlextTapOracleOicModels._as_value_map(data)
                 if map_payload is not None:
                     yield from self._process_dict_data(map_payload)
 
             def _handle_response_error(self, response: requests.Response) -> None:
                 """Handle Oracle OIC API response errors with proper categorization."""
                 try:
-                    error_data = _as_value_map(response.json()) or {}
+                    error_data = (
+                        FlextTapOracleOicModels._as_value_map(response.json()) or {}
+                    )
                     error_message = error_data.get("message") or error_data.get("error")
                 except (ValueError, TypeError, KeyError):
                     error_message = (
@@ -539,7 +545,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 self, data: Mapping[str, t.ContainerValue]
             ) -> bool:
                 """Check if empty result is expected/normal based on OIC response metadata."""
-                envelope = _as_oic_envelope(data)
+                envelope = FlextTapOracleOicModels._as_oic_envelope(data)
                 if envelope is not None:
                     return (
                         envelope.total_size == 0
@@ -547,7 +553,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         or (envelope.items is not None and not envelope.items)
                         or (envelope.data is not None and not envelope.data)
                     )
-                list_payload = _as_value_list(data)
+                list_payload = FlextTapOracleOicModels._as_value_list(data)
                 return not list_payload if list_payload is not None else False
 
             def _is_single_record(self, data: Mapping[str, t.ContainerValue]) -> bool:
@@ -568,7 +574,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 data: Mapping[str, t.ContainerValue],
             ) -> Iterator[Mapping[str, t.ContainerValue]]:
                 """Process dict-type response data with OIC format detection."""
-                envelope = _as_oic_envelope(data)
+                envelope = FlextTapOracleOicModels._as_oic_envelope(data)
                 if envelope is not None and envelope.items is not None:
                     yield from self._process_list_data(envelope.items)
                     return
@@ -584,7 +590,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ) -> Iterator[Mapping[str, t.ContainerValue]]:
                 """Process list-type response data."""
                 for item in data:
-                    record = _as_value_map(item)
+                    record = FlextTapOracleOicModels._as_value_map(item)
                     if record is not None:
                         yield record
 
@@ -598,11 +604,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     self.logger.debug(
                         "Response time: %.2fs", response.elapsed.total_seconds()
                     )
-                list_payload = _as_value_list(data)
+                list_payload = FlextTapOracleOicModels._as_value_list(data)
                 if list_payload is not None:
                     self.logger.debug("Received %s records", len(list_payload))
                     return
-                envelope = _as_oic_envelope(data)
+                envelope = FlextTapOracleOicModels._as_oic_envelope(data)
                 if envelope is None:
                     return
                 if envelope.items is not None:
@@ -612,9 +618,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             def _validate_record(self, record: Mapping[str, t.ContainerValue]) -> bool:
                 """Validate record meets basic requirements for processing."""
-                return _as_value_map(dict(record)) is not None
+                return FlextTapOracleOicModels._as_value_map(dict(record)) is not None
 
-        class OicAuthenticationConfig(FlextModels.ArbitraryTypesModel):
+        class OicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
             """OAuth2/IDCS authentication configuration for OIC API access."""
 
             # Pydantic 2.11 Configuration - Authentication Features
@@ -724,7 +730,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicIntegrationEntity(FlextModels.Entity):
+        class OicIntegrationEntity(FlextMeltanoModels.Entity):
             """OIC Integration entity with complete metadata."""
 
             # Pydantic 2.11 Configuration - Integration Features
@@ -871,7 +877,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicConnectionEntity(FlextModels.Entity):
+        class OicConnectionEntity(FlextMeltanoModels.Entity):
             """OIC Connection entity with security sanitization."""
 
             # Pydantic 2.11 Configuration - Connection Features
@@ -1025,7 +1031,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicActivityRecord(FlextModels.Entity):
+        class OicActivityRecord(FlextMeltanoModels.Entity):
             """OIC Activity monitoring record for incremental replication."""
 
             # Pydantic 2.11 Configuration - Activity Features
@@ -1167,7 +1173,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicPackageEntity(FlextModels.Entity):
+        class OicPackageEntity(FlextMeltanoModels.Entity):
             """OIC Package entity for integration packages."""
 
             # Pydantic 2.11 Configuration - Package Features
@@ -1293,7 +1299,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicMetricsRecord(FlextModels.Entity):
+        class OicMetricsRecord(FlextMeltanoModels.Entity):
             """OIC Metrics record for performance monitoring."""
 
             # Pydantic 2.11 Configuration - Metrics Features
@@ -1439,7 +1445,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicAgentEntity(FlextModels.Entity):
+        class OicAgentEntity(FlextMeltanoModels.Entity):
             """OIC Agent entity for connectivity agents."""
 
             # Pydantic 2.11 Configuration - Agent Features
@@ -1579,7 +1585,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicStreamConfiguration(FlextModels.ArbitraryTypesModel):
+        class OicStreamConfiguration(FlextMeltanoModels.ArbitraryTypesModel):
             """Configuration for OIC tap streams."""
 
             # Pydantic 2.11 Configuration - Stream Features
@@ -1711,7 +1717,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicApiResponse(FlextModels.Entity):
+        class OicApiResponse(FlextMeltanoModels.Entity):
             """Standardized OIC API response wrapper."""
 
             # Pydantic 2.11 Configuration - API Response Features
@@ -1841,7 +1847,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicErrorContext(FlextModels.Entity):
+        class OicErrorContext(FlextMeltanoModels.Entity):
             """Error context for OIC API error handling."""
 
             # Pydantic 2.11 Configuration - Error Context Features
@@ -2428,6 +2434,5 @@ m = FlextTapOracleOicModels
 
 __all__ = [
     "FlextTapOracleOicModels",
-    "OicEnvelope",
     "m",
 ]

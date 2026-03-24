@@ -14,54 +14,11 @@ from typing import ClassVar, override
 from urllib.parse import urljoin, urlparse
 
 from flext_core import r
-from flext_meltano import FlextMeltanoModels as m, FlextMeltanoUtilities
+from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_oic import FlextOracleOicUtilities
 from pydantic import ConfigDict, TypeAdapter, ValidationError
 
-from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants as c
-from flext_tap_oracle_oic.typings import FlextTapOracleOicTypes as t
-
-_STRICT_LIST_ADAPTER = TypeAdapter(
-    t.ContainerValueList,
-    config=ConfigDict(strict=True),
-)
-_STRICT_MAP_ADAPTER = TypeAdapter(
-    t.ContainerValueMapping,
-    config=ConfigDict(strict=True),
-)
-_STRICT_INT_ADAPTER = TypeAdapter(int, config=ConfigDict(strict=True))
-
-
-def _as_list(value: t.ContainerValue | None) -> Sequence[t.ContainerValue] | None:
-    """Strict list validation via Pydantic adapter."""
-    try:
-        return _STRICT_LIST_ADAPTER.validate_python(value)
-    except ValidationError:
-        return None
-
-
-def _as_map(value: t.ContainerValue | None) -> Mapping[str, t.ContainerValue] | None:
-    """Strict map validation via Pydantic adapter."""
-    try:
-        return _STRICT_MAP_ADAPTER.validate_python(value)
-    except ValidationError:
-        return None
-
-
-def _as_int(value: t.ContainerValue | None) -> int | None:
-    """Strict integer validation via Pydantic adapter."""
-    try:
-        return _STRICT_INT_ADAPTER.validate_python(value)
-    except ValidationError:
-        return None
-
-
-def _coerce_int(value: t.ContainerValue | None) -> int:
-    """Coerce potentially numeric values to integer with safe fallback."""
-    try:
-        return int(str(value))
-    except (TypeError, ValueError):
-        return 0
+from flext_tap_oracle_oic import c, m, t
 
 
 class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities):
@@ -76,6 +33,54 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
     DEFAULT_TIMEOUT: ClassVar[int] = 30
     MAX_RETRIES: ClassVar[int] = 3
     DEFAULT_PAGE_SIZE: ClassVar[int] = 50
+
+    _STRICT_LIST_ADAPTER: ClassVar[TypeAdapter[t.ContainerValueList]] = TypeAdapter(
+        t.ContainerValueList,
+        config=ConfigDict(strict=True),
+    )
+    _STRICT_MAP_ADAPTER: ClassVar[TypeAdapter[t.ContainerValueMapping]] = TypeAdapter(
+        t.ContainerValueMapping,
+        config=ConfigDict(strict=True),
+    )
+    _STRICT_INT_ADAPTER: ClassVar[TypeAdapter[int]] = TypeAdapter(
+        int, config=ConfigDict(strict=True)
+    )
+
+    @staticmethod
+    def _as_list(value: t.ContainerValue | None) -> Sequence[t.ContainerValue] | None:
+        """Strict list validation via Pydantic adapter."""
+        try:
+            return FlextTapOracleOicUtilities._STRICT_LIST_ADAPTER.validate_python(
+                value
+            )
+        except ValidationError:
+            return None
+
+    @staticmethod
+    def _as_map(
+        value: t.ContainerValue | None,
+    ) -> Mapping[str, t.ContainerValue] | None:
+        """Strict map validation via Pydantic adapter."""
+        try:
+            return FlextTapOracleOicUtilities._STRICT_MAP_ADAPTER.validate_python(value)
+        except ValidationError:
+            return None
+
+    @staticmethod
+    def _as_int(value: t.ContainerValue | None) -> int | None:
+        """Strict integer validation via Pydantic adapter."""
+        try:
+            return FlextTapOracleOicUtilities._STRICT_INT_ADAPTER.validate_python(value)
+        except ValidationError:
+            return None
+
+    @staticmethod
+    def _coerce_int(value: t.ContainerValue | None) -> int:
+        """Coerce potentially numeric values to integer with safe fallback."""
+        try:
+            return int(str(value))
+        except (TypeError, ValueError):
+            return 0
 
     @override
     def __init__(self) -> None:
@@ -233,7 +238,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                     "current_page_size": 0,
                 }
             items = response.get("items", [])
-            items_list_raw = _as_list(items)
+            items_list_raw = FlextTapOracleOicUtilities._as_list(items)
             items_list: Sequence[t.ContainerValue] = (
                 items_list_raw if items_list_raw is not None else []
             )
@@ -349,7 +354,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 "type": integration_data.get("style"),
             }
             connections = integration_data.get("connectionInstances", [])
-            connection_list_raw = _as_list(connections)
+            connection_list_raw = FlextTapOracleOicUtilities._as_list(connections)
             connection_list: Sequence[t.ContainerValue] = (
                 connection_list_raw if connection_list_raw is not None else []
             )
@@ -357,7 +362,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             connection_types: Sequence[str] = [
                 str(connection_type)
                 for conn in connection_list
-                if (conn_map := _as_map(conn)) is not None
+                if (conn_map := FlextTapOracleOicUtilities._as_map(conn)) is not None
                 and (connection_type := conn_map.get("connectionType")) is not None
             ]
             metadata["connection_types"] = [v for v in connection_types]  # noqa: C416
@@ -485,7 +490,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                     "Password cannot be empty",
                 )
             if "timeout" in config:
-                timeout = _as_int(config["timeout"])
+                timeout = FlextTapOracleOicUtilities._as_int(config["timeout"])
                 if timeout is None or timeout <= 0:
                     return r[t.ContainerValueMapping].fail(
                         "Timeout must be a positive integer",
@@ -510,13 +515,13 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                     "Configuration must include 'streams' section",
                 )
             streams = config["streams"]
-            stream_map = _as_map(streams)
+            stream_map = FlextTapOracleOicUtilities._as_map(streams)
             if stream_map is None:
                 return r[t.ContainerValueMapping].fail(
                     "Streams configuration must be a dictionary",
                 )
             for stream_name, stream_payload in stream_map.items():
-                stream_config = _as_map(stream_payload)
+                stream_config = FlextTapOracleOicUtilities._as_map(stream_payload)
                 if stream_config is None:
                     return r[t.ContainerValueMapping].fail(
                         f"Stream '{stream_name}' configuration must be a dictionary",
@@ -526,7 +531,9 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                         f"Stream '{stream_name}' must have 'selected' field",
                     )
                 if "page_size" in stream_config:
-                    page_size = _as_int(stream_config["page_size"])
+                    page_size = FlextTapOracleOicUtilities._as_int(
+                        stream_config["page_size"]
+                    )
                     max_page_size = c.TapOicProcessing.MAX_PAGE_SIZE
                     if page_size is None or page_size <= 0 or page_size > max_page_size:
                         return r[t.ContainerValueMapping].fail(
@@ -576,10 +583,12 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
             """
             bookmarks = state.get("bookmarks", {})
-            bookmark_map = _as_map(bookmarks)
+            bookmark_map = FlextTapOracleOicUtilities._as_map(bookmarks)
             if bookmark_map is None:
                 return {}
-            stream_bookmarks = _as_map(bookmark_map.get(stream_name, {}))
+            stream_bookmarks = FlextTapOracleOicUtilities._as_map(
+                bookmark_map.get(stream_name, {})
+            )
             return stream_bookmarks if stream_bookmarks is not None else {}
 
         @staticmethod
@@ -606,13 +615,15 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 empty_bookmarks: dict[str, t.ContainerValue] = {}
                 state_copy["bookmarks"] = empty_bookmarks
             bookmarks = state_copy["bookmarks"]
-            bookmark_map = _as_map(bookmarks)
+            bookmark_map = FlextTapOracleOicUtilities._as_map(bookmarks)
             if bookmark_map is not None:
                 updated_bookmark_map = dict(bookmark_map)
                 if stream_name not in updated_bookmark_map:
                     empty_stream_bookmarks: dict[str, t.ContainerValue] = {}
                     updated_bookmark_map[stream_name] = empty_stream_bookmarks
-                stream_bookmarks = _as_map(updated_bookmark_map[stream_name])
+                stream_bookmarks = FlextTapOracleOicUtilities._as_map(
+                    updated_bookmark_map[stream_name]
+                )
                 if stream_bookmarks is not None:
                     updated_stream_bookmarks = dict(stream_bookmarks)
                     updated_stream_bookmarks[bookmark_key] = bookmark_value
@@ -642,7 +653,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 empty_bookmarks: dict[str, t.ContainerValue] = {}
                 state_copy["bookmarks"] = empty_bookmarks
             bookmarks = state_copy["bookmarks"]
-            bookmark_map = _as_map(bookmarks)
+            bookmark_map = FlextTapOracleOicUtilities._as_map(bookmarks)
             if bookmark_map is not None:
                 updated_bookmark_map = dict(bookmark_map)
                 updated_bookmark_map[stream_name] = dict(stream_state)
@@ -669,8 +680,8 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             offset = pagination_info.get("offset", 0)
             page_size = pagination_info.get("current_page_size", 0)
             try:
-                offset_val = _coerce_int(offset)
-                page_size_val = _coerce_int(page_size)
+                offset_val = FlextTapOracleOicUtilities._coerce_int(offset)
+                page_size_val = FlextTapOracleOicUtilities._coerce_int(page_size)
             except (ValueError, TypeError):
                 offset_val = 0
                 page_size_val = 0
@@ -835,4 +846,5 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
 
 u = FlextTapOracleOicUtilities
+
 __all__ = ["FlextTapOracleOicUtilities", "u"]
