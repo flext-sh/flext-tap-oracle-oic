@@ -18,9 +18,9 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from collections.abc import Sequence
-
 from flext_core import FlextExceptions
+
+from flext_tap_oracle_oic import t
 
 
 class OICExceptionFactory:
@@ -63,7 +63,7 @@ class OICAPIError(FlextExceptions.OperationError):
     """Oracle OIC API error."""
 
 
-__all__: Sequence[str] = [
+__all__: t.StrSequence = [
     "OICAPIError",
     "OICAuthenticationError",
     "OICConnectionError",

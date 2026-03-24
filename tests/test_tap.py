@@ -7,12 +7,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Sequence
-
 import pytest
 from pydantic import ValidationError as ConfigValidationError
 
-from flext_tap_oracle_oic import m
+from flext_tap_oracle_oic import m, t
 from flext_tap_oracle_oic.tap_client import TapOracleOic
 
 
@@ -27,7 +25,7 @@ def _build_source_config() -> m.Meltano.DataSourceConfig:
     )
 
 
-def _discover_stream_names(tap: TapOracleOic) -> Sequence[str]:
+def _discover_stream_names(tap: TapOracleOic) -> t.StrSequence:
     result = tap.discover_streams(source_config=_build_source_config())
     assert result.is_success
     assert result.value is not None

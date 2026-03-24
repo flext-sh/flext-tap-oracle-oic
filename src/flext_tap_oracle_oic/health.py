@@ -32,7 +32,7 @@ class OICHealthChecker:
         api_config = FlextApiSettings.model_validate({"base_url": base_url})
         self._api_client = FlextApi(api_config)
 
-    def check_health(self) -> Mapping[str, str]:
+    def check_health(self) -> t.StrMapping:
         """Check OIC instance health."""
         try:
             url = f"{self.base_url}/ic/api/integration/v1/integrations?limit=1"
@@ -77,7 +77,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def check_monitoring_health(self) -> Mapping[str, str]:
+    def check_monitoring_health(self) -> t.StrMapping:
         """Check OIC monitoring service health."""
         try:
             url = f"{self.base_url}/ic/api/monitoring/v1/instances?limit=1"
@@ -122,7 +122,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def test_connection(self, connection_id: str) -> Mapping[str, str]:
+    def test_connection(self, connection_id: str) -> t.StrMapping:
         """Test specific OIC connection."""
         try:
             url = f"{self.base_url}/ic/api/integration/v1/connections/{connection_id}/test"
@@ -242,7 +242,7 @@ class OICHealthChecker:
                 "error": str(e),
             }
 
-    def _get_headers(self) -> Mapping[str, str]:
+    def _get_headers(self) -> t.StrMapping:
         headers = {
             "Accept": c.TapOicHttp.JSON_MIME,
             "Content-Type": c.TapOicHttp.JSON_MIME,

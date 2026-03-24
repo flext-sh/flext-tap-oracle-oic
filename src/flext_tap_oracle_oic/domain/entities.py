@@ -10,8 +10,7 @@ This module re-exports them for backwards compatibility with existing callers.
 
 from __future__ import annotations
 
-from collections.abc import Sequence
-
+from flext_tap_oracle_oic import t
 from flext_tap_oracle_oic.constants import c
 from flext_tap_oracle_oic.models import FlextTapOracleOicModels as _m
 
@@ -27,7 +26,7 @@ OICProject = _m.OracleOic.OICProject
 OICResourceMetadata = _m.OracleOic.OICResourceMetadata
 OICExecutionSummary = _m.OracleOic.OICExecutionSummary
 
-__all__: Sequence[str] = [
+__all__: t.StrSequence = [
     "ConnectionStatus",
     "IntegrationStatus",
     "OICConnection",
