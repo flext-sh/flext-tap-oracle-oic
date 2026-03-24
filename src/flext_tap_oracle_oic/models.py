@@ -266,7 +266,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             name: Annotated[str, Field(default="")]
             replication_key: Annotated[str | None, Field(default=None)]
             logger: Annotated[
-                FlextLogger, Field(default_factory=lambda: FlextLogger(__name__))
+                FlextLogger, Field(default_factory=lambda: FlextLogger(__name__)),
             ]
 
             requires_design_api: ClassVar[bool] = False
