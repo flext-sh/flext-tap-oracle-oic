@@ -17,6 +17,10 @@ from pydantic import TypeAdapter
 
 from flext_tap_oracle_oic.constants import c
 
+_CONTAINER_VALUE_MAP_ADAPTER: TypeAdapter[t.ContainerValueMapping] = TypeAdapter(
+    t.ContainerValueMapping,
+)
+
 if TYPE_CHECKING:
     from flext_meltano import FlextMeltanoAbstractions as _TapBase
 else:
@@ -65,10 +69,7 @@ class FlextOracleOicAuthenticator:
                 case dict() as token_dict:
                     token_data = token_dict
                 case str() as body_str:
-                    parser: TypeAdapter[Mapping[str, t.ContainerValue]] = TypeAdapter(
-                        t.ContainerValueMapping,
-                    )
-                    token_data = parser.validate_json(body_str)
+                    token_data = _CONTAINER_VALUE_MAP_ADAPTER.validate_json(body_str)
                 case _:
                     return r[str].fail("Empty or invalid OAuth response body")
             access_token = token_data.get("access_token")
@@ -158,11 +159,8 @@ class FlextTapOracleOicClient:
                 f"Failed to get auth headers: {headers_result.error}",
             )
         try:
-            serializer: TypeAdapter[Mapping[str, t.ContainerValue]] = TypeAdapter(
-                t.ContainerValueMapping,
-            )
             json_body: str | None = (
-                serializer.dump_json(dict(data)).decode("utf-8") if data else None
+                _CONTAINER_VALUE_MAP_ADAPTER.dump_json(dict(data)).decode("utf-8") if data else None
             )
             response_result = self._api_client.post(
                 url,
