@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from typing import Annotated, ClassVar
 
 from flext_core import FlextConstants, r, t
@@ -38,14 +38,14 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
         """Return base URL without trailing slash."""
         return self.base_url.rstrip("/")
 
-    def get_headers(self) -> t.StrMapping:
+    def get_headers(self) -> Mapping[str, str]:
         """Return default headers for OIC requests."""
         return {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
-    def get_token_request_data(self) -> t.StrMapping:
+    def get_token_request_data(self) -> Mapping[str, str]:
         """Return OAuth2 client credentials payload."""
         return {
             "grant_type": "client_credentials",
@@ -113,7 +113,7 @@ def validate_oracle_oic_tap_configuration(
     return r[bool].ok(value=True)
 
 
-__all__: t.StrSequence = [
+__all__: Sequence[str] = [
     "FlextTapOracleOicSettings",
     "create_oracle_oic_tap_config",
     "validate_oracle_oic_tap_configuration",

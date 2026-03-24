@@ -192,16 +192,16 @@ class OracleOicClient:
                 f"OIC API request failed: {e}",
             )
 
-    def _get_auth_headers(self) -> r[t.StrMapping]:
+    def _get_auth_headers(self) -> r[Mapping[str, str]]:
         """Get authorization headers with OAuth2 token."""
         token_result = self.authenticator.get_access_token()
         if token_result.is_failure:
-            return r[t.StrMapping].fail(
+            return r[Mapping[str, str]].fail(
                 f"Failed to get access token: {token_result.error}",
             )
         headers: dict[str, str] = dict(self.config.get_headers())
         headers["Authorization"] = f"Bearer {token_result.value}"
-        return r[t.StrMapping].ok(headers)
+        return r[Mapping[str, str]].ok(headers)
 
 
 class TapOracleOic(_TapBase):
@@ -215,7 +215,7 @@ class TapOracleOic(_TapBase):
     """
 
     name: ClassVar[str] = "tap-oracle-oic"
-    capabilities: ClassVar[t.StrSequence] = ["catalog", "state", "discover"]
+    capabilities: ClassVar[Sequence[str]] = ["catalog", "state", "discover"]
     config_jsonschema: ClassVar[Mapping[str, t.ContainerValue]] = {
         "type": "t.NormalizedValue",
         "properties": {
@@ -368,7 +368,7 @@ def main() -> int:
     exit_code = _validate_and_setup_config()
     if exit_code != 0:
         return exit_code
-    config: t.StrMapping = dict(_build_config_from_env())
+    config: Mapping[str, str] = dict(_build_config_from_env())
     config_typed: Mapping[str, t.ContainerValue] = dict(config)
     tap = TapOracleOic(config=config_typed)
     try:
@@ -381,7 +381,7 @@ def main() -> int:
         return 1
 
 
-def _build_config_from_env() -> t.StrMapping:
+def _build_config_from_env() -> Mapping[str, str]:
     """Build configuration from environment variables using pydantic-settings.
 
     Uses FlextTapOracleOicSettings with env_prefix='FLEXT_TAP_ORACLE_OIC_'
@@ -403,14 +403,14 @@ def _build_config_from_env() -> t.StrMapping:
 
 def _validate_and_setup_config() -> int:
     """Validate required configuration. Returns 0 for success, 1 for error."""
-    config: t.StrMapping = dict(_build_config_from_env())
+    config: Mapping[str, str] = dict(_build_config_from_env())
     required_config = [
         "oauth_client_id",
         "oauth_client_secret",
         "oauth_token_url",
         "oic_url",
     ]
-    missing_config: t.StrSequence = [
+    missing_config: Sequence[str] = [
         key for key in required_config if not config.get(key)
     ]
     if missing_config:
@@ -473,4 +473,4 @@ def _execute_run_command(_tap: TapOracleOic) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-__all__: t.StrSequence = ["OracleOicClient", "TapOracleOic", "main"]
+__all__: Sequence[str] = ["OracleOicClient", "TapOracleOic", "main"]

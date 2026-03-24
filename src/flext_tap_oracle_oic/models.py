@@ -2024,7 +2024,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Field(None, description="Last test timestamp"),
             ]
             test_result: Annotated[
-                t.StrMapping | None,
+                Mapping[str, str] | None,
                 Field(None, description="Last test result"),
             ]
             version: Annotated[

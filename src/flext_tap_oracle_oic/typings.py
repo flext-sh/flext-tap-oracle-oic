@@ -67,7 +67,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
         ]
         type IntegrationDefinition = Mapping[
             str,
-            str | t.StrSequence | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Sequence[str] | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
         type IntegrationFlow = Mapping[
             str,
@@ -179,7 +179,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
         ]
         type ExtractionFilter = Mapping[
             str,
-            str | t.StrSequence | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
+            str | Sequence[str] | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
         type ExtractionMapping = Mapping[
             str,
@@ -271,7 +271,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
             str,
             FlextMeltanoTypes.ContainerValue | None,
         ]
-        type OicExtractorConfig = Mapping[str, t.Scalar | t.StrSequence]
+        type OicExtractorConfig = Mapping[str, t.Scalar | Sequence[str]]
         type SingerProtocolConfig = Mapping[
             str,
             bool | str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],

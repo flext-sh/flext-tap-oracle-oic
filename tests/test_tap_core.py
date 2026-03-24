@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 
 import pytest
 from pydantic import ValidationError as ConfigValidationError
@@ -28,7 +28,7 @@ def _build_source_config() -> m.Meltano.DataSourceConfig:
     )
 
 
-def _discover_stream_names(tap: TapOracleOic) -> t.StrSequence:
+def _discover_stream_names(tap: TapOracleOic) -> Sequence[str]:
     result = tap.discover_streams(source_config=_build_source_config())
     assert result.is_success
     assert result.value is not None
@@ -201,7 +201,7 @@ class TestTapOracleOicIntegration:
 
 
 @pytest.fixture
-def sample_config() -> t.StrMapping:
+def sample_config() -> Mapping[str, str]:
     """Sample config."""
     return {
         "base_url": "https://test.integration.ocp.oraclecloud.com",
@@ -229,7 +229,7 @@ def sample_config_with_extended() -> Mapping[str, bool | str]:
 class TestTapOracleOicWithFixtures:
     """Tests using fixtures."""
 
-    def test_self(self, sample_config: t.StrMapping) -> None:
+    def test_self(self, sample_config: Mapping[str, str]) -> None:
         """Test method."""
         "Test that the tap is initialized correctly with the sample config."
         tap = TapOracleOic(config=sample_config, validate_config=False)
