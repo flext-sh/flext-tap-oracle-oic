@@ -570,11 +570,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     return (
                         envelope.total_size == 0
                         or envelope.count == 0
-                        or (envelope.items is not None and len(envelope.items) == 0)
-                        or (envelope.data is not None and len(envelope.data) == 0)
+                        or (envelope.items is not None and not envelope.items)
+                        or (envelope.data is not None and not envelope.data)
                     )
                 list_payload = _as_value_list(data)
-                return len(list_payload) == 0 if list_payload is not None else False
+                return not list_payload if list_payload is not None else False
 
             def _is_single_record(self, data: Mapping[str, t.ContainerValue]) -> bool:
                 """Check if dict represents a single record vs OIC metadata container."""
