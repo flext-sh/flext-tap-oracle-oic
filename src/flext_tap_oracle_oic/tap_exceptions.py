@@ -32,7 +32,9 @@ class FlextTapOracleOicExceptionFactory:
         return FlextTapOracleOicApiError(message)
 
     @staticmethod
-    def create_authentication_error(message: str) -> FlextTapOracleOicAuthenticationError:
+    def create_authentication_error(
+        message: str,
+    ) -> FlextTapOracleOicAuthenticationError:
         """Create OIC authentication error."""
         return FlextTapOracleOicAuthenticationError(message)
 
