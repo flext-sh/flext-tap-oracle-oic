@@ -140,7 +140,7 @@ class FlextTapOracleOicHealthChecker:
                     case dict() as body_dict:
                         body: Mapping[str, t.ContainerValue] = body_dict
                     case _:
-                        body = {}
+                        body: Mapping[str, t.ContainerValue] = {}
                 status_val = str(body.get("status", "success"))
                 test_result_val = str(
                     body.get("testResult", "Connection test successful"),
@@ -193,7 +193,7 @@ class FlextTapOracleOicHealthChecker:
                     case dict() as integration_dict:
                         integration: Mapping[str, t.ContainerValue] = integration_dict
                     case _:
-                        integration = {}
+                        integration: Mapping[str, t.ContainerValue] = {}
                 status_val = str(integration.get("status", "UNKNOWN"))
                 health_status = "unknown"
                 if status_val == "ACTIVATED":

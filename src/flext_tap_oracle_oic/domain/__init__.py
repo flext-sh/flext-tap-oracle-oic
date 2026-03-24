@@ -31,26 +31,26 @@ if TYPE_CHECKING:
         OICResourceType,
     )
 
-_LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
-    "ConnectionStatus": ("flext_tap_oracle_oic.domain.entities", "ConnectionStatus"),
-    "IntegrationStatus": ("flext_tap_oracle_oic.domain.entities", "IntegrationStatus"),
-    "OICConnection": ("flext_tap_oracle_oic.domain.entities", "OICConnection"),
-    "OICExecutionSummary": (
+_LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
+    "ConnectionStatus": ["flext_tap_oracle_oic.domain.entities", "ConnectionStatus"],
+    "IntegrationStatus": ["flext_tap_oracle_oic.domain.entities", "IntegrationStatus"],
+    "OICConnection": ["flext_tap_oracle_oic.domain.entities", "OICConnection"],
+    "OICExecutionSummary": [
         "flext_tap_oracle_oic.domain.entities",
         "OICExecutionSummary",
-    ),
-    "OICIntegration": ("flext_tap_oracle_oic.domain.entities", "OICIntegration"),
-    "OICLookup": ("flext_tap_oracle_oic.domain.entities", "OICLookup"),
-    "OICMonitoringRecord": (
+    ],
+    "OICIntegration": ["flext_tap_oracle_oic.domain.entities", "OICIntegration"],
+    "OICLookup": ["flext_tap_oracle_oic.domain.entities", "OICLookup"],
+    "OICMonitoringRecord": [
         "flext_tap_oracle_oic.domain.entities",
         "OICMonitoringRecord",
-    ),
-    "OICProject": ("flext_tap_oracle_oic.domain.entities", "OICProject"),
-    "OICResourceMetadata": (
+    ],
+    "OICProject": ["flext_tap_oracle_oic.domain.entities", "OICProject"],
+    "OICResourceMetadata": [
         "flext_tap_oracle_oic.domain.entities",
         "OICResourceMetadata",
-    ),
-    "OICResourceType": ("flext_tap_oracle_oic.domain.entities", "OICResourceType"),
+    ],
+    "OICResourceType": ["flext_tap_oracle_oic.domain.entities", "OICResourceType"],
 }
 
 __all__ = [
