@@ -21,7 +21,7 @@ from pydantic import ConfigDict, TypeAdapter, ValidationError
 from flext_tap_oracle_oic import c, m, t
 
 _STRICT_LIST_ADAPTER = TypeAdapter(
-    Sequence[t.ContainerValue],
+    t.ContainerValueList,
     config=ConfigDict(strict=True),
 )
 _STRICT_MAP_ADAPTER = TypeAdapter(

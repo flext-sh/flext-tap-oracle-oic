@@ -32,7 +32,7 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
     class TapOracleOic:
         """OIC connection configuration."""
 
-        DEFAULT_TIMEOUT: Final[int] = ParentOicConstants.OracleOic.DEFAULT_TIMEOUT
+        DEFAULT_TIMEOUT: Final[int] = ParentOicConstants.OracleOic.MIN_REQUEST_TIMEOUT
         DEFAULT_MAX_RETRIES: Final[int] = 3
         DEFAULT_VERIFY_SSL: Final[bool] = True
 
