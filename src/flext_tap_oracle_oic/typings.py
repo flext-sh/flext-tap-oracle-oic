@@ -35,7 +35,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
 
         type TapConfiguration = Mapping[
             str,
-            str | int | bool | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
+            t.Scalar | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
         type StreamConfiguration = Mapping[
             str,
@@ -63,7 +63,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
 
         type IntegrationConfiguration = Mapping[
             str,
-            str | int | bool | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
+            t.Scalar | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
         type IntegrationDefinition = Mapping[
             str,
@@ -91,7 +91,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
 
         type ConnectionConfiguration = Mapping[
             str,
-            str | int | bool | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
+            t.Scalar | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
         ]
         type ConnectionCredentials = Mapping[
             str,
@@ -271,7 +271,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
             str,
             FlextMeltanoTypes.ContainerValue | None,
         ]
-        type OicExtractorConfig = Mapping[str, str | int | bool | Sequence[str]]
+        type OicExtractorConfig = Mapping[str, t.Scalar | Sequence[str]]
         type SingerProtocolConfig = Mapping[
             str,
             bool | str | Mapping[str, FlextMeltanoTypes.ContainerValue | None],
