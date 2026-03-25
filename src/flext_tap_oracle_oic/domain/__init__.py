@@ -1,5 +1,5 @@
 # AUTO-GENERATED FILE — DO NOT EDIT MANUALLY.
-# Regenerate with: make codegen
+# Regenerate with: make gen
 #
 """Domain layer for FLEXT-TAP-ORACLE-OIC v0.7.0.
 
@@ -35,21 +35,12 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "ConnectionStatus": ["flext_tap_oracle_oic.domain.entities", "ConnectionStatus"],
     "IntegrationStatus": ["flext_tap_oracle_oic.domain.entities", "IntegrationStatus"],
     "OICConnection": ["flext_tap_oracle_oic.domain.entities", "OICConnection"],
-    "OICExecutionSummary": [
-        "flext_tap_oracle_oic.domain.entities",
-        "OICExecutionSummary",
-    ],
+    "OICExecutionSummary": ["flext_tap_oracle_oic.domain.entities", "OICExecutionSummary"],
     "OICIntegration": ["flext_tap_oracle_oic.domain.entities", "OICIntegration"],
     "OICLookup": ["flext_tap_oracle_oic.domain.entities", "OICLookup"],
-    "OICMonitoringRecord": [
-        "flext_tap_oracle_oic.domain.entities",
-        "OICMonitoringRecord",
-    ],
+    "OICMonitoringRecord": ["flext_tap_oracle_oic.domain.entities", "OICMonitoringRecord"],
     "OICProject": ["flext_tap_oracle_oic.domain.entities", "OICProject"],
-    "OICResourceMetadata": [
-        "flext_tap_oracle_oic.domain.entities",
-        "OICResourceMetadata",
-    ],
+    "OICResourceMetadata": ["flext_tap_oracle_oic.domain.entities", "OICResourceMetadata"],
     "OICResourceType": ["flext_tap_oracle_oic.domain.entities", "OICResourceType"],
 }
 
