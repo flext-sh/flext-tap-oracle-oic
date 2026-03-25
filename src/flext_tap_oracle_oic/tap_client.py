@@ -7,12 +7,11 @@ SPDX-License-Identifier: MIT.
 from __future__ import annotations
 
 import sys
-from collections.abc import Mapping, MutableMapping, MutableSequence, Sequence
+from collections.abc import Mapping, MutableMapping, Sequence
 from typing import TYPE_CHECKING, ClassVar
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
-from flext_core import FlextLogger, r, t
-from flext_meltano import m, t as mt
+from flext_core import FlextLogger, r
 from pydantic import TypeAdapter
 
 from flext_tap_oracle_oic import (
@@ -22,6 +21,7 @@ from flext_tap_oracle_oic import (
     FlextTapOracleOicSettings,
     c,
     m,
+    t,
     u,
 )
 
@@ -298,14 +298,11 @@ class FlextTapOracleOic(_TapBase):
         stream_names = CORE_STREAMS.copy()
         if self._tap_config.get("include_infrastructure", False):
             stream_names.extend(INFRASTRUCTURE_STREAMS)
-        streams: MutableSequence[m.TapOracleOic.OICBaseStream] = []
-        for stream_name in stream_names:
-            if stream_name in ALL_STREAMS:
-                stream_class = ALL_STREAMS[stream_name]
-                stream_instance = stream_class.model_validate(
-                    {"config": self._tap_config},
-                )
-                streams.append(stream_instance)
+        streams: Sequence[m.TapOracleOic.OICBaseStream] = [
+            ALL_STREAMS[stream_name].model_validate({"config": self._tap_config})
+            for stream_name in stream_names
+            if stream_name in ALL_STREAMS
+        ]
         logger.info("Discovered %s streams from Oracle OIC", len(streams))
         return streams
 
@@ -314,11 +311,11 @@ class FlextTapOracleOic(_TapBase):
         source_config: m.Meltano.DataSourceConfig
         | m.Meltano.TapConfig
         | m.Meltano.TapInstance,
-    ) -> r[mt.Meltano.Singer.StreamCatalog]:
+    ) -> r[t.Meltano.Singer.StreamCatalog]:
         """Discover stream catalog matching FlextMeltanoTapAbstractions contract."""
         _ = source_config
         streams: Sequence[m.TapOracleOic.OICBaseStream] = self.discover_oic_streams()
-        catalog: mt.Meltano.Singer.StreamCatalog = {
+        catalog: t.Meltano.Singer.StreamCatalog = {
             "streams": [
                 {
                     "tap_stream_id": getattr(
@@ -334,7 +331,7 @@ class FlextTapOracleOic(_TapBase):
                 for stream in streams
             ],
         }
-        return r[mt.Meltano.Singer.StreamCatalog].ok(catalog)
+        return r[t.Meltano.Singer.StreamCatalog].ok(catalog)
 
     @staticmethod
     def _to_positive_int(value: t.ContainerValue | None, default: int) -> int:

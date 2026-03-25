@@ -6,8 +6,7 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from flext_core import t
-
+from flext_tap_oracle_oic import t
 from flext_tap_oracle_oic.models import FlextTapOracleOicModels as _Models
 
 OICIntegration = _Models.OracleOic.OICIntegration

@@ -259,16 +259,12 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 arbitrary_types_allowed=True,
             )
 
-            config: Annotated[
-                Mapping[str, t.ContainerValue],
-                Field(default_factory=dict),
-            ]
+            config: Annotated[Mapping[str, t.ContainerValue]] = Field(
+                default_factory=dict
+            )
             name: Annotated[str, Field(default="")]
             replication_key: Annotated[str | None, Field(default=None)]
-            logger: Annotated[
-                FlextLogger,
-                Field(default_factory=lambda: FlextLogger(__name__)),
-            ]
+            logger: FlextLogger = Field(default_factory=lambda: FlextLogger(__name__))
 
             requires_design_api: ClassVar[bool] = False
             requires_runtime_api: ClassVar[bool] = False
@@ -973,10 +969,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             sanitization_timestamp: Annotated[
                 datetime | None,
                 Field(
-                    default_factory=lambda: datetime.now(UTC),
                     description="When sanitization occurred",
                 ),
-            ]
+            ] = Field(default_factory=lambda: datetime.now(UTC))
 
             @computed_field
             def connection_security_summary(
@@ -1223,10 +1218,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             dependencies: Annotated[
                 Sequence[str],
                 Field(
-                    default_factory=list,
                     description="List of dependent package IDs",
                 ),
-            ]
+            ] = Field(default_factory=list)
             integration_count: Annotated[
                 int | None,
                 Field(
@@ -1780,10 +1774,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             timestamp: Annotated[
                 datetime,
                 Field(
-                    default_factory=lambda: datetime.now(UTC),
                     description="Response timestamp",
                 ),
-            ]
+            ] = Field(default_factory=lambda: datetime.now(UTC))
             api_version: Annotated[
                 str | None,
                 Field(None, description="OIC API version"),
@@ -2009,8 +2002,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
             connection_properties: Annotated[
                 Mapping[str, Mapping[str, t.ContainerValue]],
-                Field(default_factory=dict, description="Connection properties"),
-            ]
+                Field(description="Connection properties"),
+            ] = Field(default_factory=dict)
             security_policy: Annotated[
                 str | None,
                 Field(None, description="Security policy name"),
@@ -2134,8 +2127,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ]
             connection_ids: Annotated[
                 Sequence[str],
-                Field(default_factory=list, description="Associated connection IDs"),
-            ]
+                Field(description="Associated connection IDs"),
+            ] = Field(default_factory=list)
             created_at: Annotated[
                 datetime | None,
                 Field(None, description="Creation timestamp"),
@@ -2186,18 +2179,17 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             columns: Annotated[
                 Sequence[t.FlatContainerMapping],
                 Field(
-                    default_factory=list,
                     description="Column definitions",
                 ),
-            ]
+            ] = Field(default_factory=list)
             key_columns: Annotated[
                 Sequence[str],
-                Field(default_factory=list, description="Key column names"),
-            ]
+                Field(description="Key column names"),
+            ] = Field(default_factory=list)
             value_columns: Annotated[
                 Sequence[str],
-                Field(default_factory=list, description="Value column names"),
-            ]
+                Field(description="Value column names"),
+            ] = Field(default_factory=list)
             row_count: Annotated[
                 t.NonNegativeInt,
                 Field(default=0, description="Number of rows"),
@@ -2293,10 +2285,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             business_identifiers: Annotated[
                 Mapping[str, Mapping[str, t.ContainerValue]],
                 Field(
-                    default_factory=dict,
                     description="Business tracking identifiers",
                 ),
-            ]
+            ] = Field(default_factory=dict)
 
             @property
             def duration_seconds(self) -> float | None:
@@ -2329,16 +2320,16 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             name: Annotated[t.NonEmptyStr, Field(..., description="Project name")]
             integration_ids: Annotated[
                 MutableSequence[str],
-                Field(default_factory=list, description="Integration IDs in project"),
-            ]
+                Field(description="Integration IDs in project"),
+            ] = Field(default_factory=list)
             connection_ids: Annotated[
                 Sequence[str],
-                Field(default_factory=list, description="Connection IDs in project"),
-            ]
+                Field(description="Connection IDs in project"),
+            ] = Field(default_factory=list)
             lookup_ids: Annotated[
                 Sequence[str],
-                Field(default_factory=list, description="Lookup IDs in project"),
-            ]
+                Field(description="Lookup IDs in project"),
+            ] = Field(default_factory=list)
             deployment_status: Annotated[
                 str | None,
                 Field(None, description="Deployment status"),

@@ -14,8 +14,9 @@ from collections.abc import Mapping
 from datetime import UTC, datetime
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
-from flext_core import r, t
+from flext_core import r
 
+from flext_tap_oracle_oic import t
 from flext_tap_oracle_oic.constants import c
 from flext_tap_oracle_oic.tap_client import (
     FlextOracleOicAuthenticator as OAuthAuthenticator,
