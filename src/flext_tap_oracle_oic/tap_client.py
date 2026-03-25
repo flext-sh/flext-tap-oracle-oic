@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import sys
 from collections.abc import Mapping, MutableMapping, Sequence
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, override
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 from flext_core import FlextLogger, r
@@ -316,14 +316,12 @@ class FlextTapOracleOic(_TapBase):
         logger.info("Discovered %s streams from Oracle OIC", len(streams))
         return streams
 
+    @override
     def discover_streams(
         self,
-        source_config: m.Meltano.DataSourceConfig
-        | m.Meltano.TapConfig
-        | m.Meltano.TapInstance,
+        _tap_instance: m.Meltano.TapInstance,
     ) -> r[t.ContainerMapping]:
         """Discover stream catalog matching FlextMeltanoTapAbstractions contract."""
-        _ = source_config
         streams: Sequence[m.TapOracleOic.OICBaseStream] = self.discover_oic_streams()
         catalog: t.Meltano.Singer.StreamCatalog = {
             "streams": [

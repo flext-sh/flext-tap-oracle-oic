@@ -16,19 +16,21 @@ from flext_tap_oracle_oic import m, t
 from flext_tap_oracle_oic.tap_client import FlextTapOracleOic as TapOracleOic
 
 
-def _build_source_config() -> m.Meltano.DataSourceConfig:
-    return m.Meltano.DataSourceConfig(
-        source_type="oracle-oic",
-        connection_config={
-            "base_url": "https://test.integration.ocp.oraclecloud.com",
-        },
-        stream_config={},
-        source_version="latest",
+def _build_tap_instance() -> m.Meltano.TapInstance:
+    return m.Meltano.TapInstance(
+        tap_type="oracle-oic",
+        config=m.Meltano.TapConfig(
+            tap_type="oracle-oic",
+            connection_config={
+                "base_url": "https://test.integration.ocp.oraclecloud.com",
+            },
+            stream_config={},
+        ),
     )
 
 
 def _discover_stream_names(tap: TapOracleOic) -> t.StrSequence:
-    result = tap.discover_streams(source_config=_build_source_config())
+    result = tap.discover_streams(_tap_instance=_build_tap_instance())
     assert result.is_success
     value = result.value
     assert isinstance(value, Mapping)
