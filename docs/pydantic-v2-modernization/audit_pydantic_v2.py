@@ -20,7 +20,7 @@ from __future__ import annotations
 import argparse
 import re
 import sys
-from collections.abc import Mapping, Sequence
+from collections.abc import Sequence
 from pathlib import Path
 from typing import ClassVar, override
 
@@ -44,23 +44,23 @@ class AuditResult(BaseModel):
 
     project: str = Field(description="Project name")
     status: str = Field(description="Audit status: PASS, FAIL, WARNING, PENDING, SKIP")
-    critical: Sequence[AuditViolation] = Field(
-        default_factory=lambda: Sequence[AuditViolation](),
+    critical: list[AuditViolation] = Field(
+        default_factory=list,
         description="Critical violations",
     )
-    high: Sequence[AuditViolation] = Field(
-        default_factory=lambda: Sequence[AuditViolation](),
+    high: list[AuditViolation] = Field(
+        default_factory=list,
         description="High priority violations",
     )
-    medium: Sequence[AuditViolation] = Field(
-        default_factory=lambda: Sequence[AuditViolation](),
+    medium: list[AuditViolation] = Field(
+        default_factory=list,
         description="Medium priority violations",
     )
-    recommendations: t.StrSequence = Field(
+    recommendations: list[str] = Field(
         default_factory=list,
         description="Audit recommendations",
     )
-    stats: Mapping[str, t.Primitives] = Field(
+    stats: dict[str, t.Primitives] = Field(
         default_factory=dict,
         description="Audit statistics",
     )
@@ -276,9 +276,9 @@ class PydanticV2Auditor:
         self,
         pattern: str,
         lines: t.StrSequence,
-    ) -> Sequence[int]:
+    ) -> list[int]:
         """Find all lines matching a pattern."""
-        matches: Sequence[int] = []
+        matches: list[int] = []
         for idx, line in enumerate(lines):
             if re.search(pattern, line):
                 matches.append(idx)

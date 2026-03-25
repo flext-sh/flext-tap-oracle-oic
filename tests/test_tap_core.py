@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 
 import pytest
 from pydantic import ValidationError as ConfigValidationError
@@ -32,8 +32,11 @@ def _build_source_config() -> m.Meltano.DataSourceConfig:
 def _discover_stream_names(tap: TapOracleOic) -> t.StrSequence:
     result = tap.discover_streams(source_config=_build_source_config())
     assert result.is_success
-    assert result.value is not None
-    return [str(stream["tap_stream_id"]) for stream in result.value["streams"]]
+    value = result.value
+    assert isinstance(value, Mapping)
+    streams = value["streams"]
+    assert isinstance(streams, Sequence) and not isinstance(streams, str)
+    return [str(s["tap_stream_id"]) for s in streams if isinstance(s, Mapping)]
 
 
 class TestTapOracleOic:
@@ -89,7 +92,7 @@ class TestTapOracleOic:
 
     def test_extended_streams_discovery(self) -> None:
         """Test method."""
-        config = {
+        config: t.ContainerValueMapping = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
             "oauth_client_secret": "test_client_secret",
@@ -115,7 +118,7 @@ class TestTapOracleOic:
 
     def test_extended_streams_disabled(self) -> None:
         """Test method."""
-        config = {
+        config: t.ContainerValueMapping = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
             "oauth_client_secret": "test_client_secret",
@@ -131,7 +134,7 @@ class TestTapOracleOic:
 
     def test_discover_streams(self) -> None:
         """Test method."""
-        config = {
+        config: t.ContainerValueMapping = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
             "oauth_client_secret": "test_client_secret",
