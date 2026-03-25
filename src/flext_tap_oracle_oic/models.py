@@ -116,10 +116,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     @staticmethod
     def as_oic_envelope(
         value: Mapping[str, t.ContainerValue],
-    ) -> FlextTapOracleOicModels.OicEnvelope | None:
+    ) -> FlextTapOracleOicModels.TapOracleOic.OicEnvelope | None:
         """Validate payload as an OIC envelope model."""
         try:
-            return FlextTapOracleOicModels.OicEnvelope.model_validate(
+            return FlextTapOracleOicModels.TapOracleOic.OicEnvelope.model_validate(
                 value,
                 strict=True,
             )
@@ -259,9 +259,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 arbitrary_types_allowed=True,
             )
 
-            config: Annotated[Mapping[str, t.ContainerValue]] = Field(
-                default_factory=dict
-            )
+            config: Annotated[
+                Mapping[str, t.ContainerValue], Field(default_factory=dict)
+            ]
             name: Annotated[str, Field(default="")]
             replication_key: Annotated[str | None, Field(default=None)]
             logger: FlextLogger = Field(default_factory=lambda: FlextLogger(__name__))
@@ -295,8 +295,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 if not base_url:
                     msg = "Base URL is required but not configured"
                     raise ValueError(msg)
-                validation_result = utilities.OicApiProcessing.validate_oic_endpoint(
-                    base_url,
+                validation_result = (
+                    utilities.TapOracleOic.OicApiProcessing.validate_oic_endpoint(
+                        base_url,
+                    )
                 )
                 if validation_result.is_failure:
                     msg = f"Invalid OIC endpoint: {validation_result.error}"

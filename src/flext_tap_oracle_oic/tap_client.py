@@ -68,6 +68,7 @@ class FlextOracleOicAuthenticator:
                 return r[str].fail(
                     f"OAuth2 request failed with status {response.status_code}",
                 )
+            token_data: t.ContainerValueMapping
             match response.body:
                 case dict() as token_dict:
                     token_data = token_dict
@@ -320,7 +321,7 @@ class FlextTapOracleOic(_TapBase):
         source_config: m.Meltano.DataSourceConfig
         | m.Meltano.TapConfig
         | m.Meltano.TapInstance,
-    ) -> r[t.Meltano.Singer.StreamCatalog]:
+    ) -> r[t.ContainerMapping]:
         """Discover stream catalog matching FlextMeltanoTapAbstractions contract."""
         _ = source_config
         streams: Sequence[m.TapOracleOic.OICBaseStream] = self.discover_oic_streams()
@@ -405,7 +406,7 @@ def _build_config_from_env() -> t.StrMapping:
             "oauth_scope": settings.oauth_audience,
         }
     except (ValueError, TypeError) as e:
-        logger.debug("Configuration loading failed: %s", e)
+        logger.debug("Configuration loading failed: %s", str(e))
         return {}
 
 

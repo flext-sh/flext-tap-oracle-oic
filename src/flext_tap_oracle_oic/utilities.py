@@ -236,7 +236,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                         "total_count": 0,
                         "current_page_size": 0,
                     }
-                items = response.get("items", [])
+                items: t.ContainerValue = response.get("items", [])
                 items_list_raw = FlextTapOracleOicUtilities._as_list(items)
                 items_list: Sequence[t.ContainerValue] = (
                     items_list_raw if items_list_raw is not None else []
