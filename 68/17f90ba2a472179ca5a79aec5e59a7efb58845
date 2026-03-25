@@ -1,0 +1,25 @@
+tests/test_tap_core.py
+  e722c052f29389d9 20-29,34
+tests/test_tap.py
+  e722c052f29389d9 19-28,33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.19",
+  "base_commit_sha": "6817f90ba2a472179ca5a79aec5e59a7efb58845",
+  "prompts": {
+    "e722c052f29389d9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "41d20397-78d2-4352-9e45-0f73cc1d2267",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "FLEXT Bot <team@flext.sh>",
+      "messages": [],
+      "total_additions": 22,
+      "total_deletions": 18,
+      "accepted_lines": 22,
+      "overriden_lines": 0
+    }
+  }
+}
