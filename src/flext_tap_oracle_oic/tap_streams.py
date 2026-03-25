@@ -31,14 +31,18 @@ class FlextTapOracleOicPaginator:
 
     def __init__(
         self,
-        start_value: int = c.TapOicProcessing.DEFAULT_PAGINATOR_START,
-        page_size: int = c.TapOicProcessing.DEFAULT_PAGINATOR_PAGE_SIZE,
+        start_value: int = c.TapOracleOic.TapOicProcessing.DEFAULT_PAGINATOR_START,
+        page_size: int = c.TapOracleOic.TapOicProcessing.DEFAULT_PAGINATOR_PAGE_SIZE,
     ) -> None:
         """Initialize paginator with starting offset and page size."""
         self.current_value: int = start_value
         self._page_size: int = page_size
-        self._max_page_size: int = c.TapOicProcessing.PAGINATOR_MAX_PAGE_SIZE
-        self._min_page_size: int = c.TapOicProcessing.PAGINATOR_MIN_PAGE_SIZE
+        self._max_page_size: int = (
+            c.TapOracleOic.TapOicProcessing.PAGINATOR_MAX_PAGE_SIZE
+        )
+        self._min_page_size: int = (
+            c.TapOracleOic.TapOicProcessing.PAGINATOR_MIN_PAGE_SIZE
+        )
         self._adaptive_sizing: bool = True
         self._response_times: list[float] = []
 
@@ -95,12 +99,18 @@ class FlextTapOracleOicPaginator:
     def _track_response_time(self, response_time: float) -> None:
         """Track response times for adaptive page sizing."""
         self._response_times.append(response_time)
-        if len(self._response_times) > c.TapOicPerformance.RESPONSE_TIME_HISTORY_SIZE:
+        if (
+            len(self._response_times)
+            > c.TapOracleOic.TapOicPerformance.RESPONSE_TIME_HISTORY_SIZE
+        ):
             self._response_times.pop(0)
-        if len(self._response_times) >= c.TapOicPerformance.MIN_RESPONSE_SAMPLES:
+        if (
+            len(self._response_times)
+            >= c.TapOracleOic.TapOicPerformance.MIN_RESPONSE_SAMPLES
+        ):
             avg_time = sum(self._response_times) / len(self._response_times)
             if (
-                avg_time > c.TapOicPerformance.SLOW_RESPONSE_THRESHOLD
+                avg_time > c.TapOracleOic.TapOicPerformance.SLOW_RESPONSE_THRESHOLD
                 and self._page_size > self._min_page_size
             ):
                 self._page_size = max(self._min_page_size, int(self._page_size * 0.8))

@@ -167,580 +167,585 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             """
             _ = message
 
-    class OicApiProcessing:
-        """Oracle OIC API processing utilities."""
+        class OicApiProcessing:
+            """Oracle OIC API processing utilities."""
 
-        @staticmethod
-        def build_oic_api_url(
-            base_url: str,
-            resource_path: str,
-            query_params: t.StrMapping | None = None,
-        ) -> r[str]:
-            """Build Oracle OIC API URL with proper formatting.
+            @staticmethod
+            def build_oic_api_url(
+                base_url: str,
+                resource_path: str,
+                query_params: t.StrMapping | None = None,
+            ) -> r[str]:
+                """Build Oracle OIC API URL with proper formatting.
 
-            Args:
-            base_url: Base OIC URL
-            resource_path: API resource path
-            query_params: Optional query parameters
+                Args:
+                base_url: Base OIC URL
+                resource_path: API resource path
+                query_params: Optional query parameters
 
-            Returns:
-            r[str]: Complete API URL or error
+                Returns:
+                r[str]: Complete API URL or error
 
-            """
-            try:
-                validation_result = (
-                    FlextTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
+                """
+                try:
+                    validation_result = FlextTapOracleOicUtilities.TapOracleOic.OicApiProcessing.validate_oic_endpoint(
                         base_url,
                     )
-                )
-                if validation_result.is_failure:
-                    return r[str].fail(
-                        f"Base URL validation failed: {validation_result.error}",
-                    )
-                if not resource_path.startswith("/"):
-                    resource_path = f"/{resource_path}"
-                api_url = urljoin(base_url, resource_path)
-                if query_params:
-                    query_string = "&".join(
-                        (f"{k}={v}" for k, v in query_params.items()),
-                    )
-                    api_url = f"{api_url}?{query_string}"
-                return r[str].ok(api_url)
-            except (
-                ValueError,
-                TypeError,
-                KeyError,
-                AttributeError,
-                OSError,
-                RuntimeError,
-                ImportError,
-            ) as e:
-                return r[str].fail(f"URL building error: {e}")
-
-        @staticmethod
-        def extract_pagination_info(
-            response: Mapping[str, Mapping[str, t.ContainerValue]] | None,
-        ) -> Mapping[str, t.ContainerValue]:
-            """Extract pagination information from OIC response.
-
-            Args:
-            response: OIC API response
-
-            Returns:
-            Mapping[str, t.ContainerValue]: Pagination information
-
-            """
-            if not response:
-                return {
-                    "has_more": False,
-                    "limit": FlextTapOracleOicUtilities.DEFAULT_PAGE_SIZE,
-                    "offset": 0,
-                    "total_count": 0,
-                    "current_page_size": 0,
-                }
-            items = response.get("items", [])
-            items_list_raw = FlextTapOracleOicUtilities._as_list(items)
-            items_list: Sequence[t.ContainerValue] = (
-                items_list_raw if items_list_raw is not None else []
-            )
-            return {
-                "has_more": response.get("hasMore", False),
-                "limit": response.get(
-                    "limit",
-                    FlextTapOracleOicUtilities.DEFAULT_PAGE_SIZE,
-                ),
-                "offset": response.get("offset", 0),
-                "total_count": response.get("count", 0),
-                "current_page_size": len(items_list),
-            }
-
-        @staticmethod
-        def parse_oic_response(
-            response_data: Mapping[str, t.ContainerValue],
-        ) -> r[Mapping[str, t.ContainerValue]]:
-            """Parse Oracle OIC API response.
-
-            Args:
-            response_data: Raw API response data
-
-            Returns:
-            r[Mapping[str, t.ContainerValue]]: Parsed response or error
-
-            """
-            if not response_data:
-                return r[t.ContainerValueMapping].fail(
-                    "Response data cannot be empty",
-                )
-            try:
-                parsed_response = {
-                    "items": response_data.get("items", []),
-                    "count": response_data.get("count", 0),
-                    "hasMore": response_data.get("hasMore", False),
-                    "limit": response_data.get("limit", 0),
-                    "offset": response_data.get("offset", 0),
-                }
-                if "data" in response_data:
-                    parsed_response["items"] = response_data["data"]
-                return r[t.ContainerValueMapping].ok(parsed_response)
-            except (
-                ValueError,
-                TypeError,
-                KeyError,
-                AttributeError,
-                OSError,
-                RuntimeError,
-                ImportError,
-            ) as e:
-                return r[t.ContainerValueMapping].fail(
-                    f"Response parsing error: {e}",
-                )
-
-        @staticmethod
-        def validate_oic_endpoint(endpoint_url: str) -> r[str]:
-            """Validate Oracle OIC endpoint URL.
-
-            Args:
-            endpoint_url: OIC endpoint URL
-
-            Returns:
-            r[str]: Validated URL or error
-
-            """
-            if not endpoint_url:
-                return r[str].fail("OIC endpoint URL cannot be empty")
-            try:
-                parsed = urlparse(endpoint_url)
-                if not parsed.scheme or not parsed.netloc:
-                    return r[str].fail("Invalid URL format")
-                if "oic" not in parsed.netloc.lower():
-                    return r[str].fail("URL does not appear to be an OIC endpoint")
-                return r[str].ok(endpoint_url)
-            except (
-                ValueError,
-                TypeError,
-                KeyError,
-                AttributeError,
-                OSError,
-                RuntimeError,
-                ImportError,
-            ) as e:
-                return r[str].fail(f"URL validation error: {e}")
-
-    class OicDataProcessing:
-        """Oracle OIC data processing utilities."""
-
-        @staticmethod
-        def extract_integration_metadata(
-            integration_data: Mapping[str, t.ContainerValue] | None,
-        ) -> Mapping[str, t.ContainerValue]:
-            """Extract metadata from Oracle OIC integration data.
-
-            Args:
-            integration_data: Raw integration data
-
-            Returns:
-            Mapping[str, t.ContainerValue]: Extracted metadata
-
-            """
-            if not integration_data:
-                return {}
-            metadata: MutableMapping[str, t.ContainerValue | None] = {
-                "id": integration_data.get("id"),
-                "name": integration_data.get("name"),
-                "version": integration_data.get("version"),
-                "status": integration_data.get("status"),
-                "created": integration_data.get("timeCreated"),
-                "updated": integration_data.get("timeUpdated"),
-                "description": integration_data.get("description"),
-                "type": integration_data.get("style"),
-            }
-            connections = integration_data.get("connectionInstances", [])
-            connection_list_raw = FlextTapOracleOicUtilities._as_list(connections)
-            connection_list: Sequence[t.ContainerValue] = (
-                connection_list_raw if connection_list_raw is not None else []
-            )
-            metadata["connection_count"] = len(connection_list)
-            connection_types: Sequence[str] = [
-                str(connection_type)
-                for conn in connection_list
-                if (conn_map := FlextTapOracleOicUtilities._as_map(conn)) is not None
-                and (connection_type := conn_map.get("connectionType")) is not None
-            ]
-            metadata["connection_types"] = list(connection_types)
-            return {k: v for k, v in metadata.items() if v is not None}
-
-        @staticmethod
-        def format_oic_timestamp(timestamp_str: str) -> r[str]:
-            """Format Oracle OIC timestamp to ISO format.
-
-            Args:
-            timestamp_str: OIC timestamp string
-
-            Returns:
-            r[str]: ISO formatted timestamp or error
-
-            """
-            if not timestamp_str:
-                return r[str].fail("Timestamp string cannot be empty")
-            try:
-                formats = [
-                    "%Y-%m-%dT%H:%M:%S.%fZ",
-                    "%Y-%m-%dT%H:%M:%SZ",
-                    "%Y-%m-%dT%H:%M:%S%z",
-                    "%Y-%m-%dT%H:%M:%S.%f%z",
-                    "%Y-%m-%dT%H:%M:%S",
-                    "%Y-%m-%d %H:%M:%S",
-                ]
-                for fmt in formats:
-                    try:
-                        dt_naive = datetime.strptime(timestamp_str, fmt)
-                        dt = (
-                            dt_naive.replace(tzinfo=UTC)
-                            if dt_naive.tzinfo is None
-                            else dt_naive
+                    if validation_result.is_failure:
+                        return r[str].fail(
+                            f"Base URL validation failed: {validation_result.error}",
                         )
-                        return r[str].ok(dt.isoformat())
-                    except ValueError:
-                        continue
-                return r[str].fail(f"Unsupported timestamp format: {timestamp_str}")
-            except (
-                ValueError,
-                TypeError,
-                KeyError,
-                AttributeError,
-                OSError,
-                RuntimeError,
-                ImportError,
-            ) as e:
-                return r[str].fail(f"Timestamp formatting error: {e}")
+                    if not resource_path.startswith("/"):
+                        resource_path = f"/{resource_path}"
+                    api_url = urljoin(base_url, resource_path)
+                    if query_params:
+                        query_string = "&".join(
+                            (f"{k}={v}" for k, v in query_params.items()),
+                        )
+                        api_url = f"{api_url}?{query_string}"
+                    return r[str].ok(api_url)
+                except (
+                    ValueError,
+                    TypeError,
+                    KeyError,
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                    ImportError,
+                ) as e:
+                    return r[str].fail(f"URL building error: {e}")
 
-        @staticmethod
-        def normalize_integration_name(integration_name: str) -> str:
-            """Normalize Oracle OIC integration name.
+            @staticmethod
+            def extract_pagination_info(
+                response: Mapping[str, Mapping[str, t.ContainerValue]] | None,
+            ) -> Mapping[str, t.ContainerValue]:
+                """Extract pagination information from OIC response.
 
-            Args:
-            integration_name: Raw integration name
+                Args:
+                response: OIC API response
 
-            Returns:
-            str: Normalized integration name
+                Returns:
+                Mapping[str, t.ContainerValue]: Pagination information
 
-            """
-            if not integration_name:
-                return ""
-            normalized = re.sub(r"[^a-zA-Z0-9]", "_", integration_name.lower())
-            normalized = re.sub(r"_+", "_", normalized)
-            return normalized.strip("_")
-
-        @staticmethod
-        def sanitize_oic_field_name(field_name: str) -> str:
-            """Sanitize OIC field name for JSON schema.
-
-            Args:
-            field_name: Raw field name
-
-            Returns:
-            str: Sanitized field name
-
-            """
-            if not field_name:
-                return ""
-            sanitized = re.sub(r"(?<!^)(?=[A-Z])", "_", field_name).lower()
-            sanitized = re.sub(r"[^a-zA-Z0-9_]", "_", sanitized)
-            sanitized = re.sub(r"_+", "_", sanitized)
-            if sanitized and sanitized[0].isdigit():
-                sanitized = f"field_{sanitized}"
-            return sanitized.strip("_")
-
-    class ConfigValidation:
-        """Configuration validation utilities."""
-
-        @staticmethod
-        def validate_oic_connection_config(
-            config: Mapping[str, Mapping[str, t.ContainerValue]],
-        ) -> r[Mapping[str, t.ContainerValue]]:
-            """Validate Oracle OIC connection configuration.
-
-            Args:
-            config: Configuration dictionary
-
-            Returns:
-            r[Mapping[str, t.ContainerValue]]: Validated config or error
-
-            """
-            required_fields = ["oic_base_url", "username", "password"]
-            missing_fields = [field for field in required_fields if field not in config]
-            if missing_fields:
-                return r[t.ContainerValueMapping].fail(
-                    f"Missing required fields: {', '.join(missing_fields)}",
+                """
+                if not response:
+                    return {
+                        "has_more": False,
+                        "limit": FlextTapOracleOicUtilities.DEFAULT_PAGE_SIZE,
+                        "offset": 0,
+                        "total_count": 0,
+                        "current_page_size": 0,
+                    }
+                items = response.get("items", [])
+                items_list_raw = FlextTapOracleOicUtilities._as_list(items)
+                items_list: Sequence[t.ContainerValue] = (
+                    items_list_raw if items_list_raw is not None else []
                 )
-            url_validation = (
-                FlextTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
+                return {
+                    "has_more": response.get("hasMore", False),
+                    "limit": response.get(
+                        "limit",
+                        FlextTapOracleOicUtilities.DEFAULT_PAGE_SIZE,
+                    ),
+                    "offset": response.get("offset", 0),
+                    "total_count": response.get("count", 0),
+                    "current_page_size": len(items_list),
+                }
+
+            @staticmethod
+            def parse_oic_response(
+                response_data: Mapping[str, t.ContainerValue],
+            ) -> r[Mapping[str, t.ContainerValue]]:
+                """Parse Oracle OIC API response.
+
+                Args:
+                response_data: Raw API response data
+
+                Returns:
+                r[Mapping[str, t.ContainerValue]]: Parsed response or error
+
+                """
+                if not response_data:
+                    return r[t.ContainerValueMapping].fail(
+                        "Response data cannot be empty",
+                    )
+                try:
+                    parsed_response = {
+                        "items": response_data.get("items", []),
+                        "count": response_data.get("count", 0),
+                        "hasMore": response_data.get("hasMore", False),
+                        "limit": response_data.get("limit", 0),
+                        "offset": response_data.get("offset", 0),
+                    }
+                    if "data" in response_data:
+                        parsed_response["items"] = response_data["data"]
+                    return r[t.ContainerValueMapping].ok(parsed_response)
+                except (
+                    ValueError,
+                    TypeError,
+                    KeyError,
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                    ImportError,
+                ) as e:
+                    return r[t.ContainerValueMapping].fail(
+                        f"Response parsing error: {e}",
+                    )
+
+            @staticmethod
+            def validate_oic_endpoint(endpoint_url: str) -> r[str]:
+                """Validate Oracle OIC endpoint URL.
+
+                Args:
+                endpoint_url: OIC endpoint URL
+
+                Returns:
+                r[str]: Validated URL or error
+
+                """
+                if not endpoint_url:
+                    return r[str].fail("OIC endpoint URL cannot be empty")
+                try:
+                    parsed = urlparse(endpoint_url)
+                    if not parsed.scheme or not parsed.netloc:
+                        return r[str].fail("Invalid URL format")
+                    if "oic" not in parsed.netloc.lower():
+                        return r[str].fail("URL does not appear to be an OIC endpoint")
+                    return r[str].ok(endpoint_url)
+                except (
+                    ValueError,
+                    TypeError,
+                    KeyError,
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                    ImportError,
+                ) as e:
+                    return r[str].fail(f"URL validation error: {e}")
+
+        class OicDataProcessing:
+            """Oracle OIC data processing utilities."""
+
+            @staticmethod
+            def extract_integration_metadata(
+                integration_data: Mapping[str, t.ContainerValue] | None,
+            ) -> Mapping[str, t.ContainerValue]:
+                """Extract metadata from Oracle OIC integration data.
+
+                Args:
+                integration_data: Raw integration data
+
+                Returns:
+                Mapping[str, t.ContainerValue]: Extracted metadata
+
+                """
+                if not integration_data:
+                    return {}
+                metadata: MutableMapping[str, t.ContainerValue | None] = {
+                    "id": integration_data.get("id"),
+                    "name": integration_data.get("name"),
+                    "version": integration_data.get("version"),
+                    "status": integration_data.get("status"),
+                    "created": integration_data.get("timeCreated"),
+                    "updated": integration_data.get("timeUpdated"),
+                    "description": integration_data.get("description"),
+                    "type": integration_data.get("style"),
+                }
+                connections = integration_data.get("connectionInstances", [])
+                connection_list_raw = FlextTapOracleOicUtilities._as_list(connections)
+                connection_list: Sequence[t.ContainerValue] = (
+                    connection_list_raw if connection_list_raw is not None else []
+                )
+                metadata["connection_count"] = len(connection_list)
+                connection_types: Sequence[str] = [
+                    str(connection_type)
+                    for conn in connection_list
+                    if (conn_map := FlextTapOracleOicUtilities._as_map(conn))
+                    is not None
+                    and (connection_type := conn_map.get("connectionType")) is not None
+                ]
+                metadata["connection_types"] = list(connection_types)
+                return {k: v for k, v in metadata.items() if v is not None}
+
+            @staticmethod
+            def format_oic_timestamp(timestamp_str: str) -> r[str]:
+                """Format Oracle OIC timestamp to ISO format.
+
+                Args:
+                timestamp_str: OIC timestamp string
+
+                Returns:
+                r[str]: ISO formatted timestamp or error
+
+                """
+                if not timestamp_str:
+                    return r[str].fail("Timestamp string cannot be empty")
+                try:
+                    formats = [
+                        "%Y-%m-%dT%H:%M:%S.%fZ",
+                        "%Y-%m-%dT%H:%M:%SZ",
+                        "%Y-%m-%dT%H:%M:%S%z",
+                        "%Y-%m-%dT%H:%M:%S.%f%z",
+                        "%Y-%m-%dT%H:%M:%S",
+                        "%Y-%m-%d %H:%M:%S",
+                    ]
+                    for fmt in formats:
+                        try:
+                            dt_naive = datetime.strptime(timestamp_str, fmt)
+                            dt = (
+                                dt_naive.replace(tzinfo=UTC)
+                                if dt_naive.tzinfo is None
+                                else dt_naive
+                            )
+                            return r[str].ok(dt.isoformat())
+                        except ValueError:
+                            continue
+                    return r[str].fail(f"Unsupported timestamp format: {timestamp_str}")
+                except (
+                    ValueError,
+                    TypeError,
+                    KeyError,
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                    ImportError,
+                ) as e:
+                    return r[str].fail(f"Timestamp formatting error: {e}")
+
+            @staticmethod
+            def normalize_integration_name(integration_name: str) -> str:
+                """Normalize Oracle OIC integration name.
+
+                Args:
+                integration_name: Raw integration name
+
+                Returns:
+                str: Normalized integration name
+
+                """
+                if not integration_name:
+                    return ""
+                normalized = re.sub(r"[^a-zA-Z0-9]", "_", integration_name.lower())
+                normalized = re.sub(r"_+", "_", normalized)
+                return normalized.strip("_")
+
+            @staticmethod
+            def sanitize_oic_field_name(field_name: str) -> str:
+                """Sanitize OIC field name for JSON schema.
+
+                Args:
+                field_name: Raw field name
+
+                Returns:
+                str: Sanitized field name
+
+                """
+                if not field_name:
+                    return ""
+                sanitized = re.sub(r"(?<!^)(?=[A-Z])", "_", field_name).lower()
+                sanitized = re.sub(r"[^a-zA-Z0-9_]", "_", sanitized)
+                sanitized = re.sub(r"_+", "_", sanitized)
+                if sanitized and sanitized[0].isdigit():
+                    sanitized = f"field_{sanitized}"
+                return sanitized.strip("_")
+
+        class ConfigValidation:
+            """Configuration validation utilities."""
+
+            @staticmethod
+            def validate_oic_connection_config(
+                config: Mapping[str, Mapping[str, t.ContainerValue]],
+            ) -> r[Mapping[str, t.ContainerValue]]:
+                """Validate Oracle OIC connection configuration.
+
+                Args:
+                config: Configuration dictionary
+
+                Returns:
+                r[Mapping[str, t.ContainerValue]]: Validated config or error
+
+                """
+                required_fields = ["oic_base_url", "username", "password"]
+                missing_fields = [
+                    field for field in required_fields if field not in config
+                ]
+                if missing_fields:
+                    return r[t.ContainerValueMapping].fail(
+                        f"Missing required fields: {', '.join(missing_fields)}",
+                    )
+                url_validation = FlextTapOracleOicUtilities.TapOracleOic.OicApiProcessing.validate_oic_endpoint(
                     str(config["oic_base_url"]),
                 )
-            )
-            if url_validation.is_failure:
-                return r[t.ContainerValueMapping].fail(
-                    f"Invalid OIC URL: {url_validation.error}",
-                )
-            if not str(config["username"]).strip():
-                return r[t.ContainerValueMapping].fail(
-                    "Username cannot be empty",
-                )
-            if not str(config["password"]).strip():
-                return r[t.ContainerValueMapping].fail(
-                    "Password cannot be empty",
-                )
-            if "timeout" in config:
-                timeout = FlextTapOracleOicUtilities._as_int(config["timeout"])
-                if timeout is None or timeout <= 0:
+                if url_validation.is_failure:
                     return r[t.ContainerValueMapping].fail(
-                        "Timeout must be a positive integer",
+                        f"Invalid OIC URL: {url_validation.error}",
                     )
-            return r[t.ContainerValueMapping].ok(config)
-
-        @staticmethod
-        def validate_stream_config(
-            config: Mapping[str, Mapping[str, t.ContainerValue]],
-        ) -> r[Mapping[str, t.ContainerValue]]:
-            """Validate OIC tap stream configuration.
-
-            Args:
-            config: Stream configuration
-
-            Returns:
-            r[Mapping[str, t.ContainerValue]]: Validated config or error
-
-            """
-            if "streams" not in config:
-                return r[t.ContainerValueMapping].fail(
-                    "Configuration must include 'streams' section",
-                )
-            streams = config["streams"]
-            stream_map = FlextTapOracleOicUtilities._as_map(streams)
-            if stream_map is None:
-                return r[t.ContainerValueMapping].fail(
-                    "Streams configuration must be a dictionary",
-                )
-            for stream_name, stream_payload in stream_map.items():
-                stream_config = FlextTapOracleOicUtilities._as_map(stream_payload)
-                if stream_config is None:
+                if not str(config["username"]).strip():
                     return r[t.ContainerValueMapping].fail(
-                        f"Stream '{stream_name}' configuration must be a dictionary",
+                        "Username cannot be empty",
                     )
-                if "selected" not in stream_config:
+                if not str(config["password"]).strip():
                     return r[t.ContainerValueMapping].fail(
-                        f"Stream '{stream_name}' must have 'selected' field",
+                        "Password cannot be empty",
                     )
-                if "page_size" in stream_config:
-                    page_size = FlextTapOracleOicUtilities._as_int(
-                        stream_config["page_size"],
-                    )
-                    max_page_size = c.TapOicProcessing.MAX_PAGE_SIZE
-                    if page_size is None or page_size <= 0 or page_size > max_page_size:
+                if "timeout" in config:
+                    timeout = FlextTapOracleOicUtilities._as_int(config["timeout"])
+                    if timeout is None or timeout <= 0:
                         return r[t.ContainerValueMapping].fail(
-                            f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}",
+                            "Timeout must be a positive integer",
                         )
-            return r[t.ContainerValueMapping].ok(config)
+                return r[t.ContainerValueMapping].ok(config)
 
-    class StateManagement:
-        """State management utilities for incremental syncs."""
+            @staticmethod
+            def validate_stream_config(
+                config: Mapping[str, Mapping[str, t.ContainerValue]],
+            ) -> r[Mapping[str, t.ContainerValue]]:
+                """Validate OIC tap stream configuration.
 
-        @staticmethod
-        def get_bookmark(
-            state: Mapping[str, Mapping[str, t.ContainerValue]],
-            stream_name: str,
-            bookmark_key: str,
-        ) -> t.ContainerValue | None:
-            """Get bookmark value for a stream.
+                Args:
+                config: Stream configuration
 
-            Args:
-            state: Complete state dictionary
-            stream_name: Name of the stream
-            bookmark_key: Bookmark key
+                Returns:
+                r[Mapping[str, t.ContainerValue]]: Validated config or error
 
-            Returns:
-            t.ContainerValue: Bookmark value or None
+                """
+                if "streams" not in config:
+                    return r[t.ContainerValueMapping].fail(
+                        "Configuration must include 'streams' section",
+                    )
+                streams = config["streams"]
+                stream_map = FlextTapOracleOicUtilities._as_map(streams)
+                if stream_map is None:
+                    return r[t.ContainerValueMapping].fail(
+                        "Streams configuration must be a dictionary",
+                    )
+                for stream_name, stream_payload in stream_map.items():
+                    stream_config = FlextTapOracleOicUtilities._as_map(stream_payload)
+                    if stream_config is None:
+                        return r[t.ContainerValueMapping].fail(
+                            f"Stream '{stream_name}' configuration must be a dictionary",
+                        )
+                    if "selected" not in stream_config:
+                        return r[t.ContainerValueMapping].fail(
+                            f"Stream '{stream_name}' must have 'selected' field",
+                        )
+                    if "page_size" in stream_config:
+                        page_size = FlextTapOracleOicUtilities._as_int(
+                            stream_config["page_size"],
+                        )
+                        max_page_size = c.TapOracleOic.TapOicProcessing.MAX_PAGE_SIZE
+                        if (
+                            page_size is None
+                            or page_size <= 0
+                            or page_size > max_page_size
+                        ):
+                            return r[t.ContainerValueMapping].fail(
+                                f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}",
+                            )
+                return r[t.ContainerValueMapping].ok(config)
 
-            """
-            stream_state = FlextTapOracleOicUtilities.StateManagement.get_stream_state(
-                state,
-                stream_name,
-            )
-            return stream_state.get(bookmark_key)
+        class StateManagement:
+            """State management utilities for incremental syncs."""
 
-        @staticmethod
-        def get_stream_state(
-            state: Mapping[str, Mapping[str, t.ContainerValue]],
-            stream_name: str,
-        ) -> Mapping[str, t.ContainerValue]:
-            """Get state for a specific stream.
+            @staticmethod
+            def get_bookmark(
+                state: Mapping[str, Mapping[str, t.ContainerValue]],
+                stream_name: str,
+                bookmark_key: str,
+            ) -> t.ContainerValue | None:
+                """Get bookmark value for a stream.
 
-            Args:
-            state: Complete state dictionary
-            stream_name: Name of the stream
+                Args:
+                state: Complete state dictionary
+                stream_name: Name of the stream
+                bookmark_key: Bookmark key
 
-            Returns:
-            Mapping[str, t.ContainerValue]: Stream state
+                Returns:
+                t.ContainerValue: Bookmark value or None
 
-            """
-            bookmarks = state.get("bookmarks", {})
-            bookmark_map = FlextTapOracleOicUtilities._as_map(bookmarks)
-            if bookmark_map is None:
-                return {}
-            stream_bookmarks = FlextTapOracleOicUtilities._as_map(
-                bookmark_map.get(stream_name, {}),
-            )
-            return stream_bookmarks if stream_bookmarks is not None else {}
-
-        @staticmethod
-        def set_bookmark(
-            state: Mapping[str, Mapping[str, t.ContainerValue]],
-            stream_name: str,
-            bookmark_key: str,
-            bookmark_value: t.ContainerValue,
-        ) -> Mapping[str, t.ContainerValue]:
-            """Set bookmark value for a stream.
-
-            Args:
-            state: Complete state dictionary
-            stream_name: Name of the stream
-            bookmark_key: Bookmark key
-            bookmark_value: Bookmark value
-
-            Returns:
-            Mapping[str, t.ContainerValue]: Updated state
-
-            """
-            state_copy: MutableMapping[str, t.ContainerValue] = dict(state)
-            if "bookmarks" not in state_copy:
-                empty_bookmarks: MutableMapping[str, t.ContainerValue] = {}
-                state_copy["bookmarks"] = empty_bookmarks
-            bookmarks = state_copy["bookmarks"]
-            bookmark_map = FlextTapOracleOicUtilities._as_map(bookmarks)
-            if bookmark_map is not None:
-                updated_bookmark_map = dict(bookmark_map)
-                if stream_name not in updated_bookmark_map:
-                    empty_stream_bookmarks: MutableMapping[str, t.ContainerValue] = {}
-                    updated_bookmark_map[stream_name] = empty_stream_bookmarks
-                stream_bookmarks = FlextTapOracleOicUtilities._as_map(
-                    updated_bookmark_map[stream_name],
+                """
+                stream_state = FlextTapOracleOicUtilities.TapOracleOic.StateManagement.get_stream_state(
+                    state,
+                    stream_name,
                 )
-                if stream_bookmarks is not None:
-                    updated_stream_bookmarks = dict(stream_bookmarks)
-                    updated_stream_bookmarks[bookmark_key] = bookmark_value
-                    updated_bookmark_map[stream_name] = updated_stream_bookmarks
+                return stream_state.get(bookmark_key)
+
+            @staticmethod
+            def get_stream_state(
+                state: Mapping[str, Mapping[str, t.ContainerValue]],
+                stream_name: str,
+            ) -> Mapping[str, t.ContainerValue]:
+                """Get state for a specific stream.
+
+                Args:
+                state: Complete state dictionary
+                stream_name: Name of the stream
+
+                Returns:
+                Mapping[str, t.ContainerValue]: Stream state
+
+                """
+                bookmarks = state.get("bookmarks", {})
+                bookmark_map = FlextTapOracleOicUtilities._as_map(bookmarks)
+                if bookmark_map is None:
+                    return {}
+                stream_bookmarks = FlextTapOracleOicUtilities._as_map(
+                    bookmark_map.get(stream_name, {}),
+                )
+                return stream_bookmarks if stream_bookmarks is not None else {}
+
+            @staticmethod
+            def set_bookmark(
+                state: Mapping[str, Mapping[str, t.ContainerValue]],
+                stream_name: str,
+                bookmark_key: str,
+                bookmark_value: t.ContainerValue,
+            ) -> Mapping[str, t.ContainerValue]:
+                """Set bookmark value for a stream.
+
+                Args:
+                state: Complete state dictionary
+                stream_name: Name of the stream
+                bookmark_key: Bookmark key
+                bookmark_value: Bookmark value
+
+                Returns:
+                Mapping[str, t.ContainerValue]: Updated state
+
+                """
+                state_copy: MutableMapping[str, t.ContainerValue] = dict(state)
+                if "bookmarks" not in state_copy:
+                    empty_bookmarks: MutableMapping[str, t.ContainerValue] = {}
+                    state_copy["bookmarks"] = empty_bookmarks
+                bookmarks = state_copy["bookmarks"]
+                bookmark_map = FlextTapOracleOicUtilities._as_map(bookmarks)
+                if bookmark_map is not None:
+                    updated_bookmark_map = dict(bookmark_map)
+                    if stream_name not in updated_bookmark_map:
+                        empty_stream_bookmarks: MutableMapping[
+                            str, t.ContainerValue
+                        ] = {}
+                        updated_bookmark_map[stream_name] = empty_stream_bookmarks
+                    stream_bookmarks = FlextTapOracleOicUtilities._as_map(
+                        updated_bookmark_map[stream_name],
+                    )
+                    if stream_bookmarks is not None:
+                        updated_stream_bookmarks = dict(stream_bookmarks)
+                        updated_stream_bookmarks[bookmark_key] = bookmark_value
+                        updated_bookmark_map[stream_name] = updated_stream_bookmarks
+                        state_copy["bookmarks"] = updated_bookmark_map
+                return state_copy
+
+            @staticmethod
+            def set_stream_state(
+                state: Mapping[str, Mapping[str, t.ContainerValue]],
+                stream_name: str,
+                stream_state: Mapping[str, Mapping[str, t.ContainerValue]],
+            ) -> Mapping[str, t.ContainerValue]:
+                """Set state for a specific stream.
+
+                Args:
+                state: Complete state dictionary
+                stream_name: Name of the stream
+                stream_state: State data for the stream
+
+                Returns:
+                Mapping[str, t.ContainerValue]: Updated state
+
+                """
+                state_copy: MutableMapping[str, t.ContainerValue] = dict(state)
+                if "bookmarks" not in state_copy:
+                    empty_bookmarks: MutableMapping[str, t.ContainerValue] = {}
+                    state_copy["bookmarks"] = empty_bookmarks
+                bookmarks = state_copy["bookmarks"]
+                bookmark_map = FlextTapOracleOicUtilities._as_map(bookmarks)
+                if bookmark_map is not None:
+                    updated_bookmark_map = dict(bookmark_map)
+                    updated_bookmark_map[stream_name] = dict(stream_state)
                     state_copy["bookmarks"] = updated_bookmark_map
-            return state_copy
+                return state_copy
 
-        @staticmethod
-        def set_stream_state(
-            state: Mapping[str, Mapping[str, t.ContainerValue]],
-            stream_name: str,
-            stream_state: Mapping[str, Mapping[str, t.ContainerValue]],
-        ) -> Mapping[str, t.ContainerValue]:
-            """Set state for a specific stream.
+            @staticmethod
+            def update_pagination_bookmark(
+                state: Mapping[str, Mapping[str, t.ContainerValue]],
+                stream_name: str,
+                pagination_info: Mapping[str, Mapping[str, t.ContainerValue]],
+            ) -> Mapping[str, t.ContainerValue]:
+                """Update pagination bookmark for stream.
 
-            Args:
-            state: Complete state dictionary
-            stream_name: Name of the stream
-            stream_state: State data for the stream
+                Args:
+                state: Complete state dictionary
+                stream_name: Name of the stream
+                pagination_info: Pagination information
 
-            Returns:
-            Mapping[str, t.ContainerValue]: Updated state
+                Returns:
+                Mapping[str, t.ContainerValue]: Updated state
 
-            """
-            state_copy: MutableMapping[str, t.ContainerValue] = dict(state)
-            if "bookmarks" not in state_copy:
-                empty_bookmarks: MutableMapping[str, t.ContainerValue] = {}
-                state_copy["bookmarks"] = empty_bookmarks
-            bookmarks = state_copy["bookmarks"]
-            bookmark_map = FlextTapOracleOicUtilities._as_map(bookmarks)
-            if bookmark_map is not None:
-                updated_bookmark_map = dict(bookmark_map)
-                updated_bookmark_map[stream_name] = dict(stream_state)
-                state_copy["bookmarks"] = updated_bookmark_map
-            return state_copy
+                """
+                offset = pagination_info.get("offset", 0)
+                page_size = pagination_info.get("current_page_size", 0)
+                try:
+                    offset_val = FlextTapOracleOicUtilities._coerce_int(offset)
+                    page_size_val = FlextTapOracleOicUtilities._coerce_int(page_size)
+                except (ValueError, TypeError):
+                    offset_val = 0
+                    page_size_val = 0
+                return FlextTapOracleOicUtilities.TapOracleOic.StateManagement.set_bookmark(
+                    state,
+                    stream_name,
+                    "pagination_offset",
+                    offset_val + page_size_val,
+                )
 
-        @staticmethod
-        def update_pagination_bookmark(
-            state: Mapping[str, Mapping[str, t.ContainerValue]],
-            stream_name: str,
-            pagination_info: Mapping[str, Mapping[str, t.ContainerValue]],
-        ) -> Mapping[str, t.ContainerValue]:
-            """Update pagination bookmark for stream.
+        class PerformanceUtilities:
+            """Performance optimization utilities for OIC operations."""
 
-            Args:
-            state: Complete state dictionary
-            stream_name: Name of the stream
-            pagination_info: Pagination information
+            @staticmethod
+            def calculate_optimal_page_size(
+                total_records: int,
+                target_requests: int = 10,
+            ) -> int:
+                """Calculate optimal page size for OIC API requests.
 
-            Returns:
-            Mapping[str, t.ContainerValue]: Updated state
+                Args:
+                total_records: Total number of records to fetch
+                target_requests: Target number of API requests
 
-            """
-            offset = pagination_info.get("offset", 0)
-            page_size = pagination_info.get("current_page_size", 0)
-            try:
-                offset_val = FlextTapOracleOicUtilities._coerce_int(offset)
-                page_size_val = FlextTapOracleOicUtilities._coerce_int(page_size)
-            except (ValueError, TypeError):
-                offset_val = 0
-                page_size_val = 0
-            return FlextTapOracleOicUtilities.StateManagement.set_bookmark(
-                state,
-                stream_name,
-                "pagination_offset",
-                offset_val + page_size_val,
-            )
+                Returns:
+                int: Optimal page size
 
-    class PerformanceUtilities:
-        """Performance optimization utilities for OIC operations."""
+                """
+                if total_records <= 0:
+                    return FlextTapOracleOicUtilities.DEFAULT_PAGE_SIZE
+                calculated_size = max(1, total_records // target_requests)
+                return min(calculated_size, 1000)
 
-        @staticmethod
-        def calculate_optimal_page_size(
-            total_records: int,
-            target_requests: int = 10,
-        ) -> int:
-            """Calculate optimal page size for OIC API requests.
+            @staticmethod
+            def estimate_extraction_time(
+                record_count: int,
+                records_per_second: float = 10.0,
+            ) -> Mapping[str, t.ContainerValue]:
+                """Estimate extraction time for OIC data.
 
-            Args:
-            total_records: Total number of records to fetch
-            target_requests: Target number of API requests
+                Args:
+                record_count: Number of records to extract
+                records_per_second: Processing rate
 
-            Returns:
-            int: Optimal page size
+                Returns:
+                Mapping[str, t.ContainerValue]: Time estimation
 
-            """
-            if total_records <= 0:
-                return FlextTapOracleOicUtilities.DEFAULT_PAGE_SIZE
-            calculated_size = max(1, total_records // target_requests)
-            return min(calculated_size, 1000)
-
-        @staticmethod
-        def estimate_extraction_time(
-            record_count: int,
-            records_per_second: float = 10.0,
-        ) -> Mapping[str, t.ContainerValue]:
-            """Estimate extraction time for OIC data.
-
-            Args:
-            record_count: Number of records to extract
-            records_per_second: Processing rate
-
-            Returns:
-            Mapping[str, t.ContainerValue]: Time estimation
-
-            """
-            if record_count <= 0:
-                return {"estimated_seconds": 0, "estimated_minutes": 0}
-            estimated_seconds = record_count / max(records_per_second, 1.0)
-            estimated_minutes = estimated_seconds / 60
-            return {
-                "estimated_seconds": round(estimated_seconds, 2),
-                "estimated_minutes": round(estimated_minutes, 2),
-                "record_count": record_count,
-                "rate_per_second": records_per_second,
-            }
+                """
+                if record_count <= 0:
+                    return {"estimated_seconds": 0, "estimated_minutes": 0}
+                estimated_seconds = record_count / max(records_per_second, 1.0)
+                estimated_minutes = estimated_seconds / 60
+                return {
+                    "estimated_seconds": round(estimated_seconds, 2),
+                    "estimated_minutes": round(estimated_minutes, 2),
+                    "record_count": record_count,
+                    "rate_per_second": records_per_second,
+                }
 
     @classmethod
     def build_oic_api_url(
@@ -750,10 +755,12 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         query_params: t.StrMapping | None = None,
     ) -> r[str]:
         """Proxy method for OicApiProcessing.build_oic_api_url()."""
-        return FlextTapOracleOicUtilities.OicApiProcessing.build_oic_api_url(
-            base_url,
-            resource_path,
-            query_params,
+        return (
+            FlextTapOracleOicUtilities.TapOracleOic.OicApiProcessing.build_oic_api_url(
+                base_url,
+                resource_path,
+                query_params,
+            )
         )
 
     @classmethod
@@ -787,7 +794,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
     @classmethod
     def format_oic_timestamp(cls, timestamp_str: str) -> r[str]:
         """Proxy method for OicDataProcessing.format_oic_timestamp()."""
-        return FlextTapOracleOicUtilities.OicDataProcessing.format_oic_timestamp(
+        return FlextTapOracleOicUtilities.TapOracleOic.OicDataProcessing.format_oic_timestamp(
             timestamp_str,
         )
 
@@ -798,7 +805,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         stream_name: str,
     ) -> Mapping[str, t.ContainerValue]:
         """Proxy method for StateManagement.get_stream_state()."""
-        return FlextTapOracleOicUtilities.StateManagement.get_stream_state(
+        return FlextTapOracleOicUtilities.TapOracleOic.StateManagement.get_stream_state(
             state,
             stream_name,
         )
@@ -806,7 +813,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
     @classmethod
     def normalize_integration_name(cls, integration_name: str) -> str:
         """Proxy method for OicDataProcessing.normalize_integration_name()."""
-        return FlextTapOracleOicUtilities.OicDataProcessing.normalize_integration_name(
+        return FlextTapOracleOicUtilities.TapOracleOic.OicDataProcessing.normalize_integration_name(
             integration_name,
         )
 
@@ -819,7 +826,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         bookmark_value: t.ContainerValue,
     ) -> Mapping[str, t.ContainerValue]:
         """Proxy method for StateManagement.set_bookmark()."""
-        return FlextTapOracleOicUtilities.StateManagement.set_bookmark(
+        return FlextTapOracleOicUtilities.TapOracleOic.StateManagement.set_bookmark(
             state,
             stream_name,
             bookmark_key,
@@ -832,16 +839,14 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         config: Mapping[str, Mapping[str, t.ContainerValue]],
     ) -> r[Mapping[str, t.ContainerValue]]:
         """Proxy method for ConfigValidation.validate_oic_connection_config()."""
-        return (
-            FlextTapOracleOicUtilities.ConfigValidation.validate_oic_connection_config(
-                config,
-            )
+        return FlextTapOracleOicUtilities.TapOracleOic.ConfigValidation.validate_oic_connection_config(
+            config,
         )
 
     @classmethod
     def validate_oic_endpoint(cls, endpoint_url: str) -> r[str]:
         """Proxy method for OicApiProcessing.validate_oic_endpoint()."""
-        return FlextTapOracleOicUtilities.OicApiProcessing.validate_oic_endpoint(
+        return FlextTapOracleOicUtilities.TapOracleOic.OicApiProcessing.validate_oic_endpoint(
             endpoint_url,
         )
 

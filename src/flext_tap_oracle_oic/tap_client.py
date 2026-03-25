@@ -61,7 +61,10 @@ class FlextOracleOicAuthenticator:
             if response_result.is_failure:
                 return r[str].fail(f"OAuth2 request failed: {response_result.error}")
             response = response_result.value
-            if response.status_code >= c.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD:
+            if (
+                response.status_code
+                >= c.TapOracleOic.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD
+            ):
                 return r[str].fail(
                     f"OAuth2 request failed with status {response.status_code}",
                 )
@@ -128,7 +131,10 @@ class FlextTapOracleOicClient:
                     f"OIC API request failed: {response_result.error}",
                 )
             response = response_result.value
-            if response.status_code >= c.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD:
+            if (
+                response.status_code
+                >= c.TapOracleOic.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD
+            ):
                 return r[FlextApiModels.Api.HttpResponse].fail(
                     f"OIC API request failed with status {response.status_code}",
                 )
@@ -174,7 +180,10 @@ class FlextTapOracleOicClient:
                     f"OIC API request failed: {response_result.error}",
                 )
             response = response_result.value
-            if response.status_code >= c.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD:
+            if (
+                response.status_code
+                >= c.TapOracleOic.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD
+            ):
                 return r[FlextApiModels.Api.HttpResponse].fail(
                     f"OIC API request failed with status {response.status_code}",
                 )

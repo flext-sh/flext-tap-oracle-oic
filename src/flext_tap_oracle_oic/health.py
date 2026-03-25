@@ -47,7 +47,7 @@ class FlextTapOracleOicHealthChecker:
                     "error": str(response_result.error),
                 }
             response = response_result.value
-            if response.status_code == c.TapOicHttp.HTTP_OK:
+            if response.status_code == c.TapOracleOic.TapOicHttp.HTTP_OK:
                 return {
                     "status": "healthy",
                     "timestamp": datetime.now(UTC).isoformat(),
@@ -92,7 +92,7 @@ class FlextTapOracleOicHealthChecker:
                     "error": str(response_result.error),
                 }
             response = response_result.value
-            if response.status_code == c.TapOicHttp.HTTP_OK:
+            if response.status_code == c.TapOracleOic.TapOicHttp.HTTP_OK:
                 return {
                     "service": "monitoring",
                     "status": "healthy",
@@ -189,7 +189,7 @@ class FlextTapOracleOicHealthChecker:
                     "error": str(response_result.error),
                 }
             response = response_result.value
-            if response.status_code == c.TapOicHttp.HTTP_OK:
+            if response.status_code == c.TapOracleOic.TapOicHttp.HTTP_OK:
                 match response.body:
                     case dict() as integration_dict:
                         integration: Mapping[str, t.ContainerValue] = integration_dict
@@ -245,8 +245,8 @@ class FlextTapOracleOicHealthChecker:
 
     def _get_headers(self) -> t.StrMapping:
         headers = {
-            "Accept": c.TapOicHttp.JSON_MIME,
-            "Content-Type": c.TapOicHttp.JSON_MIME,
+            "Accept": c.TapOracleOic.TapOicHttp.JSON_MIME,
+            "Content-Type": c.TapOracleOic.TapOicHttp.JSON_MIME,
         }
         token_result = self.authenticator.get_access_token()
         if token_result.is_success:

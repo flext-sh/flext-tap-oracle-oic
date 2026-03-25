@@ -22,7 +22,7 @@ _SCHEMA_ADAPTER: TypeAdapter[Mapping[str, t.ContainerValue]] = TypeAdapter(
 
 
 def _properties_to_dict(
-    properties: p.TapOracleOicPrivate.PropertiesListLike,
+    properties: p.TapOracleOic.TapOracleOicPrivate.PropertiesListLike,
 ) -> Mapping[str, t.ContainerValue]:
     return _SCHEMA_ADAPTER.validate_python(dict(properties.to_dict()))
 
