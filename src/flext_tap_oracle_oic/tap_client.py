@@ -341,7 +341,7 @@ class FlextTapOracleOic(_TapBase):
                 for stream in streams
             ],
         }
-        return r[t.Meltano.Singer.StreamCatalog].ok(catalog)
+        return r[t.ContainerMapping].ok(catalog)
 
     @staticmethod
     def _to_positive_int(value: t.ContainerValue | None, default: int) -> int:
@@ -406,7 +406,8 @@ def _build_config_from_env() -> t.StrMapping:
             "oauth_scope": settings.oauth_audience,
         }
     except (ValueError, TypeError) as e:
-        logger.debug("Configuration loading failed: %s", str(e))
+        err_msg: str = str(e)
+        logger.debug("Configuration loading failed: %s", err_msg)
         return {}
 
 
