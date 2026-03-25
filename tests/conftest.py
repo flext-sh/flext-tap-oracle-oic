@@ -496,7 +496,7 @@ def mock_rate_limit_response() -> Mock:
 @pytest.fixture
 def large_integration_dataset() -> Sequence[t.ContainerMapping]:
     """Large integration dataset for performance testing."""
-    integrations: Sequence[t.ContainerMapping] = []
+    integrations: list[t.ContainerMapping] = []
     for i in range(1000):
         integration: t.ContainerMapping = {
             "id": f"INTEGRATION_{i:04d}",

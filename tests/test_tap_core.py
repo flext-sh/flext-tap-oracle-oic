@@ -14,8 +14,7 @@ from collections.abc import Mapping, Sequence
 import pytest
 from pydantic import ValidationError as ConfigValidationError
 
-from flext_tap_oracle_oic import m, t
-from flext_tap_oracle_oic.tap_client import FlextTapOracleOic as TapOracleOic
+from flext_tap_oracle_oic import FlextTapOracleOic, m, t
 
 
 def _build_source_config() -> m.Meltano.DataSourceConfig:
@@ -29,7 +28,7 @@ def _build_source_config() -> m.Meltano.DataSourceConfig:
     )
 
 
-def _discover_stream_names(tap: TapOracleOic) -> t.StrSequence:
+def _discover_stream_names(tap: FlextTapOracleOic) -> t.StrSequence:
     result = tap.discover_streams(source_config=_build_source_config())
     assert result.is_success
     value = result.value
@@ -40,7 +39,7 @@ def _discover_stream_names(tap: TapOracleOic) -> t.StrSequence:
 
 
 class TestTapOracleOic:
-    """Test the main TapOracleOic class."""
+    """Test the main FlextTapOracleOic class."""
 
     def test_tap_initialization(self) -> None:
         """Test method."""
@@ -50,7 +49,7 @@ class TestTapOracleOic:
             "oauth_client_secret": "test_client_secret",
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
-        tap = TapOracleOic(config=config, validate_config=False)
+        tap = FlextTapOracleOic(config=config, validate_config=False)
         if tap.name != "tap-oracle-oic":
             msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
@@ -59,7 +58,7 @@ class TestTapOracleOic:
 
     def test_tap_initialization_without_config(self) -> None:
         """Test method."""
-        tap = TapOracleOic(validate_config=False)
+        tap = FlextTapOracleOic(validate_config=False)
         if tap.name != "tap-oracle-oic":
             msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
@@ -73,7 +72,7 @@ class TestTapOracleOic:
             "oauth_client_secret": "test_client_secret",
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
-        tap = TapOracleOic(config=config, validate_config=False)
+        tap = FlextTapOracleOic(config=config, validate_config=False)
         stream_names = _discover_stream_names(tap)
         if len(stream_names) != 5:
             msg = f"Expected {5}, got {len(stream_names)}"
@@ -99,7 +98,7 @@ class TestTapOracleOic:
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
             "include_extended": True,
         }
-        tap = TapOracleOic(config=config, validate_config=False)
+        tap = FlextTapOracleOic(config=config, validate_config=False)
         stream_names = _discover_stream_names(tap)
         if len(stream_names) != 5:
             msg = f"Expected {5}, got {len(stream_names)}"
@@ -125,7 +124,7 @@ class TestTapOracleOic:
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
             "include_extended": False,
         }
-        tap = TapOracleOic(config=config, validate_config=False)
+        tap = FlextTapOracleOic(config=config, validate_config=False)
         stream_names = _discover_stream_names(tap)
         streams = [name for name in stream_names if "infrastructure" in name.lower()]
         if len(streams) != 0:
@@ -141,7 +140,7 @@ class TestTapOracleOic:
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
             "include_extended": True,
         }
-        tap = TapOracleOic(config=config, validate_config=False)
+        tap = FlextTapOracleOic(config=config, validate_config=False)
         stream_names = _discover_stream_names(tap)
         if len(stream_names) != 5:
             msg = f"Expected {5}, got {len(stream_names)}"
@@ -157,7 +156,7 @@ class TestTapOracleOic:
             "oauth_endpoint": "http://test.identity.oraclecloud.com/oauth2/v1/token",
             "oic_url": "http://test.integration.ocp.oraclecloud.com",
         }
-        tap = TapOracleOic(config=config, validate_config=False)
+        tap = FlextTapOracleOic(config=config, validate_config=False)
         if tap.name != "tap-oracle-oic":
             msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
@@ -170,12 +169,12 @@ class TestTapOracleOic:
         """Test that validation rejects invalid field types."""
         config = {"timeout": -1}
         with pytest.raises(ConfigValidationError):
-            TapOracleOic(config=config, validate_config=True)
+            FlextTapOracleOic(config=config, validate_config=True)
 
     def test_capabilities(self) -> None:
         """Test method."""
         expected_capabilities = ["catalog", "state", "discover"]
-        raw_capabilities = getattr(TapOracleOic, "capabilities", ())
+        raw_capabilities = getattr(FlextTapOracleOic, "capabilities", ())
         capability_values = {
             str(cap.value) if hasattr(cap, "value") else str(cap)
             for cap in raw_capabilities
@@ -187,7 +186,7 @@ class TestTapOracleOic:
 
 
 class TestTapOracleOicIntegration:
-    """Integration tests for TapOracleOic."""
+    """Integration tests for FlextTapOracleOic."""
 
     def test_streams_have_correct_tap_reference(self) -> None:
         """Test method."""
@@ -198,7 +197,7 @@ class TestTapOracleOicIntegration:
             "oauth_client_secret": "test_client_secret",
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
-        tap = TapOracleOic(config=config, validate_config=False)
+        tap = FlextTapOracleOic(config=config, validate_config=False)
         stream_names = _discover_stream_names(tap)
         for stream_name in stream_names:
             assert stream_name
@@ -236,7 +235,7 @@ class TestTapOracleOicWithFixtures:
     def test_self(self, sample_config: t.StrMapping) -> None:
         """Test method."""
         "Test that the tap is initialized correctly with the sample config."
-        tap = TapOracleOic(config=sample_config, validate_config=False)
+        tap = FlextTapOracleOic(config=sample_config, validate_config=False)
         configured_base_url = getattr(tap.config, "base_url", None)
         if configured_base_url != sample_config["base_url"]:
             msg = f"Expected {sample_config['base_url']}, got {configured_base_url}"
@@ -251,7 +250,9 @@ class TestTapOracleOicWithFixtures:
         sample_config_with_extended: Mapping[str, bool | str],
     ) -> None:
         """Test that the number of streams is correct with the extended config."""
-        tap = TapOracleOic(config=sample_config_with_extended, validate_config=False)
+        tap = FlextTapOracleOic(
+            config=sample_config_with_extended, validate_config=False
+        )
         stream_names = _discover_stream_names(tap)
         if len(stream_names) != 5:
             msg = f"Expected {5}, got {len(stream_names)}"
