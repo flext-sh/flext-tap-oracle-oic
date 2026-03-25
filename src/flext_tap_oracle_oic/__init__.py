@@ -10,11 +10,11 @@ from typing import TYPE_CHECKING
 
 from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 
-
 if TYPE_CHECKING:
     from flext_core import FlextTypes
     from flext_meltano import d, e, h, r, s, x
 
+    from flext_tap_oracle_oic import domain
     from flext_tap_oracle_oic.__version__ import (
         __all__,
         __author__,
@@ -30,7 +30,6 @@ if TYPE_CHECKING:
         FlextTapOracleOicConstants,
         FlextTapOracleOicConstants as c,
     )
-    import flext_tap_oracle_oic.domain as domain
     from flext_tap_oracle_oic.domain.entities import (
         ConnectionStatus,
         IntegrationStatus,
@@ -62,6 +61,8 @@ if TYPE_CHECKING:
         ALL_STREAMS,
         CORE_STREAMS,
         EXTENDED_STREAMS,
+        INFRASTRUCTURE_STREAMS,
+        MONITORING_STREAMS,
         FlextTapOracleOicAdaptersStream,
         FlextTapOracleOicCertificatesStream,
         FlextTapOracleOicConnectionsStream,
@@ -72,8 +73,6 @@ if TYPE_CHECKING:
         FlextTapOracleOicMetricsStream,
         FlextTapOracleOicPackagesStream,
         FlextTapOracleOicProjectsStream,
-        INFRASTRUCTURE_STREAMS,
-        MONITORING_STREAMS,
         th,
     )
     from flext_tap_oracle_oic.tap_client import (
@@ -105,43 +104,136 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "ALL_STREAMS": ["flext_tap_oracle_oic.streams_consolidated", "ALL_STREAMS"],
     "CORE_STREAMS": ["flext_tap_oracle_oic.streams_consolidated", "CORE_STREAMS"],
     "ConnectionStatus": ["flext_tap_oracle_oic.domain.entities", "ConnectionStatus"],
-    "EXTENDED_STREAMS": ["flext_tap_oracle_oic.streams_consolidated", "EXTENDED_STREAMS"],
-    "FlextOracleOicAuthenticator": ["flext_tap_oracle_oic.tap_client", "FlextOracleOicAuthenticator"],
+    "EXTENDED_STREAMS": [
+        "flext_tap_oracle_oic.streams_consolidated",
+        "EXTENDED_STREAMS",
+    ],
+    "FlextOracleOicAuthenticator": [
+        "flext_tap_oracle_oic.tap_client",
+        "FlextOracleOicAuthenticator",
+    ],
     "FlextTapOracleOic": ["flext_tap_oracle_oic.tap_client", "FlextTapOracleOic"],
-    "FlextTapOracleOicAdaptersStream": ["flext_tap_oracle_oic.streams_consolidated", "FlextTapOracleOicAdaptersStream"],
-    "FlextTapOracleOicApiError": ["flext_tap_oracle_oic.tap_exceptions", "FlextTapOracleOicApiError"],
-    "FlextTapOracleOicAuthenticationError": ["flext_tap_oracle_oic.tap_exceptions", "FlextTapOracleOicAuthenticationError"],
-    "FlextTapOracleOicCertificatesStream": ["flext_tap_oracle_oic.streams_consolidated", "FlextTapOracleOicCertificatesStream"],
-    "FlextTapOracleOicClient": ["flext_tap_oracle_oic.tap_client", "FlextTapOracleOicClient"],
-    "FlextTapOracleOicConnectionError": ["flext_tap_oracle_oic.tap_exceptions", "FlextTapOracleOicConnectionError"],
-    "FlextTapOracleOicConnectionsStream": ["flext_tap_oracle_oic.streams_consolidated", "FlextTapOracleOicConnectionsStream"],
-    "FlextTapOracleOicConstants": ["flext_tap_oracle_oic.constants", "FlextTapOracleOicConstants"],
-    "FlextTapOracleOicExceptionFactory": ["flext_tap_oracle_oic.tap_exceptions", "FlextTapOracleOicExceptionFactory"],
-    "FlextTapOracleOicExecutionsStream": ["flext_tap_oracle_oic.streams_consolidated", "FlextTapOracleOicExecutionsStream"],
-    "FlextTapOracleOicHealthChecker": ["flext_tap_oracle_oic.health", "FlextTapOracleOicHealthChecker"],
-    "FlextTapOracleOicIntegrationsStream": ["flext_tap_oracle_oic.streams_consolidated", "FlextTapOracleOicIntegrationsStream"],
-    "FlextTapOracleOicLibrariesStream": ["flext_tap_oracle_oic.streams_consolidated", "FlextTapOracleOicLibrariesStream"],
-    "FlextTapOracleOicLookupsStream": ["flext_tap_oracle_oic.streams_consolidated", "FlextTapOracleOicLookupsStream"],
-    "FlextTapOracleOicMetricsStream": ["flext_tap_oracle_oic.streams_consolidated", "FlextTapOracleOicMetricsStream"],
-    "FlextTapOracleOicModels": ["flext_tap_oracle_oic.models", "FlextTapOracleOicModels"],
-    "FlextTapOracleOicPackagesStream": ["flext_tap_oracle_oic.streams_consolidated", "FlextTapOracleOicPackagesStream"],
-    "FlextTapOracleOicPaginator": ["flext_tap_oracle_oic.tap_streams", "FlextTapOracleOicPaginator"],
-    "FlextTapOracleOicProjectsStream": ["flext_tap_oracle_oic.streams_consolidated", "FlextTapOracleOicProjectsStream"],
-    "FlextTapOracleOicProtocols": ["flext_tap_oracle_oic.protocols", "FlextTapOracleOicProtocols"],
-    "FlextTapOracleOicSettings": ["flext_tap_oracle_oic.settings", "FlextTapOracleOicSettings"],
-    "FlextTapOracleOicTypes": ["flext_tap_oracle_oic.typings", "FlextTapOracleOicTypes"],
-    "FlextTapOracleOicUtilities": ["flext_tap_oracle_oic.utilities", "FlextTapOracleOicUtilities"],
-    "FlextTapOracleOicValidationError": ["flext_tap_oracle_oic.tap_exceptions", "FlextTapOracleOicValidationError"],
-    "INFRASTRUCTURE_STREAMS": ["flext_tap_oracle_oic.streams_consolidated", "INFRASTRUCTURE_STREAMS"],
+    "FlextTapOracleOicAdaptersStream": [
+        "flext_tap_oracle_oic.streams_consolidated",
+        "FlextTapOracleOicAdaptersStream",
+    ],
+    "FlextTapOracleOicApiError": [
+        "flext_tap_oracle_oic.tap_exceptions",
+        "FlextTapOracleOicApiError",
+    ],
+    "FlextTapOracleOicAuthenticationError": [
+        "flext_tap_oracle_oic.tap_exceptions",
+        "FlextTapOracleOicAuthenticationError",
+    ],
+    "FlextTapOracleOicCertificatesStream": [
+        "flext_tap_oracle_oic.streams_consolidated",
+        "FlextTapOracleOicCertificatesStream",
+    ],
+    "FlextTapOracleOicClient": [
+        "flext_tap_oracle_oic.tap_client",
+        "FlextTapOracleOicClient",
+    ],
+    "FlextTapOracleOicConnectionError": [
+        "flext_tap_oracle_oic.tap_exceptions",
+        "FlextTapOracleOicConnectionError",
+    ],
+    "FlextTapOracleOicConnectionsStream": [
+        "flext_tap_oracle_oic.streams_consolidated",
+        "FlextTapOracleOicConnectionsStream",
+    ],
+    "FlextTapOracleOicConstants": [
+        "flext_tap_oracle_oic.constants",
+        "FlextTapOracleOicConstants",
+    ],
+    "FlextTapOracleOicExceptionFactory": [
+        "flext_tap_oracle_oic.tap_exceptions",
+        "FlextTapOracleOicExceptionFactory",
+    ],
+    "FlextTapOracleOicExecutionsStream": [
+        "flext_tap_oracle_oic.streams_consolidated",
+        "FlextTapOracleOicExecutionsStream",
+    ],
+    "FlextTapOracleOicHealthChecker": [
+        "flext_tap_oracle_oic.health",
+        "FlextTapOracleOicHealthChecker",
+    ],
+    "FlextTapOracleOicIntegrationsStream": [
+        "flext_tap_oracle_oic.streams_consolidated",
+        "FlextTapOracleOicIntegrationsStream",
+    ],
+    "FlextTapOracleOicLibrariesStream": [
+        "flext_tap_oracle_oic.streams_consolidated",
+        "FlextTapOracleOicLibrariesStream",
+    ],
+    "FlextTapOracleOicLookupsStream": [
+        "flext_tap_oracle_oic.streams_consolidated",
+        "FlextTapOracleOicLookupsStream",
+    ],
+    "FlextTapOracleOicMetricsStream": [
+        "flext_tap_oracle_oic.streams_consolidated",
+        "FlextTapOracleOicMetricsStream",
+    ],
+    "FlextTapOracleOicModels": [
+        "flext_tap_oracle_oic.models",
+        "FlextTapOracleOicModels",
+    ],
+    "FlextTapOracleOicPackagesStream": [
+        "flext_tap_oracle_oic.streams_consolidated",
+        "FlextTapOracleOicPackagesStream",
+    ],
+    "FlextTapOracleOicPaginator": [
+        "flext_tap_oracle_oic.tap_streams",
+        "FlextTapOracleOicPaginator",
+    ],
+    "FlextTapOracleOicProjectsStream": [
+        "flext_tap_oracle_oic.streams_consolidated",
+        "FlextTapOracleOicProjectsStream",
+    ],
+    "FlextTapOracleOicProtocols": [
+        "flext_tap_oracle_oic.protocols",
+        "FlextTapOracleOicProtocols",
+    ],
+    "FlextTapOracleOicSettings": [
+        "flext_tap_oracle_oic.settings",
+        "FlextTapOracleOicSettings",
+    ],
+    "FlextTapOracleOicTypes": [
+        "flext_tap_oracle_oic.typings",
+        "FlextTapOracleOicTypes",
+    ],
+    "FlextTapOracleOicUtilities": [
+        "flext_tap_oracle_oic.utilities",
+        "FlextTapOracleOicUtilities",
+    ],
+    "FlextTapOracleOicValidationError": [
+        "flext_tap_oracle_oic.tap_exceptions",
+        "FlextTapOracleOicValidationError",
+    ],
+    "INFRASTRUCTURE_STREAMS": [
+        "flext_tap_oracle_oic.streams_consolidated",
+        "INFRASTRUCTURE_STREAMS",
+    ],
     "IntegrationStatus": ["flext_tap_oracle_oic.domain.entities", "IntegrationStatus"],
-    "MONITORING_STREAMS": ["flext_tap_oracle_oic.streams_consolidated", "MONITORING_STREAMS"],
+    "MONITORING_STREAMS": [
+        "flext_tap_oracle_oic.streams_consolidated",
+        "MONITORING_STREAMS",
+    ],
     "OICConnection": ["flext_tap_oracle_oic.domain.entities", "OICConnection"],
-    "OICExecutionSummary": ["flext_tap_oracle_oic.domain.entities", "OICExecutionSummary"],
+    "OICExecutionSummary": [
+        "flext_tap_oracle_oic.domain.entities",
+        "OICExecutionSummary",
+    ],
     "OICIntegration": ["flext_tap_oracle_oic.tap_models", "OICIntegration"],
     "OICLookup": ["flext_tap_oracle_oic.domain.entities", "OICLookup"],
-    "OICMonitoringRecord": ["flext_tap_oracle_oic.domain.entities", "OICMonitoringRecord"],
+    "OICMonitoringRecord": [
+        "flext_tap_oracle_oic.domain.entities",
+        "OICMonitoringRecord",
+    ],
     "OICProject": ["flext_tap_oracle_oic.domain.entities", "OICProject"],
-    "OICResourceMetadata": ["flext_tap_oracle_oic.domain.entities", "OICResourceMetadata"],
+    "OICResourceMetadata": [
+        "flext_tap_oracle_oic.domain.entities",
+        "OICResourceMetadata",
+    ],
     "OICResourceType": ["flext_tap_oracle_oic.domain.entities", "OICResourceType"],
     "__all__": ["flext_tap_oracle_oic.__version__", "__all__"],
     "__author__": ["flext_tap_oracle_oic.__version__", "__author__"],
@@ -153,12 +245,21 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "__version__": ["flext_tap_oracle_oic.__version__", "__version__"],
     "__version_info__": ["flext_tap_oracle_oic.__version__", "__version_info__"],
     "c": ["flext_tap_oracle_oic.constants", "FlextTapOracleOicConstants"],
-    "create_oracle_oic_tap_config": ["flext_tap_oracle_oic.settings", "create_oracle_oic_tap_config"],
+    "create_oracle_oic_tap_config": [
+        "flext_tap_oracle_oic.settings",
+        "create_oracle_oic_tap_config",
+    ],
     "d": ["flext_meltano", "d"],
     "domain": ["flext_tap_oracle_oic.domain", ""],
     "e": ["flext_meltano", "e"],
-    "flext_tap_oracle_oic_create_config": ["flext_tap_oracle_oic.settings", "flext_tap_oracle_oic_create_config"],
-    "flext_tap_oracle_oic_validate_configuration": ["flext_tap_oracle_oic.settings", "flext_tap_oracle_oic_validate_configuration"],
+    "flext_tap_oracle_oic_create_config": [
+        "flext_tap_oracle_oic.settings",
+        "flext_tap_oracle_oic_create_config",
+    ],
+    "flext_tap_oracle_oic_validate_configuration": [
+        "flext_tap_oracle_oic.settings",
+        "flext_tap_oracle_oic_validate_configuration",
+    ],
     "h": ["flext_meltano", "h"],
     "logger": ["flext_tap_oracle_oic.tap_client", "logger"],
     "m": ["flext_tap_oracle_oic.models", "FlextTapOracleOicModels"],
@@ -169,15 +270,20 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "t": ["flext_tap_oracle_oic.typings", "FlextTapOracleOicTypes"],
     "th": ["flext_tap_oracle_oic.streams_consolidated", "th"],
     "u": ["flext_tap_oracle_oic.utilities", "FlextTapOracleOicUtilities"],
-    "validate_oracle_oic_tap_configuration": ["flext_tap_oracle_oic.settings", "validate_oracle_oic_tap_configuration"],
+    "validate_oracle_oic_tap_configuration": [
+        "flext_tap_oracle_oic.settings",
+        "validate_oracle_oic_tap_configuration",
+    ],
     "x": ["flext_meltano", "x"],
 }
 
 __all__ = [
     "ALL_STREAMS",
     "CORE_STREAMS",
-    "ConnectionStatus",
     "EXTENDED_STREAMS",
+    "INFRASTRUCTURE_STREAMS",
+    "MONITORING_STREAMS",
+    "ConnectionStatus",
     "FlextOracleOicAuthenticator",
     "FlextTapOracleOic",
     "FlextTapOracleOicAdaptersStream",
@@ -204,9 +310,7 @@ __all__ = [
     "FlextTapOracleOicTypes",
     "FlextTapOracleOicUtilities",
     "FlextTapOracleOicValidationError",
-    "INFRASTRUCTURE_STREAMS",
     "IntegrationStatus",
-    "MONITORING_STREAMS",
     "OICConnection",
     "OICExecutionSummary",
     "OICIntegration",
@@ -263,6 +367,7 @@ def __getattr__(name: str) -> FlextTypes.ModuleExport:
 
     Raises:
         AttributeError: If attribute not registered.
+
     """
     if name in _LAZY_CACHE:
         return _LAZY_CACHE[name]
@@ -277,6 +382,7 @@ def __dir__() -> Sequence[str]:
 
     Returns:
         List of public names from module exports.
+
     """
     return sorted(__all__)
 

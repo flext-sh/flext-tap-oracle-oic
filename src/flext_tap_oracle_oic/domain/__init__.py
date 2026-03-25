@@ -15,9 +15,9 @@ from typing import TYPE_CHECKING
 
 from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 
-
 if TYPE_CHECKING:
     from flext_core import FlextTypes
+
     from flext_tap_oracle_oic.domain.entities import (
         ConnectionStatus,
         IntegrationStatus,
@@ -35,12 +35,21 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "ConnectionStatus": ["flext_tap_oracle_oic.domain.entities", "ConnectionStatus"],
     "IntegrationStatus": ["flext_tap_oracle_oic.domain.entities", "IntegrationStatus"],
     "OICConnection": ["flext_tap_oracle_oic.domain.entities", "OICConnection"],
-    "OICExecutionSummary": ["flext_tap_oracle_oic.domain.entities", "OICExecutionSummary"],
+    "OICExecutionSummary": [
+        "flext_tap_oracle_oic.domain.entities",
+        "OICExecutionSummary",
+    ],
     "OICIntegration": ["flext_tap_oracle_oic.domain.entities", "OICIntegration"],
     "OICLookup": ["flext_tap_oracle_oic.domain.entities", "OICLookup"],
-    "OICMonitoringRecord": ["flext_tap_oracle_oic.domain.entities", "OICMonitoringRecord"],
+    "OICMonitoringRecord": [
+        "flext_tap_oracle_oic.domain.entities",
+        "OICMonitoringRecord",
+    ],
     "OICProject": ["flext_tap_oracle_oic.domain.entities", "OICProject"],
-    "OICResourceMetadata": ["flext_tap_oracle_oic.domain.entities", "OICResourceMetadata"],
+    "OICResourceMetadata": [
+        "flext_tap_oracle_oic.domain.entities",
+        "OICResourceMetadata",
+    ],
     "OICResourceType": ["flext_tap_oracle_oic.domain.entities", "OICResourceType"],
 }
 
@@ -75,6 +84,7 @@ def __getattr__(name: str) -> FlextTypes.ModuleExport:
 
     Raises:
         AttributeError: If attribute not registered.
+
     """
     if name in _LAZY_CACHE:
         return _LAZY_CACHE[name]
@@ -89,6 +99,7 @@ def __dir__() -> Sequence[str]:
 
     Returns:
         List of public names from module exports.
+
     """
     return sorted(__all__)
 
