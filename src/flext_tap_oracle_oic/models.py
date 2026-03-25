@@ -2197,7 +2197,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     Field(
                         description="Column definitions",
                     ),
-                ] = Field(default_factory=lambda: [])
+                ] = Field(default_factory=list)
                 key_columns: Annotated[
                     Sequence[str],
                     Field(description="Key column names"),
