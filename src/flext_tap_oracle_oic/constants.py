@@ -9,11 +9,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Sequence
 from enum import StrEnum, unique
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
 from flext_meltano import FlextMeltanoConstants
+
+if TYPE_CHECKING:
+    from flext_tap_oracle_oic import t
 from flext_oracle_oic import FlextOracleOicConstants
 from flext_oracle_oic.constants import FlextOracleOicConstants as ParentOicConstants
 
@@ -279,4 +281,4 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
 
 
 c = FlextTapOracleOicConstants
-__all__: Sequence[str] = ["FlextTapOracleOicConstants", "c"]
+__all__: t.StrSequence = ["FlextTapOracleOicConstants", "c"]
