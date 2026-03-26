@@ -72,7 +72,9 @@ class TestOICOAuth2Authenticator:
             "token_type": "Bearer",
             "expires_in": 3600,
         }
-        cast("MagicMock", authenticator._api_client).post.return_value = r.ok(
+        cast("MagicMock", authenticator._api_client).post.return_value = r[
+            MagicMock
+        ].ok(
             mock_response,
         )
         result = authenticator.get_access_token()
@@ -101,7 +103,9 @@ class TestOICOAuth2Authenticator:
         mock_response = MagicMock()
         mock_response.status_code = 401
         mock_response.body = {"error": "invalid_client"}
-        cast("MagicMock", authenticator._api_client).post.return_value = r.ok(
+        cast("MagicMock", authenticator._api_client).post.return_value = r[
+            MagicMock
+        ].ok(
             mock_response,
         )
         result = authenticator.get_access_token()
@@ -117,7 +121,9 @@ class TestOICOAuth2Authenticator:
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.body = None
-        cast("MagicMock", authenticator._api_client).post.return_value = r.ok(
+        cast("MagicMock", authenticator._api_client).post.return_value = r[
+            MagicMock
+        ].ok(
             mock_response,
         )
         result = authenticator.get_access_token()
@@ -132,7 +138,9 @@ class TestOICOAuth2Authenticator:
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.body = {"token_type": "Bearer", "expires_in": 3600}
-        cast("MagicMock", authenticator._api_client).post.return_value = r.ok(
+        cast("MagicMock", authenticator._api_client).post.return_value = r[
+            MagicMock
+        ].ok(
             mock_response,
         )
         result = authenticator.get_access_token()
@@ -150,7 +158,9 @@ class TestOICOAuth2Authenticator:
             "access_token": "string_body_token",
             "token_type": "Bearer",
         })
-        cast("MagicMock", authenticator._api_client).post.return_value = r.ok(
+        cast("MagicMock", authenticator._api_client).post.return_value = r[
+            MagicMock
+        ].ok(
             mock_response,
         )
         result = authenticator.get_access_token()
