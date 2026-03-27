@@ -268,12 +268,20 @@ class FlextTapOracleOic(_TapBase):
         self._tap_config: Mapping[str, t.ContainerValue] = (
             dict(config) if config is not None else {}
         )
-        self.config = FlextTapOracleOicSettings.model_validate(
-            self._tap_config,
-            strict=validate_config,
+        self._oic_settings: FlextTapOracleOicSettings = (
+            FlextTapOracleOicSettings.model_validate(
+                self._tap_config,
+                strict=validate_config,
+            )
         )
         self._client: FlextTapOracleOicClient | None = None
         self._utilities = u()
+
+    @property
+    @override
+    def config(self) -> FlextTapOracleOicSettings:
+        """Return typed OIC settings."""
+        return self._oic_settings
 
     @property
     def client(self) -> FlextTapOracleOicClient:
