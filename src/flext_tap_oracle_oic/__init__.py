@@ -54,7 +54,7 @@ if TYPE_CHECKING:
         FlextTapOracleOicSettings,
         create_oracle_oic_tap_config,
         flext_tap_oracle_oic_create_config,
-        flext_tap_oracle_oic_validate_configuration,
+        validate_configuration,
         validate_oracle_oic_tap_configuration,
     )
     from flext_tap_oracle_oic.streams_consolidated import (
@@ -157,7 +157,7 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "domain": ["flext_tap_oracle_oic.domain", ""],
     "e": ["flext_meltano", "e"],
     "flext_tap_oracle_oic_create_config": ["flext_tap_oracle_oic.settings", "flext_tap_oracle_oic_create_config"],
-    "flext_tap_oracle_oic_validate_configuration": ["flext_tap_oracle_oic.settings", "flext_tap_oracle_oic_validate_configuration"],
+    "validate_configuration": ["flext_tap_oracle_oic.settings", "validate_configuration"],
     "h": ["flext_meltano", "h"],
     "logger": ["flext_tap_oracle_oic.tap_client", "logger"],
     "m": ["flext_tap_oracle_oic.models", "FlextTapOracleOicModels"],
@@ -229,7 +229,6 @@ __all__ = [
     "domain",
     "e",
     "flext_tap_oracle_oic_create_config",
-    "flext_tap_oracle_oic_validate_configuration",
     "h",
     "logger",
     "m",
@@ -240,6 +239,7 @@ __all__ = [
     "t",
     "th",
     "u",
+    "validate_configuration",
     "validate_oracle_oic_tap_configuration",
     "x",
 ]
