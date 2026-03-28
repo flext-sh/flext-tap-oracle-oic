@@ -2488,10 +2488,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
 # Short alias
 m = FlextTapOracleOicModels
-OICIntegration = FlextTapOracleOicModels.TapOracleOic.OracleOic.OICIntegration
 
 __all__ = [
     "FlextTapOracleOicModels",
-    "OICIntegration",
     "m",
 ]
