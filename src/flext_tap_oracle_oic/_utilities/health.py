@@ -16,17 +16,17 @@ from datetime import UTC, datetime
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 from flext_core import r
 
-from flext_tap_oracle_oic import t
-from flext_tap_oracle_oic.constants import c
-from flext_tap_oracle_oic.tap import (
-    FlextOracleOicAuthenticator as OAuthAuthenticator,
+from flext_tap_oracle_oic import (
+    FlextOracleOicAuthenticator
+    c,
+    t,
 )
 
 
 class FlextTapOracleOicHealthChecker:
     """Health check utilities for Oracle Integration Cloud."""
 
-    def __init__(self, base_url: str, authenticator: OAuthAuthenticator) -> None:
+    def __init__(self, base_url: str, authenticator: FlextOracleOicAuthenticator) -> None:
         """Initialize health checker with base URL and authenticator."""
         self.base_url = base_url.rstrip("/")
         self.authenticator = authenticator
