@@ -1,16 +1,10 @@
-"""Oracle Integration Cloud tap exceptions - PEP8 reorganized.
+"""Oracle Integration Cloud tap exceptions.
 
 This module consolidates ALL exception handling using flext-core factory patterns:
 - Standard exception hierarchy using flext-core.exceptions
 - Oracle OIC specific exceptions with detailed error context
 - Error factory patterns for consistent error handling
 - Integration with flext-core logging and error tracking
-
-Design: Uses flext-core exception factory patterns:
-- flext-core.exceptions: Base exception classes and factory
-- Custom OIC exceptions: Domain-specific error handling
-- Error context: Rich error information for debugging
-- Logging integration: Automatic error logging and tracking
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT.

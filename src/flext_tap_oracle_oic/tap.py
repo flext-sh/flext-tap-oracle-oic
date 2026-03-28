@@ -491,6 +491,7 @@ if __name__ == "__main__":
     sys.exit(main())
 
 __all__: t.StrSequence = [
+    "FlextOracleOicAuthenticator",
     "FlextTapOracleOic",
     "FlextTapOracleOicClient",
     "main",

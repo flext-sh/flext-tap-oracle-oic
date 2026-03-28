@@ -18,7 +18,7 @@ from flext_core import r
 
 from flext_tap_oracle_oic import t
 from flext_tap_oracle_oic.constants import c
-from flext_tap_oracle_oic.tap_client import (
+from flext_tap_oracle_oic.tap import (
     FlextOracleOicAuthenticator as OAuthAuthenticator,
 )
 
