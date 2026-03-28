@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from flext_core import FlextTypes
     from flext_meltano import d, e, h, r, s, x
 
-    from flext_tap_oracle_oic import _models, domain
+    from flext_tap_oracle_oic import _models
     from flext_tap_oracle_oic.__version__ import (
         __all__,
         __author__,
@@ -35,21 +35,10 @@ if TYPE_CHECKING:
         FlextTapOracleOicModelsStreams,
         th,
     )
+    from flext_tap_oracle_oic.cli import main
     from flext_tap_oracle_oic.constants import (
         FlextTapOracleOicConstants,
         FlextTapOracleOicConstants as c,
-    )
-    from flext_tap_oracle_oic.domain.entities import (
-        ConnectionStatus,
-        IntegrationStatus,
-        OICConnection,
-        OICExecutionSummary,
-        OICIntegration,
-        OICLookup,
-        OICMonitoringRecord,
-        OICProject,
-        OICResourceMetadata,
-        OICResourceType,
     )
     from flext_tap_oracle_oic.errors import (
         FlextTapOracleOicApiError,
@@ -77,7 +66,6 @@ if TYPE_CHECKING:
         FlextTapOracleOic,
         FlextTapOracleOicClient,
         logger,
-        main,
     )
     from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator
     from flext_tap_oracle_oic.typings import (
@@ -92,7 +80,6 @@ if TYPE_CHECKING:
 _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "ALL_STREAMS": ["flext_tap_oracle_oic._models.streams", "ALL_STREAMS"],
     "CORE_STREAMS": ["flext_tap_oracle_oic._models.streams", "CORE_STREAMS"],
-    "ConnectionStatus": ["flext_tap_oracle_oic.domain.entities", "ConnectionStatus"],
     "EXTENDED_STREAMS": ["flext_tap_oracle_oic._models.streams", "EXTENDED_STREAMS"],
     "FlextOracleOicAuthenticator": [
         "flext_tap_oracle_oic.tap",
@@ -160,28 +147,10 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
         "flext_tap_oracle_oic._models.streams",
         "INFRASTRUCTURE_STREAMS",
     ],
-    "IntegrationStatus": ["flext_tap_oracle_oic.domain.entities", "IntegrationStatus"],
     "MONITORING_STREAMS": [
         "flext_tap_oracle_oic._models.streams",
         "MONITORING_STREAMS",
     ],
-    "OICConnection": ["flext_tap_oracle_oic.domain.entities", "OICConnection"],
-    "OICExecutionSummary": [
-        "flext_tap_oracle_oic.domain.entities",
-        "OICExecutionSummary",
-    ],
-    "OICIntegration": ["flext_tap_oracle_oic.domain.entities", "OICIntegration"],
-    "OICLookup": ["flext_tap_oracle_oic.domain.entities", "OICLookup"],
-    "OICMonitoringRecord": [
-        "flext_tap_oracle_oic.domain.entities",
-        "OICMonitoringRecord",
-    ],
-    "OICProject": ["flext_tap_oracle_oic.domain.entities", "OICProject"],
-    "OICResourceMetadata": [
-        "flext_tap_oracle_oic.domain.entities",
-        "OICResourceMetadata",
-    ],
-    "OICResourceType": ["flext_tap_oracle_oic.domain.entities", "OICResourceType"],
     "__all__": ["flext_tap_oracle_oic.__version__", "__all__"],
     "__author__": ["flext_tap_oracle_oic.__version__", "__author__"],
     "__author_email__": ["flext_tap_oracle_oic.__version__", "__author_email__"],
@@ -194,7 +163,6 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "_models": ["flext_tap_oracle_oic._models", ""],
     "c": ["flext_tap_oracle_oic.constants", "FlextTapOracleOicConstants"],
     "d": ["flext_meltano", "d"],
-    "domain": ["flext_tap_oracle_oic.domain", ""],
     "e": ["flext_meltano", "e"],
     "flext_tap_oracle_oic_create_config": [
         "flext_tap_oracle_oic.settings",
@@ -203,7 +171,7 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "h": ["flext_meltano", "h"],
     "logger": ["flext_tap_oracle_oic.tap", "logger"],
     "m": ["flext_tap_oracle_oic.models", "FlextTapOracleOicModels"],
-    "main": ["flext_tap_oracle_oic.tap", "main"],
+    "main": ["flext_tap_oracle_oic.cli", "main"],
     "p": ["flext_tap_oracle_oic.protocols", "FlextTapOracleOicProtocols"],
     "r": ["flext_meltano", "r"],
     "s": ["flext_meltano", "s"],
@@ -223,7 +191,6 @@ __all__ = [
     "EXTENDED_STREAMS",
     "INFRASTRUCTURE_STREAMS",
     "MONITORING_STREAMS",
-    "ConnectionStatus",
     "FlextOracleOicAuthenticator",
     "FlextTapOracleOic",
     "FlextTapOracleOicApiError",
@@ -241,15 +208,6 @@ __all__ = [
     "FlextTapOracleOicTypes",
     "FlextTapOracleOicUtilities",
     "FlextTapOracleOicValidationError",
-    "IntegrationStatus",
-    "OICConnection",
-    "OICExecutionSummary",
-    "OICIntegration",
-    "OICLookup",
-    "OICMonitoringRecord",
-    "OICProject",
-    "OICResourceMetadata",
-    "OICResourceType",
     "__all__",
     "__author__",
     "__author_email__",
@@ -262,7 +220,6 @@ __all__ = [
     "_models",
     "c",
     "d",
-    "domain",
     "e",
     "flext_tap_oracle_oic_create_config",
     "h",
