@@ -12,8 +12,7 @@ from collections.abc import Iterator, Mapping, MutableMapping, MutableSequence, 
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
-import requests
-from flext_api import FlextApi, FlextApiSettings
+from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 from flext_core import (
     FlextConstants,
     FlextExceptions,
@@ -412,7 +411,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             def parse_response(
                 self,
-                response: requests.Response,
+                response: FlextApiModels.Api.HttpResponse,
             ) -> Iterator[Mapping[str, t.ContainerValue]]:
                 """Parse Oracle OIC API response and yield records with validation.
 
@@ -424,24 +423,18 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
                 """
                 try:
-                    if not response.ok:
+                    if (
+                        response.status_code
+                        >= c.TapOracleOic.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD
+                    ):
                         self._handle_response_error(response)
                         return
-                    try:
-                        data = response.json()
-                    except (ValueError, TypeError, KeyError):
-                        self.logger.exception(
-                            "Failed to parse JSON from %s",
-                            response.url,
-                        )
-                        if self.config.get("fail_on_parsing_errors", True):
-                            raise
-                        return
+                    data = self._get_response_data(response)
                     self._track_response_metrics(response, data)
-                    response_url = str(getattr(response, "url", "unknown"))
+                    response_url = self._get_response_identifier(response)
                     yield from self._extract_and_yield_records(data, response_url)
                 except (ValueError, TypeError, KeyError, AttributeError):
-                    response_url_err = str(getattr(response, "url", "unknown"))
+                    response_url_err = self._get_response_identifier(response)
                     self.logger.exception(
                         "Error parsing response from %s",
                         response_url_err,
@@ -461,7 +454,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             def _extract_and_yield_records(
                 self,
-                data: Mapping[str, t.ContainerValue],
+                data: Mapping[str, t.ContainerValue] | Sequence[t.ContainerValue],
                 url: str,
             ) -> Iterator[Mapping[str, t.ContainerValue]]:
                 """Extract and yield records with validation and enrichment."""
@@ -491,9 +484,12 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             def _extract_items_for_processing(
                 self,
-                data: Mapping[str, t.ContainerValue],
+                data: Mapping[str, t.ContainerValue] | Sequence[t.ContainerValue],
             ) -> Iterator[Mapping[str, t.ContainerValue]]:
                 """Extract items from various OIC response formats for processing."""
+                if isinstance(data, list):
+                    yield from self._process_list_data(data)
+                    return
                 list_payload = FlextTapOracleOicModels.as_value_list(data)
                 if list_payload is not None:
                     yield from self._process_list_data(list_payload)
@@ -502,22 +498,51 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 if map_payload is not None:
                     yield from self._process_dict_data(map_payload)
 
-            def _handle_response_error(self, response: requests.Response) -> None:
+            def _get_response_data(
+                self,
+                response: FlextApiModels.Api.HttpResponse,
+            ) -> Mapping[str, t.ContainerValue] | Sequence[t.ContainerValue]:
+                """Normalize flext-api response bodies to OIC payload structures."""
+                match response.body:
+                    case dict() as body_map:
+                        return body_map
+                    case str() as body_str if body_str.strip():
+                        return (
+                            FlextTapOracleOicModels._GENERAL_MAP_ADAPTER.validate_json(
+                                body_str,
+                            )
+                        )
+                    case _:
+                        msg = "OIC response body is empty or not JSON-compatible"
+                        raise TypeError(msg)
+
+            def _get_response_identifier(
+                self,
+                response: FlextApiModels.Api.HttpResponse,
+            ) -> str:
+                """Return a stable identifier for response logging."""
+                if response.request_id:
+                    return response.request_id
+                return self.api_path or self.name
+
+            def _handle_response_error(
+                self,
+                response: FlextApiModels.Api.HttpResponse,
+            ) -> None:
                 """Handle Oracle OIC API response errors with proper categorization."""
-                try:
-                    error_data = (
-                        FlextTapOracleOicModels._as_value_map(response.json()) or {}
-                    )
-                    error_message = error_data.get("message") or error_data.get("error")
-                except (ValueError, TypeError, KeyError):
-                    error_message = (
-                        getattr(response, "text", None)
-                        or f"HTTP {getattr(response, 'status_code', 'unknown')}"
-                    )
-                response_url = str(getattr(response, "url", "unknown"))
+                error_message: t.ContainerValue | None = None
+                if isinstance(response.body, dict):
+                    error_data = FlextTapOracleOicModels._as_value_map(response.body)
+                    if error_data is not None:
+                        error_message = error_data.get("message") or error_data.get(
+                            "error",
+                        )
+                if error_message is None:
+                    error_message = response.body or f"HTTP {response.status_code}"
+                response_url = self._get_response_identifier(response)
                 err_msg = str(error_message)
                 self.logger.error("OIC API error from %s: %s", response_url, err_msg)
-                status_code = getattr(response, "status_code", 0)
+                status_code = response.status_code
                 if status_code == c.TapOracleOic.TapOicHttp.HTTP_UNAUTHORIZED:
                     msg = "Unauthorized: Authentication failed or token expired"
                     raise FlextExceptions.AuthenticationError(msg)
@@ -527,15 +552,15 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 if status_code == c.TapOracleOic.TapOicHttp.HTTP_RATE_LIMITED:
                     msg = "Rate limit exceeded: Too many requests"
                     raise FlextExceptions.RateLimitError(msg)
-                raise_for_status = getattr(response, "raise_for_status", None)
-                if raise_for_status is not None:
-                    raise_for_status()
+                raise FlextExceptions.OperationError(err_msg)
 
             def _is_empty_result_expected(
                 self,
-                data: Mapping[str, t.ContainerValue],
+                data: Mapping[str, t.ContainerValue] | Sequence[t.ContainerValue],
             ) -> bool:
                 """Check if empty result is expected/normal based on OIC response metadata."""
+                if not isinstance(data, Mapping):
+                    return not data
                 envelope = FlextTapOracleOicModels.as_oic_envelope(data)
                 if envelope is not None:
                     return (
@@ -587,15 +612,14 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             def _track_response_metrics(
                 self,
-                response: requests.Response,
-                data: Mapping[str, t.ContainerValue],
+                response: FlextApiModels.Api.HttpResponse,
+                data: Mapping[str, t.ContainerValue] | Sequence[t.ContainerValue],
             ) -> None:
                 """Track response metrics for monitoring and optimization."""
-                if getattr(response, "elapsed", None) is not None:
-                    self.logger.debug(
-                        "Response time: %.2fs",
-                        response.elapsed.total_seconds(),
-                    )
+                self.logger.debug("Response status: %s", response.status_code)
+                if not isinstance(data, Mapping):
+                    self.logger.debug("Received %s records", len(data))
+                    return
                 list_payload = FlextTapOracleOicModels.as_value_list(data)
                 if list_payload is not None:
                     self.logger.debug("Received %s records", len(list_payload))

@@ -52,10 +52,8 @@ if TYPE_CHECKING:
     )
     from flext_tap_oracle_oic.settings import (
         FlextTapOracleOicSettings,
-        create_oracle_oic_tap_config,
         flext_tap_oracle_oic_create_config,
         validate_configuration,
-        validate_oracle_oic_tap_configuration,
     )
     from flext_tap_oracle_oic.streams_consolidated import (
         ALL_STREAMS,
@@ -245,20 +243,12 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "__version__": ["flext_tap_oracle_oic.__version__", "__version__"],
     "__version_info__": ["flext_tap_oracle_oic.__version__", "__version_info__"],
     "c": ["flext_tap_oracle_oic.constants", "FlextTapOracleOicConstants"],
-    "create_oracle_oic_tap_config": [
-        "flext_tap_oracle_oic.settings",
-        "create_oracle_oic_tap_config",
-    ],
     "d": ["flext_meltano", "d"],
     "domain": ["flext_tap_oracle_oic.domain", ""],
     "e": ["flext_meltano", "e"],
     "flext_tap_oracle_oic_create_config": [
         "flext_tap_oracle_oic.settings",
         "flext_tap_oracle_oic_create_config",
-    ],
-    "validate_configuration": [
-        "flext_tap_oracle_oic.settings",
-        "validate_configuration",
     ],
     "h": ["flext_meltano", "h"],
     "logger": ["flext_tap_oracle_oic.tap_client", "logger"],
@@ -270,9 +260,9 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "t": ["flext_tap_oracle_oic.typings", "FlextTapOracleOicTypes"],
     "th": ["flext_tap_oracle_oic.streams_consolidated", "th"],
     "u": ["flext_tap_oracle_oic.utilities", "FlextTapOracleOicUtilities"],
-    "validate_oracle_oic_tap_configuration": [
+    "validate_configuration": [
         "flext_tap_oracle_oic.settings",
-        "validate_oracle_oic_tap_configuration",
+        "validate_configuration",
     ],
     "x": ["flext_meltano", "x"],
 }
@@ -329,7 +319,6 @@ __all__ = [
     "__version__",
     "__version_info__",
     "c",
-    "create_oracle_oic_tap_config",
     "d",
     "domain",
     "e",
@@ -345,7 +334,6 @@ __all__ = [
     "th",
     "u",
     "validate_configuration",
-    "validate_oracle_oic_tap_configuration",
     "x",
 ]
 

@@ -75,14 +75,6 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         except ValidationError:
             return None
 
-    @staticmethod
-    def _coerce_int(value: t.ContainerValue | None) -> int:
-        """Coerce potentially numeric values to integer with safe fallback."""
-        try:
-            return int(str(value))
-        except (TypeError, ValueError):
-            return 0
-
     @override
     def __init__(self) -> None:
         """Initialize Oracle OIC tap utilities."""
@@ -686,11 +678,19 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 offset = pagination_info.get("offset", 0)
                 page_size = pagination_info.get("current_page_size", 0)
                 try:
-                    offset_val = FlextTapOracleOicUtilities._coerce_int(offset)
-                    page_size_val = FlextTapOracleOicUtilities._coerce_int(page_size)
-                except (ValueError, TypeError):
-                    offset_val = 0
-                    page_size_val = 0
+                    offset_val = (
+                        FlextTapOracleOicUtilities._STRICT_INT_ADAPTER.validate_python(
+                            offset
+                        )
+                    )
+                    page_size_val = (
+                        FlextTapOracleOicUtilities._STRICT_INT_ADAPTER.validate_python(
+                            page_size
+                        )
+                    )
+                except ValidationError as e:
+                    msg = f"Invalid pagination parameters: offset={offset}, size={page_size}"
+                    raise ValueError(msg) from e
                 return FlextTapOracleOicUtilities.TapOracleOic.StateManagement.set_bookmark(
                     state,
                     stream_name,

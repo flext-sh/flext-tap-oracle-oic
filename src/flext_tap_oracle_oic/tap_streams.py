@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 
-import requests
+from flext_api import FlextApiModels
 from flext_core import FlextLogger
 
 from flext_tap_oracle_oic import c, m, t
@@ -46,7 +46,7 @@ class FlextTapOracleOicPaginator:
         self._adaptive_sizing: bool = True
         self._response_times: list[float] = []
 
-    def get_next(self, response: requests.Response) -> int | None:
+    def get_next(self, response: FlextApiModels.Api.HttpResponse) -> int | None:
         """Calculate next offset for Oracle OIC pagination.
 
         Args:
@@ -57,9 +57,7 @@ class FlextTapOracleOicPaginator:
 
         """
         try:
-            data = response.json()
-            if getattr(response, "elapsed", None) is not None and self._adaptive_sizing:
-                self._track_response_time(response.elapsed.total_seconds())
+            data = self._normalize_response_payload(response)
             return self._calculate_next_offset(data)
         except (ValueError, KeyError, TypeError, AttributeError) as e:
             logger = FlextLogger(__name__)
@@ -68,6 +66,18 @@ class FlextTapOracleOicPaginator:
             logger.info("Returning None - pagination parsing failure properly handled")
             logger.debug("This indicates end of pagination or malformed OIC response")
             return None
+
+    def _normalize_response_payload(
+        self,
+        response: FlextApiModels.Api.HttpResponse,
+    ) -> Mapping[str, t.ContainerValue]:
+        """Normalize flext-api response bodies to OIC pagination payloads."""
+        match response.body:
+            case dict() as body_map:
+                return body_map
+            case _:
+                msg = "Pagination requires a JSON object response body"
+                raise TypeError(msg)
 
     def _calculate_next_offset(
         self,

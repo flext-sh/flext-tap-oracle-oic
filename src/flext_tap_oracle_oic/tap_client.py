@@ -327,7 +327,7 @@ class FlextTapOracleOic(_TapBase):
     @override
     def discover_streams(
         self,
-        _tap_instance: m.Meltano.TapInstance,
+        tap_instance: m.Meltano.TapInstance,
     ) -> r[t.ContainerMapping]:
         """Discover stream catalog matching FlextMeltanoTapAbstractions contract."""
         streams: Sequence[m.TapOracleOic.OICBaseStream] = self.discover_oic_streams()

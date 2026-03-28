@@ -30,7 +30,7 @@ def _build_tap_instance() -> m.Meltano.TapInstance:
 
 
 def _discover_stream_names(tap: TapOracleOic) -> t.StrSequence:
-    result = tap.discover_streams(_tap_instance=_build_tap_instance())
+    result = tap.discover_streams(tap_instance=_build_tap_instance())
     assert result.is_success
     value = result.value
     assert isinstance(value, Mapping)
