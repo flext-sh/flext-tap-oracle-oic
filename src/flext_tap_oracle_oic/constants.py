@@ -13,11 +13,10 @@ from enum import StrEnum, unique
 from typing import TYPE_CHECKING, Final
 
 from flext_meltano import FlextMeltanoConstants
+from flext_oracle_oic import FlextOracleOicConstants
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import t
-from flext_oracle_oic import FlextOracleOicConstants
-from flext_oracle_oic.constants import FlextOracleOicConstants as ParentOicConstants
 
 
 class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants):
@@ -34,7 +33,9 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
     class TapOracleOic:
         """OIC connection configuration."""
 
-        DEFAULT_TIMEOUT: Final[int] = ParentOicConstants.OracleOic.MIN_REQUEST_TIMEOUT
+        DEFAULT_TIMEOUT: Final[int] = (
+            FlextOracleOicConstants.OracleOic.MIN_REQUEST_TIMEOUT
+        )
         DEFAULT_MAX_RETRIES: Final[int] = 3
         DEFAULT_VERIFY_SSL: Final[bool] = True
 
@@ -45,10 +46,12 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
             """
 
             DEFAULT_PAGE_SIZE: Final[int] = (
-                ParentOicConstants.OracleOic.DEFAULT_PAGE_SIZE
+                FlextOracleOicConstants.OracleOic.DEFAULT_PAGE_SIZE
             )
             MAX_PAGE_SIZE: Final[int] = 1000
-            MIN_PAGE_SIZE: Final[int] = ParentOicConstants.DEFAULT_RETRY_DELAY_SECONDS
+            MIN_PAGE_SIZE: Final[int] = (
+                FlextOracleOicConstants.DEFAULT_RETRY_DELAY_SECONDS
+            )
             DEFAULT_PAGINATOR_START: Final[int] = 0
             DEFAULT_PAGINATOR_PAGE_SIZE: Final[int] = 100
             PAGINATOR_MAX_PAGE_SIZE: Final[int] = 1000

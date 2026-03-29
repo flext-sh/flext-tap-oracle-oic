@@ -35,20 +35,16 @@ from pydantic import (
 )
 
 from flext_tap_oracle_oic import c, t
-from flext_tap_oracle_oic.constants import (
-    FlextTapOracleOicConstants,
-    FlextTapOracleOicConstants as _c,
-)
 from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
 
 # Module-level aliases for StrEnum types used in Annotated fields
-OicIntegrationStatusLiteral = _c.TapOracleOic.OicIntegrationStatusLiteral
-OicJobStatusLiteral = _c.TapOracleOic.OicJobStatusLiteral
-OicIntegrationTypeLiteral = _c.TapOracleOic.OicIntegrationTypeLiteral
-OicAgentTypeLiteral = _c.TapOracleOic.OicAgentTypeLiteral
-OicAgentStatusLiteral = _c.TapOracleOic.OicAgentStatusLiteral
-OicReplicationMethodLiteral = _c.TapOracleOic.OicReplicationMethodLiteral
-OicErrorTypeLiteral = _c.TapOracleOic.OicErrorTypeLiteral
+OicIntegrationStatusLiteral = c.TapOracleOic.OicIntegrationStatusLiteral
+OicJobStatusLiteral = c.TapOracleOic.OicJobStatusLiteral
+OicIntegrationTypeLiteral = c.TapOracleOic.OicIntegrationTypeLiteral
+OicAgentTypeLiteral = c.TapOracleOic.OicAgentTypeLiteral
+OicAgentStatusLiteral = c.TapOracleOic.OicAgentStatusLiteral
+OicReplicationMethodLiteral = c.TapOracleOic.OicReplicationMethodLiteral
+OicErrorTypeLiteral = c.TapOracleOic.OicErrorTypeLiteral
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic.tap_streams import (
@@ -318,14 +314,14 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 if self.api_path is not None:
                     return base_url + self.api_path
                 api_paths = {
-                    "core": FlextTapOracleOicConstants.OIC_API_BASE_PATH,
-                    "monitoring": FlextTapOracleOicConstants.OIC_MONITORING_API_PATH,
-                    "b2b": FlextTapOracleOicConstants.OIC_B2B_API_PATH,
-                    "process": FlextTapOracleOicConstants.OIC_PROCESS_API_PATH,
+                    "core": c.OIC_API_BASE_PATH,
+                    "monitoring": c.OIC_MONITORING_API_PATH,
+                    "b2b": c.OIC_B2B_API_PATH,
+                    "process": c.OIC_PROCESS_API_PATH,
                 }
                 return base_url + api_paths.get(
                     self.api_category,
-                    FlextTapOracleOicConstants.OIC_API_BASE_PATH,
+                    c.OIC_API_BASE_PATH,
                 )
 
             def get_new_paginator(self) -> OICPaginator:
