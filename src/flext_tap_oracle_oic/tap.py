@@ -392,8 +392,7 @@ def _build_config_from_env() -> t.StrMapping:
             "oauth_scope": settings.oauth_audience,
         }
     except (ValueError, TypeError) as e:
-        err_msg: str = str(e)
-        logger.debug("Configuration loading failed: %s", err_msg)
+        logger.debug(f"Configuration loading failed: {e}")
         return {}
 
 
