@@ -433,7 +433,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     self._track_response_metrics(response, data)
                     response_url = self._get_response_identifier(response)
                     yield from self._extract_and_yield_records(data, response_url)
-                except (ValueError, TypeError, KeyError, AttributeError):
+                except c.Meltano.Singer.SAFE_EXCEPTIONS:
                     response_url_err = self._get_response_identifier(response)
                     self.logger.exception(
                         "Error parsing response from %s",

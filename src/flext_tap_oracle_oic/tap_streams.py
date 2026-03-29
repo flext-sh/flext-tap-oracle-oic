@@ -42,7 +42,7 @@ class FlextTapOracleOicPaginator:
         try:
             data = self._normalize_response_payload(response)
             return self._calculate_next_offset(data)
-        except (ValueError, KeyError, TypeError, AttributeError) as e:
+        except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
             logger = FlextLogger(__name__)
             err_msg = f"OIC pagination parsing failed: {type(e).__name__}: {e}"
             logger.warning(err_msg)

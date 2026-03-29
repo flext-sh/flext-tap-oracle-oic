@@ -196,7 +196,15 @@ project-includes = [
 python-version = "3.13"
 search-path = [
   ".",
-  "../flext-tests",
+  "../flext-cli/examples",
+  "../flext-cli/src",
+  "../flext-core/examples",
+  "../flext-core/src",
+  "../flext-infra/src",
+  "../flext-meltano/docs",
+  "../flext-meltano/examples",
+  "../flext-meltano/src",
+  "../flext-oracle-oic/src",
   "../flext-tests/src",
   "src",
 ]

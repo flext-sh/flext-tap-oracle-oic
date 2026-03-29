@@ -19,7 +19,7 @@ from flext_oracle_oic.settings import FlextOracleOicSettings
 from pydantic import Field, SecretStr
 from pydantic_settings import SettingsConfigDict
 
-from flext_tap_oracle_oic import t
+from flext_tap_oracle_oic import c, t
 
 
 class FlextTapOracleOicSettings(FlextOracleOicSettings):
@@ -85,7 +85,7 @@ def flext_tap_oracle_oic_create_config(
         config_data = {**oauth_params, **connection_params, **tap_config}
         config_instance = FlextTapOracleOicSettings.model_validate(config_data)
         return r[FlextTapOracleOicSettings].ok(config_instance)
-    except (ValueError, TypeError, KeyError, AttributeError, OSError) as e:
+    except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
         return r[FlextTapOracleOicSettings].fail(
             f"Oracle OIC tap configuration creation failed: {e}",
         )
