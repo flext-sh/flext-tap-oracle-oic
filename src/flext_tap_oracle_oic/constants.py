@@ -48,7 +48,7 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
                 ParentOicConstants.OracleOic.DEFAULT_PAGE_SIZE
             )
             MAX_PAGE_SIZE: Final[int] = 1000
-            MIN_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.MIN_PAGE_SIZE
+            MIN_PAGE_SIZE: Final[int] = ParentOicConstants.DEFAULT_RETRY_DELAY_SECONDS
             DEFAULT_PAGINATOR_START: Final[int] = 0
             DEFAULT_PAGINATOR_PAGE_SIZE: Final[int] = 100
             PAGINATOR_MAX_PAGE_SIZE: Final[int] = 1000

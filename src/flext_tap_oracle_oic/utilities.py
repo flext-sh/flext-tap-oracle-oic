@@ -196,15 +196,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                         )
                         api_url = f"{api_url}?{query_string}"
                     return r[str].ok(api_url)
-                except (
-                    ValueError,
-                    TypeError,
-                    KeyError,
-                    AttributeError,
-                    OSError,
-                    RuntimeError,
-                    ImportError,
-                ) as e:
+                except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
                     return r[str].fail(f"URL building error: {e}")
 
             @staticmethod
@@ -272,15 +264,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                     if "data" in response_data:
                         parsed_response["items"] = response_data["data"]
                     return r[t.ContainerValueMapping].ok(parsed_response)
-                except (
-                    ValueError,
-                    TypeError,
-                    KeyError,
-                    AttributeError,
-                    OSError,
-                    RuntimeError,
-                    ImportError,
-                ) as e:
+                except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
                     return r[t.ContainerValueMapping].fail(
                         f"Response parsing error: {e}",
                     )
@@ -305,15 +289,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                     if "oic" not in parsed.netloc.lower():
                         return r[str].fail("URL does not appear to be an OIC endpoint")
                     return r[str].ok(endpoint_url)
-                except (
-                    ValueError,
-                    TypeError,
-                    KeyError,
-                    AttributeError,
-                    OSError,
-                    RuntimeError,
-                    ImportError,
-                ) as e:
+                except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
                     return r[str].fail(f"URL validation error: {e}")
 
         class OicDataProcessing:
@@ -394,15 +370,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                         except ValueError:
                             continue
                     return r[str].fail(f"Unsupported timestamp format: {timestamp_str}")
-                except (
-                    ValueError,
-                    TypeError,
-                    KeyError,
-                    AttributeError,
-                    OSError,
-                    RuntimeError,
-                    ImportError,
-                ) as e:
+                except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
                     return r[str].fail(f"Timestamp formatting error: {e}")
 
             @staticmethod

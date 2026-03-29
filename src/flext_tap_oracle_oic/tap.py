@@ -81,15 +81,7 @@ class FlextOracleOicAuthenticator:
                     return r[str].ok(access_token_str)
                 case _:
                     return r[str].fail("No valid access token in response")
-        except (
-            ValueError,
-            TypeError,
-            KeyError,
-            AttributeError,
-            OSError,
-            RuntimeError,
-            ImportError,
-        ) as e:
+        except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
             return r[str].fail(f"OAuth2 authentication failed: {e}")
 
 
@@ -134,15 +126,7 @@ class FlextTapOracleOicClient:
                     f"OIC API request failed with status {response.status_code}",
                 )
             return r[FlextApiModels.Api.HttpResponse].ok(response)
-        except (
-            ValueError,
-            TypeError,
-            KeyError,
-            AttributeError,
-            OSError,
-            RuntimeError,
-            ImportError,
-        ) as e:
+        except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
             return r[FlextApiModels.Api.HttpResponse].fail(
                 f"OIC API request failed: {e}",
             )
@@ -183,15 +167,7 @@ class FlextTapOracleOicClient:
                     f"OIC API request failed with status {response.status_code}",
                 )
             return r[FlextApiModels.Api.HttpResponse].ok(response)
-        except (
-            ValueError,
-            TypeError,
-            KeyError,
-            AttributeError,
-            OSError,
-            RuntimeError,
-            ImportError,
-        ) as e:
+        except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
             return r[FlextApiModels.Api.HttpResponse].fail(
                 f"OIC API request failed: {e}",
             )

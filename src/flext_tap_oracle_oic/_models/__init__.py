@@ -31,18 +31,9 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "ALL_STREAMS": ["flext_tap_oracle_oic._models.streams", "ALL_STREAMS"],
     "CORE_STREAMS": ["flext_tap_oracle_oic._models.streams", "CORE_STREAMS"],
     "EXTENDED_STREAMS": ["flext_tap_oracle_oic._models.streams", "EXTENDED_STREAMS"],
-    "FlextTapOracleOicModelsStreams": [
-        "flext_tap_oracle_oic._models.streams",
-        "FlextTapOracleOicModelsStreams",
-    ],
-    "INFRASTRUCTURE_STREAMS": [
-        "flext_tap_oracle_oic._models.streams",
-        "INFRASTRUCTURE_STREAMS",
-    ],
-    "MONITORING_STREAMS": [
-        "flext_tap_oracle_oic._models.streams",
-        "MONITORING_STREAMS",
-    ],
+    "FlextTapOracleOicModelsStreams": ["flext_tap_oracle_oic._models.streams", "FlextTapOracleOicModelsStreams"],
+    "INFRASTRUCTURE_STREAMS": ["flext_tap_oracle_oic._models.streams", "INFRASTRUCTURE_STREAMS"],
+    "MONITORING_STREAMS": ["flext_tap_oracle_oic._models.streams", "MONITORING_STREAMS"],
     "th": ["flext_tap_oracle_oic._models.streams", "th"],
 }
 

@@ -1041,7 +1041,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     msg = "Connection name is required"
                     raise ValueError(msg)
                 if self.port is not None and not (
-                    FlextConstants.MIN_PORT <= self.port <= FlextConstants.MAX_PORT
+                    c.DEFAULT_RETRY_DELAY_SECONDS
+                    <= self.port
+                    <= FlextConstants.MAX_PORT
                 ):
                     msg = "Port must be between 1 and 65535"
                     raise ValueError(msg)
@@ -1594,7 +1596,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     msg = "Agent name is required"
                     raise ValueError(msg)
                 if self.port is not None and not (
-                    FlextConstants.MIN_PORT <= self.port <= FlextConstants.MAX_PORT
+                    c.DEFAULT_RETRY_DELAY_SECONDS
+                    <= self.port
+                    <= FlextConstants.MAX_PORT
                 ):
                     msg = "Port must be between 1 and 65535"
                     raise ValueError(msg)
@@ -1724,10 +1728,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ):
                     msg = "Incremental replication requires a replication key"
                     raise ValueError(msg)
-                if (
-                    self.page_size <= 0
-                    or self.page_size > FlextConstants.MAX_BATCH_SIZE
-                ):
+                if self.page_size <= 0 or self.page_size > c.MAX_ITEMS:
                     msg = "Page size must be between 1 and 1000"
                     raise ValueError(msg)
                 return self

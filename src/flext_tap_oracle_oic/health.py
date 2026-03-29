@@ -55,15 +55,7 @@ class FlextTapOracleOicHealthChecker:
                 "api_accessible": "False",
                 "error": f"API returned status {response.status_code}",
             }
-        except (
-            ValueError,
-            TypeError,
-            KeyError,
-            AttributeError,
-            OSError,
-            RuntimeError,
-            ImportError,
-        ) as e:
+        except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
             return {
                 "status": "error",
                 "timestamp": datetime.now(UTC).isoformat(),
@@ -100,15 +92,7 @@ class FlextTapOracleOicHealthChecker:
                 "accessible": "False",
                 "error": f"API returned status {response.status_code}",
             }
-        except (
-            ValueError,
-            TypeError,
-            KeyError,
-            AttributeError,
-            OSError,
-            RuntimeError,
-            ImportError,
-        ) as e:
+        except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
             return {
                 "service": "monitoring",
                 "status": "error",
@@ -156,15 +140,7 @@ class FlextTapOracleOicHealthChecker:
                 "timestamp": datetime.now(UTC).isoformat(),
                 "error": f"Test failed with status {response.status_code}",
             }
-        except (
-            ValueError,
-            TypeError,
-            KeyError,
-            AttributeError,
-            OSError,
-            RuntimeError,
-            ImportError,
-        ) as e:
+        except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
             return {
                 "connectionId": connection_id,
                 "status": "error",
@@ -225,15 +201,7 @@ class FlextTapOracleOicHealthChecker:
                 "timestamp": datetime.now(UTC).isoformat(),
                 "error": f"Failed to get integration status: {response.status_code}",
             }
-        except (
-            ValueError,
-            TypeError,
-            KeyError,
-            AttributeError,
-            OSError,
-            RuntimeError,
-            ImportError,
-        ) as e:
+        except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
             return {
                 "integrationId": integration_id,
                 "health": "error",
