@@ -10,21 +10,22 @@ from typing import TYPE_CHECKING
 
 from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 
+from flext_tap_oracle_oic.__version__ import (
+    __author__,
+    __author_email__,
+    __description__,
+    __license__,
+    __title__,
+    __url__,
+    __version__,
+    __version_info__,
+)
+
 if TYPE_CHECKING:
     from flext_core import FlextTypes
     from flext_meltano import d, e, h, r, s, x
 
     from flext_tap_oracle_oic import _models
-    from flext_tap_oracle_oic.__version__ import (
-        __author__,
-        __author_email__,
-        __description__,
-        __license__,
-        __title__,
-        __url__,
-        __version__,
-        __version_info__,
-    )
     from flext_tap_oracle_oic._models.streams import (
         ALL_STREAMS,
         CORE_STREAMS,
@@ -150,14 +151,6 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
         "flext_tap_oracle_oic._models.streams",
         "MONITORING_STREAMS",
     ],
-    "__author__": ["flext_tap_oracle_oic.__version__", "__author__"],
-    "__author_email__": ["flext_tap_oracle_oic.__version__", "__author_email__"],
-    "__description__": ["flext_tap_oracle_oic.__version__", "__description__"],
-    "__license__": ["flext_tap_oracle_oic.__version__", "__license__"],
-    "__title__": ["flext_tap_oracle_oic.__version__", "__title__"],
-    "__url__": ["flext_tap_oracle_oic.__version__", "__url__"],
-    "__version__": ["flext_tap_oracle_oic.__version__", "__version__"],
-    "__version_info__": ["flext_tap_oracle_oic.__version__", "__version_info__"],
     "_models": ["flext_tap_oracle_oic._models", ""],
     "c": ["flext_tap_oracle_oic.constants", "FlextTapOracleOicConstants"],
     "d": ["flext_meltano", "d"],
