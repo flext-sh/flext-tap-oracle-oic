@@ -22,6 +22,17 @@ if TYPE_CHECKING:
     from flext_core import FlextTypes
     from flext_tests import d, e, h, r, s, x
 
+    from tests import (
+        conftest,
+        constants,
+        models,
+        protocols,
+        test_auth,
+        test_tap,
+        test_tap_core,
+        typings,
+        utilities,
+    )
     from tests.conftest import (
         basic_oic_config,
         benchmark_config,
@@ -107,6 +118,8 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "basic_oic_config": ["tests.conftest", "basic_oic_config"],
     "benchmark_config": ["tests.conftest", "benchmark_config"],
     "c": ["tests.constants", "FlextTapOracleOicTestConstants"],
+    "conftest": ["tests.conftest", ""],
+    "constants": ["tests.constants", ""],
     "d": ["flext_tests", "d"],
     "e": ["flext_tests", "e"],
     "extended_oic_config": ["tests.conftest", "extended_oic_config"],
@@ -123,8 +136,10 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "mock_oic_client": ["tests.conftest", "mock_oic_client"],
     "mock_packages_response": ["tests.conftest", "mock_packages_response"],
     "mock_rate_limit_response": ["tests.conftest", "mock_rate_limit_response"],
+    "models": ["tests.models", ""],
     "p": ["tests.protocols", "FlextTapOracleOicTestProtocols"],
     "performance_oic_config": ["tests.conftest", "performance_oic_config"],
+    "protocols": ["tests.protocols", ""],
     "pytest_configure": ["tests.conftest", "pytest_configure"],
     "r": ["flext_tests", "r"],
     "s": ["flext_tests", "s"],
@@ -144,7 +159,12 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "singer_catalog": ["tests.conftest", "singer_catalog"],
     "singer_state": ["tests.conftest", "singer_state"],
     "t": ["tests.typings", "FlextTapOracleOicTestTypes"],
+    "test_auth": ["tests.test_auth", ""],
+    "test_tap": ["tests.test_tap", ""],
+    "test_tap_core": ["tests.test_tap_core", ""],
+    "typings": ["tests.typings", ""],
     "u": ["tests.utilities", "FlextTapOracleOicTestUtilities"],
+    "utilities": ["tests.utilities", ""],
     "x": ["flext_tests", "x"],
 }
 
@@ -161,6 +181,8 @@ __all__ = [
     "basic_oic_config",
     "benchmark_config",
     "c",
+    "conftest",
+    "constants",
     "d",
     "e",
     "extended_oic_config",
@@ -177,8 +199,10 @@ __all__ = [
     "mock_oic_client",
     "mock_packages_response",
     "mock_rate_limit_response",
+    "models",
     "p",
     "performance_oic_config",
+    "protocols",
     "pytest_configure",
     "r",
     "s",
@@ -195,7 +219,12 @@ __all__ = [
     "singer_catalog",
     "singer_state",
     "t",
+    "test_auth",
+    "test_tap",
+    "test_tap_core",
+    "typings",
     "u",
+    "utilities",
     "x",
 ]
 

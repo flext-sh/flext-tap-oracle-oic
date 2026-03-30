@@ -17,6 +17,7 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 if TYPE_CHECKING:
     from flext_core import FlextTypes
 
+    from flext_tap_oracle_oic._models import streams
     from flext_tap_oracle_oic._models.streams import (
         ALL_STREAMS,
         CORE_STREAMS,
@@ -43,6 +44,7 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
         "flext_tap_oracle_oic._models.streams",
         "MONITORING_STREAMS",
     ],
+    "streams": ["flext_tap_oracle_oic._models.streams", ""],
     "th": ["flext_tap_oracle_oic._models.streams", "th"],
 }
 
@@ -53,6 +55,7 @@ __all__ = [
     "INFRASTRUCTURE_STREAMS",
     "MONITORING_STREAMS",
     "FlextTapOracleOicModelsStreams",
+    "streams",
     "th",
 ]
 
