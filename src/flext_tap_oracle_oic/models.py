@@ -34,8 +34,7 @@ from pydantic import (
     model_validator,
 )
 
-from flext_tap_oracle_oic import c, t
-from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities
+from flext_tap_oracle_oic import FlextTapOracleOicUtilities, c, t
 
 # Module-level aliases for StrEnum types used in Annotated fields
 OicIntegrationStatusLiteral = c.TapOracleOic.OicIntegrationStatusLiteral
@@ -47,7 +46,7 @@ OicReplicationMethodLiteral = c.TapOracleOic.OicReplicationMethodLiteral
 OicErrorTypeLiteral = c.TapOracleOic.OicErrorTypeLiteral
 
 if TYPE_CHECKING:
-    from flext_tap_oracle_oic.tap_streams import (
+    from flext_tap_oracle_oic import (
         FlextTapOracleOicPaginator as OICPaginator,
     )
 
@@ -76,7 +75,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     @staticmethod
     def _get_oic_paginator_class() -> type[OICPaginator]:
         """Lazy import to break circular dependency between models and tap_streams."""
-        from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator as _Cls
+        from flext_tap_oracle_oic import FlextTapOracleOicPaginator as _Cls
 
         return _Cls
 

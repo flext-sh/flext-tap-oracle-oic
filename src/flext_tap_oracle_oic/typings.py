@@ -19,7 +19,7 @@ from collections.abc import Mapping, Sequence
 from flext_meltano import FlextMeltanoTypes
 from flext_oracle_oic import FlextOracleOicTypes
 
-from flext_tap_oracle_oic.constants import c
+from flext_tap_oracle_oic import c
 
 
 class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):

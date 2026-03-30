@@ -18,7 +18,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tap_oracle_oic.tap import FlextTapOracleOic
+from flext_tap_oracle_oic import FlextTapOracleOic
 
 
 def main() -> None:

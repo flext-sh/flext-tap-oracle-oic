@@ -10,7 +10,7 @@ from collections.abc import Mapping, Sequence
 from typing import Protocol, runtime_checkable
 
 from flext_meltano import FlextMeltanoModels, FlextMeltanoProtocols
-from flext_oracle_oic.protocols import FlextOracleOicProtocols
+from flext_oracle_oic import FlextOracleOicProtocols
 
 from flext_tap_oracle_oic import t
 
@@ -28,7 +28,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
     - PROVIDES: Root-level alias `p` for convenient access
 
     Usage:
-    from flext_tap_oracle_oic.protocols import p
+    from flext_tap_oracle_oic import p
 
     # Foundation protocols (inherited)
     result: p.Result[str]

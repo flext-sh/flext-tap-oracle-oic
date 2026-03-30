@@ -24,7 +24,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tap_oracle_oic.cli import main
+from flext_tap_oracle_oic import main
 
 if __name__ == "__main__":
     main()

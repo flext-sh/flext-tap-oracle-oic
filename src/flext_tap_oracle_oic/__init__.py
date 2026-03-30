@@ -16,7 +16,6 @@ if TYPE_CHECKING:
 
     from flext_tap_oracle_oic import _models
     from flext_tap_oracle_oic.__version__ import (
-        __all__,
         __author__,
         __author_email__,
         __description__,
@@ -151,7 +150,6 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
         "flext_tap_oracle_oic._models.streams",
         "MONITORING_STREAMS",
     ],
-    "__all__": ["flext_tap_oracle_oic.__version__", "__all__"],
     "__author__": ["flext_tap_oracle_oic.__version__", "__author__"],
     "__author_email__": ["flext_tap_oracle_oic.__version__", "__author_email__"],
     "__description__": ["flext_tap_oracle_oic.__version__", "__description__"],
@@ -208,7 +206,6 @@ __all__ = [
     "FlextTapOracleOicTypes",
     "FlextTapOracleOicUtilities",
     "FlextTapOracleOicValidationError",
-    "__all__",
     "__author__",
     "__author_email__",
     "__description__",
