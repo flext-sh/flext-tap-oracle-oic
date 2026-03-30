@@ -25,7 +25,6 @@ if TYPE_CHECKING:
     from flext_meltano import *
 
     from flext_tap_oracle_oic import (
-        _models,
         cli,
         constants,
         errors,
@@ -38,8 +37,7 @@ if TYPE_CHECKING:
         typings,
         utilities,
     )
-    from flext_tap_oracle_oic._models import streams
-    from flext_tap_oracle_oic._models.streams import *
+    from flext_tap_oracle_oic._models import *
     from flext_tap_oracle_oic.cli import *
     from flext_tap_oracle_oic.constants import *
     from flext_tap_oracle_oic.errors import *
@@ -52,10 +50,10 @@ if TYPE_CHECKING:
     from flext_tap_oracle_oic.typings import *
     from flext_tap_oracle_oic.utilities import *
 
-from flext_tap_oracle_oic._models import _LAZY_IMPORTS as __MODELS_LAZY
-
 _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
-    **__MODELS_LAZY,
+    "ALL_STREAMS": "flext_tap_oracle_oic._models.streams",
+    "CORE_STREAMS": "flext_tap_oracle_oic._models.streams",
+    "EXTENDED_STREAMS": "flext_tap_oracle_oic._models.streams",
     "FlextOracleOicAuthenticator": "flext_tap_oracle_oic.tap",
     "FlextTapOracleOic": "flext_tap_oracle_oic.tap",
     "FlextTapOracleOicApiError": "flext_tap_oracle_oic.errors",
@@ -66,12 +64,15 @@ _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "FlextTapOracleOicExceptionFactory": "flext_tap_oracle_oic.errors",
     "FlextTapOracleOicHealthChecker": "flext_tap_oracle_oic.health",
     "FlextTapOracleOicModels": "flext_tap_oracle_oic.models",
+    "FlextTapOracleOicModelsStreams": "flext_tap_oracle_oic._models.streams",
     "FlextTapOracleOicPaginator": "flext_tap_oracle_oic.tap_streams",
     "FlextTapOracleOicProtocols": "flext_tap_oracle_oic.protocols",
     "FlextTapOracleOicSettings": "flext_tap_oracle_oic.settings",
     "FlextTapOracleOicTypes": "flext_tap_oracle_oic.typings",
     "FlextTapOracleOicUtilities": "flext_tap_oracle_oic.utilities",
     "FlextTapOracleOicValidationError": "flext_tap_oracle_oic.errors",
+    "INFRASTRUCTURE_STREAMS": "flext_tap_oracle_oic._models.streams",
+    "MONITORING_STREAMS": "flext_tap_oracle_oic._models.streams",
     "_models": "flext_tap_oracle_oic._models",
     "c": ["flext_tap_oracle_oic.constants", "FlextTapOracleOicConstants"],
     "cli": "flext_tap_oracle_oic.cli",
@@ -91,9 +92,11 @@ _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "r": "flext_meltano",
     "s": "flext_meltano",
     "settings": "flext_tap_oracle_oic.settings",
+    "streams": "flext_tap_oracle_oic._models.streams",
     "t": ["flext_tap_oracle_oic.typings", "FlextTapOracleOicTypes"],
     "tap": "flext_tap_oracle_oic.tap",
     "tap_streams": "flext_tap_oracle_oic.tap_streams",
+    "th": "flext_tap_oracle_oic._models.streams",
     "typings": "flext_tap_oracle_oic.typings",
     "u": ["flext_tap_oracle_oic.utilities", "FlextTapOracleOicUtilities"],
     "utilities": "flext_tap_oracle_oic.utilities",
