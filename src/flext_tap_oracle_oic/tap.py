@@ -332,7 +332,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             error_msg = f"Oracle OIC connection test failed: {test_result.error}"
             logger.error(error_msg)
             return r[bool].fail(error_msg)
-        except (*c.Meltano.Singer.SAFE_EXCEPTIONS, RuntimeError) as e:
+        except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
             exception_msg = f"Oracle OIC connection test exception: {e}"
             logger.exception(exception_msg)
             return r[bool].fail(exception_msg)
@@ -348,7 +348,7 @@ def main() -> int:
     tap = FlextTapOracleOic(config=config_typed)
     try:
         return _execute_tap_command(tap)
-    except (*c.Meltano.Singer.SAFE_EXCEPTIONS, RuntimeError) as e:
+    except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
         logger.exception("Oracle OIC tap execution failed")
         err_msg = f"Tap execution failed with error: {type(e).__name__}: {e}"
         logger.warning(err_msg)
