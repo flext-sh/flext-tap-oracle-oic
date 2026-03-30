@@ -13,108 +13,92 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping, MutableMapping, Sequence
+from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING
 
-from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
+from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_core import FlextTypes
     from flext_tests import d, e, h, r, s, x
 
     from tests import (
-        conftest,
-        constants,
-        models,
-        protocols,
-        test_auth,
-        test_tap,
-        test_tap_core,
-        typings,
-        utilities,
+        conftest as conftest,
+        constants as constants,
+        models as models,
+        protocols as protocols,
+        test_auth as test_auth,
+        test_tap as test_tap,
+        test_tap_core as test_tap_core,
+        typings as typings,
+        utilities as utilities,
     )
     from tests.conftest import (
-        basic_oic_config,
-        benchmark_config,
-        extended_oic_config,
-        filtered_oic_config,
-        large_integration_dataset,
-        mock_connections_response,
-        mock_http_error_response,
-        mock_integrations_response,
-        mock_lookups_response,
-        mock_oauth_authenticator,
-        mock_oauth_token_response,
-        mock_oic_client,
-        mock_packages_response,
-        mock_rate_limit_response,
-        performance_oic_config,
-        pytest_configure,
-        sample_adapter_data,
-        sample_certificate_data,
-        sample_connection_data,
-        sample_integration_data,
-        sample_library_data,
-        sample_lookup_data,
-        sample_package_data,
-        set_test_environment,
-        singer_catalog,
-        singer_state,
+        basic_oic_config as basic_oic_config,
+        benchmark_config as benchmark_config,
+        extended_oic_config as extended_oic_config,
+        filtered_oic_config as filtered_oic_config,
+        large_integration_dataset as large_integration_dataset,
+        mock_connections_response as mock_connections_response,
+        mock_http_error_response as mock_http_error_response,
+        mock_integrations_response as mock_integrations_response,
+        mock_lookups_response as mock_lookups_response,
+        mock_oauth_authenticator as mock_oauth_authenticator,
+        mock_oauth_token_response as mock_oauth_token_response,
+        mock_oic_client as mock_oic_client,
+        mock_packages_response as mock_packages_response,
+        mock_rate_limit_response as mock_rate_limit_response,
+        performance_oic_config as performance_oic_config,
+        pytest_configure as pytest_configure,
+        sample_adapter_data as sample_adapter_data,
+        sample_certificate_data as sample_certificate_data,
+        sample_connection_data as sample_connection_data,
+        sample_integration_data as sample_integration_data,
+        sample_library_data as sample_library_data,
+        sample_lookup_data as sample_lookup_data,
+        sample_package_data as sample_package_data,
+        set_test_environment as set_test_environment,
+        singer_catalog as singer_catalog,
+        singer_state as singer_state,
     )
     from tests.constants import (
-        FlextTapOracleOicTestConstants,
+        FlextTapOracleOicTestConstants as FlextTapOracleOicTestConstants,
         FlextTapOracleOicTestConstants as c,
     )
     from tests.models import (
-        FlextTapOracleOicTestModels,
+        FlextTapOracleOicTestModels as FlextTapOracleOicTestModels,
         FlextTapOracleOicTestModels as m,
     )
     from tests.protocols import (
-        FlextTapOracleOicTestProtocols,
+        FlextTapOracleOicTestProtocols as FlextTapOracleOicTestProtocols,
         FlextTapOracleOicTestProtocols as p,
     )
-    from tests.test_auth import TestOICOAuth2Authenticator
+    from tests.test_auth import TestOICOAuth2Authenticator as TestOICOAuth2Authenticator
     from tests.test_tap_core import (
-        TestTapOracleOic,
-        TestTapOracleOicIntegration,
-        TestTapOracleOicWithFixtures,
-        sample_config,
-        sample_config_with_extended,
+        TestTapOracleOic as TestTapOracleOic,
+        TestTapOracleOicIntegration as TestTapOracleOicIntegration,
+        TestTapOracleOicWithFixtures as TestTapOracleOicWithFixtures,
+        sample_config as sample_config,
+        sample_config_with_extended as sample_config_with_extended,
     )
     from tests.typings import (
-        FlextTapOracleOicTestTypes,
+        FlextTapOracleOicTestTypes as FlextTapOracleOicTestTypes,
         FlextTapOracleOicTestTypes as t,
     )
     from tests.utilities import (
-        FlextTapOracleOicTestUtilities,
+        FlextTapOracleOicTestUtilities as FlextTapOracleOicTestUtilities,
         FlextTapOracleOicTestUtilities as u,
     )
 
 _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
-    "FlextTapOracleOicTestConstants": [
-        "tests.constants",
-        "FlextTapOracleOicTestConstants",
-    ],
+    "FlextTapOracleOicTestConstants": ["tests.constants", "FlextTapOracleOicTestConstants"],
     "FlextTapOracleOicTestModels": ["tests.models", "FlextTapOracleOicTestModels"],
-    "FlextTapOracleOicTestProtocols": [
-        "tests.protocols",
-        "FlextTapOracleOicTestProtocols",
-    ],
+    "FlextTapOracleOicTestProtocols": ["tests.protocols", "FlextTapOracleOicTestProtocols"],
     "FlextTapOracleOicTestTypes": ["tests.typings", "FlextTapOracleOicTestTypes"],
-    "FlextTapOracleOicTestUtilities": [
-        "tests.utilities",
-        "FlextTapOracleOicTestUtilities",
-    ],
+    "FlextTapOracleOicTestUtilities": ["tests.utilities", "FlextTapOracleOicTestUtilities"],
     "TestOICOAuth2Authenticator": ["tests.test_auth", "TestOICOAuth2Authenticator"],
     "TestTapOracleOic": ["tests.test_tap_core", "TestTapOracleOic"],
-    "TestTapOracleOicIntegration": [
-        "tests.test_tap_core",
-        "TestTapOracleOicIntegration",
-    ],
-    "TestTapOracleOicWithFixtures": [
-        "tests.test_tap_core",
-        "TestTapOracleOicWithFixtures",
-    ],
+    "TestTapOracleOicIntegration": ["tests.test_tap_core", "TestTapOracleOicIntegration"],
+    "TestTapOracleOicWithFixtures": ["tests.test_tap_core", "TestTapOracleOicWithFixtures"],
     "basic_oic_config": ["tests.conftest", "basic_oic_config"],
     "benchmark_config": ["tests.conftest", "benchmark_config"],
     "c": ["tests.constants", "FlextTapOracleOicTestConstants"],
@@ -146,10 +130,7 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "sample_adapter_data": ["tests.conftest", "sample_adapter_data"],
     "sample_certificate_data": ["tests.conftest", "sample_certificate_data"],
     "sample_config": ["tests.test_tap_core", "sample_config"],
-    "sample_config_with_extended": [
-        "tests.test_tap_core",
-        "sample_config_with_extended",
-    ],
+    "sample_config_with_extended": ["tests.test_tap_core", "sample_config_with_extended"],
     "sample_connection_data": ["tests.conftest", "sample_connection_data"],
     "sample_integration_data": ["tests.conftest", "sample_integration_data"],
     "sample_library_data": ["tests.conftest", "sample_library_data"],
@@ -168,7 +149,7 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "x": ["flext_tests", "x"],
 }
 
-__all__ = [
+_EXPORTS: Sequence[str] = [
     "FlextTapOracleOicTestConstants",
     "FlextTapOracleOicTestModels",
     "FlextTapOracleOicTestProtocols",
@@ -229,41 +210,4 @@ __all__ = [
 ]
 
 
-_LAZY_CACHE: MutableMapping[str, FlextTypes.ModuleExport] = {}
-
-
-def __getattr__(name: str) -> FlextTypes.ModuleExport:
-    """Lazy-load module attributes on first access (PEP 562).
-
-    A local cache ``_LAZY_CACHE`` persists resolved objects across repeated
-    accesses during process lifetime.
-
-    Args:
-        name: Attribute name requested by dir()/import.
-
-    Returns:
-        Lazy-loaded module export type.
-
-    Raises:
-        AttributeError: If attribute not registered.
-
-    """
-    if name in _LAZY_CACHE:
-        return _LAZY_CACHE[name]
-
-    value = lazy_getattr(name, _LAZY_IMPORTS, globals(), __name__)
-    _LAZY_CACHE[name] = value
-    return value
-
-
-def __dir__() -> Sequence[str]:
-    """Return list of available attributes for dir() and autocomplete.
-
-    Returns:
-        List of public names from module exports.
-
-    """
-    return sorted(__all__)
-
-
-cleanup_submodule_namespace(__name__, _LAZY_IMPORTS)
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, _EXPORTS)
