@@ -22,10 +22,57 @@ if _TYPE_CHECKING:
     from flext_core import FlextTypes
     from flext_tests import d, e, h, r, s, x
 
-    from tests.conftest import *
-    from tests.constants import *
-    from tests.models import *
-    from tests.protocols import *
+    from tests import (
+        conftest,
+        constants,
+        models,
+        protocols,
+        test_auth,
+        test_tap,
+        test_tap_core,
+        typings,
+        utilities,
+    )
+    from tests.conftest import (
+        basic_oic_config,
+        benchmark_config,
+        extended_oic_config,
+        filtered_oic_config,
+        large_integration_dataset,
+        mock_connections_response,
+        mock_http_error_response,
+        mock_integrations_response,
+        mock_lookups_response,
+        mock_oauth_authenticator,
+        mock_oauth_token_response,
+        mock_oic_client,
+        mock_packages_response,
+        mock_rate_limit_response,
+        performance_oic_config,
+        pytest_configure,
+        sample_adapter_data,
+        sample_certificate_data,
+        sample_connection_data,
+        sample_integration_data,
+        sample_library_data,
+        sample_lookup_data,
+        sample_package_data,
+        set_test_environment,
+        singer_catalog,
+        singer_state,
+    )
+    from tests.constants import (
+        FlextTapOracleOicTestConstants,
+        FlextTapOracleOicTestConstants as c,
+    )
+    from tests.models import (
+        FlextTapOracleOicTestModels,
+        FlextTapOracleOicTestModels as m,
+    )
+    from tests.protocols import (
+        FlextTapOracleOicTestProtocols,
+        FlextTapOracleOicTestProtocols as p,
+    )
     from tests.test_auth import TestOICOAuth2Authenticator
     from tests.test_tap_core import (
         TestTapOracleOic,
@@ -34,8 +81,14 @@ if _TYPE_CHECKING:
         sample_config,
         sample_config_with_extended,
     )
-    from tests.typings import *
-    from tests.utilities import *
+    from tests.typings import (
+        FlextTapOracleOicTestTypes,
+        FlextTapOracleOicTestTypes as t,
+    )
+    from tests.utilities import (
+        FlextTapOracleOicTestUtilities,
+        FlextTapOracleOicTestUtilities as u,
+    )
 
 _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "FlextTapOracleOicTestConstants": "tests.constants",

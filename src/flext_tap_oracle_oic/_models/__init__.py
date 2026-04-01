@@ -17,7 +17,16 @@ from flext_core.lazy import install_lazy_exports
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
 
-    from flext_tap_oracle_oic._models.streams import *
+    from flext_tap_oracle_oic._models import streams
+    from flext_tap_oracle_oic._models.streams import (
+        ALL_STREAMS,
+        CORE_STREAMS,
+        EXTENDED_STREAMS,
+        INFRASTRUCTURE_STREAMS,
+        MONITORING_STREAMS,
+        FlextTapOracleOicModelsStreams,
+        th,
+    )
 
 _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "ALL_STREAMS": "flext_tap_oracle_oic._models.streams",
