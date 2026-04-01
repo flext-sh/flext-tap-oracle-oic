@@ -26,8 +26,14 @@ if _TYPE_CHECKING:
     from tests.constants import *
     from tests.models import *
     from tests.protocols import *
-    from tests.test_auth import *
-    from tests.test_tap_core import *
+    from tests.test_auth import TestOICOAuth2Authenticator
+    from tests.test_tap_core import (
+        TestTapOracleOic,
+        TestTapOracleOicIntegration,
+        TestTapOracleOicWithFixtures,
+        sample_config,
+        sample_config_with_extended,
+    )
     from tests.typings import *
     from tests.utilities import *
 
