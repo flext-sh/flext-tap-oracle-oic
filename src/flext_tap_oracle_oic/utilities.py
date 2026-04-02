@@ -10,7 +10,7 @@ from __future__ import annotations
 import re
 from collections.abc import Mapping, MutableMapping, Sequence
 from datetime import UTC, datetime
-from typing import ClassVar, override
+from typing import ClassVar
 from urllib.parse import urljoin, urlparse
 
 from flext_core import r
@@ -74,11 +74,6 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             return FlextTapOracleOicUtilities._STRICT_INT_ADAPTER.validate_python(value)
         except ValidationError:
             return None
-
-    @override
-    def __init__(self) -> None:
-        """Initialize Oracle OIC tap utilities."""
-        super().__init__()
 
     class TapOracleOic:
         """OIC tap domain utilities.

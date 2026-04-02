@@ -36,14 +36,13 @@ from pydantic import (
 
 from flext_tap_oracle_oic import FlextTapOracleOicUtilities, c, t
 
-# Module-level aliases for StrEnum types used in Annotated fields
-OicIntegrationStatusLiteral = c.TapOracleOic.OicIntegrationStatusLiteral
-OicJobStatusLiteral = c.TapOracleOic.OicJobStatusLiteral
-OicIntegrationTypeLiteral = c.TapOracleOic.OicIntegrationTypeLiteral
-OicAgentTypeLiteral = c.TapOracleOic.OicAgentTypeLiteral
-OicAgentStatusLiteral = c.TapOracleOic.OicAgentStatusLiteral
-OicReplicationMethodLiteral = c.TapOracleOic.OicReplicationMethodLiteral
-OicErrorTypeLiteral = c.TapOracleOic.OicErrorTypeLiteral
+type OicIntegrationStatusLiteral = c.TapOracleOic.OicIntegrationStatus
+type OicJobStatusLiteral = c.TapOracleOic.OicJobStatus
+type OicIntegrationTypeLiteral = c.TapOracleOic.OicIntegrationType
+type OicAgentTypeLiteral = c.TapOracleOic.OicAgentType
+type OicAgentStatusLiteral = c.TapOracleOic.OicAgentStatus
+type OicReplicationMethodLiteral = c.TapOracleOic.OicReplicationMethod
+type OicErrorTypeLiteral = c.TapOracleOic.OicErrorType
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import (
