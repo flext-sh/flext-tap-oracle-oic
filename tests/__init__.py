@@ -19,9 +19,13 @@ from typing import TYPE_CHECKING as _TYPE_CHECKING
 from flext_core.lazy import install_lazy_exports
 
 if _TYPE_CHECKING:
-    from flext_tests import d, e, h, r, s, x
-
     from flext_core import FlextTypes
+    from flext_core.decorators import FlextDecorators as d
+    from flext_core.exceptions import FlextExceptions as e
+    from flext_core.handlers import FlextHandlers as h
+    from flext_core.mixins import FlextMixins as x
+    from flext_core.result import FlextResult as r
+    from flext_core.service import FlextService as s
     from tests import (
         conftest,
         constants,
@@ -105,11 +109,11 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "c": ("tests.constants", "FlextTapOracleOicTestConstants"),
     "conftest": "tests.conftest",
     "constants": "tests.constants",
-    "d": "flext_tests",
-    "e": "flext_tests",
+    "d": ("flext_core.decorators", "FlextDecorators"),
+    "e": ("flext_core.exceptions", "FlextExceptions"),
     "extended_oic_config": "tests.conftest",
     "filtered_oic_config": "tests.conftest",
-    "h": "flext_tests",
+    "h": ("flext_core.handlers", "FlextHandlers"),
     "large_integration_dataset": "tests.conftest",
     "m": ("tests.models", "FlextTapOracleOicTestModels"),
     "mock_connections_response": "tests.conftest",
@@ -126,8 +130,8 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "performance_oic_config": "tests.conftest",
     "protocols": "tests.protocols",
     "pytest_configure": "tests.conftest",
-    "r": "flext_tests",
-    "s": "flext_tests",
+    "r": ("flext_core.result", "FlextResult"),
+    "s": ("flext_core.service", "FlextService"),
     "sample_adapter_data": "tests.conftest",
     "sample_certificate_data": "tests.conftest",
     "sample_config": "tests.test_tap_core",
@@ -147,7 +151,7 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "typings": "tests.typings",
     "u": ("tests.utilities", "FlextTapOracleOicTestUtilities"),
     "utilities": "tests.utilities",
-    "x": "flext_tests",
+    "x": ("flext_core.mixins", "FlextMixins"),
 }
 
 

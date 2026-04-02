@@ -22,7 +22,12 @@ from flext_tap_oracle_oic.__version__ import (
 
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
-    from flext_meltano import d, e, h, r, s, x
+    from flext_core.decorators import FlextDecorators as d
+    from flext_core.exceptions import FlextExceptions as e
+    from flext_core.handlers import FlextHandlers as h
+    from flext_core.mixins import FlextMixins as x
+    from flext_core.result import FlextResult as r
+    from flext_core.service import FlextService as s
     from flext_tap_oracle_oic import (
         _models,
         api,
@@ -112,11 +117,11 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = merge_lazy_imports(
         "c": ("flext_tap_oracle_oic.constants", "FlextTapOracleOicConstants"),
         "cli": "flext_tap_oracle_oic.cli",
         "constants": "flext_tap_oracle_oic.constants",
-        "d": "flext_meltano",
-        "e": "flext_meltano",
+        "d": ("flext_core.decorators", "FlextDecorators"),
+        "e": ("flext_core.exceptions", "FlextExceptions"),
         "errors": "flext_tap_oracle_oic.errors",
         "flext_tap_oracle_oic_create_config": "flext_tap_oracle_oic.settings",
-        "h": "flext_meltano",
+        "h": ("flext_core.handlers", "FlextHandlers"),
         "health": "flext_tap_oracle_oic.health",
         "logger": "flext_tap_oracle_oic.tap",
         "m": ("flext_tap_oracle_oic.models", "FlextTapOracleOicModels"),
@@ -124,8 +129,8 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = merge_lazy_imports(
         "models": "flext_tap_oracle_oic.models",
         "p": ("flext_tap_oracle_oic.protocols", "FlextTapOracleOicProtocols"),
         "protocols": "flext_tap_oracle_oic.protocols",
-        "r": "flext_meltano",
-        "s": "flext_meltano",
+        "r": ("flext_core.result", "FlextResult"),
+        "s": ("flext_core.service", "FlextService"),
         "settings": "flext_tap_oracle_oic.settings",
         "t": ("flext_tap_oracle_oic.typings", "FlextTapOracleOicTypes"),
         "tap": "flext_tap_oracle_oic.tap",
@@ -134,7 +139,7 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = merge_lazy_imports(
         "u": ("flext_tap_oracle_oic.utilities", "FlextTapOracleOicUtilities"),
         "utilities": "flext_tap_oracle_oic.utilities",
         "validate_configuration": "flext_tap_oracle_oic.settings",
-        "x": "flext_meltano",
+        "x": ("flext_core.mixins", "FlextMixins"),
     },
 )
 
