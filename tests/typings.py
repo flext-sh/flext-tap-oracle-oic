@@ -1,6 +1,4 @@
-"""Module skeleton for FlextTapOracleOicTestTypes.
-
-Test type aliases for flext-tap-oracle-oic.
+"""Test types for flext-tap-oracle-oic — MRO composition with test infrastructure.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -15,12 +13,6 @@ from flext_tap_oracle_oic import FlextTapOracleOicTypes
 
 class FlextTapOracleOicTestTypes(FlextTestsTypes, FlextTapOracleOicTypes):
     """Test type aliases for flext-tap-oracle-oic."""
-
-    class TapOracleOic(FlextTapOracleOicTypes.TapOracleOic):
-        """TapOracleOic test types namespace."""
-
-        class Tests:
-            """Internal tests declarations."""
 
 
 t = FlextTapOracleOicTestTypes

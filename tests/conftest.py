@@ -17,7 +17,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from flext_tap_oracle_oic import t
+from tests import t
 
 
 def _build_singer_stream(

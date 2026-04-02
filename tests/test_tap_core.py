@@ -14,7 +14,8 @@ from collections.abc import Mapping, Sequence
 import pytest
 from pydantic import ValidationError as ConfigValidationError
 
-from flext_tap_oracle_oic import FlextTapOracleOic, m, t
+from flext_tap_oracle_oic import FlextTapOracleOic
+from tests import m, t
 
 
 def _build_tap_instance() -> m.Meltano.TapInstance:

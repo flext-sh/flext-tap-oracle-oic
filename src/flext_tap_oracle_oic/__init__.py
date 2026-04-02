@@ -27,6 +27,7 @@ if _TYPE_CHECKING:
 
     from flext_tap_oracle_oic import (
         _models,
+        api,
         cli,
         constants,
         errors,
@@ -49,6 +50,7 @@ if _TYPE_CHECKING:
         streams,
         th,
     )
+    from flext_tap_oracle_oic.api import FlextTapOracleOicService
     from flext_tap_oracle_oic.cli import main
     from flext_tap_oracle_oic.constants import (
         FlextTapOracleOicConstants,
@@ -106,11 +108,13 @@ _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = merge_lazy_imports(
         "FlextTapOracleOicModels": "flext_tap_oracle_oic.models",
         "FlextTapOracleOicPaginator": "flext_tap_oracle_oic.tap_streams",
         "FlextTapOracleOicProtocols": "flext_tap_oracle_oic.protocols",
+        "FlextTapOracleOicService": "flext_tap_oracle_oic.api",
         "FlextTapOracleOicSettings": "flext_tap_oracle_oic.settings",
         "FlextTapOracleOicTypes": "flext_tap_oracle_oic.typings",
         "FlextTapOracleOicUtilities": "flext_tap_oracle_oic.utilities",
         "FlextTapOracleOicValidationError": "flext_tap_oracle_oic.errors",
         "_models": "flext_tap_oracle_oic._models",
+        "api": "flext_tap_oracle_oic.api",
         "c": ("flext_tap_oracle_oic.constants", "FlextTapOracleOicConstants"),
         "cli": "flext_tap_oracle_oic.cli",
         "constants": "flext_tap_oracle_oic.constants",

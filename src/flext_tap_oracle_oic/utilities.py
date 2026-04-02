@@ -18,7 +18,7 @@ from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_oic import FlextOracleOicUtilities
 from pydantic import ConfigDict, TypeAdapter, ValidationError
 
-from flext_tap_oracle_oic import c, m, t
+from flext_tap_oracle_oic import c, t
 
 
 class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities):
@@ -81,83 +81,12 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
         super().__init__()
 
     class TapOracleOic:
-        """Singer protocol utilities for OIC tap operations."""
+        """OIC tap domain utilities.
 
-        @staticmethod
-        def create_record_message(
-            stream_name: str,
-            record: t.ConfigurationMapping,
-            time_extracted: datetime | None = None,
-        ) -> m.Meltano.SingerRecordMessage:
-            """Create Singer record message.
-
-            Args:
-            stream_name: Name of the stream
-            record: Record data
-            time_extracted: Timestamp when record was extracted
-
-            Returns:
-            Mapping[str, t.ContainerValue]: Singer record message
-
-            """
-            extracted_time = time_extracted or datetime.now(UTC)
-            return m.Meltano.SingerRecordMessage.model_validate({
-                "stream": stream_name,
-                "record": dict(record),
-                "time_extracted": extracted_time.isoformat(),
-            })
-
-        @staticmethod
-        def create_schema_message(
-            stream_name: str,
-            schema: t.FlatContainerMapping,
-            key_properties: Sequence[str] | None = None,
-        ) -> m.Meltano.SingerSchemaMessage:
-            """Create Singer schema message.
-
-            Args:
-            stream_name: Name of the stream
-            schema: JSON schema for the stream
-            key_properties: List of key property names
-
-            Returns:
-            Mapping[str, t.ContainerValue]: Singer schema message
-
-            """
-            return m.Meltano.SingerSchemaMessage.model_validate({
-                "stream": stream_name,
-                "schema": dict(schema),
-                "key_properties": key_properties or [],
-            })
-
-        @staticmethod
-        def create_state_message(
-            state: Mapping[str, Mapping[str, t.ContainerValue]],
-        ) -> m.Meltano.SingerStateMessage:
-            """Create Singer state message.
-
-            Args:
-            state: State data
-
-            Returns:
-            Mapping[str, t.ContainerValue]: Singer state message
-
-            """
-            return m.Meltano.SingerStateMessage.model_validate({"value": dict(state)})
-
-        @staticmethod
-        def write_message(
-            message: m.Meltano.SingerSchemaMessage
-            | m.Meltano.SingerRecordMessage
-            | m.Meltano.SingerStateMessage,
-        ) -> None:
-            """Write Singer message to stdout.
-
-            Args:
-            message: Singer message to write
-
-            """
-            _ = message
+        Singer protocol utilities (emit_schema, emit_record, emit_state,
+        process_stdin, build_catalog_entry) are in the parent:
+        ``u.Meltano.Singer.*`` — accessed via MRO, never duplicated here.
+        """
 
         class OicApiProcessing:
             """Oracle OIC API processing utilities."""
