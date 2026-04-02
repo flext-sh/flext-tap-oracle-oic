@@ -6,7 +6,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from datetime import UTC, datetime
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
@@ -115,7 +114,7 @@ class FlextTapOracleOicHealthChecker:
                 }
             response = response_result.value
             if response.status_code in {200, 202}:
-                body_: Mapping[str, t.ContainerValue]
+                body_: t.ContainerValueMapping
                 match response.body:
                     case dict() as body_dict:
                         body_ = body_dict
@@ -162,7 +161,7 @@ class FlextTapOracleOicHealthChecker:
                 }
             response = response_result.value
             if response.status_code == c.TapOracleOic.TapOicHttp.HTTP_OK:
-                integration_: Mapping[str, t.ContainerValue]
+                integration_: t.ContainerValueMapping
                 match response.body:
                     case dict() as integration_dict:
                         integration_ = integration_dict

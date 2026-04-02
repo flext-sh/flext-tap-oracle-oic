@@ -11,7 +11,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping, MutableMapping
 from typing import Annotated, ClassVar
 
 from pydantic import Field, SecretStr
@@ -58,9 +57,9 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
 
 
 def flext_tap_oracle_oic_create_config(
-    oauth_params: Mapping[str, t.ContainerValue],
-    connection_params: Mapping[str, t.ContainerValue],
-    tap_params: Mapping[str, t.ContainerValue] | None = None,
+    oauth_params: t.ContainerValueMapping,
+    connection_params: t.ContainerValueMapping,
+    tap_params: t.ContainerValueMapping | None = None,
 ) -> r[FlextTapOracleOicSettings]:
     """Create Oracle Integration Cloud tap configuration using grouped parameters.
 
@@ -74,7 +73,7 @@ def flext_tap_oracle_oic_create_config(
 
     """
     try:
-        tap_config: MutableMapping[str, t.ContainerValue] = (
+        tap_config: t.MutableContainerValueMapping = (
             dict(tap_params) if tap_params is not None else {}
         )
         tap_config.setdefault(

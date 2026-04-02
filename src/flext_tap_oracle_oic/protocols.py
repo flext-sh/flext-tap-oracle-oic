@@ -58,7 +58,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
 
                 def connect(
                     self,
-                    config: Mapping[str, Mapping[str, t.ContainerValue]],
+                    config: Mapping[str, t.ContainerValueMapping],
                 ) -> FlextMeltanoProtocols.Result[t.ContainerValueMapping]:
                     """Connect to Oracle OIC with provided configuration."""
                     ...
@@ -72,7 +72,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
 
                 def discover_integrations(
                     self,
-                    config: Mapping[str, Mapping[str, t.ContainerValue]],
+                    config: Mapping[str, t.ContainerValueMapping],
                 ) -> FlextMeltanoProtocols.Result[Sequence[t.ContainerValueMapping]]:
                     """Discover available integrations in Oracle OIC."""
                     ...
@@ -100,7 +100,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
 
                 def generate_catalog(
                     self,
-                    config: Mapping[str, Mapping[str, t.ContainerValue]],
+                    config: Mapping[str, t.ContainerValueMapping],
                 ) -> FlextMeltanoProtocols.Result[
                     FlextMeltanoModels.Meltano.SingerCatalog
                 ]:
@@ -128,7 +128,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
             class PropertiesListLike(Protocol):
                 """Structural protocol for singer PropertiesList-compatible objects."""
 
-                def to_dict(self) -> Mapping[str, t.ContainerValue]:
+                def to_dict(self) -> t.ContainerValueMapping:
                     """Convert properties list to dictionary representation."""
                     ...
 

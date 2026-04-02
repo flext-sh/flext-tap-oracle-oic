@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Sequence
 
 from flext_api import FlextApiModels
 
@@ -53,7 +53,7 @@ class FlextTapOracleOicPaginator:
     def _normalize_response_payload(
         self,
         response: FlextApiModels.Api.HttpResponse,
-    ) -> Mapping[str, t.ContainerValue]:
+    ) -> t.ContainerValueMapping:
         """Normalize flext-api response bodies to OIC pagination payloads."""
         match response.body:
             case dict() as body_map:
@@ -64,7 +64,7 @@ class FlextTapOracleOicPaginator:
 
     def _calculate_next_offset(
         self,
-        data: Mapping[str, t.ContainerValue],
+        data: t.ContainerValueMapping,
     ) -> int | None:
         """Calculate next offset based on OIC response format."""
         items = self._extract_items_from_response(data)
@@ -74,8 +74,8 @@ class FlextTapOracleOicPaginator:
 
     def _extract_items_from_response(
         self,
-        data: Mapping[str, t.ContainerValue],
-    ) -> Sequence[Mapping[str, t.ContainerValue]] | None:
+        data: t.ContainerValueMapping,
+    ) -> Sequence[t.ContainerValueMapping] | None:
         """Extract items from various OIC response formats."""
         list_payload = _as_value_list(data)
         if list_payload is not None:

@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import sys
-from collections.abc import Mapping, MutableMapping, Sequence
+from collections.abc import Mapping, Sequence
 from typing import ClassVar, override
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
@@ -127,7 +127,7 @@ class FlextTapOracleOicClient:
     def post(
         self,
         endpoint: str,
-        data: Mapping[str, Mapping[str, t.ContainerValue]] | None = None,
+        data: Mapping[str, t.ContainerValueMapping] | None = None,
     ) -> r[FlextApiModels.Api.HttpResponse]:
         """Make authenticated POST request to OIC API."""
         url = f"{self.config.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
@@ -172,7 +172,7 @@ class FlextTapOracleOicClient:
             return r[t.StrMapping].fail(
                 f"Failed to get access token: {token_result.error}",
             )
-        headers: MutableMapping[str, str] = dict(self.config.get_headers())
+        headers: t.MutableStrMapping = dict(self.config.get_headers())
         headers["Authorization"] = f"Bearer {token_result.value}"
         return r[t.StrMapping].ok(headers)
 
@@ -182,7 +182,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
 
     name: ClassVar[str] = "tap-oracle-oic"
     capabilities: ClassVar[t.StrSequence] = ["catalog", "state", "discover"]
-    config_jsonschema: ClassVar[Mapping[str, t.ContainerValue]] = {
+    config_jsonschema: ClassVar[t.ContainerValueMapping] = {
         "type": "t.NormalizedValue",
         "properties": {
             "oauth_client_id": {"type": "string", "description": "OAuth2 client ID"},
@@ -210,9 +210,9 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
     def __init__(
         self,
         *,
-        config: Mapping[str, t.ContainerValue] | None = None,
-        catalog: Mapping[str, t.ContainerValue] | None = None,
-        state: Mapping[str, t.ContainerValue] | None = None,
+        config: t.ContainerValueMapping | None = None,
+        catalog: t.ContainerValueMapping | None = None,
+        state: t.ContainerValueMapping | None = None,
         parse_env_config: bool = False,
         validate_config: bool = True,
     ) -> None:
@@ -221,7 +221,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         _ = state
         _ = parse_env_config
         super().__init__()
-        self._tap_config: Mapping[str, t.ContainerValue] = (
+        self._tap_config: t.ContainerValueMapping = (
             dict(config) if config is not None else {}
         )
         self._oic_settings = FlextTapOracleOicSettings.model_validate(
@@ -242,7 +242,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         """Get Oracle OIC client instance using flext-oracle-oic."""
         if self._client is None:
             config_dict = self._tap_config
-            oic_config_data: Mapping[str, t.ContainerValue] = {
+            oic_config_data: t.ContainerValueMapping = {
                 "oauth_client_id": str(config_dict["oauth_client_id"]),
                 "oauth_client_secret": str(config_dict["oauth_client_secret"]),
                 "oauth_token_url": str(config_dict["oauth_token_url"]),
@@ -337,7 +337,7 @@ def main() -> int:
     if exit_code != 0:
         return exit_code
     config = dict(_build_config_from_env())
-    config_typed: Mapping[str, t.ContainerValue] = dict(config)
+    config_typed: t.ContainerValueMapping = dict(config)
     tap = FlextTapOracleOic(config=config_typed)
     try:
         return _execute_tap_command(tap)

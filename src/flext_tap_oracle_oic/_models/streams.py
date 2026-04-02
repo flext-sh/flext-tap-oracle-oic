@@ -18,14 +18,14 @@ from pydantic import TypeAdapter
 from flext_tap_oracle_oic import m, p, t
 
 th = t()
-_SCHEMA_ADAPTER: TypeAdapter[Mapping[str, t.ContainerValue]] = TypeAdapter(
+_SCHEMA_ADAPTER: TypeAdapter[t.ContainerValueMapping] = TypeAdapter(
     t.ContainerValueMapping,
 )
 
 
 def _properties_to_dict(
     properties: p.TapOracleOic.TapOracleOicPrivate.PropertiesListLike,
-) -> Mapping[str, t.ContainerValue]:
+) -> t.ContainerValueMapping:
     return _SCHEMA_ADAPTER.validate_python(dict(properties.to_dict()))
 
 
@@ -51,7 +51,7 @@ class FlextTapOracleOicModelsStreams:
         requires_design_api: ClassVar[bool] = True
         default_sort: ClassVar[str | None] = "lastUpdated:desc"
         default_expand: ClassVar[str] = "connections,endpoints"
-        stream_schema: Mapping[str, t.ContainerValue] = _SCHEMA_ADAPTER.validate_python(
+        stream_schema: t.ContainerValueMapping = _SCHEMA_ADAPTER.validate_python(
             _properties_to_dict(
                 th.Meltano.Singer.Typing.PropertiesList(
                     th.Meltano.Singer.Typing.Property(
@@ -178,7 +178,7 @@ class FlextTapOracleOicModelsStreams:
         api_category: ClassVar[str] = "core"
         requires_design_api: ClassVar[bool] = True
         default_sort: ClassVar[str | None] = "name:asc"
-        stream_schema: Mapping[str, t.ContainerValue] = _SCHEMA_ADAPTER.validate_python(
+        stream_schema: t.ContainerValueMapping = _SCHEMA_ADAPTER.validate_python(
             _properties_to_dict(
                 th.Meltano.Singer.Typing.PropertiesList(
                     th.Meltano.Singer.Typing.Property(
@@ -288,7 +288,7 @@ class FlextTapOracleOicModelsStreams:
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "core"
         default_sort: ClassVar[str | None] = "lastUpdated:desc"
-        stream_schema: Mapping[str, t.ContainerValue] = _SCHEMA_ADAPTER.validate_python(
+        stream_schema: t.ContainerValueMapping = _SCHEMA_ADAPTER.validate_python(
             _properties_to_dict(
                 th.Meltano.Singer.Typing.PropertiesList(
                     th.Meltano.Singer.Typing.Property(
@@ -376,7 +376,7 @@ class FlextTapOracleOicModelsStreams:
         primary_keys: ClassVar[t.StrSequence] = ["name"]
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "core"
-        stream_schema: Mapping[str, t.ContainerValue] = _SCHEMA_ADAPTER.validate_python(
+        stream_schema: t.ContainerValueMapping = _SCHEMA_ADAPTER.validate_python(
             _properties_to_dict(
                 th.Meltano.Singer.Typing.PropertiesList(
                     th.Meltano.Singer.Typing.Property(
@@ -455,7 +455,7 @@ class FlextTapOracleOicModelsStreams:
         primary_keys: ClassVar[t.StrSequence] = ["id"]
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "infrastructure"
-        stream_schema: Mapping[str, t.ContainerValue] = _SCHEMA_ADAPTER.validate_python(
+        stream_schema: t.ContainerValueMapping = _SCHEMA_ADAPTER.validate_python(
             _properties_to_dict(
                 th.Meltano.Singer.Typing.PropertiesList(
                     th.Meltano.Singer.Typing.Property(
@@ -541,7 +541,7 @@ class FlextTapOracleOicModelsStreams:
         primary_keys: ClassVar[t.StrSequence] = ["name"]
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "security"
-        stream_schema: Mapping[str, t.ContainerValue] = _SCHEMA_ADAPTER.validate_python(
+        stream_schema: t.ContainerValueMapping = _SCHEMA_ADAPTER.validate_python(
             _properties_to_dict(
                 th.Meltano.Singer.Typing.PropertiesList(
                     th.Meltano.Singer.Typing.Property(
@@ -625,7 +625,7 @@ class FlextTapOracleOicModelsStreams:
         primary_keys: ClassVar[t.StrSequence] = ["id"]
         replication_key: str | None = None
         api_category: ClassVar[str] = "infrastructure"
-        stream_schema: Mapping[str, t.ContainerValue] = _SCHEMA_ADAPTER.validate_python(
+        stream_schema: t.ContainerValueMapping = _SCHEMA_ADAPTER.validate_python(
             _properties_to_dict(
                 th.Meltano.Singer.Typing.PropertiesList(
                     th.Meltano.Singer.Typing.Property(
@@ -709,7 +709,7 @@ class FlextTapOracleOicModelsStreams:
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "extended"
         requires_design_api: ClassVar[bool] = True
-        stream_schema: Mapping[str, t.ContainerValue] = _SCHEMA_ADAPTER.validate_python(
+        stream_schema: t.ContainerValueMapping = _SCHEMA_ADAPTER.validate_python(
             _properties_to_dict(
                 th.Meltano.Singer.Typing.PropertiesList(
                     th.Meltano.Singer.Typing.Property(
@@ -793,7 +793,7 @@ class FlextTapOracleOicModelsStreams:
         replication_key: str | None = "startTime"
         api_category: ClassVar[str] = "monitoring"
         requires_monitoring_api: ClassVar[bool] = True
-        stream_schema: Mapping[str, t.ContainerValue] = _SCHEMA_ADAPTER.validate_python(
+        stream_schema: t.ContainerValueMapping = _SCHEMA_ADAPTER.validate_python(
             _properties_to_dict(
                 th.Meltano.Singer.Typing.PropertiesList(
                     th.Meltano.Singer.Typing.Property(
@@ -868,7 +868,7 @@ class FlextTapOracleOicModelsStreams:
         replication_key: str | None = "timestamp"
         api_category: ClassVar[str] = "monitoring"
         requires_monitoring_api: ClassVar[bool] = True
-        stream_schema: Mapping[str, t.ContainerValue] = _SCHEMA_ADAPTER.validate_python(
+        stream_schema: t.ContainerValueMapping = _SCHEMA_ADAPTER.validate_python(
             _properties_to_dict(
                 th.Meltano.Singer.Typing.PropertiesList(
                     th.Meltano.Singer.Typing.Property(

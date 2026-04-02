@@ -12,7 +12,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import os
-from collections.abc import Callable, Generator, Iterator, MutableMapping, Sequence
+from collections.abc import Callable, Generator, Iterator, Sequence
 from unittest.mock import Mock
 
 import pytest
@@ -548,7 +548,7 @@ def mock_oic_client() -> type:
             """Initialize the instance."""
             self.config = config
             self.authenticated = False
-            self.call_count: MutableMapping[str, int] = {}
+            self.call_count: t.MutableIntMapping = {}
 
         def authenticate(self) -> bool:
             self.authenticated = True
