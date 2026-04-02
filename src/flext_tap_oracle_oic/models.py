@@ -13,15 +13,6 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
-from flext_core import (
-    FlextConstants,
-    FlextExceptions,
-    FlextLogger,
-    FlextModels,
-    t as _core_t,
-)
-from flext_meltano import FlextMeltanoModels
-from flext_oracle_oic import FlextOracleOicModels
 from pydantic import (
     BaseModel,
     ConfigDict,
@@ -34,6 +25,15 @@ from pydantic import (
     model_validator,
 )
 
+from flext_core import (
+    FlextConstants,
+    FlextExceptions,
+    FlextLogger,
+    FlextModels,
+    t as _core_t,
+)
+from flext_meltano import FlextMeltanoModels
+from flext_oracle_oic import FlextOracleOicModels
 from flext_tap_oracle_oic import FlextTapOracleOicUtilities, c, t
 
 type OicIntegrationStatusLiteral = c.TapOracleOic.OicIntegrationStatus

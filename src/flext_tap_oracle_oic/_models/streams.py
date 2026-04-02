@@ -930,17 +930,8 @@ ALL_STREAMS: Mapping[str, type[m.TapOracleOic.OICBaseStream]] = {
     "metrics": FlextTapOracleOicModelsStreams.MetricsStream,
 }
 
-CORE_STREAMS = ["integrations", "connections", "packages", "lookups", "libraries"]
-INFRASTRUCTURE_STREAMS = ["certificates", "adapters"]
-EXTENDED_STREAMS = ["projects"]
-MONITORING_STREAMS = ["executions", "metrics"]
-
 __all__ = [
     "ALL_STREAMS",
-    "CORE_STREAMS",
-    "EXTENDED_STREAMS",
-    "INFRASTRUCTURE_STREAMS",
-    "MONITORING_STREAMS",
     "FlextTapOracleOicModelsStreams",
     "th",
 ]

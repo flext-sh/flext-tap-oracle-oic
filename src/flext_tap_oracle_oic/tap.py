@@ -11,23 +11,16 @@ from collections.abc import Mapping, MutableMapping, Sequence
 from typing import ClassVar, override
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
+
 from flext_core import FlextLogger, r
 from flext_meltano import FlextMeltanoAbstractions
-from pydantic import TypeAdapter
-
 from flext_tap_oracle_oic import (
     ALL_STREAMS,
-    CORE_STREAMS,
-    INFRASTRUCTURE_STREAMS,
     FlextTapOracleOicSettings,
     c,
     m,
     t,
     u,
-)
-
-_CONTAINER_VALUE_MAP_ADAPTER: TypeAdapter[t.ContainerValueMapping] = TypeAdapter(
-    t.ContainerValueMapping,
 )
 
 logger = FlextLogger(__name__)
@@ -70,7 +63,7 @@ class FlextOracleOicAuthenticator:
                 case dict() as token_dict:
                     token_data = token_dict
                 case str() as body_str:
-                    token_data = _CONTAINER_VALUE_MAP_ADAPTER.validate_json(body_str)
+                    token_data = t.CONTAINER_VALUE_MAP_ADAPTER.validate_json(body_str)
                 case _:
                     return r[str].fail("Empty or invalid OAuth response body")
             access_token = token_data.get("access_token")
@@ -145,7 +138,7 @@ class FlextTapOracleOicClient:
             )
         try:
             json_body = (
-                _CONTAINER_VALUE_MAP_ADAPTER.dump_json(dict(data)).decode("utf-8")
+                t.CONTAINER_VALUE_MAP_ADAPTER.dump_json(dict(data)).decode("utf-8")
                 if data
                 else None
             )
@@ -274,9 +267,9 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
     def discover_oic_streams(self) -> Sequence[m.TapOracleOic.OICBaseStream]:
         """Discover OIC stream class instances for this tap."""
         logger.info("Discovering Oracle OIC streams using consolidated streams")
-        stream_names = CORE_STREAMS.copy()
+        stream_names = list(c.TapOracleOic.CORE_STREAMS)
         if self._tap_config.get("include_infrastructure", False):
-            stream_names.extend(INFRASTRUCTURE_STREAMS)
+            stream_names.extend(c.TapOracleOic.INFRASTRUCTURE_STREAMS)
         streams = [
             ALL_STREAMS[stream_name].model_validate({"config": self._tap_config})
             for stream_name in stream_names

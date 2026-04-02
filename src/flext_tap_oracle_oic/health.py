@@ -10,8 +10,8 @@ from collections.abc import Mapping
 from datetime import UTC, datetime
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
-from flext_core import r
 
+from flext_core import r
 from flext_tap_oracle_oic import FlextOracleOicAuthenticator, c, t
 
 
@@ -148,7 +148,7 @@ class FlextTapOracleOicHealthChecker:
                 "error": str(e),
             }
 
-    def test_integration(self, integration_id: str) -> Mapping[str, str | None]:
+    def test_integration(self, integration_id: str) -> t.OptionalStrMapping:
         """Test specific OIC integration."""
         try:
             url = f"{self.base_url}/ic/api/integration/v1/integrations/{integration_id}"

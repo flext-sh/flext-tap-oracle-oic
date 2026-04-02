@@ -9,7 +9,6 @@ from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING as _TYPE_CHECKING
 
 from flext_core.lazy import install_lazy_exports, merge_lazy_imports
-
 from flext_tap_oracle_oic.__version__ import (
     __author__,
     __author_email__,
@@ -24,7 +23,6 @@ from flext_tap_oracle_oic.__version__ import (
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
     from flext_meltano import d, e, h, r, s, x
-
     from flext_tap_oracle_oic import (
         _models,
         api,
@@ -42,10 +40,6 @@ if _TYPE_CHECKING:
     )
     from flext_tap_oracle_oic._models import (
         ALL_STREAMS,
-        CORE_STREAMS,
-        EXTENDED_STREAMS,
-        INFRASTRUCTURE_STREAMS,
-        MONITORING_STREAMS,
         FlextTapOracleOicModelsStreams,
         streams,
         th,
@@ -93,7 +87,7 @@ if _TYPE_CHECKING:
         FlextTapOracleOicUtilities as u,
     )
 
-_LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = merge_lazy_imports(
+_LAZY_IMPORTS: FlextTypes.LazyImportIndex = merge_lazy_imports(
     ("flext_tap_oracle_oic._models",),
     {
         "FlextOracleOicAuthenticator": "flext_tap_oracle_oic.tap",

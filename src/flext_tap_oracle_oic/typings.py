@@ -10,12 +10,18 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from pydantic import TypeAdapter
+
 from flext_meltano import FlextMeltanoTypes
 from flext_oracle_oic import FlextOracleOicTypes
 
 
 class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
     """MRO facade composing Meltano + Oracle OIC type namespaces."""
+
+    CONTAINER_VALUE_MAP_ADAPTER: TypeAdapter[
+        FlextMeltanoTypes.ContainerValueMapping
+    ] = TypeAdapter(FlextMeltanoTypes.ContainerValueMapping)
 
 
 t = FlextTapOracleOicTypes

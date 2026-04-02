@@ -13,11 +13,11 @@ from datetime import UTC, datetime
 from typing import ClassVar
 from urllib.parse import urljoin, urlparse
 
+from pydantic import ConfigDict, TypeAdapter, ValidationError
+
 from flext_core import r
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_oic import FlextOracleOicUtilities
-from pydantic import ConfigDict, TypeAdapter, ValidationError
-
 from flext_tap_oracle_oic import c, t
 
 

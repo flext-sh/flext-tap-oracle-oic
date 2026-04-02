@@ -11,7 +11,6 @@ from typing import Protocol, runtime_checkable
 
 from flext_meltano import FlextMeltanoModels, FlextMeltanoProtocols
 from flext_oracle_oic import FlextOracleOicProtocols
-
 from flext_tap_oracle_oic import t
 
 

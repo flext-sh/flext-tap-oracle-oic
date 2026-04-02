@@ -9,8 +9,8 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 
 from flext_api import FlextApiModels
-from flext_core import FlextLogger
 
+from flext_core import FlextLogger
 from flext_tap_oracle_oic import c, m, t
 
 _as_oic_envelope = m.as_oic_envelope
