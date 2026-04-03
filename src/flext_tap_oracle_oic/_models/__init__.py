@@ -12,13 +12,18 @@ from flext_core.lazy import install_lazy_exports
 
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
-    from flext_tap_oracle_oic import streams
-    from flext_tap_oracle_oic.streams import FlextTapOracleOicModelsStreams, th
+    from flext_tap_oracle_oic._models import streams
+    from flext_tap_oracle_oic._models.streams import (
+        ALL_STREAMS,
+        FlextTapOracleOicModelsStreams,
+        th,
+    )
 
 _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
-    "FlextTapOracleOicModelsStreams": "flext_tap_oracle_oic.streams",
-    "streams": "flext_tap_oracle_oic.streams",
-    "th": "flext_tap_oracle_oic.streams",
+    "ALL_STREAMS": "flext_tap_oracle_oic._models.streams",
+    "FlextTapOracleOicModelsStreams": "flext_tap_oracle_oic._models.streams",
+    "streams": "flext_tap_oracle_oic._models.streams",
+    "th": "flext_tap_oracle_oic._models.streams",
 }
 
 

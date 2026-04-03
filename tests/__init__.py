@@ -18,7 +18,7 @@ if _TYPE_CHECKING:
     from flext_core.mixins import FlextMixins as x
     from flext_core.result import FlextResult as r
     from flext_core.service import FlextService as s
-    from flext_tap_oracle_oic import (
+    from tests import (
         conftest,
         constants,
         models,
@@ -29,10 +29,9 @@ if _TYPE_CHECKING:
         typings,
         utilities,
     )
-    from flext_tap_oracle_oic.conftest import (
+    from tests.conftest import (
         basic_oic_config,
         benchmark_config,
-        config,
         extended_oic_config,
         filtered_oic_config,
         large_integration_dataset,
@@ -46,6 +45,7 @@ if _TYPE_CHECKING:
         mock_packages_response,
         mock_rate_limit_response,
         performance_oic_config,
+        pytest_configure,
         sample_adapter_data,
         sample_certificate_data,
         sample_connection_data,
@@ -57,86 +57,92 @@ if _TYPE_CHECKING:
         singer_catalog,
         singer_state,
     )
-    from flext_tap_oracle_oic.constants import (
+    from tests.constants import (
         FlextTapOracleOicTestConstants,
         FlextTapOracleOicTestConstants as c,
     )
-    from flext_tap_oracle_oic.models import (
+    from tests.models import (
         FlextTapOracleOicTestModels,
         FlextTapOracleOicTestModels as m,
     )
-    from flext_tap_oracle_oic.protocols import (
+    from tests.protocols import (
         FlextTapOracleOicTestProtocols,
         FlextTapOracleOicTestProtocols as p,
     )
-    from flext_tap_oracle_oic.test_auth import TestOICOAuth2Authenticator
-    from flext_tap_oracle_oic.test_tap_core import (
+    from tests.test_auth import TestOICOAuth2Authenticator
+    from tests.test_tap_core import (
+        TestTapOracleOic,
+        TestTapOracleOicIntegration,
+        TestTapOracleOicWithFixtures,
         sample_config,
         sample_config_with_extended,
     )
-    from flext_tap_oracle_oic.typings import (
+    from tests.typings import (
         FlextTapOracleOicTestTypes,
         FlextTapOracleOicTestTypes as t,
     )
-    from flext_tap_oracle_oic.utilities import (
+    from tests.utilities import (
         FlextTapOracleOicTestUtilities,
         FlextTapOracleOicTestUtilities as u,
     )
 
 _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
-    "FlextTapOracleOicTestConstants": "flext_tap_oracle_oic.constants",
-    "FlextTapOracleOicTestModels": "flext_tap_oracle_oic.models",
-    "FlextTapOracleOicTestProtocols": "flext_tap_oracle_oic.protocols",
-    "FlextTapOracleOicTestTypes": "flext_tap_oracle_oic.typings",
-    "FlextTapOracleOicTestUtilities": "flext_tap_oracle_oic.utilities",
-    "TestOICOAuth2Authenticator": "flext_tap_oracle_oic.test_auth",
-    "basic_oic_config": "flext_tap_oracle_oic.conftest",
-    "benchmark_config": "flext_tap_oracle_oic.conftest",
-    "c": ("flext_tap_oracle_oic.constants", "FlextTapOracleOicTestConstants"),
-    "config": "flext_tap_oracle_oic.conftest",
-    "conftest": "flext_tap_oracle_oic.conftest",
-    "constants": "flext_tap_oracle_oic.constants",
+    "FlextTapOracleOicTestConstants": "tests.constants",
+    "FlextTapOracleOicTestModels": "tests.models",
+    "FlextTapOracleOicTestProtocols": "tests.protocols",
+    "FlextTapOracleOicTestTypes": "tests.typings",
+    "FlextTapOracleOicTestUtilities": "tests.utilities",
+    "TestOICOAuth2Authenticator": "tests.test_auth",
+    "TestTapOracleOic": "tests.test_tap_core",
+    "TestTapOracleOicIntegration": "tests.test_tap_core",
+    "TestTapOracleOicWithFixtures": "tests.test_tap_core",
+    "basic_oic_config": "tests.conftest",
+    "benchmark_config": "tests.conftest",
+    "c": ("tests.constants", "FlextTapOracleOicTestConstants"),
+    "conftest": "tests.conftest",
+    "constants": "tests.constants",
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
-    "extended_oic_config": "flext_tap_oracle_oic.conftest",
-    "filtered_oic_config": "flext_tap_oracle_oic.conftest",
+    "extended_oic_config": "tests.conftest",
+    "filtered_oic_config": "tests.conftest",
     "h": ("flext_core.handlers", "FlextHandlers"),
-    "large_integration_dataset": "flext_tap_oracle_oic.conftest",
-    "m": ("flext_tap_oracle_oic.models", "FlextTapOracleOicTestModels"),
-    "mock_connections_response": "flext_tap_oracle_oic.conftest",
-    "mock_http_error_response": "flext_tap_oracle_oic.conftest",
-    "mock_integrations_response": "flext_tap_oracle_oic.conftest",
-    "mock_lookups_response": "flext_tap_oracle_oic.conftest",
-    "mock_oauth_authenticator": "flext_tap_oracle_oic.conftest",
-    "mock_oauth_token_response": "flext_tap_oracle_oic.conftest",
-    "mock_oic_client": "flext_tap_oracle_oic.conftest",
-    "mock_packages_response": "flext_tap_oracle_oic.conftest",
-    "mock_rate_limit_response": "flext_tap_oracle_oic.conftest",
-    "models": "flext_tap_oracle_oic.models",
-    "p": ("flext_tap_oracle_oic.protocols", "FlextTapOracleOicTestProtocols"),
-    "performance_oic_config": "flext_tap_oracle_oic.conftest",
-    "protocols": "flext_tap_oracle_oic.protocols",
+    "large_integration_dataset": "tests.conftest",
+    "m": ("tests.models", "FlextTapOracleOicTestModels"),
+    "mock_connections_response": "tests.conftest",
+    "mock_http_error_response": "tests.conftest",
+    "mock_integrations_response": "tests.conftest",
+    "mock_lookups_response": "tests.conftest",
+    "mock_oauth_authenticator": "tests.conftest",
+    "mock_oauth_token_response": "tests.conftest",
+    "mock_oic_client": "tests.conftest",
+    "mock_packages_response": "tests.conftest",
+    "mock_rate_limit_response": "tests.conftest",
+    "models": "tests.models",
+    "p": ("tests.protocols", "FlextTapOracleOicTestProtocols"),
+    "performance_oic_config": "tests.conftest",
+    "protocols": "tests.protocols",
+    "pytest_configure": "tests.conftest",
     "r": ("flext_core.result", "FlextResult"),
     "s": ("flext_core.service", "FlextService"),
-    "sample_adapter_data": "flext_tap_oracle_oic.conftest",
-    "sample_certificate_data": "flext_tap_oracle_oic.conftest",
-    "sample_config": "flext_tap_oracle_oic.test_tap_core",
-    "sample_config_with_extended": "flext_tap_oracle_oic.test_tap_core",
-    "sample_connection_data": "flext_tap_oracle_oic.conftest",
-    "sample_integration_data": "flext_tap_oracle_oic.conftest",
-    "sample_library_data": "flext_tap_oracle_oic.conftest",
-    "sample_lookup_data": "flext_tap_oracle_oic.conftest",
-    "sample_package_data": "flext_tap_oracle_oic.conftest",
-    "set_test_environment": "flext_tap_oracle_oic.conftest",
-    "singer_catalog": "flext_tap_oracle_oic.conftest",
-    "singer_state": "flext_tap_oracle_oic.conftest",
-    "t": ("flext_tap_oracle_oic.typings", "FlextTapOracleOicTestTypes"),
-    "test_auth": "flext_tap_oracle_oic.test_auth",
-    "test_tap": "flext_tap_oracle_oic.test_tap",
-    "test_tap_core": "flext_tap_oracle_oic.test_tap_core",
-    "typings": "flext_tap_oracle_oic.typings",
-    "u": ("flext_tap_oracle_oic.utilities", "FlextTapOracleOicTestUtilities"),
-    "utilities": "flext_tap_oracle_oic.utilities",
+    "sample_adapter_data": "tests.conftest",
+    "sample_certificate_data": "tests.conftest",
+    "sample_config": "tests.test_tap_core",
+    "sample_config_with_extended": "tests.test_tap_core",
+    "sample_connection_data": "tests.conftest",
+    "sample_integration_data": "tests.conftest",
+    "sample_library_data": "tests.conftest",
+    "sample_lookup_data": "tests.conftest",
+    "sample_package_data": "tests.conftest",
+    "set_test_environment": "tests.conftest",
+    "singer_catalog": "tests.conftest",
+    "singer_state": "tests.conftest",
+    "t": ("tests.typings", "FlextTapOracleOicTestTypes"),
+    "test_auth": "tests.test_auth",
+    "test_tap": "tests.test_tap",
+    "test_tap_core": "tests.test_tap_core",
+    "typings": "tests.typings",
+    "u": ("tests.utilities", "FlextTapOracleOicTestUtilities"),
+    "utilities": "tests.utilities",
     "x": ("flext_core.mixins", "FlextMixins"),
 }
 
