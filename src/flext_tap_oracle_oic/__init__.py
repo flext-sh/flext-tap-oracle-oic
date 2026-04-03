@@ -7,88 +7,12 @@ from __future__ import annotations
 
 import typing as _t
 
-from flext_core.decorators import FlextDecorators as d
-from flext_core.exceptions import FlextExceptions as e
-from flext_core.handlers import FlextHandlers as h
 from flext_core.lazy import install_lazy_exports, merge_lazy_imports
-from flext_core.mixins import FlextMixins as x
-from flext_core.result import FlextResult as r
 from flext_tap_oracle_oic.__version__ import *
-from flext_tap_oracle_oic.__version__ import (
-    __author__,
-    __author_email__,
-    __description__,
-    __license__,
-    __title__,
-    __url__,
-    __version__,
-    __version_info__,
-)
 
 if _t.TYPE_CHECKING:
     import flext_tap_oracle_oic._models as _flext_tap_oracle_oic__models
-
-    _models = _flext_tap_oracle_oic__models
-    import flext_tap_oracle_oic._models.streams as _flext_tap_oracle_oic__models_streams
-
-    streams = _flext_tap_oracle_oic__models_streams
-    import flext_tap_oracle_oic.api as _flext_tap_oracle_oic_api
-
-    api = _flext_tap_oracle_oic_api
-    import flext_tap_oracle_oic.cli as _flext_tap_oracle_oic_cli
-
-    cli = _flext_tap_oracle_oic_cli
-    import flext_tap_oracle_oic.constants as _flext_tap_oracle_oic_constants
-
-    constants = _flext_tap_oracle_oic_constants
-    import flext_tap_oracle_oic.errors as _flext_tap_oracle_oic_errors
-
-    errors = _flext_tap_oracle_oic_errors
-    import flext_tap_oracle_oic.health as _flext_tap_oracle_oic_health
-
-    health = _flext_tap_oracle_oic_health
-    import flext_tap_oracle_oic.models as _flext_tap_oracle_oic_models
-
-    models = _flext_tap_oracle_oic_models
-    import flext_tap_oracle_oic.protocols as _flext_tap_oracle_oic_protocols
-
-    protocols = _flext_tap_oracle_oic_protocols
-    import flext_tap_oracle_oic.settings as _flext_tap_oracle_oic_settings
-
-    settings = _flext_tap_oracle_oic_settings
-    import flext_tap_oracle_oic.tap as _flext_tap_oracle_oic_tap
-
-    tap = _flext_tap_oracle_oic_tap
-    import flext_tap_oracle_oic.tap_streams as _flext_tap_oracle_oic_tap_streams
-
-    tap_streams = _flext_tap_oracle_oic_tap_streams
-    import flext_tap_oracle_oic.typings as _flext_tap_oracle_oic_typings
-
-    typings = _flext_tap_oracle_oic_typings
-    import flext_tap_oracle_oic.utilities as _flext_tap_oracle_oic_utilities
-
-    utilities = _flext_tap_oracle_oic_utilities
-
-    _ = (
-        ALL_STREAMS,
-        FlextOracleOicAuthenticator,
-        FlextTapOracleOic,
-        FlextTapOracleOicApiError,
-        FlextTapOracleOicAuthenticationError,
-        FlextTapOracleOicClient,
-        FlextTapOracleOicConnectionError,
-        FlextTapOracleOicConstants,
-        FlextTapOracleOicExceptionFactory,
-        FlextTapOracleOicHealthChecker,
-        FlextTapOracleOicModels,
-        FlextTapOracleOicModelsStreams,
-        FlextTapOracleOicPaginator,
-        FlextTapOracleOicProtocols,
-        FlextTapOracleOicService,
-        FlextTapOracleOicSettings,
-        FlextTapOracleOicTypes,
-        FlextTapOracleOicUtilities,
-        FlextTapOracleOicValidationError,
+    from flext_tap_oracle_oic.__version__ import (
         __author__,
         __author_email__,
         __description__,
@@ -97,36 +21,102 @@ if _t.TYPE_CHECKING:
         __url__,
         __version__,
         __version_info__,
-        _models,
-        api,
-        c,
-        cli,
-        constants,
-        d,
-        e,
-        errors,
-        flext_tap_oracle_oic_create_config,
-        h,
-        health,
-        logger,
-        m,
-        main,
-        models,
-        p,
-        protocols,
-        r,
-        s,
-        settings,
-        streams,
-        t,
-        tap,
-        tap_streams,
+    )
+
+    _models = _flext_tap_oracle_oic__models
+    import flext_tap_oracle_oic._models.streams as _flext_tap_oracle_oic__models_streams
+
+    streams = _flext_tap_oracle_oic__models_streams
+    import flext_tap_oracle_oic.api as _flext_tap_oracle_oic_api
+    from flext_tap_oracle_oic._models.streams import (
+        ALL_STREAMS,
+        FlextTapOracleOicModelsStreams,
         th,
-        typings,
-        u,
-        utilities,
+    )
+
+    api = _flext_tap_oracle_oic_api
+    import flext_tap_oracle_oic.cli as _flext_tap_oracle_oic_cli
+    from flext_tap_oracle_oic.api import (
+        FlextTapOracleOicService,
+        FlextTapOracleOicService as s,
+    )
+
+    cli = _flext_tap_oracle_oic_cli
+    import flext_tap_oracle_oic.constants as _flext_tap_oracle_oic_constants
+    from flext_tap_oracle_oic.cli import main
+
+    constants = _flext_tap_oracle_oic_constants
+    import flext_tap_oracle_oic.errors as _flext_tap_oracle_oic_errors
+    from flext_tap_oracle_oic.constants import (
+        FlextTapOracleOicConstants,
+        FlextTapOracleOicConstants as c,
+    )
+
+    errors = _flext_tap_oracle_oic_errors
+    import flext_tap_oracle_oic.health as _flext_tap_oracle_oic_health
+    from flext_tap_oracle_oic.errors import (
+        FlextTapOracleOicApiError,
+        FlextTapOracleOicAuthenticationError,
+        FlextTapOracleOicConnectionError,
+        FlextTapOracleOicExceptionFactory,
+        FlextTapOracleOicValidationError,
+    )
+
+    health = _flext_tap_oracle_oic_health
+    import flext_tap_oracle_oic.models as _flext_tap_oracle_oic_models
+    from flext_tap_oracle_oic.health import FlextTapOracleOicHealthChecker
+
+    models = _flext_tap_oracle_oic_models
+    import flext_tap_oracle_oic.protocols as _flext_tap_oracle_oic_protocols
+    from flext_tap_oracle_oic.models import (
+        FlextTapOracleOicModels,
+        FlextTapOracleOicModels as m,
+    )
+
+    protocols = _flext_tap_oracle_oic_protocols
+    import flext_tap_oracle_oic.settings as _flext_tap_oracle_oic_settings
+    from flext_tap_oracle_oic.protocols import (
+        FlextTapOracleOicProtocols,
+        FlextTapOracleOicProtocols as p,
+    )
+
+    settings = _flext_tap_oracle_oic_settings
+    import flext_tap_oracle_oic.tap as _flext_tap_oracle_oic_tap
+    from flext_tap_oracle_oic.settings import (
+        FlextTapOracleOicSettings,
+        flext_tap_oracle_oic_create_config,
         validate_configuration,
-        x,
+    )
+
+    tap = _flext_tap_oracle_oic_tap
+    import flext_tap_oracle_oic.tap_streams as _flext_tap_oracle_oic_tap_streams
+    from flext_tap_oracle_oic.tap import (
+        FlextOracleOicAuthenticator,
+        FlextTapOracleOic,
+        FlextTapOracleOicClient,
+        logger,
+    )
+
+    tap_streams = _flext_tap_oracle_oic_tap_streams
+    import flext_tap_oracle_oic.typings as _flext_tap_oracle_oic_typings
+    from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator
+
+    typings = _flext_tap_oracle_oic_typings
+    import flext_tap_oracle_oic.utilities as _flext_tap_oracle_oic_utilities
+    from flext_tap_oracle_oic.typings import (
+        FlextTapOracleOicTypes,
+        FlextTapOracleOicTypes as t,
+    )
+
+    utilities = _flext_tap_oracle_oic_utilities
+    from flext_core.decorators import FlextDecorators as d
+    from flext_core.exceptions import FlextExceptions as e
+    from flext_core.handlers import FlextHandlers as h
+    from flext_core.mixins import FlextMixins as x
+    from flext_core.result import FlextResult as r
+    from flext_tap_oracle_oic.utilities import (
+        FlextTapOracleOicUtilities,
+        FlextTapOracleOicUtilities as u,
     )
 _LAZY_IMPORTS = merge_lazy_imports(
     ("flext_tap_oracle_oic._models",),

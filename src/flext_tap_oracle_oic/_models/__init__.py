@@ -13,11 +13,9 @@ if _t.TYPE_CHECKING:
     import flext_tap_oracle_oic._models.streams as _flext_tap_oracle_oic__models_streams
 
     streams = _flext_tap_oracle_oic__models_streams
-
-    _ = (
+    from flext_tap_oracle_oic._models.streams import (
         ALL_STREAMS,
         FlextTapOracleOicModelsStreams,
-        streams,
         th,
     )
 _LAZY_IMPORTS = {
