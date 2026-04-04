@@ -18,7 +18,6 @@ from pydantic import (
     ConfigDict,
     Field,
     FieldSerializationInfo,
-    TypeAdapter,
     ValidationError,
     computed_field,
     field_serializer,
@@ -30,7 +29,6 @@ from flext_core import (
     FlextExceptions,
     FlextLogger,
     FlextModels,
-    t as _core_t,
 )
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import FlextOracleOicModels
@@ -57,20 +55,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     monitoring, and Singer protocol compliance following standardized patterns.
     """
 
-    _GENERAL_LIST_ADAPTER: ClassVar[TypeAdapter[Sequence[_core_t.ContainerValue]]] = (
-        TypeAdapter(Sequence[_core_t.ContainerValue], config=ConfigDict(strict=True))
-    )
-    _GENERAL_MAP_ADAPTER: ClassVar[
-        TypeAdapter[Mapping[str, _core_t.ContainerValue]]
-    ] = TypeAdapter(
-        Mapping[str, _core_t.ContainerValue],
-        config=ConfigDict(strict=True),
-    )
-    _STRING_LIST_ADAPTER: ClassVar[TypeAdapter[t.StrSequence]] = TypeAdapter(
-        t.StrSequence,
-        config=ConfigDict(strict=True),
-    )
-
     @staticmethod
     def _get_oic_paginator_class() -> type[OICPaginator]:
         """Lazy import to break circular dependency between models and tap_streams."""
@@ -84,7 +68,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     ) -> Sequence[t.ContainerValue] | None:
         """Validate payload as strict t.ContainerList."""
         try:
-            return FlextTapOracleOicModels._GENERAL_LIST_ADAPTER.validate_python(value)
+            return t.GENERAL_LIST_ADAPTER.validate_python(value)
         except ValidationError:
             return None
 
@@ -94,7 +78,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     ) -> t.ContainerValueMapping | None:
         """Validate payload as strict t.ContainerMapping."""
         try:
-            return FlextTapOracleOicModels._GENERAL_MAP_ADAPTER.validate_python(value)
+            return t.GENERAL_MAP_ADAPTER.validate_python(value)
         except ValidationError:
             return None
 
@@ -102,7 +86,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     def _as_string_list(value: t.ContainerValue | None) -> t.StrSequence | None:
         """Validate payload as strict t.StrSequence."""
         try:
-            return FlextTapOracleOicModels._STRING_LIST_ADAPTER.validate_python(value)
+            return t.STRING_LIST_ADAPTER.validate_python(value)
         except ValidationError:
             return None
 
@@ -499,10 +483,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     case dict() as body_map:
                         return body_map
                     case str() as body_str if body_str.strip():
-                        return (
-                            FlextTapOracleOicModels._GENERAL_MAP_ADAPTER.validate_json(
-                                body_str,
-                            )
+                        return t.GENERAL_MAP_ADAPTER.validate_json(
+                            body_str,
                         )
                     case _:
                         msg = "OIC response body is empty or not JSON-compatible"

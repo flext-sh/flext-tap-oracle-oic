@@ -10,8 +10,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from pydantic import TypeAdapter
+from collections.abc import Mapping, Sequence
 
+from pydantic import ConfigDict, TypeAdapter
+
+from flext_core import FlextTypes
 from flext_meltano import FlextMeltanoTypes
 from flext_oracle_oic import FlextOracleOicTypes
 
@@ -22,6 +25,43 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
     CONTAINER_VALUE_MAP_ADAPTER: TypeAdapter[
         FlextMeltanoTypes.ContainerValueMapping
     ] = TypeAdapter(FlextMeltanoTypes.ContainerValueMapping)
+
+    # ── Strict adapters (from utilities.py) ───────────────────────
+    STRICT_LIST_ADAPTER: TypeAdapter[FlextTypes.ContainerValueList] = TypeAdapter(
+        FlextTypes.ContainerValueList,
+        config=ConfigDict(strict=True),
+    )
+    STRICT_MAP_ADAPTER: TypeAdapter[FlextTypes.ContainerValueMapping] = TypeAdapter(
+        FlextTypes.ContainerValueMapping,
+        config=ConfigDict(strict=True),
+    )
+    STRICT_INT_ADAPTER: TypeAdapter[int] = TypeAdapter(
+        int,
+        config=ConfigDict(strict=True),
+    )
+
+    # ── General adapters (from models.py) ─────────────────────────
+    GENERAL_LIST_ADAPTER: TypeAdapter[Sequence[FlextTypes.ContainerValue]] = (
+        TypeAdapter(
+            Sequence[FlextTypes.ContainerValue],
+            config=ConfigDict(strict=True),
+        )
+    )
+    GENERAL_MAP_ADAPTER: TypeAdapter[Mapping[str, FlextTypes.ContainerValue]] = (
+        TypeAdapter(
+            Mapping[str, FlextTypes.ContainerValue],
+            config=ConfigDict(strict=True),
+        )
+    )
+    STRING_LIST_ADAPTER: TypeAdapter[FlextTypes.StrSequence] = TypeAdapter(
+        FlextTypes.StrSequence,
+        config=ConfigDict(strict=True),
+    )
+
+    # ── Schema adapter (from _models/streams.py) ─────────────────
+    SCHEMA_ADAPTER: TypeAdapter[FlextTypes.ContainerValueMapping] = TypeAdapter(
+        FlextTypes.ContainerValueMapping,
+    )
 
 
 t = FlextTapOracleOicTypes

@@ -13,7 +13,7 @@ from datetime import UTC, datetime
 from typing import ClassVar
 from urllib.parse import urljoin, urlparse
 
-from pydantic import ConfigDict, TypeAdapter, ValidationError
+from pydantic import ValidationError
 
 from flext_core import r
 from flext_meltano import FlextMeltanoUtilities
@@ -34,24 +34,11 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
     MAX_RETRIES: ClassVar[int] = 3
     DEFAULT_PAGE_SIZE: ClassVar[int] = 50
 
-    _STRICT_LIST_ADAPTER: ClassVar[TypeAdapter[t.ContainerValueList]] = TypeAdapter(
-        t.ContainerValueList,
-        config=ConfigDict(strict=True),
-    )
-    _STRICT_MAP_ADAPTER: ClassVar[TypeAdapter[t.ContainerValueMapping]] = TypeAdapter(
-        t.ContainerValueMapping,
-        config=ConfigDict(strict=True),
-    )
-    _STRICT_INT_ADAPTER: ClassVar[TypeAdapter[int]] = TypeAdapter(
-        int,
-        config=ConfigDict(strict=True),
-    )
-
     @staticmethod
     def _as_list(value: t.ContainerValue | None) -> Sequence[t.ContainerValue] | None:
         """Strict list validation via Pydantic adapter."""
         try:
-            return FlextTapOracleOicUtilities._STRICT_LIST_ADAPTER.validate_python(
+            return t.STRICT_LIST_ADAPTER.validate_python(
                 value,
             )
         except ValidationError:
@@ -63,7 +50,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
     ) -> t.ContainerValueMapping | None:
         """Strict map validation via Pydantic adapter."""
         try:
-            return FlextTapOracleOicUtilities._STRICT_MAP_ADAPTER.validate_python(value)
+            return t.STRICT_MAP_ADAPTER.validate_python(value)
         except ValidationError:
             return None
 
@@ -71,7 +58,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
     def _as_int(value: t.ContainerValue | None) -> int | None:
         """Strict integer validation via Pydantic adapter."""
         try:
-            return FlextTapOracleOicUtilities._STRICT_INT_ADAPTER.validate_python(value)
+            return t.STRICT_INT_ADAPTER.validate_python(value)
         except ValidationError:
             return None
 
@@ -570,16 +557,8 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 offset = pagination_info.get("offset", 0)
                 page_size = pagination_info.get("current_page_size", 0)
                 try:
-                    offset_val = (
-                        FlextTapOracleOicUtilities._STRICT_INT_ADAPTER.validate_python(
-                            offset
-                        )
-                    )
-                    page_size_val = (
-                        FlextTapOracleOicUtilities._STRICT_INT_ADAPTER.validate_python(
-                            page_size
-                        )
-                    )
+                    offset_val = t.STRICT_INT_ADAPTER.validate_python(offset)
+                    page_size_val = t.STRICT_INT_ADAPTER.validate_python(page_size)
                 except ValidationError as e:
                     msg = f"Invalid pagination parameters: offset={offset}, size={page_size}"
                     raise ValueError(msg) from e
