@@ -197,10 +197,12 @@ cn: test
 objectClass: inetOrgPerson"""
 
         with open(input_dir / "test.ldif", "w") as f:
+        with open(input_dir / "test.ldif", "w") as f:
             f.write(sample_ldif)
 
         # Configure and run migration
         config = FlextLdifSettings(
+            source_server="oid", target_server="oud", preserve_oid_modifiers=True
             source_server="oid", target_server="oud", preserve_oid_modifiers=True
         )
 
@@ -302,6 +304,8 @@ def ldif_config():
     """Provide LDIF configuration for tests."""
     return FlextLdifSettings(batch_size=10, strict_validation=False)
 
+    return FlextLdifSettings(batch_size=10, strict_validation=False)
+
 
 @pytest.fixture
 def ldif_service(ldif_config):
@@ -380,8 +384,10 @@ from flext_core import t
 from flext_core import u
 
 
+
 def test_with_mocked_dependency():
     """Test with mocked external dependency."""
+    with patch("flext_ldif.external_service") as mock_service:
     with patch("flext_ldif.external_service") as mock_service:
         # Configure mock
         mock_service.process.return_value = r.ok("processed")
@@ -446,6 +452,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 
+
 @pytest.mark.slow
 def test_concurrent_processing():
     """Test concurrent processing performance."""
@@ -476,6 +483,7 @@ def test_concurrent_processing():
 import pytest
 import psutil
 import os
+
 
 
 @pytest.mark.slow

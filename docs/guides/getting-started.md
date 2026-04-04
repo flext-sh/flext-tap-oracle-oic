@@ -287,6 +287,7 @@ config = FlextLdifSettings(
     strict_validation=True,
     servers_enabled=True,
     batch_size=1000,
+    batch_size=1000,
 )
 
 # Use configuration
