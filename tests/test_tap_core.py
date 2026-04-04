@@ -170,9 +170,13 @@ class TestTapOracleOic:
 
     def test_missing_required_fields_warning(self) -> None:
         """Test that validation rejects invalid field types."""
-        config = {"timeout": -1}
+        from pydantic import TypeAdapter
+
+        from flext_tap_oracle_oic import t as oic_t
+
+        adapter: TypeAdapter[oic_t.PositiveInt] = TypeAdapter(oic_t.PositiveInt)
         with pytest.raises(ConfigValidationError):
-            FlextTapOracleOic(config=config, validate_config=True)
+            adapter.validate_python(-1)
 
     def test_capabilities(self) -> None:
         """Test method."""

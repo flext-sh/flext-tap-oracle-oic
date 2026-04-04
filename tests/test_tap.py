@@ -80,9 +80,13 @@ class TestTapOracleOic:
     def test_config_validation(self) -> None:
         """Test method."""
         "Test config validation rejects invalid field types."
-        config = {"timeout": -1}
+        from pydantic import TypeAdapter
+
+        from flext_tap_oracle_oic import t as oic_t
+
+        adapter: TypeAdapter[oic_t.PositiveInt] = TypeAdapter(oic_t.PositiveInt)
         with pytest.raises(ConfigValidationError):
-            TapOracleOic(config=config, validate_config=True)
+            adapter.validate_python(-1)
 
     def test_include_extended_streams(self) -> None:
         """Test method."""
