@@ -39,16 +39,16 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         DEFAULT_MAX_RETRIES: Final[int] = 3
         DEFAULT_VERIFY_SSL: Final[bool] = True
 
-        CORE_STREAMS: Final[list[str]] = [
+        CORE_STREAMS: Final[tuple[str, ...]] = (
             "integrations",
             "connections",
             "packages",
             "lookups",
             "libraries",
-        ]
-        INFRASTRUCTURE_STREAMS: Final[list[str]] = ["certificates", "adapters"]
-        EXTENDED_STREAMS: Final[list[str]] = ["projects"]
-        MONITORING_STREAMS: Final[list[str]] = ["executions", "metrics"]
+        )
+        INFRASTRUCTURE_STREAMS: Final[tuple[str, ...]] = ("certificates", "adapters")
+        EXTENDED_STREAMS: Final[tuple[str, ...]] = ("projects",)
+        MONITORING_STREAMS: Final[tuple[str, ...]] = ("executions", "metrics")
 
         class TapOicProcessing:
             """OIC tap processing configuration.
