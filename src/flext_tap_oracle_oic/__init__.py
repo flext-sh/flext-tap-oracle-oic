@@ -24,13 +24,11 @@ if _t.TYPE_CHECKING:
     )
 
     _models = _flext_tap_oracle_oic__models
-    import flext_tap_oracle_oic._models.streams as _flext_tap_oracle_oic__models_streams
-
-    streams = _flext_tap_oracle_oic__models_streams
     import flext_tap_oracle_oic.api as _flext_tap_oracle_oic_api
-    from flext_tap_oracle_oic._models.streams import (
+    from flext_tap_oracle_oic._models import (
         ALL_STREAMS,
         FlextTapOracleOicModelsStreams,
+        streams,
         th,
     )
 
