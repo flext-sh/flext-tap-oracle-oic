@@ -12,9 +12,9 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 
 import pytest
-from pydantic import ValidationError as ConfigValidationError
+from pydantic import TypeAdapter, ValidationError as ConfigValidationError
 
-from flext_tap_oracle_oic import FlextTapOracleOic
+from flext_tap_oracle_oic import FlextTapOracleOic, t as oic_t
 from tests import m, t
 
 
@@ -170,10 +170,6 @@ class TestTapOracleOic:
 
     def test_missing_required_fields_warning(self) -> None:
         """Test that validation rejects invalid field types."""
-        from pydantic import TypeAdapter
-
-        from flext_tap_oracle_oic import t as oic_t
-
         adapter: TypeAdapter[oic_t.PositiveInt] = TypeAdapter(oic_t.PositiveInt)
         with pytest.raises(ConfigValidationError):
             adapter.validate_python(-1)

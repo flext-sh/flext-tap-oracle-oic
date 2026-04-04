@@ -12,16 +12,6 @@ from flext_tap_oracle_oic.__version__ import *
 
 if _t.TYPE_CHECKING:
     import flext_tap_oracle_oic._models as _flext_tap_oracle_oic__models
-    from flext_tap_oracle_oic.__version__ import (
-        __author__,
-        __author_email__,
-        __description__,
-        __license__,
-        __title__,
-        __url__,
-        __version__,
-        __version_info__,
-    )
 
     _models = _flext_tap_oracle_oic__models
     import flext_tap_oracle_oic.api as _flext_tap_oracle_oic_api
