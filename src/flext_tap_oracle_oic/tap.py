@@ -74,7 +74,7 @@ class FlextOracleOicAuthenticator:
                     return r[str].ok(access_token_str)
                 case _:
                     return r[str].fail("No valid access token in response")
-        except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
+        except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             return r[str].fail(f"OAuth2 authentication failed: {e}")
 
 
@@ -119,7 +119,7 @@ class FlextTapOracleOicClient:
                     f"OIC API request failed with status {response.status_code}",
                 )
             return r[FlextApiModels.Api.HttpResponse].ok(response)
-        except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
+        except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             return r[FlextApiModels.Api.HttpResponse].fail(
                 f"OIC API request failed: {e}",
             )
@@ -160,7 +160,7 @@ class FlextTapOracleOicClient:
                     f"OIC API request failed with status {response.status_code}",
                 )
             return r[FlextApiModels.Api.HttpResponse].ok(response)
-        except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
+        except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             return r[FlextApiModels.Api.HttpResponse].fail(
                 f"OIC API request failed: {e}",
             )
@@ -286,7 +286,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         """Discover stream catalog matching FlextMeltanoAbstractions contract."""
         _ = tap_instance
         streams = self.discover_oic_streams()
-        catalog: t.Meltano.Singer.StreamCatalog = {
+        catalog: t.Meltano.SingerStreamCatalog = {
             "streams": [
                 {
                     "tap_stream_id": getattr(
@@ -325,7 +325,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             error_msg = f"Oracle OIC connection test failed: {test_result.error}"
             logger.error(error_msg)
             return r[bool].fail(error_msg)
-        except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
+        except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             exception_msg = f"Oracle OIC connection test exception: {e}"
             logger.exception(exception_msg)
             return r[bool].fail(exception_msg)
@@ -341,7 +341,7 @@ def main() -> int:
     tap = FlextTapOracleOic(config=config_typed)
     try:
         return _execute_tap_command(tap)
-    except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
+    except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
         logger.exception("Oracle OIC tap execution failed")
         err_msg = f"Tap execution failed with error: {type(e).__name__}: {e}"
         logger.warning(err_msg)
@@ -360,7 +360,7 @@ def _build_config_from_env() -> t.StrMapping:
             "oic_url": str(settings.base_url),
             "oauth_scope": settings.oauth_audience,
         }
-    except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
+    except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
         logger.debug(f"Configuration loading failed: {e}")
         return {}
 

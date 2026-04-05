@@ -94,7 +94,7 @@ def flext_tap_oracle_oic_create_config(
         config_data = {**oauth_params, **connection_params, **tap_config}
         config_instance = FlextTapOracleOicSettings.model_validate(config_data)
         return r[FlextTapOracleOicSettings].ok(config_instance)
-    except c.Meltano.Singer.SAFE_EXCEPTIONS as e:
+    except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
         return r[FlextTapOracleOicSettings].fail(
             f"Oracle OIC tap configuration creation failed: {e}",
         )
