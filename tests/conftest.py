@@ -19,6 +19,8 @@ import pytest
 
 from tests import t
 
+pytest_plugins = ["flext_tests.conftest_plugin"]
+
 
 def _build_singer_stream(
     *,

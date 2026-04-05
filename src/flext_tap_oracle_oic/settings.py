@@ -16,24 +16,34 @@ from typing import Annotated, ClassVar
 from pydantic import Field, SecretStr
 from pydantic_settings import SettingsConfigDict
 
-from flext_core import FlextConstants, r
+from flext_core import FlextConstants, FlextSettings, r
 from flext_oracle_oic import FlextOracleOicSettings
 from flext_tap_oracle_oic import c, t
 
 
+@FlextSettings.auto_register("tap-oracle-oic")
 class FlextTapOracleOicSettings(FlextOracleOicSettings):
     """Tap-specific OIC settings contract."""
 
-    model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(extra="ignore")
+    model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
+        env_prefix="FLEXT_TAP_ORACLE_OIC_",
+        extra="ignore",
+    )
 
     oauth_client_id: Annotated[str, Field(default="")]
     oauth_client_secret: Annotated[SecretStr, Field(default=SecretStr(""))]
-    oauth_token_url: Annotated[str, Field(default="https://localhost/oauth/token")]
+    oauth_token_url: Annotated[
+        str, Field(default=f"{c.OracleOic.DEFAULT_BASE_URL}/oauth/token")
+    ]
     oauth_audience: Annotated[str, Field(default="")]
-    base_url: Annotated[str, Field(default="https://localhost")]
-    timeout: Annotated[t.PositiveInt, Field(default=30)]
-    max_retries: Annotated[t.NonNegativeInt, Field(default=3)]
-    page_size: Annotated[t.PositiveInt, Field(default=100)]
+    base_url: Annotated[str, Field(default=c.OracleOic.DEFAULT_BASE_URL)]
+    timeout: Annotated[t.PositiveInt, Field(default=c.DEFAULT_TIMEOUT_SECONDS)]
+    max_retries: Annotated[
+        t.NonNegativeInt, Field(default=c.TapOracleOic.DEFAULT_MAX_RETRIES)
+    ]
+    page_size: Annotated[
+        t.PositiveInt, Field(default=c.TapOracleOic.TapOicProcessing.DEFAULT_PAGE_SIZE)
+    ]
 
     def get_api_base_url(self) -> str:
         """Return base URL without trailing slash."""
