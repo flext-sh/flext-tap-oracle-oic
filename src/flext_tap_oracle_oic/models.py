@@ -26,13 +26,12 @@ from pydantic import (
 
 from flext_core import (
     FlextConstants,
-    FlextExceptions,
     FlextLogger,
     FlextModels,
 )
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import FlextOracleOicModels
-from flext_tap_oracle_oic import FlextTapOracleOicUtilities, c, t
+from flext_tap_oracle_oic import FlextTapOracleOicUtilities, c, e, t
 
 type OicIntegrationStatusLiteral = c.TapOracleOic.OicIntegrationStatus
 type OicJobStatusLiteral = c.TapOracleOic.OicJobStatus
@@ -519,14 +518,14 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 status_code = response.status_code
                 if status_code == c.TapOracleOic.TapOicHttp.HTTP_UNAUTHORIZED:
                     msg = "Unauthorized: Authentication failed or token expired"
-                    raise FlextExceptions.AuthenticationError(msg)
+                    raise e.AuthenticationError(msg)
                 if status_code == c.TapOracleOic.TapOicHttp.HTTP_FORBIDDEN:
                     msg = "Forbidden: Insufficient permissions to access resource"
-                    raise FlextExceptions.AuthorizationError(msg)
+                    raise e.AuthorizationError(msg)
                 if status_code == c.TapOracleOic.TapOicHttp.HTTP_RATE_LIMITED:
                     msg = "Rate limit exceeded: Too many requests"
-                    raise FlextExceptions.RateLimitError(msg)
-                raise FlextExceptions.OperationError(err_msg)
+                    raise e.RateLimitError(msg)
+                raise e.OperationError(err_msg)
 
             def _is_empty_result_expected(
                 self,
