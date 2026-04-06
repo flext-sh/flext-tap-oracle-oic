@@ -19,10 +19,13 @@ if _t.TYPE_CHECKING:
         th,
     )
 _LAZY_IMPORTS = {
-    "ALL_STREAMS": "flext_tap_oracle_oic._models.streams",
-    "FlextTapOracleOicModelsStreams": "flext_tap_oracle_oic._models.streams",
+    "ALL_STREAMS": ("flext_tap_oracle_oic._models.streams", "ALL_STREAMS"),
+    "FlextTapOracleOicModelsStreams": (
+        "flext_tap_oracle_oic._models.streams",
+        "FlextTapOracleOicModelsStreams",
+    ),
     "streams": "flext_tap_oracle_oic._models.streams",
-    "th": "flext_tap_oracle_oic._models.streams",
+    "th": ("flext_tap_oracle_oic._models.streams", "th"),
 }
 
 __all__ = [
