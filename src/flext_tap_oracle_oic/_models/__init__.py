@@ -13,7 +13,6 @@ _LAZY_IMPORTS = {
         "flext_tap_oracle_oic._models.streams",
         "FlextTapOracleOicModelsStreams",
     ),
-    "streams": "flext_tap_oracle_oic._models.streams",
     "th": ("flext_tap_oracle_oic._models.streams", "th"),
 }
 
