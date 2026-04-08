@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import typing as _t
 
-from flext_core.lazy import install_lazy_exports
+from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if _t.TYPE_CHECKING:
     from flext_core.decorators import FlextDecorators as d
@@ -34,24 +34,28 @@ if _t.TYPE_CHECKING:
         TestsFlextTapOracleOicUtilities,
         TestsFlextTapOracleOicUtilities as u,
     )
-_LAZY_IMPORTS = {
-    "TestsFlextTapOracleOicConstants": ".constants",
-    "TestsFlextTapOracleOicModels": ".models",
-    "TestsFlextTapOracleOicProtocols": ".protocols",
-    "TestsFlextTapOracleOicTypes": ".typings",
-    "TestsFlextTapOracleOicUtilities": ".utilities",
-    "c": (".constants", "TestsFlextTapOracleOicConstants"),
-    "d": ("flext_core.decorators", "FlextDecorators"),
-    "e": ("flext_core.exceptions", "FlextExceptions"),
-    "h": ("flext_core.handlers", "FlextHandlers"),
-    "m": (".models", "TestsFlextTapOracleOicModels"),
-    "p": (".protocols", "TestsFlextTapOracleOicProtocols"),
-    "r": ("flext_core.result", "FlextResult"),
-    "s": ("flext_core.service", "FlextService"),
-    "t": (".typings", "TestsFlextTapOracleOicTypes"),
-    "u": (".utilities", "TestsFlextTapOracleOicUtilities"),
-    "x": ("flext_core.mixins", "FlextMixins"),
-}
+_LAZY_IMPORTS = build_lazy_import_map(
+    {
+        ".constants": ("TestsFlextTapOracleOicConstants",),
+        ".models": ("TestsFlextTapOracleOicModels",),
+        ".protocols": ("TestsFlextTapOracleOicProtocols",),
+        ".typings": ("TestsFlextTapOracleOicTypes",),
+        ".utilities": ("TestsFlextTapOracleOicUtilities",),
+    },
+    alias_groups={
+        ".constants": (("c", "TestsFlextTapOracleOicConstants"),),
+        ".models": (("m", "TestsFlextTapOracleOicModels"),),
+        ".protocols": (("p", "TestsFlextTapOracleOicProtocols"),),
+        ".typings": (("t", "TestsFlextTapOracleOicTypes"),),
+        ".utilities": (("u", "TestsFlextTapOracleOicUtilities"),),
+        "flext_core.decorators": (("d", "FlextDecorators"),),
+        "flext_core.exceptions": (("e", "FlextExceptions"),),
+        "flext_core.handlers": (("h", "FlextHandlers"),),
+        "flext_core.mixins": (("x", "FlextMixins"),),
+        "flext_core.result": (("r", "FlextResult"),),
+        "flext_core.service": (("s", "FlextService"),),
+    },
+)
 
 __all__ = [
     "TestsFlextTapOracleOicConstants",
