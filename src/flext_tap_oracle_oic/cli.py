@@ -18,10 +18,20 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tap_oracle_oic import FlextTapOracleOic
+from flext_tap_oracle_oic import FlextTapOracleOicService, t
 
 
-def main() -> None:
+class FlextTapOracleOicCli:
+    """CLI wrapper bound to the tap-oracle-oic service facade."""
+
+    @classmethod
+    def run(cls, args: t.StrSequence | None = None) -> int:
+        """Execute the canonical tap-oracle-oic CLI entry point."""
+        _ = cls
+        return FlextTapOracleOicService.get_instance().cli_main(args)
+
+
+def main(args: t.StrSequence | None = None) -> int:
     """Execute Oracle OIC tap using Singer SDK CLI.
 
     This function serves as the primary entry point for the tap when
@@ -61,10 +71,11 @@ def main() -> None:
         SystemExit: On configuration errors or execution failures
 
     """
-    tap_cli = getattr(FlextTapOracleOic, "cli", None)
-    if callable(tap_cli):
-        tap_cli()
+    return FlextTapOracleOicCli.run(args)
 
 
 if __name__ == "__main__":
     main()
+
+
+__all__ = ["FlextTapOracleOicCli", "main"]

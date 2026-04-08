@@ -1,4 +1,4 @@
-"""Module skeleton for FlextTapOracleOicTestModels.
+"""Module skeleton for TestsFlextTapOracleOicModels.
 
 Test models for flext-tap-oracle-oic.
 
@@ -13,7 +13,7 @@ from flext_tests import FlextTestsModels
 from flext_tap_oracle_oic import FlextTapOracleOicModels
 
 
-class FlextTapOracleOicTestModels(FlextTestsModels, FlextTapOracleOicModels):
+class TestsFlextTapOracleOicModels(FlextTestsModels, FlextTapOracleOicModels):
     """Test models for flext-tap-oracle-oic."""
 
     class TapOracleOic(FlextTapOracleOicModels.TapOracleOic):
@@ -23,9 +23,9 @@ class FlextTapOracleOicTestModels(FlextTestsModels, FlextTapOracleOicModels):
             """Internal tests declarations."""
 
 
-m = FlextTapOracleOicTestModels
+m = TestsFlextTapOracleOicModels
 
 __all__ = [
-    "FlextTapOracleOicTestModels",
+    "TestsFlextTapOracleOicModels",
     "m",
 ]

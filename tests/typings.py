@@ -11,9 +11,9 @@ from flext_tests import FlextTestsTypes
 from flext_tap_oracle_oic import FlextTapOracleOicTypes
 
 
-class FlextTapOracleOicTestTypes(FlextTestsTypes, FlextTapOracleOicTypes):
+class TestsFlextTapOracleOicTypes(FlextTestsTypes, FlextTapOracleOicTypes):
     """Test type aliases for flext-tap-oracle-oic."""
 
 
-t = FlextTapOracleOicTestTypes
-__all__ = ["FlextTapOracleOicTestTypes", "t"]
+t = TestsFlextTapOracleOicTypes
+__all__ = ["TestsFlextTapOracleOicTypes", "t"]

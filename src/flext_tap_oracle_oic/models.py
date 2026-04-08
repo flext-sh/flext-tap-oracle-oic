@@ -33,18 +33,8 @@ from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import FlextOracleOicModels
 from flext_tap_oracle_oic import FlextTapOracleOicUtilities, c, e, t
 
-type OicIntegrationStatusLiteral = c.TapOracleOic.OicIntegrationStatus
-type OicJobStatusLiteral = c.TapOracleOic.OicJobStatus
-type OicIntegrationTypeLiteral = c.TapOracleOic.OicIntegrationType
-type OicAgentTypeLiteral = c.TapOracleOic.OicAgentType
-type OicAgentStatusLiteral = c.TapOracleOic.OicAgentStatus
-type OicReplicationMethodLiteral = c.TapOracleOic.OicReplicationMethod
-type OicErrorTypeLiteral = c.TapOracleOic.OicErrorType
-
 if TYPE_CHECKING:
-    from flext_tap_oracle_oic import (
-        FlextTapOracleOicPaginator as OICPaginator,
-    )
+    from flext_tap_oracle_oic import p
 
 
 class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
@@ -55,7 +45,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     """
 
     @staticmethod
-    def _get_oic_paginator_class() -> type[OICPaginator]:
+    def _get_oic_paginator_class() -> (
+        p.TapOracleOic.TapOracleOicPrivate.PaginatorFactory
+    ):
         """Lazy import to break circular dependency between models and tap_streams."""
         from flext_tap_oracle_oic import FlextTapOracleOicPaginator as _Cls
 
@@ -303,11 +295,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     c.OIC_API_BASE_PATH,
                 )
 
-            def get_new_paginator(self) -> OICPaginator:
+            def get_new_paginator(self) -> p.TapOracleOic.TapOracleOicPrivate.Paginator:
                 """Create new Oracle OIC paginator with configuration.
 
                 Returns:
-                OICPaginator instance configured with settings from tap config.
+                Paginator instance configured with settings from tap config.
 
                 """
                 paginator_cls = FlextTapOracleOicModels._get_oic_paginator_class()
@@ -757,7 +749,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ),
             ]
             status: Annotated[
-                OicIntegrationStatusLiteral,
+                c.TapOracleOic.OicIntegrationStatus,
                 Field(
                     ...,
                     description="Integration status",
@@ -940,7 +932,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Status and health
             status: Annotated[
-                OicIntegrationStatusLiteral,
+                c.TapOracleOic.OicIntegrationStatus,
                 Field(
                     ...,
                     description="Connection status",
@@ -1078,7 +1070,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Status and results
             status: Annotated[
-                OicJobStatusLiteral,
+                c.TapOracleOic.OicJobStatus,
                 Field(
                     ...,
                     description="Activity status",
@@ -1198,7 +1190,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Package metadata
             package_type: Annotated[
-                OicIntegrationTypeLiteral,
+                c.TapOracleOic.OicIntegrationType,
                 Field(
                     ...,
                     description="Package type",
@@ -1233,7 +1225,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Status
             status: Annotated[
-                OicIntegrationStatusLiteral,
+                c.TapOracleOic.OicIntegrationStatus,
                 Field(
                     ...,
                     description="Package status",
@@ -1456,7 +1448,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             agent_id: Annotated[str, Field(..., description="Unique agent identifier")]
             agent_name: Annotated[str, Field(..., description="Agent display name")]
             agent_type: Annotated[
-                OicAgentTypeLiteral,
+                c.TapOracleOic.OicAgentType,
                 Field(
                     ...,
                     description="Agent type",
@@ -1465,7 +1457,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             # Agent status and health
             status: Annotated[
-                OicAgentStatusLiteral,
+                c.TapOracleOic.OicAgentStatus,
                 Field(
                     ...,
                     description="Agent status",
@@ -1597,7 +1589,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             stream_name: Annotated[str, Field(..., description="Singer stream name")]
             replication_method: Annotated[
-                OicReplicationMethodLiteral,
+                c.TapOracleOic.OicReplicationMethod,
                 Field(
                     default="FULL_TABLE",
                     description="Replication method",
@@ -1854,7 +1846,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             error_type: Annotated[
-                OicErrorTypeLiteral,
+                c.TapOracleOic.OicErrorType,
                 Field(..., description="Error category"),
             ]
             http_status_code: Annotated[

@@ -9,6 +9,8 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import Protocol, runtime_checkable
 
+from flext_api import FlextApiModels
+
 from flext_meltano import FlextMeltanoModels, FlextMeltanoProtocols
 from flext_oracle_oic import FlextOracleOicProtocols
 from flext_tap_oracle_oic import t
@@ -125,6 +127,32 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
         class TapOracleOicPrivate:
             """Private structural protocols for internal flext-tap-oracle-oic use."""
 
+            @runtime_checkable
+            class Paginator(Protocol):
+                """Structural paginator contract used by stream models."""
+
+                current_value: int
+
+                def get_next(
+                    self,
+                    response: FlextApiModels.Api.HttpResponse,
+                ) -> int | None:
+                    """Return the next pagination token for a response."""
+                    ...
+
+            @runtime_checkable
+            class PaginatorFactory(Protocol):
+                """Factory contract for paginator class objects."""
+
+                def __call__(
+                    self,
+                    start_value: int = 0,
+                    page_size: int = 100,
+                ) -> FlextTapOracleOicProtocols.TapOracleOic.TapOracleOicPrivate.Paginator:
+                    """Build a paginator instance."""
+                    ...
+
+            @runtime_checkable
             class PropertiesListLike(Protocol):
                 """Structural protocol for singer PropertiesList-compatible objects."""
 

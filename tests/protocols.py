@@ -1,4 +1,4 @@
-"""Module skeleton for FlextTapOracleOicTestProtocols.
+"""Module skeleton for TestsFlextTapOracleOicProtocols.
 
 Test protocols for flext-tap-oracle-oic.
 
@@ -13,7 +13,7 @@ from flext_tests import FlextTestsProtocols
 from flext_tap_oracle_oic import FlextTapOracleOicProtocols
 
 
-class FlextTapOracleOicTestProtocols(FlextTestsProtocols, FlextTapOracleOicProtocols):
+class TestsFlextTapOracleOicProtocols(FlextTestsProtocols, FlextTapOracleOicProtocols):
     """Test protocols for flext-tap-oracle-oic."""
 
     class TapOracleOic(FlextTapOracleOicProtocols.TapOracleOic):
@@ -23,5 +23,5 @@ class FlextTapOracleOicTestProtocols(FlextTestsProtocols, FlextTapOracleOicProto
             """Internal tests declarations."""
 
 
-p = FlextTapOracleOicTestProtocols
-__all__ = ["FlextTapOracleOicTestProtocols", "p"]
+p = TestsFlextTapOracleOicProtocols
+__all__ = ["TestsFlextTapOracleOicProtocols", "p"]

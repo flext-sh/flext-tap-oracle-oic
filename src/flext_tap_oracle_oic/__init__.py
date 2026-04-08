@@ -15,12 +15,7 @@ if _t.TYPE_CHECKING:
 
     _models = _flext_tap_oracle_oic__models
     import flext_tap_oracle_oic.api as _flext_tap_oracle_oic_api
-    from flext_tap_oracle_oic._models import (
-        ALL_STREAMS,
-        FlextTapOracleOicModelsStreams,
-        streams,
-        th,
-    )
+    from flext_tap_oracle_oic._models import FlextTapOracleOicModelsStreams, th
 
     api = _flext_tap_oracle_oic_api
     import flext_tap_oracle_oic.cli as _flext_tap_oracle_oic_cli
@@ -31,7 +26,7 @@ if _t.TYPE_CHECKING:
 
     cli = _flext_tap_oracle_oic_cli
     import flext_tap_oracle_oic.constants as _flext_tap_oracle_oic_constants
-    from flext_tap_oracle_oic.cli import main
+    from flext_tap_oracle_oic.cli import FlextTapOracleOicCli
 
     constants = _flext_tap_oracle_oic_constants
     import flext_tap_oracle_oic.errors as _flext_tap_oracle_oic_errors
@@ -70,11 +65,7 @@ if _t.TYPE_CHECKING:
 
     settings = _flext_tap_oracle_oic_settings
     import flext_tap_oracle_oic.tap as _flext_tap_oracle_oic_tap
-    from flext_tap_oracle_oic.settings import (
-        FlextTapOracleOicSettings,
-        flext_tap_oracle_oic_create_config,
-        validate_configuration,
-    )
+    from flext_tap_oracle_oic.settings import FlextTapOracleOicSettings
 
     tap = _flext_tap_oracle_oic_tap
     import flext_tap_oracle_oic.tap_streams as _flext_tap_oracle_oic_tap_streams
@@ -82,7 +73,6 @@ if _t.TYPE_CHECKING:
         FlextOracleOicAuthenticator,
         FlextTapOracleOic,
         FlextTapOracleOicClient,
-        logger,
     )
 
     tap_streams = _flext_tap_oracle_oic_tap_streams
@@ -122,6 +112,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
             "flext_tap_oracle_oic.errors",
             "FlextTapOracleOicAuthenticationError",
         ),
+        "FlextTapOracleOicCli": ("flext_tap_oracle_oic.cli", "FlextTapOracleOicCli"),
         "FlextTapOracleOicClient": (
             "flext_tap_oracle_oic.tap",
             "FlextTapOracleOicClient",
@@ -190,15 +181,9 @@ _LAZY_IMPORTS = merge_lazy_imports(
         "d": ("flext_core.decorators", "FlextDecorators"),
         "e": ("flext_core.exceptions", "FlextExceptions"),
         "errors": "flext_tap_oracle_oic.errors",
-        "flext_tap_oracle_oic_create_config": (
-            "flext_tap_oracle_oic.settings",
-            "flext_tap_oracle_oic_create_config",
-        ),
         "h": ("flext_core.handlers", "FlextHandlers"),
         "health": "flext_tap_oracle_oic.health",
-        "logger": ("flext_tap_oracle_oic.tap", "logger"),
         "m": ("flext_tap_oracle_oic.models", "FlextTapOracleOicModels"),
-        "main": ("flext_tap_oracle_oic.cli", "main"),
         "models": "flext_tap_oracle_oic.models",
         "p": ("flext_tap_oracle_oic.protocols", "FlextTapOracleOicProtocols"),
         "protocols": "flext_tap_oracle_oic.protocols",
@@ -211,26 +196,23 @@ _LAZY_IMPORTS = merge_lazy_imports(
         "typings": "flext_tap_oracle_oic.typings",
         "u": ("flext_tap_oracle_oic.utilities", "FlextTapOracleOicUtilities"),
         "utilities": "flext_tap_oracle_oic.utilities",
-        "validate_configuration": (
-            "flext_tap_oracle_oic.settings",
-            "validate_configuration",
-        ),
         "x": ("flext_core.mixins", "FlextMixins"),
     },
 )
 _ = _LAZY_IMPORTS.pop("cleanup_submodule_namespace", None)
 _ = _LAZY_IMPORTS.pop("install_lazy_exports", None)
 _ = _LAZY_IMPORTS.pop("lazy_getattr", None)
+_ = _LAZY_IMPORTS.pop("logger", None)
 _ = _LAZY_IMPORTS.pop("merge_lazy_imports", None)
 _ = _LAZY_IMPORTS.pop("output", None)
 _ = _LAZY_IMPORTS.pop("output_reporting", None)
 
 __all__ = [
-    "ALL_STREAMS",
     "FlextOracleOicAuthenticator",
     "FlextTapOracleOic",
     "FlextTapOracleOicApiError",
     "FlextTapOracleOicAuthenticationError",
+    "FlextTapOracleOicCli",
     "FlextTapOracleOicClient",
     "FlextTapOracleOicConnectionError",
     "FlextTapOracleOicConstants",
@@ -261,19 +243,15 @@ __all__ = [
     "d",
     "e",
     "errors",
-    "flext_tap_oracle_oic_create_config",
     "h",
     "health",
-    "logger",
     "m",
-    "main",
     "models",
     "p",
     "protocols",
     "r",
     "s",
     "settings",
-    "streams",
     "t",
     "tap",
     "tap_streams",
@@ -281,7 +259,6 @@ __all__ = [
     "typings",
     "u",
     "utilities",
-    "validate_configuration",
     "x",
 ]
 
