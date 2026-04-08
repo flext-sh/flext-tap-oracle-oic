@@ -19,7 +19,7 @@ if _t.TYPE_CHECKING:
         FlextTapOracleOicService,
         FlextTapOracleOicService as s,
     )
-    from flext_tap_oracle_oic.cli import FlextTapOracleOicCli
+    from flext_tap_oracle_oic.cli import FlextTapOracleOicCli, main
     from flext_tap_oracle_oic.constants import (
         FlextTapOracleOicConstants,
         FlextTapOracleOicConstants as c,
@@ -89,6 +89,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
         "e": ("flext_core.exceptions", "FlextExceptions"),
         "h": ("flext_core.handlers", "FlextHandlers"),
         "m": (".models", "FlextTapOracleOicModels"),
+        "main": ".cli",
         "p": (".protocols", "FlextTapOracleOicProtocols"),
         "r": ("flext_core.result", "FlextResult"),
         "s": (".api", "FlextTapOracleOicService"),
@@ -141,6 +142,7 @@ __all__ = [
     "e",
     "h",
     "m",
+    "main",
     "p",
     "r",
     "s",
