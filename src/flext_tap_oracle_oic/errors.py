@@ -12,7 +12,7 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from flext_core import FlextExceptions
+from flext_core import e
 from flext_tap_oracle_oic import t
 
 
@@ -42,19 +42,19 @@ class FlextTapOracleOicExceptionFactory:
         return FlextTapOracleOicValidationError(message)
 
 
-class FlextTapOracleOicAuthenticationError(FlextExceptions.AuthenticationError):
+class FlextTapOracleOicAuthenticationError(e.AuthenticationError):
     """Oracle OIC authentication error."""
 
 
-class FlextTapOracleOicConnectionError(FlextExceptions.ConnectionError):
+class FlextTapOracleOicConnectionError(e.ConnectionError):
     """Oracle OIC connection error."""
 
 
-class FlextTapOracleOicValidationError(FlextExceptions.ValidationError):
+class FlextTapOracleOicValidationError(e.ValidationError):
     """Oracle OIC validation error."""
 
 
-class FlextTapOracleOicApiError(FlextExceptions.OperationError):
+class FlextTapOracleOicApiError(e.OperationError):
     """Oracle OIC API error."""
 
 
