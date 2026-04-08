@@ -5,19 +5,8 @@
 
 from __future__ import annotations
 
-import typing as _t
-
 from flext_core.lazy import install_lazy_exports
 
-if _t.TYPE_CHECKING:
-    import flext_tap_oracle_oic._models.streams as _flext_tap_oracle_oic__models_streams
-
-    streams = _flext_tap_oracle_oic__models_streams
-    from flext_tap_oracle_oic._models.streams import (
-        ALL_STREAMS,
-        FlextTapOracleOicModelsStreams,
-        th,
-    )
 _LAZY_IMPORTS = {
     "ALL_STREAMS": ("flext_tap_oracle_oic._models.streams", "ALL_STREAMS"),
     "FlextTapOracleOicModelsStreams": (
@@ -28,12 +17,5 @@ _LAZY_IMPORTS = {
     "th": ("flext_tap_oracle_oic._models.streams", "th"),
 }
 
-__all__ = [
-    "ALL_STREAMS",
-    "FlextTapOracleOicModelsStreams",
-    "streams",
-    "th",
-]
 
-
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, publish_all=False)
