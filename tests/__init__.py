@@ -37,30 +37,21 @@ if _t.TYPE_CHECKING:
         TestsFlextTapOracleOicUtilities as u,
     )
 _LAZY_IMPORTS = {
-    "TestsFlextTapOracleOicConstants": (
-        "tests.constants",
-        "TestsFlextTapOracleOicConstants",
-    ),
-    "TestsFlextTapOracleOicModels": ("tests.models", "TestsFlextTapOracleOicModels"),
-    "TestsFlextTapOracleOicProtocols": (
-        "tests.protocols",
-        "TestsFlextTapOracleOicProtocols",
-    ),
-    "TestsFlextTapOracleOicTypes": ("tests.typings", "TestsFlextTapOracleOicTypes"),
-    "TestsFlextTapOracleOicUtilities": (
-        "tests.utilities",
-        "TestsFlextTapOracleOicUtilities",
-    ),
-    "c": ("tests.constants", "TestsFlextTapOracleOicConstants"),
+    "TestsFlextTapOracleOicConstants": ".constants",
+    "TestsFlextTapOracleOicModels": ".models",
+    "TestsFlextTapOracleOicProtocols": ".protocols",
+    "TestsFlextTapOracleOicTypes": ".typings",
+    "TestsFlextTapOracleOicUtilities": ".utilities",
+    "c": (".constants", "TestsFlextTapOracleOicConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
     "h": ("flext_core.handlers", "FlextHandlers"),
-    "m": ("tests.models", "TestsFlextTapOracleOicModels"),
-    "p": ("tests.protocols", "TestsFlextTapOracleOicProtocols"),
+    "m": (".models", "TestsFlextTapOracleOicModels"),
+    "p": (".protocols", "TestsFlextTapOracleOicProtocols"),
     "r": ("flext_core.result", "FlextResult"),
     "s": ("flext_core.service", "FlextService"),
-    "t": ("tests.typings", "TestsFlextTapOracleOicTypes"),
-    "u": ("tests.utilities", "TestsFlextTapOracleOicUtilities"),
+    "t": (".typings", "TestsFlextTapOracleOicTypes"),
+    "u": (".utilities", "TestsFlextTapOracleOicUtilities"),
     "x": ("flext_core.mixins", "FlextMixins"),
 }
 

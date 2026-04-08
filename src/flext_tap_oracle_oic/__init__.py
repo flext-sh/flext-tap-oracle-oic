@@ -58,102 +58,57 @@ if _t.TYPE_CHECKING:
         FlextTapOracleOicUtilities as u,
     )
 _LAZY_IMPORTS = merge_lazy_imports(
-    ("flext_tap_oracle_oic._models",),
+    ("._models",),
     {
-        "FlextOracleOicAuthenticator": (
-            "flext_tap_oracle_oic.tap",
-            "FlextOracleOicAuthenticator",
-        ),
-        "FlextTapOracleOic": ("flext_tap_oracle_oic.tap", "FlextTapOracleOic"),
-        "FlextTapOracleOicApiError": (
-            "flext_tap_oracle_oic.errors",
-            "FlextTapOracleOicApiError",
-        ),
-        "FlextTapOracleOicAuthenticationError": (
-            "flext_tap_oracle_oic.errors",
-            "FlextTapOracleOicAuthenticationError",
-        ),
-        "FlextTapOracleOicCli": ("flext_tap_oracle_oic.cli", "FlextTapOracleOicCli"),
-        "FlextTapOracleOicClient": (
-            "flext_tap_oracle_oic.tap",
-            "FlextTapOracleOicClient",
-        ),
-        "FlextTapOracleOicConnectionError": (
-            "flext_tap_oracle_oic.errors",
-            "FlextTapOracleOicConnectionError",
-        ),
-        "FlextTapOracleOicConstants": (
-            "flext_tap_oracle_oic.constants",
-            "FlextTapOracleOicConstants",
-        ),
-        "FlextTapOracleOicExceptionFactory": (
-            "flext_tap_oracle_oic.errors",
-            "FlextTapOracleOicExceptionFactory",
-        ),
-        "FlextTapOracleOicHealthChecker": (
-            "flext_tap_oracle_oic.health",
-            "FlextTapOracleOicHealthChecker",
-        ),
-        "FlextTapOracleOicModels": (
-            "flext_tap_oracle_oic.models",
-            "FlextTapOracleOicModels",
-        ),
-        "FlextTapOracleOicPaginator": (
-            "flext_tap_oracle_oic.tap_streams",
-            "FlextTapOracleOicPaginator",
-        ),
-        "FlextTapOracleOicProtocols": (
-            "flext_tap_oracle_oic.protocols",
-            "FlextTapOracleOicProtocols",
-        ),
-        "FlextTapOracleOicService": (
-            "flext_tap_oracle_oic.api",
-            "FlextTapOracleOicService",
-        ),
-        "FlextTapOracleOicSettings": (
-            "flext_tap_oracle_oic.settings",
-            "FlextTapOracleOicSettings",
-        ),
-        "FlextTapOracleOicTypes": (
-            "flext_tap_oracle_oic.typings",
-            "FlextTapOracleOicTypes",
-        ),
-        "FlextTapOracleOicUtilities": (
-            "flext_tap_oracle_oic.utilities",
-            "FlextTapOracleOicUtilities",
-        ),
-        "FlextTapOracleOicValidationError": (
-            "flext_tap_oracle_oic.errors",
-            "FlextTapOracleOicValidationError",
-        ),
-        "__author__": ("flext_tap_oracle_oic.__version__", "__author__"),
-        "__author_email__": ("flext_tap_oracle_oic.__version__", "__author_email__"),
-        "__description__": ("flext_tap_oracle_oic.__version__", "__description__"),
-        "__license__": ("flext_tap_oracle_oic.__version__", "__license__"),
-        "__title__": ("flext_tap_oracle_oic.__version__", "__title__"),
-        "__url__": ("flext_tap_oracle_oic.__version__", "__url__"),
-        "__version__": ("flext_tap_oracle_oic.__version__", "__version__"),
-        "__version_info__": ("flext_tap_oracle_oic.__version__", "__version_info__"),
-        "c": ("flext_tap_oracle_oic.constants", "FlextTapOracleOicConstants"),
+        "FlextOracleOicAuthenticator": ".tap",
+        "FlextTapOracleOic": ".tap",
+        "FlextTapOracleOicApiError": ".errors",
+        "FlextTapOracleOicAuthenticationError": ".errors",
+        "FlextTapOracleOicCli": ".cli",
+        "FlextTapOracleOicClient": ".tap",
+        "FlextTapOracleOicConnectionError": ".errors",
+        "FlextTapOracleOicConstants": ".constants",
+        "FlextTapOracleOicExceptionFactory": ".errors",
+        "FlextTapOracleOicHealthChecker": ".health",
+        "FlextTapOracleOicModels": ".models",
+        "FlextTapOracleOicPaginator": ".tap_streams",
+        "FlextTapOracleOicProtocols": ".protocols",
+        "FlextTapOracleOicService": ".api",
+        "FlextTapOracleOicSettings": ".settings",
+        "FlextTapOracleOicTypes": ".typings",
+        "FlextTapOracleOicUtilities": ".utilities",
+        "FlextTapOracleOicValidationError": ".errors",
+        "__author__": ".__version__",
+        "__author_email__": ".__version__",
+        "__description__": ".__version__",
+        "__license__": ".__version__",
+        "__title__": ".__version__",
+        "__url__": ".__version__",
+        "__version__": ".__version__",
+        "__version_info__": ".__version__",
+        "c": (".constants", "FlextTapOracleOicConstants"),
         "d": ("flext_core.decorators", "FlextDecorators"),
         "e": ("flext_core.exceptions", "FlextExceptions"),
         "h": ("flext_core.handlers", "FlextHandlers"),
-        "m": ("flext_tap_oracle_oic.models", "FlextTapOracleOicModels"),
-        "p": ("flext_tap_oracle_oic.protocols", "FlextTapOracleOicProtocols"),
+        "m": (".models", "FlextTapOracleOicModels"),
+        "p": (".protocols", "FlextTapOracleOicProtocols"),
         "r": ("flext_core.result", "FlextResult"),
-        "s": ("flext_tap_oracle_oic.api", "FlextTapOracleOicService"),
-        "t": ("flext_tap_oracle_oic.typings", "FlextTapOracleOicTypes"),
-        "u": ("flext_tap_oracle_oic.utilities", "FlextTapOracleOicUtilities"),
+        "s": (".api", "FlextTapOracleOicService"),
+        "t": (".typings", "FlextTapOracleOicTypes"),
+        "u": (".utilities", "FlextTapOracleOicUtilities"),
         "x": ("flext_core.mixins", "FlextMixins"),
     },
+    exclude_names=(
+        "cleanup_submodule_namespace",
+        "install_lazy_exports",
+        "lazy_getattr",
+        "logger",
+        "merge_lazy_imports",
+        "output",
+        "output_reporting",
+    ),
+    module_name=__name__,
 )
-_ = _LAZY_IMPORTS.pop("cleanup_submodule_namespace", None)
-_ = _LAZY_IMPORTS.pop("install_lazy_exports", None)
-_ = _LAZY_IMPORTS.pop("lazy_getattr", None)
-_ = _LAZY_IMPORTS.pop("logger", None)
-_ = _LAZY_IMPORTS.pop("merge_lazy_imports", None)
-_ = _LAZY_IMPORTS.pop("output", None)
-_ = _LAZY_IMPORTS.pop("output_reporting", None)
 
 __all__ = [
     "FlextOracleOicAuthenticator",
