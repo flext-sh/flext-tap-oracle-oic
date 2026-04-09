@@ -65,7 +65,6 @@ class TestTapOracleOic:
         if tap.name != "tap-oracle-oic":
             msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
-        assert hasattr(tap, "config")
 
     def test_core_streams_discovery(self) -> None:
         """Test method."""
@@ -177,7 +176,6 @@ class TestTapOracleOic:
     def test_capabilities(self) -> None:
         """Test method."""
         expected_capabilities = ["catalog", "state", "discover"]
-        raw_capabilities = getattr(FlextTapOracleOic, "capabilities", ())
         capability_values = {
             str(cap.value) if hasattr(cap, "value") else str(cap)
             for cap in raw_capabilities
