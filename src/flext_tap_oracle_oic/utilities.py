@@ -326,66 +326,66 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
             @staticmethod
             def validate_oic_connection_config(
-                config: Mapping[str, t.ContainerValueMapping],
+                settings: Mapping[str, t.ContainerValueMapping],
             ) -> r[t.ContainerValueMapping]:
                 """Validate Oracle OIC connection configuration.
 
                 Args:
-                config: Configuration dictionary
+                settings: Configuration dictionary
 
                 Returns:
-                r[t.ContainerValueMapping]: Validated config or error
+                r[t.ContainerValueMapping]: Validated settings or error
 
                 """
                 required_fields = ["oic_base_url", "username", "password"]
                 missing_fields = [
-                    field for field in required_fields if field not in config
+                    field for field in required_fields if field not in settings
                 ]
                 if missing_fields:
                     return r[t.ContainerValueMapping].fail(
                         f"Missing required fields: {', '.join(missing_fields)}",
                     )
                 url_validation = FlextTapOracleOicUtilities.TapOracleOic.OicApiProcessing.validate_oic_endpoint(
-                    str(config["oic_base_url"]),
+                    str(settings["oic_base_url"]),
                 )
                 if url_validation.failure:
                     return r[t.ContainerValueMapping].fail(
                         f"Invalid OIC URL: {url_validation.error}",
                     )
-                if not str(config["username"]).strip():
+                if not str(settings["username"]).strip():
                     return r[t.ContainerValueMapping].fail(
                         "Username cannot be empty",
                     )
-                if not str(config["password"]).strip():
+                if not str(settings["password"]).strip():
                     return r[t.ContainerValueMapping].fail(
                         "Password cannot be empty",
                     )
-                if "timeout" in config:
-                    timeout = FlextTapOracleOicUtilities._as_int(config["timeout"])
+                if "timeout" in settings:
+                    timeout = FlextTapOracleOicUtilities._as_int(settings["timeout"])
                     if timeout is None or timeout <= 0:
                         return r[t.ContainerValueMapping].fail(
                             "Timeout must be a positive integer",
                         )
-                return r[t.ContainerValueMapping].ok(config)
+                return r[t.ContainerValueMapping].ok(settings)
 
             @staticmethod
             def validate_stream_config(
-                config: Mapping[str, t.ContainerValueMapping],
+                settings: Mapping[str, t.ContainerValueMapping],
             ) -> r[t.ContainerValueMapping]:
                 """Validate OIC tap stream configuration.
 
                 Args:
-                config: Stream configuration
+                settings: Stream configuration
 
                 Returns:
-                r[t.ContainerValueMapping]: Validated config or error
+                r[t.ContainerValueMapping]: Validated settings or error
 
                 """
-                if "streams" not in config:
+                if "streams" not in settings:
                     return r[t.ContainerValueMapping].fail(
                         "Configuration must include 'streams' section",
                     )
-                streams = config["streams"]
+                streams = settings["streams"]
                 stream_map = FlextTapOracleOicUtilities._as_map(streams)
                 if stream_map is None:
                     return r[t.ContainerValueMapping].fail(
@@ -414,7 +414,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                             return r[t.ContainerValueMapping].fail(
                                 f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}",
                             )
-                return r[t.ContainerValueMapping].ok(config)
+                return r[t.ContainerValueMapping].ok(settings)
 
         class StateManagement:
             """State management utilities for incremental syncs."""

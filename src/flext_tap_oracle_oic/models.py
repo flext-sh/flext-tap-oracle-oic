@@ -226,7 +226,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 arbitrary_types_allowed=True,
             )
 
-            config: Annotated[t.ContainerValueMapping, Field(default_factory=dict)]
+            settings: Annotated[t.ContainerValueMapping, Field(default_factory=dict)]
             name: Annotated[str, Field(default="")]
             replication_key: Annotated[str | None, Field(default=None)]
             logger: p.Logger = Field(default_factory=lambda: u.fetch_logger(__name__))
@@ -243,7 +243,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             def api_client(self) -> FlextApi:
                 """Get authenticated API client from parent tap's OIC client."""
                 api_config = FlextApiSettings.model_validate({})
-                return FlextApi(config=api_config)
+                return FlextApi(settings=api_config)
 
             @property
             def url_base(self) -> str:
@@ -255,7 +255,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 """
                 utilities = FlextTapOracleOicUtilities()
                 base_url = str(
-                    self.config.get("base_url") or self.config.get("oic_url", ""),
+                    self.settings.get("base_url") or self.settings.get("oic_url", ""),
                 ).rstrip("/")
                 if not base_url:
                     msg = "Base URL is required but not configured"
@@ -268,7 +268,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 if validation_result.failure:
                     msg = f"Invalid OIC endpoint: {validation_result.error}"
                     raise ValueError(msg)
-                region = self.config.get("region")
+                region = self.settings.get("region")
                 if not region and "integration.ocp.oraclecloud.com" in base_url:
                     region_match = re.search(r"(\\w+-\\w+-\\d+)", base_url)
                     region = region_match.group(1) if region_match else "us-ashburn-1"
@@ -298,11 +298,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 """Create new Oracle OIC paginator with configuration.
 
                 Returns:
-                Paginator instance configured with settings from tap config.
+                Paginator instance configured with settings from tap settings.
 
                 """
                 paginator_cls = FlextTapOracleOicModels._get_oic_paginator_class()
-                page_size_val = self.config.get("page_size", 100)
+                page_size_val = self.settings.get("page_size", 100)
                 page_size = page_size_val if isinstance(page_size_val, int) else 100
                 return paginator_cls(start_value=0, page_size=page_size)
 
@@ -338,22 +338,22 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
                 """
                 params: t.MutableContainerValueMapping = {}
-                page_size_val = self.config.get("page_size", 100)
+                page_size_val = self.settings.get("page_size", 100)
                 page_size = page_size_val if isinstance(page_size_val, int) else 100
                 params["limit"] = min(page_size, 1000)
                 params["offset"] = next_page_token or 0
-                instance_id = self.config.get("instance_id")
+                instance_id = self.settings.get("instance_id")
                 if instance_id:
                     params["integrationInstance"] = instance_id
-                sort_field = self.config.get("sort_field")
+                sort_field = self.settings.get("sort_field")
                 if sort_field:
                     sort_direction = (
-                        "desc" if self.config.get("sort_desc", False) else "asc"
+                        "desc" if self.settings.get("sort_desc", False) else "asc"
                     )
                     params["orderBy"] = f"{sort_field}:{sort_direction}"
                 elif self.default_sort is not None:
                     params["orderBy"] = self.default_sort
-                custom_filter = self.config.get("custom_filter")
+                custom_filter = self.settings.get("custom_filter")
                 if custom_filter:
                     params["q"] = custom_filter
                 if (
@@ -363,7 +363,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ):
                     start_date = context["starting_replication_value"]
                     params[f"{self.replication_key}>="] = start_date
-                select_fields = self.config.get("select_fields")
+                select_fields = self.settings.get("select_fields")
                 if select_fields:
                     field_list = FlextTapOracleOicModels._as_string_list(select_fields)
                     params["fields"] = (
@@ -405,7 +405,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         "Error parsing response from %s",
                         response_url_err,
                     )
-                    if self.config.get("fail_on_parsing_errors", True):
+                    if self.settings.get("fail_on_parsing_errors", True):
                         raise
 
             def _enrich_record(

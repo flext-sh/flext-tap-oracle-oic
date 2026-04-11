@@ -19,7 +19,7 @@ from tests import m, t
 def _build_tap_instance() -> m.Meltano.TapInstance:
     return m.Meltano.TapInstance(
         tap_type="oracle-oic",
-        config=m.Meltano.TapConfig(
+        settings=m.Meltano.TapConfig(
             tap_type="oracle-oic",
             connection_config={
                 "base_url": "https://test.integration.ocp.oraclecloud.com",
@@ -45,29 +45,29 @@ class TestTapOracleOic:
     def test_tap_initialization(self) -> None:
         """Test method."""
         "Test tap initialization function."
-        config = {
+        settings = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client",
             "oauth_client_secret": "test_secret",
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
-        tap = TapOracleOic(config=config, validate_config=False)
+        tap = TapOracleOic(settings=settings, validate_config=False)
         if tap.name != "tap-oracle-oic":
             msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
-        assert tap.config.base_url == config["base_url"]
-        assert tap.config.oauth_client_id == config["oauth_client_id"]
+        assert tap.settings.base_url == settings["base_url"]
+        assert tap.settings.oauth_client_id == settings["oauth_client_id"]
 
     def test_discover_streams(self) -> None:
         """Test method."""
         "Test discover streams function."
-        config = {
+        settings = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client",
             "oauth_client_secret": "test_secret",
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
         }
-        tap = TapOracleOic(config=config, validate_config=False)
+        tap = TapOracleOic(settings=settings, validate_config=False)
         stream_names = _discover_stream_names(tap)
         if len(stream_names) < 5:
             msg = f"Expected {len(stream_names)} >= {5}"
@@ -79,7 +79,7 @@ class TestTapOracleOic:
 
     def test_config_validation(self) -> None:
         """Test method."""
-        "Test config validation rejects invalid field types."
+        "Test settings validation rejects invalid field types."
 
         adapter: TypeAdapter[oic_t.PositiveInt] = TypeAdapter(oic_t.PositiveInt)
         with pytest.raises(ConfigValidationError):
@@ -88,14 +88,14 @@ class TestTapOracleOic:
     def test_include_extended_streams(self) -> None:
         """Test method."""
         "Test include extended streams function."
-        config: t.ContainerValueMapping = {
+        settings: t.ContainerValueMapping = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client",
             "oauth_client_secret": "test_secret",
             "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
             "include_extended": True,
         }
-        tap = TapOracleOic(config=config, validate_config=False)
+        tap = TapOracleOic(settings=settings, validate_config=False)
         stream_names = _discover_stream_names(tap)
         if "integrations" not in stream_names:
             msg = f"Expected {'integrations'} in {stream_names}"

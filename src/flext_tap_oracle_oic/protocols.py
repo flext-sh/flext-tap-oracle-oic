@@ -60,7 +60,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
 
                 def connect(
                     self,
-                    config: Mapping[str, t.ContainerValueMapping],
+                    settings: Mapping[str, t.ContainerValueMapping],
                 ) -> FlextMeltanoProtocols.Result[t.ContainerValueMapping]:
                     """Connect to Oracle OIC with provided configuration."""
                     ...
@@ -74,7 +74,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
 
                 def discover_integrations(
                     self,
-                    config: Mapping[str, t.ContainerValueMapping],
+                    settings: Mapping[str, t.ContainerValueMapping],
                 ) -> FlextMeltanoProtocols.Result[Sequence[t.ContainerValueMapping]]:
                     """Discover available integrations in Oracle OIC."""
                     ...
@@ -102,7 +102,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
 
                 def generate_catalog(
                     self,
-                    config: Mapping[str, t.ContainerValueMapping],
+                    settings: Mapping[str, t.ContainerValueMapping],
                 ) -> FlextMeltanoProtocols.Result[
                     FlextMeltanoModels.Meltano.SingerCatalog
                 ]:

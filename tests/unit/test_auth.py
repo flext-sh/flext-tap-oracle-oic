@@ -26,27 +26,31 @@ class TestOICOAuth2Authenticator:
 
     @pytest.fixture
     def mock_config(self) -> MagicMock:
-        """Create a mock config that mimics FlextTapOracleOicSettings."""
-        config = MagicMock()
-        config.oauth_client_id = "test_client_id"
-        config.oauth_client_secret = MagicMock()
-        config.oauth_client_secret.get_secret_value.return_value = "test_client_secret"
-        config.oauth_token_url = "https://test.identity.oraclecloud.com/oauth2/v1/token"
-        config.oauth_audience = "urn:opc:resource:consumer:all"
-        config.base_url = "https://oic.example.com"
-        config.get_token_request_data.return_value = {
+        """Create a mock settings that mimics FlextTapOracleOicSettings."""
+        settings = MagicMock()
+        settings.oauth_client_id = "test_client_id"
+        settings.oauth_client_secret = MagicMock()
+        settings.oauth_client_secret.get_secret_value.return_value = (
+            "test_client_secret"
+        )
+        settings.oauth_token_url = (
+            "https://test.identity.oraclecloud.com/oauth2/v1/token"
+        )
+        settings.oauth_audience = "urn:opc:resource:consumer:all"
+        settings.base_url = "https://oic.example.com"
+        settings.get_token_request_data.return_value = {
             "grant_type": "client_credentials",
             "client_id": "test_client_id",
             "client_secret": "test_client_secret",
             "audience": "urn:opc:resource:consumer:all",
         }
-        return config
+        return settings
 
     @pytest.fixture
     def authenticator(self, mock_config: MagicMock) -> FlextOracleOicAuthenticator:
         """Create authenticator bypassing __init__ to avoid global state."""
         auth = FlextOracleOicAuthenticator.__new__(FlextOracleOicAuthenticator)
-        auth.config = mock_config
+        auth.settings = mock_config
         auth._access_token = None
         auth._api_client = MagicMock()
         return auth
@@ -56,8 +60,8 @@ class TestOICOAuth2Authenticator:
         authenticator: FlextOracleOicAuthenticator,
         mock_config: MagicMock,
     ) -> None:
-        """Test authenticator stores config."""
-        assert authenticator.config is mock_config
+        """Test authenticator stores settings."""
+        assert authenticator.settings is mock_config
         assert authenticator._access_token is None
 
     def test_get_access_token_success(

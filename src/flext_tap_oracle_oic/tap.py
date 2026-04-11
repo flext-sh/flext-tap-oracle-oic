@@ -29,22 +29,22 @@ logger = u.fetch_logger(__name__)
 class FlextOracleOicAuthenticator:
     """Real Oracle OIC OAuth2 authenticator implementation."""
 
-    def __init__(self, config: FlextTapOracleOicSettings) -> None:
+    def __init__(self, settings: FlextTapOracleOicSettings) -> None:
         """Initialize authenticator with OAuth2 configuration."""
-        self.config = config
+        self.settings = settings
         self._access_token: str | None = None
         api_config = FlextApiSettings.model_validate({})
-        self._api_client = FlextApi(config=api_config)
+        self._api_client = FlextApi(settings=api_config)
 
     def get_access_token(self) -> r[str]:
         """Get OAuth2 access token using client credentials flow."""
         try:
             token_request_data = "&".join(
                 f"{key}={value}"
-                for key, value in self.config.get_token_request_data().items()
+                for key, value in self.settings.get_token_request_data().items()
             )
             response_result = self._api_client.post(
-                str(self.config.oauth_token_url),
+                str(self.settings.oauth_token_url),
                 data=token_request_data,
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
             )
@@ -83,22 +83,22 @@ class FlextTapOracleOicClient:
 
     def __init__(
         self,
-        config: FlextTapOracleOicSettings,
+        settings: FlextTapOracleOicSettings,
         authenticator: FlextOracleOicAuthenticator,
     ) -> None:
         """Initialize OIC API client."""
-        self.config = config
+        self.settings = settings
         self.authenticator = authenticator
         api_config = FlextApiSettings.model_validate({
-            "base_url": config.get_api_base_url(),
-            "timeout": config.timeout,
+            "base_url": settings.get_api_base_url(),
+            "timeout": settings.timeout,
         })
-        self._api_client = FlextApi(config=api_config)
+        self._api_client = FlextApi(settings=api_config)
         self._utilities = u()
 
     def get(self, endpoint: str) -> r[FlextApiModels.Api.HttpResponse]:
         """Make authenticated GET request to OIC API."""
-        url = f"{self.config.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
+        url = f"{self.settings.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
         headers_result = self._get_auth_headers()
         if headers_result.failure:
             return r[FlextApiModels.Api.HttpResponse].fail(
@@ -130,7 +130,7 @@ class FlextTapOracleOicClient:
         data: Mapping[str, t.ContainerValueMapping] | None = None,
     ) -> r[FlextApiModels.Api.HttpResponse]:
         """Make authenticated POST request to OIC API."""
-        url = f"{self.config.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
+        url = f"{self.settings.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
         headers_result = self._get_auth_headers()
         if headers_result.failure:
             return r[FlextApiModels.Api.HttpResponse].fail(
@@ -172,7 +172,7 @@ class FlextTapOracleOicClient:
             return r[t.StrMapping].fail(
                 f"Failed to get access token: {token_result.error}",
             )
-        headers: t.MutableStrMapping = dict(self.config.get_headers())
+        headers: t.MutableStrMapping = dict(self.settings.get_headers())
         headers["Authorization"] = f"Bearer {token_result.value}"
         return r[t.StrMapping].ok(headers)
 
@@ -210,7 +210,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
     def __init__(
         self,
         *,
-        config: t.ContainerValueMapping | None = None,
+        settings: t.ContainerValueMapping | None = None,
         catalog: t.ContainerValueMapping | None = None,
         state: t.ContainerValueMapping | None = None,
         parse_env_config: bool = False,
@@ -222,7 +222,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         _ = parse_env_config
         super().__init__()
         self._tap_config: t.ContainerValueMapping = (
-            dict(config) if config is not None else {}
+            dict(settings) if settings is not None else {}
         )
         self._oic_settings = FlextTapOracleOicSettings.model_validate(
             self._tap_config,
@@ -233,7 +233,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
 
     @property
     @override
-    def config(self) -> FlextTapOracleOicSettings:
+    def settings(self) -> FlextTapOracleOicSettings:
         """Return typed OIC settings."""
         return self._oic_settings
 
@@ -257,9 +257,9 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
                 "max_retries": self._to_positive_int(config_dict.get("max_retries"), 3),
             }
             oic_config = FlextTapOracleOicSettings.model_validate(oic_config_data)
-            authenticator = FlextOracleOicAuthenticator(config=oic_config)
+            authenticator = FlextOracleOicAuthenticator(settings=oic_config)
             self._client = FlextTapOracleOicClient(
-                config=oic_config,
+                settings=oic_config,
                 authenticator=authenticator,
             )
         return self._client
@@ -271,7 +271,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         if self._tap_config.get("include_infrastructure", False):
             stream_names.extend(c.TapOracleOic.INFRASTRUCTURE_STREAMS)
         streams = [
-            ALL_STREAMS[stream_name].model_validate({"config": self._tap_config})
+            ALL_STREAMS[stream_name].model_validate({"settings": self._tap_config})
             for stream_name in stream_names
             if stream_name in ALL_STREAMS
         ]
@@ -336,9 +336,9 @@ def main() -> int:
     exit_code = _validate_and_setup_config()
     if exit_code != 0:
         return exit_code
-    config = dict(_build_config_from_env())
-    config_typed: t.ContainerValueMapping = dict(config)
-    tap = FlextTapOracleOic(config=config_typed)
+    settings = dict(_build_config_from_env())
+    config_typed: t.ContainerValueMapping = dict(settings)
+    tap = FlextTapOracleOic(settings=config_typed)
     try:
         return _execute_tap_command(tap)
     except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
@@ -367,14 +367,14 @@ def _build_config_from_env() -> t.StrMapping:
 
 def _validate_and_setup_config() -> int:
     """Validate required configuration. Returns 0 for success, 1 for error."""
-    config = dict(_build_config_from_env())
+    settings = dict(_build_config_from_env())
     required_config = [
         "oauth_client_id",
         "oauth_client_secret",
         "oauth_token_url",
         "oic_url",
     ]
-    missing_config = [key for key in required_config if not config.get(key)]
+    missing_config = [key for key in required_config if not settings.get(key)]
     if missing_config:
         logger.error("Missing required configuration: ")
         for key in missing_config:

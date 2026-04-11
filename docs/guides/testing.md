@@ -157,8 +157,8 @@ class TestLdifIntegration:
         container = FlextContainer.get_global()
 
         # Register LDIF service
-        config = FlextLdifSettings(batch_size=100)
-        ldif = ldif(config=config)
+        settings = FlextLdifSettings(batch_size=100)
+        ldif = ldif(settings=settings)
         _ = container.register("ldif", ldif)
 
         # Retrieve and use service
@@ -201,12 +201,12 @@ objectClass: inetOrgPerson"""
             f.write(sample_ldif)
 
         # Configure and run migration
-        config = FlextLdifSettings(
+        settings = FlextLdifSettings(
             source_server="oid", target_server="oud", preserve_oid_modifiers=True
             source_server="oid", target_server="oud", preserve_oid_modifiers=True
         )
 
-        ldif = ldif(config=config)
+        ldif = ldif(settings=settings)
         result = ldif.migrate(input_dir, output_dir, "oid", "oud")
 
         # Verify migration
@@ -310,7 +310,7 @@ def ldif_config():
 @pytest.fixture
 def ldif_service(ldif_config):
     """Provide LDIF service instance."""
-    return ldif(config=ldif_config)
+    return ldif(settings=ldif_config)
 
 
 @pytest.fixture
@@ -516,7 +516,7 @@ tests/
 │   │   ├── valid.ldif
 │   │   ├── invalid.ldif
 │   │   └── large.ldif
-│   ├── config/
+│   ├── settings/
 │   │   ├── dev.yaml
 │   │   └── prod.yaml
 │   └── data/
@@ -547,7 +547,7 @@ def load_json_fixture(fixture_name: str) -> t.ContainerMapping:
 def test_with_fixture():
     """Test using loaded fixture data."""
     ldif_content = load_test_fixture("ldif/valid.ldif")
-    config_data = load_json_fixture("config/dev.yaml")
+    config_data = load_json_fixture("settings/dev.yaml")
 
     # Use fixture data in test
     result = process_ldif(ldif_content, config_data)

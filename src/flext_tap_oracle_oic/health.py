@@ -24,7 +24,7 @@ class FlextTapOracleOicHealthChecker:
         self.base_url = base_url.rstrip("/")
         self.authenticator = authenticator
         api_config = FlextApiSettings.model_validate({"base_url": base_url})
-        self._api_client = FlextApi(config=api_config)
+        self._api_client = FlextApi(settings=api_config)
 
     def check_health(self) -> t.StrMapping:
         """Check OIC instance health."""

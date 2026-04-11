@@ -6,7 +6,7 @@ integration for orchestration compatibility.
 
 The tap supports standard Singer protocol operations:
 - Discovery: Generate catalog with `--discover`
-- Extraction: Run data extraction with `--config`, `--catalog`, `--state`
+- Extraction: Run data extraction with `--settings`, `--catalog`, `--state`
 
 Integration with flext-meltano's FlextMeltanoSingerCliTranslator enables automated
 command generation and pipeline orchestration.
@@ -40,19 +40,19 @@ def main(args: t.StrSequence | None = None) -> int:
 
     The CLI supports standard Singer operations:
     - `--discover`: Generate schema catalog
-    - `--config FILE`: Specify tap configuration
+    - `--settings FILE`: Specify tap configuration
     - `--catalog FILE`: Specify stream catalog
     - `--state FILE`: Specify state for incremental extraction
 
     Example:
         # Discovery
-        tap-oracle-oic --config config.json --discover > catalog.json
+        tap-oracle-oic --settings settings.json --discover > catalog.json
 
         # Extraction
-        tap-oracle-oic --config config.json --catalog catalog.json
+        tap-oracle-oic --settings settings.json --catalog catalog.json
 
         # Incremental sync
-        tap-oracle-oic --config config.json --catalog catalog.json --state state.json
+        tap-oracle-oic --settings settings.json --catalog catalog.json --state state.json
 
     Integration:
         Compatible with flext-meltano FlextMeltanoSingerCliTranslator for orchestration:
@@ -62,10 +62,10 @@ def main(args: t.StrSequence | None = None) -> int:
         ...     FlextMeltanoModels,
         ... )
         >>> params = FlextMeltanoModels.TapRunParams(
-        ...     tap_name="tap-oracle-oic", config_file="config.json", discover=True
+        ...     tap_name="tap-oracle-oic", config_file="settings.json", discover=True
         ... )
         >>> command = FlextMeltanoSingerCliTranslator.translate_tap_run(params)
-        >>> # Executes: ["tap-oracle-oic", "--config", "config.json", "--discover"]
+        >>> # Executes: ["tap-oracle-oic", "--settings", "settings.json", "--discover"]
 
     Raises:
         SystemExit: On configuration errors or execution failures

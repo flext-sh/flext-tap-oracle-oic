@@ -85,8 +85,8 @@ def extended_oic_config(
     basic_oic_config: t.ContainerMapping,
 ) -> t.ContainerMapping:
     """Extended Oracle OIC tap configuration with all streams."""
-    config: t.MutableContainerMapping = dict(basic_oic_config)
-    config.update({
+    settings: t.MutableContainerMapping = dict(basic_oic_config)
+    settings.update({
         "include_extended": True,
         "include_integration_details": True,
         "include_connection_properties": False,
@@ -96,7 +96,7 @@ def extended_oic_config(
         "enable_caching": True,
         "cache_ttl": 300,
     })
-    return config
+    return settings
 
 
 @pytest.fixture
@@ -104,13 +104,13 @@ def filtered_oic_config(
     basic_oic_config: t.ContainerMapping,
 ) -> t.ContainerMapping:
     """Oracle OIC tap configuration with filters."""
-    config: t.MutableContainerMapping = dict(basic_oic_config)
-    config.update({
+    settings: t.MutableContainerMapping = dict(basic_oic_config)
+    settings.update({
         "integration_status_filter": ["ACTIVATED", "CONFIGURED"],
         "connection_type_filter": ["rest", "ftp", "database"],
         "start_date": "2024-01-01T00:00:00Z",
     })
-    return config
+    return settings
 
 
 @pytest.fixture
@@ -118,8 +118,8 @@ def performance_oic_config(
     basic_oic_config: t.ContainerMapping,
 ) -> t.ContainerMapping:
     """Oracle OIC tap configuration for performance testing."""
-    config: t.MutableContainerMapping = dict(basic_oic_config)
-    config.update({
+    settings: t.MutableContainerMapping = dict(basic_oic_config)
+    settings.update({
         "page_size": 100,
         "concurrent_requests": 10,
         "request_timeout": 60,
@@ -128,7 +128,7 @@ def performance_oic_config(
         "enable_caching": True,
         "cache_ttl": 600,
     })
-    return config
+    return settings
 
 
 @pytest.fixture
@@ -528,17 +528,17 @@ def benchmark_config() -> t.ContainerMapping:
     }
 
 
-def pytest_configure(config: pytest.Config) -> None:
+def pytest_configure(settings: pytest.Config) -> None:
     """Configure pytest markers."""
-    config.addinivalue_line("markers", "unit: Unit tests")
-    config.addinivalue_line("markers", "integration: Integration tests")
-    config.addinivalue_line("markers", "e2e: End-to-end tests")
-    config.addinivalue_line("markers", "oic: Oracle OIC-specific tests")
-    config.addinivalue_line("markers", "singer: Singer protocol tests")
-    config.addinivalue_line("markers", "oauth: OAuth2 authentication tests")
-    config.addinivalue_line("markers", "performance: Performance tests")
-    config.addinivalue_line("markers", "extended: Extended stream tests")
-    config.addinivalue_line("markers", "slow: Slow tests")
+    settings.addinivalue_line("markers", "unit: Unit tests")
+    settings.addinivalue_line("markers", "integration: Integration tests")
+    settings.addinivalue_line("markers", "e2e: End-to-end tests")
+    settings.addinivalue_line("markers", "oic: Oracle OIC-specific tests")
+    settings.addinivalue_line("markers", "singer: Singer protocol tests")
+    settings.addinivalue_line("markers", "oauth: OAuth2 authentication tests")
+    settings.addinivalue_line("markers", "performance: Performance tests")
+    settings.addinivalue_line("markers", "extended: Extended stream tests")
+    settings.addinivalue_line("markers", "slow: Slow tests")
 
 
 @pytest.fixture
@@ -546,9 +546,9 @@ def mock_oic_client() -> type:
     """Mock Oracle OIC client for testing."""
 
     class MockOICClient:
-        def __init__(self, config: t.ContainerMapping) -> None:
+        def __init__(self, settings: t.ContainerMapping) -> None:
             """Initialize the instance."""
-            self.config = config
+            self.settings = settings
             self.authenticated = False
             self.call_count: t.MutableIntMapping = {}
 
@@ -584,9 +584,9 @@ def mock_oauth_authenticator() -> type:
     """Mock OAuth2 authenticator for testing."""
 
     class MockOAuthAuthenticator:
-        def __init__(self, config: t.ContainerMapping) -> None:
+        def __init__(self, settings: t.ContainerMapping) -> None:
             """Initialize the instance."""
-            self.config = config
+            self.settings = settings
             self.token: str | None = None
             self.token_expires_at: int | None = None
 
