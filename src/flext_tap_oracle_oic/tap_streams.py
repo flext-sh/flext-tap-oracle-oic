@@ -10,7 +10,6 @@ from collections.abc import Sequence
 
 from flext_api import FlextApiModels
 
-from flext_core import FlextLogger
 from flext_tap_oracle_oic import c, m, t
 
 _as_oic_envelope = m.as_oic_envelope
@@ -43,7 +42,7 @@ class FlextTapOracleOicPaginator:
             data = self._normalize_response_payload(response)
             return self._calculate_next_offset(data)
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-            logger = FlextLogger(__name__)
+            logger = u.fetch_logger(__name__)
             err_msg = f"OIC pagination parsing failed: {type(e).__name__}: {e}"
             logger.warning(err_msg)
             logger.info("Returning None - pagination parsing failure properly handled")

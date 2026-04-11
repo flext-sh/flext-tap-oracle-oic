@@ -12,7 +12,7 @@ from typing import ClassVar, override
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 
-from flext_core import FlextLogger, r
+from flext_core import r
 from flext_meltano import FlextMeltanoAbstractions
 from flext_tap_oracle_oic import (
     ALL_STREAMS,
@@ -23,7 +23,7 @@ from flext_tap_oracle_oic import (
     u,
 )
 
-logger = FlextLogger(__name__)
+logger = u.fetch_logger(__name__)
 
 
 class FlextOracleOicAuthenticator:

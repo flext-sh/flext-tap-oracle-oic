@@ -230,7 +230,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             config: Annotated[t.ContainerValueMapping, Field(default_factory=dict)]
             name: Annotated[str, Field(default="")]
             replication_key: Annotated[str | None, Field(default=None)]
-            logger: FlextLogger = Field(default_factory=lambda: FlextLogger(__name__))
+            logger: FlextLogger = Field(
+                default_factory=lambda: u.fetch_logger(__name__)
+            )
 
             requires_design_api: ClassVar[bool] = False
             requires_runtime_api: ClassVar[bool] = False
