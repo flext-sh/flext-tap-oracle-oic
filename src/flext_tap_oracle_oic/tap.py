@@ -34,7 +34,7 @@ class FlextOracleOicAuthenticator:
         self.config = config
         self._access_token: str | None = None
         api_config = FlextApiSettings.model_validate({})
-        self._api_client = FlextApi(api_config)
+        self._api_client = FlextApi(config=api_config)
 
     def get_access_token(self) -> r[str]:
         """Get OAuth2 access token using client credentials flow."""
@@ -93,7 +93,7 @@ class FlextTapOracleOicClient:
             "base_url": config.get_api_base_url(),
             "timeout": config.timeout,
         })
-        self._api_client = FlextApi(api_config)
+        self._api_client = FlextApi(config=api_config)
         self._utilities = u()
 
     def get(self, endpoint: str) -> r[FlextApiModels.Api.HttpResponse]:
