@@ -176,6 +176,7 @@ class TestTapOracleOic:
     def test_capabilities(self) -> None:
         """Test method."""
         expected_capabilities = ["catalog", "state", "discover"]
+        raw_capabilities = FlextTapOracleOic.capabilities
         capability_values = {
             str(cap.value) if hasattr(cap, "value") else str(cap)
             for cap in raw_capabilities

@@ -14,7 +14,11 @@ from flext_tap_oracle_oic.__version__ import *
 
 if _t.TYPE_CHECKING:
     from flext_meltano import d, e, h, r, s, x
-    from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams, th
+    from flext_tap_oracle_oic._models.streams import (
+        ALL_STREAMS,
+        FlextTapOracleOicModelsStreams,
+        th,
+    )
     from flext_tap_oracle_oic.api import FlextTapOracleOicService, tap_oracle_oic
     from flext_tap_oracle_oic.cli import FlextTapOracleOicCli, main
     from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
@@ -120,6 +124,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
 
 __all__ = [
+    "ALL_STREAMS",
     "FlextOracleOicAuthenticator",
     "FlextTapOracleOic",
     "FlextTapOracleOicApiError",
