@@ -14,7 +14,7 @@ from flext_tap_oracle_oic.__version__ import *
 
 if _t.TYPE_CHECKING:
     from flext_meltano import d, e, h, r, s, x
-    from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams
+    from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams, th
     from flext_tap_oracle_oic.api import FlextTapOracleOicService
     from flext_tap_oracle_oic.cli import FlextTapOracleOicCli, main
     from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
@@ -154,6 +154,7 @@ __all__ = [
     "r",
     "s",
     "t",
+    "th",
     "u",
     "x",
 ]
