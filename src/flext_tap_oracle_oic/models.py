@@ -26,12 +26,11 @@ from pydantic import (
 
 from flext_core import (
     FlextConstants,
-    FlextLogger,
     FlextModels,
 )
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import FlextOracleOicModels
-from flext_tap_oracle_oic import FlextTapOracleOicUtilities, c, e, t
+from flext_tap_oracle_oic import FlextTapOracleOicUtilities, c, e, t, u
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import p
@@ -230,9 +229,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             config: Annotated[t.ContainerValueMapping, Field(default_factory=dict)]
             name: Annotated[str, Field(default="")]
             replication_key: Annotated[str | None, Field(default=None)]
-            logger: FlextLogger = Field(
-                default_factory=lambda: u.fetch_logger(__name__)
-            )
+            logger: p.Logger = Field(default_factory=lambda: u.fetch_logger(__name__))
 
             requires_design_api: ClassVar[bool] = False
             requires_runtime_api: ClassVar[bool] = False

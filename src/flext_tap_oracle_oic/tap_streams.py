@@ -10,7 +10,7 @@ from collections.abc import Sequence
 
 from flext_api import FlextApiModels
 
-from flext_tap_oracle_oic import c, m, t
+from flext_tap_oracle_oic import c, m, t, u
 
 _as_oic_envelope = m.as_oic_envelope
 _as_value_list = m.as_value_list
