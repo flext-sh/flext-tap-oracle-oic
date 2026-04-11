@@ -48,7 +48,7 @@ class FlextOracleOicAuthenticator:
                 data=token_request_data,
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
             )
-            if response_result.is_failure:
+            if response_result.failure:
                 return r[str].fail(f"OAuth2 request failed: {response_result.error}")
             response = response_result.value
             if (
@@ -100,13 +100,13 @@ class FlextTapOracleOicClient:
         """Make authenticated GET request to OIC API."""
         url = f"{self.config.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
         headers_result = self._get_auth_headers()
-        if headers_result.is_failure:
+        if headers_result.failure:
             return r[FlextApiModels.Api.HttpResponse].fail(
                 f"Failed to get auth headers: {headers_result.error}",
             )
         try:
             response_result = self._api_client.get(url, headers=headers_result.value)
-            if response_result.is_failure:
+            if response_result.failure:
                 return r[FlextApiModels.Api.HttpResponse].fail(
                     f"OIC API request failed: {response_result.error}",
                 )
@@ -132,7 +132,7 @@ class FlextTapOracleOicClient:
         """Make authenticated POST request to OIC API."""
         url = f"{self.config.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
         headers_result = self._get_auth_headers()
-        if headers_result.is_failure:
+        if headers_result.failure:
             return r[FlextApiModels.Api.HttpResponse].fail(
                 f"Failed to get auth headers: {headers_result.error}",
             )
@@ -147,7 +147,7 @@ class FlextTapOracleOicClient:
                 data=json_body,
                 headers=headers_result.value,
             )
-            if response_result.is_failure:
+            if response_result.failure:
                 return r[FlextApiModels.Api.HttpResponse].fail(
                     f"OIC API request failed: {response_result.error}",
                 )
@@ -168,7 +168,7 @@ class FlextTapOracleOicClient:
     def _get_auth_headers(self) -> r[t.StrMapping]:
         """Get authorization headers with OAuth2 token."""
         token_result = self.authenticator.get_access_token()
-        if token_result.is_failure:
+        if token_result.failure:
             return r[t.StrMapping].fail(
                 f"Failed to get access token: {token_result.error}",
             )
@@ -319,7 +319,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         try:
             logger.info("Testing Oracle OIC connection")
             test_result = self.client.get("integrations")
-            if test_result.is_success:
+            if test_result.success:
                 logger.info("Oracle OIC connection test successful")
                 return r[bool].ok(value=True)
             error_msg = f"Oracle OIC connection test failed: {test_result.error}"
@@ -424,7 +424,7 @@ def _execute_test_command(tap: FlextTapOracleOic) -> int:
     """Execute test command."""
     logger.info("Testing Oracle OIC connection")
     result = tap.test_connection()
-    return 0 if result.is_success else 1
+    return 0 if result.success else 1
 
 
 def _execute_run_command(_tap: FlextTapOracleOic) -> int:

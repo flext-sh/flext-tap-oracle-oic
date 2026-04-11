@@ -31,7 +31,7 @@ class FlextTapOracleOicHealthChecker:
         try:
             url = f"{self.base_url}/ic/api/integration/v1/integrations?limit=1"
             response_result = self._make_get_request(url)
-            if response_result.is_failure:
+            if response_result.failure:
                 return {
                     "status": "error",
                     "timestamp": datetime.now(UTC).isoformat(),
@@ -68,7 +68,7 @@ class FlextTapOracleOicHealthChecker:
         try:
             url = f"{self.base_url}/ic/api/monitoring/v1/instances?limit=1"
             response_result = self._make_get_request(url)
-            if response_result.is_failure:
+            if response_result.failure:
                 return {
                     "service": "monitoring",
                     "status": "error",
@@ -105,7 +105,7 @@ class FlextTapOracleOicHealthChecker:
         try:
             url = f"{self.base_url}/ic/api/integration/v1/connections/{connection_id}/test"
             response_result = self._api_client.post(url, headers=self._get_headers())
-            if response_result.is_failure:
+            if response_result.failure:
                 return {
                     "connectionId": connection_id,
                     "status": "error",
@@ -152,7 +152,7 @@ class FlextTapOracleOicHealthChecker:
         try:
             url = f"{self.base_url}/ic/api/integration/v1/integrations/{integration_id}"
             response_result = self._make_get_request(url)
-            if response_result.is_failure:
+            if response_result.failure:
                 return {
                     "integrationId": integration_id,
                     "health": "error",
@@ -214,7 +214,7 @@ class FlextTapOracleOicHealthChecker:
             "Content-Type": c.TapOracleOic.TapOicHttp.JSON_MIME,
         }
         token_result = self.authenticator.get_access_token()
-        if token_result.is_success:
+        if token_result.success:
             headers["Authorization"] = f"Bearer {token_result.value}"
         return headers
 

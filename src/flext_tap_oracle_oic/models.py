@@ -266,7 +266,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         base_url,
                     )
                 )
-                if validation_result.is_failure:
+                if validation_result.failure:
                     msg = f"Invalid OIC endpoint: {validation_result.error}"
                     raise ValueError(msg)
                 region = self.config.get("region")

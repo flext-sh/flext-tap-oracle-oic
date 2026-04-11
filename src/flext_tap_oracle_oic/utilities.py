@@ -94,7 +94,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                     validation_result = FlextTapOracleOicUtilities.TapOracleOic.OicApiProcessing.validate_oic_endpoint(
                         base_url,
                     )
-                    if validation_result.is_failure:
+                    if validation_result.failure:
                         return r[str].fail(
                             f"Base URL validation failed: {validation_result.error}",
                         )
@@ -348,7 +348,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 url_validation = FlextTapOracleOicUtilities.TapOracleOic.OicApiProcessing.validate_oic_endpoint(
                     str(config["oic_base_url"]),
                 )
-                if url_validation.is_failure:
+                if url_validation.failure:
                     return r[t.ContainerValueMapping].fail(
                         f"Invalid OIC URL: {url_validation.error}",
                     )

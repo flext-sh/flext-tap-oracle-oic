@@ -78,7 +78,7 @@ class TestOICOAuth2Authenticator:
             mock_response,
         )
         result = authenticator.get_access_token()
-        assert result.is_success
+        assert result.success
         assert result.value == "test_token_123"
         assert authenticator._access_token == "test_token_123"
 
@@ -91,7 +91,7 @@ class TestOICOAuth2Authenticator:
             "Connection refused",
         )
         result = authenticator.get_access_token()
-        assert result.is_failure
+        assert result.failure
         assert result.error is not None
         assert "OAuth2 request failed" in result.error
 
@@ -109,7 +109,7 @@ class TestOICOAuth2Authenticator:
             mock_response,
         )
         result = authenticator.get_access_token()
-        assert result.is_failure
+        assert result.failure
         assert result.error is not None
         assert "status" in result.error
 
@@ -127,7 +127,7 @@ class TestOICOAuth2Authenticator:
             mock_response,
         )
         result = authenticator.get_access_token()
-        assert result.is_failure
+        assert result.failure
         assert result.error is not None
 
     def test_get_access_token_missing_token_in_response(
@@ -144,7 +144,7 @@ class TestOICOAuth2Authenticator:
             mock_response,
         )
         result = authenticator.get_access_token()
-        assert result.is_failure
+        assert result.failure
         assert result.error is not None
 
     def test_get_access_token_string_body(
@@ -164,7 +164,7 @@ class TestOICOAuth2Authenticator:
             mock_response,
         )
         result = authenticator.get_access_token()
-        assert result.is_success
+        assert result.success
         assert result.value == "string_body_token"
 
     def test_get_access_token_exception_handling(
@@ -176,7 +176,7 @@ class TestOICOAuth2Authenticator:
             "Unexpected error",
         )
         result = authenticator.get_access_token()
-        assert result.is_failure
+        assert result.failure
         assert result.error is not None
         assert "OAuth2 authentication failed" in result.error
 
