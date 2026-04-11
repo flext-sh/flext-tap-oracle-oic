@@ -13,21 +13,17 @@ from flext_core.lazy import (
 from flext_tap_oracle_oic.__version__ import *
 
 if _t.TYPE_CHECKING:
+    from flext_cli.base import s
+
     from flext_core.decorators import d
     from flext_core.exceptions import e
     from flext_core.handlers import h
     from flext_core.mixins import x
     from flext_core.result import r
     from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams, th
-    from flext_tap_oracle_oic.api import (
-        FlextTapOracleOicService,
-        FlextTapOracleOicService as s,
-    )
+    from flext_tap_oracle_oic.api import FlextTapOracleOicService
     from flext_tap_oracle_oic.cli import FlextTapOracleOicCli, main
-    from flext_tap_oracle_oic.constants import (
-        FlextTapOracleOicConstants,
-        FlextTapOracleOicConstants as c,
-    )
+    from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
     from flext_tap_oracle_oic.errors import (
         FlextTapOracleOicApiError,
         FlextTapOracleOicAuthenticationError,
@@ -36,14 +32,8 @@ if _t.TYPE_CHECKING:
         FlextTapOracleOicValidationError,
     )
     from flext_tap_oracle_oic.health import FlextTapOracleOicHealthChecker
-    from flext_tap_oracle_oic.models import (
-        FlextTapOracleOicModels,
-        FlextTapOracleOicModels as m,
-    )
-    from flext_tap_oracle_oic.protocols import (
-        FlextTapOracleOicProtocols,
-        FlextTapOracleOicProtocols as p,
-    )
+    from flext_tap_oracle_oic.models import FlextTapOracleOicModels, m
+    from flext_tap_oracle_oic.protocols import FlextTapOracleOicProtocols, p
     from flext_tap_oracle_oic.settings import FlextTapOracleOicSettings
     from flext_tap_oracle_oic.tap import (
         FlextOracleOicAuthenticator,
@@ -51,14 +41,8 @@ if _t.TYPE_CHECKING:
         FlextTapOracleOicClient,
     )
     from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator
-    from flext_tap_oracle_oic.typings import (
-        FlextTapOracleOicTypes,
-        FlextTapOracleOicTypes as t,
-    )
-    from flext_tap_oracle_oic.utilities import (
-        FlextTapOracleOicUtilities,
-        FlextTapOracleOicUtilities as u,
-    )
+    from flext_tap_oracle_oic.typings import FlextTapOracleOicTypes, t
+    from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities, u
 _LAZY_IMPORTS = merge_lazy_imports(
     ("._models",),
     build_lazy_import_map(
@@ -78,7 +62,10 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "FlextTapOracleOicCli",
                 "main",
             ),
-            ".constants": ("FlextTapOracleOicConstants",),
+            ".constants": (
+                "FlextTapOracleOicConstants",
+                "c",
+            ),
             ".errors": (
                 "FlextTapOracleOicApiError",
                 "FlextTapOracleOicAuthenticationError",
@@ -87,8 +74,14 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "FlextTapOracleOicValidationError",
             ),
             ".health": ("FlextTapOracleOicHealthChecker",),
-            ".models": ("FlextTapOracleOicModels",),
-            ".protocols": ("FlextTapOracleOicProtocols",),
+            ".models": (
+                "FlextTapOracleOicModels",
+                "m",
+            ),
+            ".protocols": (
+                "FlextTapOracleOicProtocols",
+                "p",
+            ),
             ".settings": ("FlextTapOracleOicSettings",),
             ".tap": (
                 "FlextOracleOicAuthenticator",
@@ -96,21 +89,20 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "FlextTapOracleOicClient",
             ),
             ".tap_streams": ("FlextTapOracleOicPaginator",),
-            ".typings": ("FlextTapOracleOicTypes",),
-            ".utilities": ("FlextTapOracleOicUtilities",),
+            ".typings": (
+                "FlextTapOracleOicTypes",
+                "t",
+            ),
+            ".utilities": (
+                "FlextTapOracleOicUtilities",
+                "u",
+            ),
+            "flext_cli.base": ("s",),
             "flext_core.decorators": ("d",),
             "flext_core.exceptions": ("e",),
             "flext_core.handlers": ("h",),
             "flext_core.mixins": ("x",),
             "flext_core.result": ("r",),
-        },
-        alias_groups={
-            ".api": (("s", "FlextTapOracleOicService"),),
-            ".constants": (("c", "FlextTapOracleOicConstants"),),
-            ".models": (("m", "FlextTapOracleOicModels"),),
-            ".protocols": (("p", "FlextTapOracleOicProtocols"),),
-            ".typings": (("t", "FlextTapOracleOicTypes"),),
-            ".utilities": (("u", "FlextTapOracleOicUtilities"),),
         },
     ),
     exclude_names=(
@@ -124,6 +116,9 @@ _LAZY_IMPORTS = merge_lazy_imports(
     ),
     module_name=__name__,
 )
+
+
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
 
 __all__ = [
     "FlextOracleOicAuthenticator",
@@ -167,6 +162,3 @@ __all__ = [
     "u",
     "x",
 ]
-
-
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
