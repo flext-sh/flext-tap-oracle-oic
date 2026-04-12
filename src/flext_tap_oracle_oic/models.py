@@ -56,7 +56,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     def as_value_list(
         value: t.ContainerValue | None,
     ) -> Sequence[t.ContainerValue] | None:
-        """Validate payload as strict t.ContainerList."""
+        """Validate payload as strict t.RecursiveContainerList."""
         try:
             return t.GENERAL_LIST_ADAPTER.validate_python(value)
         except ValidationError:
@@ -66,7 +66,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     def _as_value_map(
         value: t.ContainerValue | None,
     ) -> t.ContainerValueMapping | None:
-        """Validate payload as strict t.ContainerMapping."""
+        """Validate payload as strict t.RecursiveContainerMapping."""
         try:
             return t.GENERAL_MAP_ADAPTER.validate_python(value)
         except ValidationError:
@@ -2390,7 +2390,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         self.integration_ids.remove(integration_id)
 
             class OICResourceMetadata(FlextModels):
-                """OIC resource metadata value t.NormalizedValue."""
+                """OIC resource metadata value t.RecursiveContainer."""
 
                 resource_type: Annotated[
                     c.TapOracleOic.OICResourceType,
@@ -2414,7 +2414,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ]
 
             class OICExecutionSummary(FlextModels):
-                """OIC execution summary value t.NormalizedValue."""
+                """OIC execution summary value t.RecursiveContainer."""
 
                 integration_id: Annotated[str, Field(..., description="Integration ID")]
                 total_executions: Annotated[

@@ -183,7 +183,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
     name: ClassVar[str] = "tap-oracle-oic"
     capabilities: ClassVar[t.StrSequence] = ["catalog", "state", "discover"]
     config_jsonschema: ClassVar[t.ContainerValueMapping] = {
-        "type": "t.NormalizedValue",
+        "type": "t.RecursiveContainer",
         "properties": {
             "oauth_client_id": {"type": "string", "description": "OAuth2 client ID"},
             "oauth_client_secret": {
@@ -282,7 +282,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
     def discover_streams(
         self,
         tap_instance: m.Meltano.TapInstance,
-    ) -> r[t.ContainerMapping]:
+    ) -> r[t.RecursiveContainerMapping]:
         """Discover stream catalog matching FlextMeltanoAbstractions contract."""
         _ = tap_instance
         streams = self.discover_oic_streams()
@@ -302,7 +302,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
                 for stream in streams
             ],
         }
-        return r[t.ContainerMapping].ok(catalog)
+        return r[t.RecursiveContainerMapping].ok(catalog)
 
     @staticmethod
     def _to_positive_int(value: t.ContainerValue | None, default: int) -> int:

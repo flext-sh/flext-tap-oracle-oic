@@ -23,7 +23,7 @@ class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
     @override
     def create_tap_instance(
         self,
-        settings: t.ContainerMapping | None = None,
+        settings: t.RecursiveContainerMapping | None = None,
     ) -> Never:
         """Not supported — use FlextTapOracleOic directly."""
         msg = "tap-oracle-oic uses CLI dispatch, not singer_sdk.Tap"

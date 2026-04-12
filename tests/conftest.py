@@ -26,12 +26,12 @@ def _build_singer_stream(
     *,
     tap_stream_id: str,
     replication_key: str,
-    properties: t.ContainerMapping,
-) -> t.ContainerMapping:
+    properties: t.RecursiveContainerMapping,
+) -> t.RecursiveContainerMapping:
     return {
         "tap_stream_id": tap_stream_id,
         "schema": {
-            "type": "t.NormalizedValue",
+            "type": "t.RecursiveContainer",
             "properties": properties,
         },
         "metadata": [
@@ -62,7 +62,7 @@ def set_test_environment() -> Generator[None]:
 
 
 @pytest.fixture
-def basic_oic_config() -> t.ContainerMapping:
+def basic_oic_config() -> t.RecursiveContainerMapping:
     """Basic Oracle OIC tap configuration."""
     return {
         "base_url": "https://oic-test.integration.ocp.oraclecloud.com",
@@ -82,10 +82,10 @@ def basic_oic_config() -> t.ContainerMapping:
 
 @pytest.fixture
 def extended_oic_config(
-    basic_oic_config: t.ContainerMapping,
-) -> t.ContainerMapping:
+    basic_oic_config: t.RecursiveContainerMapping,
+) -> t.RecursiveContainerMapping:
     """Extended Oracle OIC tap configuration with all streams."""
-    settings: t.MutableContainerMapping = dict(basic_oic_config)
+    settings: t.MutableRecursiveContainerMapping = dict(basic_oic_config)
     settings.update({
         "include_extended": True,
         "include_integration_details": True,
@@ -101,10 +101,10 @@ def extended_oic_config(
 
 @pytest.fixture
 def filtered_oic_config(
-    basic_oic_config: t.ContainerMapping,
-) -> t.ContainerMapping:
+    basic_oic_config: t.RecursiveContainerMapping,
+) -> t.RecursiveContainerMapping:
     """Oracle OIC tap configuration with filters."""
-    settings: t.MutableContainerMapping = dict(basic_oic_config)
+    settings: t.MutableRecursiveContainerMapping = dict(basic_oic_config)
     settings.update({
         "integration_status_filter": ["ACTIVATED", "CONFIGURED"],
         "connection_type_filter": ["rest", "ftp", "database"],
@@ -115,10 +115,10 @@ def filtered_oic_config(
 
 @pytest.fixture
 def performance_oic_config(
-    basic_oic_config: t.ContainerMapping,
-) -> t.ContainerMapping:
+    basic_oic_config: t.RecursiveContainerMapping,
+) -> t.RecursiveContainerMapping:
     """Oracle OIC tap configuration for performance testing."""
-    settings: t.MutableContainerMapping = dict(basic_oic_config)
+    settings: t.MutableRecursiveContainerMapping = dict(basic_oic_config)
     settings.update({
         "page_size": 100,
         "concurrent_requests": 10,
@@ -132,7 +132,7 @@ def performance_oic_config(
 
 
 @pytest.fixture
-def mock_oauth_token_response() -> t.ContainerMapping:
+def mock_oauth_token_response() -> t.RecursiveContainerMapping:
     """Mock OAuth2 token response."""
     return {
         "access_token": "mock_access_token_12345",
@@ -143,7 +143,7 @@ def mock_oauth_token_response() -> t.ContainerMapping:
 
 
 @pytest.fixture
-def sample_integration_data() -> Sequence[t.ContainerMapping]:
+def sample_integration_data() -> Sequence[t.RecursiveContainerMapping]:
     """Sample integration data for testing."""
     return [
         {
@@ -199,8 +199,8 @@ def sample_integration_data() -> Sequence[t.ContainerMapping]:
 
 @pytest.fixture
 def mock_integrations_response(
-    sample_integration_data: Sequence[t.ContainerMapping],
-) -> t.ContainerMapping:
+    sample_integration_data: Sequence[t.RecursiveContainerMapping],
+) -> t.RecursiveContainerMapping:
     """Mock integrations API response."""
     return {
         "items": sample_integration_data,
@@ -212,7 +212,7 @@ def mock_integrations_response(
 
 
 @pytest.fixture
-def sample_connection_data() -> Sequence[t.ContainerMapping]:
+def sample_connection_data() -> Sequence[t.RecursiveContainerMapping]:
     """Sample connection data for testing."""
     return [
         {
@@ -262,8 +262,8 @@ def sample_connection_data() -> Sequence[t.ContainerMapping]:
 
 @pytest.fixture
 def mock_connections_response(
-    sample_connection_data: Sequence[t.ContainerMapping],
-) -> t.ContainerMapping:
+    sample_connection_data: Sequence[t.RecursiveContainerMapping],
+) -> t.RecursiveContainerMapping:
     """Mock connections API response."""
     return {
         "items": sample_connection_data,
@@ -275,7 +275,7 @@ def mock_connections_response(
 
 
 @pytest.fixture
-def sample_package_data() -> Sequence[t.ContainerMapping]:
+def sample_package_data() -> Sequence[t.RecursiveContainerMapping]:
     """Sample package data for testing."""
     return [
         {
@@ -311,8 +311,8 @@ def sample_package_data() -> Sequence[t.ContainerMapping]:
 
 @pytest.fixture
 def mock_packages_response(
-    sample_package_data: Sequence[t.ContainerMapping],
-) -> t.ContainerMapping:
+    sample_package_data: Sequence[t.RecursiveContainerMapping],
+) -> t.RecursiveContainerMapping:
     """Mock packages API response."""
     return {
         "items": sample_package_data,
@@ -324,7 +324,7 @@ def mock_packages_response(
 
 
 @pytest.fixture
-def sample_lookup_data() -> Sequence[t.ContainerMapping]:
+def sample_lookup_data() -> Sequence[t.RecursiveContainerMapping]:
     """Sample lookup data for testing."""
     return [
         {
@@ -358,8 +358,8 @@ def sample_lookup_data() -> Sequence[t.ContainerMapping]:
 
 @pytest.fixture
 def mock_lookups_response(
-    sample_lookup_data: Sequence[t.ContainerMapping],
-) -> t.ContainerMapping:
+    sample_lookup_data: Sequence[t.RecursiveContainerMapping],
+) -> t.RecursiveContainerMapping:
     """Mock lookups API response."""
     return {
         "items": sample_lookup_data,
@@ -371,7 +371,7 @@ def mock_lookups_response(
 
 
 @pytest.fixture
-def sample_library_data() -> Sequence[t.ContainerMapping]:
+def sample_library_data() -> Sequence[t.RecursiveContainerMapping]:
     """Sample library data for testing."""
     return [
         {
@@ -388,7 +388,7 @@ def sample_library_data() -> Sequence[t.ContainerMapping]:
 
 
 @pytest.fixture
-def sample_certificate_data() -> Sequence[t.ContainerMapping]:
+def sample_certificate_data() -> Sequence[t.RecursiveContainerMapping]:
     """Sample certificate data for testing."""
     return [
         {
@@ -406,7 +406,7 @@ def sample_certificate_data() -> Sequence[t.ContainerMapping]:
 
 
 @pytest.fixture
-def sample_adapter_data() -> Sequence[t.ContainerMapping]:
+def sample_adapter_data() -> Sequence[t.RecursiveContainerMapping]:
     """Sample adapter data for testing."""
     return [
         {
@@ -423,7 +423,7 @@ def sample_adapter_data() -> Sequence[t.ContainerMapping]:
 
 
 @pytest.fixture
-def singer_catalog() -> t.ContainerMapping:
+def singer_catalog() -> t.RecursiveContainerMapping:
     """Singer catalog for OIC tap."""
     return {
         "streams": [
@@ -454,7 +454,7 @@ def singer_catalog() -> t.ContainerMapping:
 
 
 @pytest.fixture
-def singer_state() -> t.ContainerMapping:
+def singer_state() -> t.RecursiveContainerMapping:
     """Singer state for OIC tap."""
     return {
         "currently_syncing": None,
@@ -496,11 +496,11 @@ def mock_rate_limit_response() -> Mock:
 
 
 @pytest.fixture
-def large_integration_dataset() -> Sequence[t.ContainerMapping]:
+def large_integration_dataset() -> Sequence[t.RecursiveContainerMapping]:
     """Large integration dataset for performance testing."""
-    integrations: list[t.ContainerMapping] = []
+    integrations: list[t.RecursiveContainerMapping] = []
     for i in range(1000):
-        integration: t.ContainerMapping = {
+        integration: t.RecursiveContainerMapping = {
             "id": f"INTEGRATION_{i:04d}",
             "name": f"Integration{i:04d}",
             "version": "01.00.0000",
@@ -517,7 +517,7 @@ def large_integration_dataset() -> Sequence[t.ContainerMapping]:
 
 
 @pytest.fixture
-def benchmark_config() -> t.ContainerMapping:
+def benchmark_config() -> t.RecursiveContainerMapping:
     """Configuration for performance benchmarking."""
     return {
         "max_records_to_process": 1000,
@@ -546,7 +546,7 @@ def mock_oic_client() -> type:
     """Mock Oracle OIC client for testing."""
 
     class MockOICClient:
-        def __init__(self, settings: t.ContainerMapping) -> None:
+        def __init__(self, settings: t.RecursiveContainerMapping) -> None:
             """Initialize the instance."""
             self.settings = settings
             self.authenticated = False
@@ -556,13 +556,13 @@ def mock_oic_client() -> type:
             self.authenticated = True
             return True
 
-        def get_integrations(self, **_kwargs: t.Scalar) -> t.ContainerMapping:
+        def get_integrations(self, **_kwargs: t.Scalar) -> t.RecursiveContainerMapping:
             self.call_count["get_integrations"] = (
                 self.call_count.get("get_integrations", 0) + 1
             )
             return {"success": True, "items": [], "hasMore": False, "count": 0}
 
-        def get_connections(self, **_kwargs: t.Scalar) -> t.ContainerMapping:
+        def get_connections(self, **_kwargs: t.Scalar) -> t.RecursiveContainerMapping:
             self.call_count["get_connections"] = (
                 self.call_count.get("get_connections", 0) + 1
             )
@@ -570,9 +570,9 @@ def mock_oic_client() -> type:
 
         def paginate_request(
             self,
-            _request_func: Callable[..., t.ContainerMapping],
+            _request_func: Callable[..., t.RecursiveContainerMapping],
             **_kwargs: t.Scalar,
-        ) -> Iterator[t.ContainerMapping]:
+        ) -> Iterator[t.RecursiveContainerMapping]:
             """Mock pagination."""
             yield from []
 
@@ -584,19 +584,19 @@ def mock_oauth_authenticator() -> type:
     """Mock OAuth2 authenticator for testing."""
 
     class MockOAuthAuthenticator:
-        def __init__(self, settings: t.ContainerMapping) -> None:
+        def __init__(self, settings: t.RecursiveContainerMapping) -> None:
             """Initialize the instance."""
             self.settings = settings
             self.token: str | None = None
             self.token_expires_at: int | None = None
 
-        def get_access_token(self) -> t.ContainerMapping:
+        def get_access_token(self) -> t.RecursiveContainerMapping:
             return {"success": True, "value": "mock_access_token_12345"}
 
         def is_token_valid(self) -> bool:
             return True
 
-        def refresh_token(self) -> t.ContainerMapping:
+        def refresh_token(self) -> t.RecursiveContainerMapping:
             return self.get_access_token()
 
     return MockOAuthAuthenticator
