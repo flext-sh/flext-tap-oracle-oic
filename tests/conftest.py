@@ -528,17 +528,17 @@ def benchmark_config() -> t.ContainerMapping:
     }
 
 
-def pytest_configure(settings: pytest.Config) -> None:
+def pytest_configure(config: pytest.Config) -> None:
     """Configure pytest markers."""
-    settings.addinivalue_line("markers", "unit: Unit tests")
-    settings.addinivalue_line("markers", "integration: Integration tests")
-    settings.addinivalue_line("markers", "e2e: End-to-end tests")
-    settings.addinivalue_line("markers", "oic: Oracle OIC-specific tests")
-    settings.addinivalue_line("markers", "singer: Singer protocol tests")
-    settings.addinivalue_line("markers", "oauth: OAuth2 authentication tests")
-    settings.addinivalue_line("markers", "performance: Performance tests")
-    settings.addinivalue_line("markers", "extended: Extended stream tests")
-    settings.addinivalue_line("markers", "slow: Slow tests")
+    config.addinivalue_line("markers", "unit: Unit tests")
+    config.addinivalue_line("markers", "integration: Integration tests")
+    config.addinivalue_line("markers", "e2e: End-to-end tests")
+    config.addinivalue_line("markers", "oic: Oracle OIC-specific tests")
+    config.addinivalue_line("markers", "singer: Singer protocol tests")
+    config.addinivalue_line("markers", "oauth: OAuth2 authentication tests")
+    config.addinivalue_line("markers", "performance: Performance tests")
+    config.addinivalue_line("markers", "extended: Extended stream tests")
+    config.addinivalue_line("markers", "slow: Slow tests")
 
 
 @pytest.fixture

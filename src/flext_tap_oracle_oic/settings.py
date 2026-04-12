@@ -26,8 +26,7 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
     """Tap-specific OIC settings contract."""
 
     model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
-        env_prefix="FLEXT_TAP_ORACLE_OIC_",
-        extra="ignore",
+        env_prefix="FLEXT_TAP_ORACLE_OIC_", extra="ignore"
     )
 
     oauth_client_id: Annotated[str, Field(default="")]
