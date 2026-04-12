@@ -24,4 +24,4 @@ class TestsFlextTapOracleOicUtilities(FlextTestsUtilities, FlextTapOracleOicUtil
 
 
 u = TestsFlextTapOracleOicUtilities
-__all__ = ["TestsFlextTapOracleOicUtilities", "u"]
+__all__: list[str] = ["TestsFlextTapOracleOicUtilities", "u"]

@@ -65,4 +65,4 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
 
 
 t = FlextTapOracleOicTypes
-__all__ = ["FlextTapOracleOicTypes", "t"]
+__all__: list[str] = ["FlextTapOracleOicTypes", "t"]

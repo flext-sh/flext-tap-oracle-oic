@@ -436,7 +436,7 @@ def _execute_run_command(_tap: FlextTapOracleOic) -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-__all__ = [
+__all__: list[str] = [
     "FlextOracleOicAuthenticator",
     "FlextTapOracleOic",
     "FlextTapOracleOicClient",

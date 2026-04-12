@@ -24,4 +24,4 @@ class TestsFlextTapOracleOicProtocols(FlextTestsProtocols, FlextTapOracleOicProt
 
 
 p = TestsFlextTapOracleOicProtocols
-__all__ = ["TestsFlextTapOracleOicProtocols", "p"]
+__all__: list[str] = ["TestsFlextTapOracleOicProtocols", "p"]

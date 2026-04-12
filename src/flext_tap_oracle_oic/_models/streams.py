@@ -925,7 +925,7 @@ ALL_STREAMS: Mapping[str, type[m.TapOracleOic.OICBaseStream]] = {
     "metrics": FlextTapOracleOicModelsStreams.MetricsStream,
 }
 
-__all__ = [
+__all__: list[str] = [
     "ALL_STREAMS",
     "FlextTapOracleOicModelsStreams",
     "th",

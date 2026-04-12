@@ -223,4 +223,4 @@ class FlextTapOracleOicHealthChecker:
         return self._api_client.get(url, headers=self._get_headers())
 
 
-__all__ = ["FlextTapOracleOicHealthChecker"]
+__all__: list[str] = ["FlextTapOracleOicHealthChecker"]

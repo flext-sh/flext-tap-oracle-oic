@@ -621,4 +621,4 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
 
 u = FlextTapOracleOicUtilities
 
-__all__ = ["FlextTapOracleOicUtilities", "u"]
+__all__: list[str] = ["FlextTapOracleOicUtilities", "u"]

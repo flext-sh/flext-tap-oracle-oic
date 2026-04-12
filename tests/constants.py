@@ -21,4 +21,4 @@ class TestsFlextTapOracleOicConstants(
 
 
 c = TestsFlextTapOracleOicConstants
-__all__ = ["TestsFlextTapOracleOicConstants", "c"]
+__all__: list[str] = ["TestsFlextTapOracleOicConstants", "c"]

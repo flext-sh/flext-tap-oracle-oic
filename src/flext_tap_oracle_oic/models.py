@@ -2454,7 +2454,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 # Short alias
 m = FlextTapOracleOicModels
 
-__all__ = [
+__all__: list[str] = [
     "FlextTapOracleOicModels",
     "m",
 ]

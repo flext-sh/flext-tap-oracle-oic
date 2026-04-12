@@ -110,4 +110,4 @@ class FlextTapOracleOicPaginator:
                 self._page_size = min(self._max_page_size, int(self._page_size * 1.2))
 
 
-__all__ = ["FlextTapOracleOicPaginator"]
+__all__: list[str] = ["FlextTapOracleOicPaginator"]
