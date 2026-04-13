@@ -12,13 +12,14 @@ from typing import ClassVar, override
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 
-from flext_core import p, r
 from flext_meltano import FlextMeltanoAbstractions
 from flext_tap_oracle_oic import (
     ALL_STREAMS,
     FlextTapOracleOicSettings,
     c,
     m,
+    p,
+    r,
     t,
     u,
 )

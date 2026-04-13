@@ -12,8 +12,7 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from flext_core import e
-from flext_tap_oracle_oic import t
+from flext_tap_oracle_oic import e, t
 
 
 class FlextTapOracleOicExceptionFactory:

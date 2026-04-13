@@ -10,7 +10,7 @@ from datetime import UTC, datetime
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 
-from flext_tap_oracle_oic import FlextOracleOicAuthenticator, c, t
+from flext_tap_oracle_oic import FlextOracleOicAuthenticator, c, p, t
 
 
 class FlextTapOracleOicHealthChecker:

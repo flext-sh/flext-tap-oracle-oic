@@ -16,9 +16,9 @@ from typing import Annotated, ClassVar, Self
 from pydantic import Field, SecretStr
 from pydantic_settings import SettingsConfigDict
 
-from flext_core import FlextConstants, FlextSettings, r
+from flext_core import FlextSettings
 from flext_oracle_oic import FlextOracleOicSettings
-from flext_tap_oracle_oic import c, t
+from flext_tap_oracle_oic import c, p, r, t
 
 
 @FlextSettings.auto_register("tap-oracle-oic")
@@ -78,7 +78,7 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
             )
             tap_config.setdefault(
                 "batch_size",
-                FlextConstants.DEFAULT_SIZE,
+                c.DEFAULT_SIZE,
             )
             tap_config.setdefault("stream_prefix", "oic")
             config_data = {**oauth_params, **connection_params, **tap_config}

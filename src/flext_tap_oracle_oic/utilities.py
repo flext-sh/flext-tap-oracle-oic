@@ -15,13 +15,12 @@ from urllib.parse import urljoin, urlparse
 
 from pydantic import ValidationError
 
-from flext_core import p, r
-from flext_meltano import FlextMeltanoUtilities
+from flext_meltano import u
 from flext_oracle_oic import FlextOracleOicUtilities
-from flext_tap_oracle_oic import c, t
+from flext_tap_oracle_oic import c, p, r, t
 
 
-class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities):
+class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
     """Single unified utilities class for Singer tap Oracle OIC operations.
 
     Follows FLEXT unified class pattern with nested helper classes for
