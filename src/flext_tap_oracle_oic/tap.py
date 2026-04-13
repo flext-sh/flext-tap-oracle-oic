@@ -12,7 +12,7 @@ from typing import ClassVar, override
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 
-from flext_core import r
+from flext_core import p, r
 from flext_meltano import FlextMeltanoAbstractions
 from flext_tap_oracle_oic import (
     ALL_STREAMS,
@@ -36,7 +36,7 @@ class FlextOracleOicAuthenticator:
         api_config = FlextApiSettings.model_validate({})
         self._api_client = FlextApi(settings=api_config)
 
-    def get_access_token(self) -> r[str]:
+    def get_access_token(self) -> p.Result[str]:
         """Get OAuth2 access token using client credentials flow."""
         try:
             token_request_data = "&".join(
@@ -96,7 +96,7 @@ class FlextTapOracleOicClient:
         self._api_client = FlextApi(settings=api_config)
         self._utilities = u()
 
-    def get(self, endpoint: str) -> r[FlextApiModels.Api.HttpResponse]:
+    def get(self, endpoint: str) -> p.Result[FlextApiModels.Api.HttpResponse]:
         """Make authenticated GET request to OIC API."""
         url = f"{self.settings.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
         headers_result = self._get_auth_headers()
@@ -128,7 +128,7 @@ class FlextTapOracleOicClient:
         self,
         endpoint: str,
         data: Mapping[str, t.ContainerValueMapping] | None = None,
-    ) -> r[FlextApiModels.Api.HttpResponse]:
+    ) -> p.Result[FlextApiModels.Api.HttpResponse]:
         """Make authenticated POST request to OIC API."""
         url = f"{self.settings.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
         headers_result = self._get_auth_headers()
@@ -165,7 +165,7 @@ class FlextTapOracleOicClient:
                 f"OIC API request failed: {e}",
             )
 
-    def _get_auth_headers(self) -> r[t.StrMapping]:
+    def _get_auth_headers(self) -> p.Result[t.StrMapping]:
         """Get authorization headers with OAuth2 token."""
         token_result = self.authenticator.get_access_token()
         if token_result.failure:
@@ -282,7 +282,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
     def discover_streams(
         self,
         tap_instance: m.Meltano.TapInstance,
-    ) -> r[t.RecursiveContainerMapping]:
+    ) -> p.Result[t.RecursiveContainerMapping]:
         """Discover stream catalog matching FlextMeltanoAbstractions contract."""
         _ = tap_instance
         streams = self.discover_oic_streams()
@@ -314,7 +314,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             return int(value)
         return default
 
-    def test_connection(self) -> r[bool]:
+    def test_connection(self) -> p.Result[bool]:
         """Test connection to Oracle OIC using real API client."""
         try:
             logger.info("Testing Oracle OIC connection")

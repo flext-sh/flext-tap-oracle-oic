@@ -15,7 +15,7 @@ from urllib.parse import urljoin, urlparse
 
 from pydantic import ValidationError
 
-from flext_core import r
+from flext_core import p, r
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_oic import FlextOracleOicUtilities
 from flext_tap_oracle_oic import c, t
@@ -78,7 +78,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 base_url: str,
                 resource_path: str,
                 query_params: t.StrMapping | None = None,
-            ) -> r[str]:
+            ) -> p.Result[str]:
                 """Build Oracle OIC API URL with proper formatting.
 
                 Args:
@@ -150,7 +150,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             @staticmethod
             def parse_oic_response(
                 response_data: t.ContainerValueMapping,
-            ) -> r[t.ContainerValueMapping]:
+            ) -> p.Result[t.ContainerValueMapping]:
                 """Parse Oracle OIC API response.
 
                 Args:
@@ -181,7 +181,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                     )
 
             @staticmethod
-            def validate_oic_endpoint(endpoint_url: str) -> r[str]:
+            def validate_oic_endpoint(endpoint_url: str) -> p.Result[str]:
                 """Validate Oracle OIC endpoint URL.
 
                 Args:
@@ -248,7 +248,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
                 return {k: v for k, v in metadata.items() if v is not None}
 
             @staticmethod
-            def format_oic_timestamp(timestamp_str: str) -> r[str]:
+            def format_oic_timestamp(timestamp_str: str) -> p.Result[str]:
                 """Format Oracle OIC timestamp to ISO format.
 
                 Args:
@@ -327,7 +327,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             @staticmethod
             def validate_oic_connection_config(
                 settings: Mapping[str, t.ContainerValueMapping],
-            ) -> r[t.ContainerValueMapping]:
+            ) -> p.Result[t.ContainerValueMapping]:
                 """Validate Oracle OIC connection configuration.
 
                 Args:
@@ -371,7 +371,7 @@ class FlextTapOracleOicUtilities(FlextMeltanoUtilities, FlextOracleOicUtilities)
             @staticmethod
             def validate_stream_config(
                 settings: Mapping[str, t.ContainerValueMapping],
-            ) -> r[t.ContainerValueMapping]:
+            ) -> p.Result[t.ContainerValueMapping]:
                 """Validate OIC tap stream configuration.
 
                 Args:

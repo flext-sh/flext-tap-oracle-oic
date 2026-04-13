@@ -153,7 +153,7 @@ def process(data):
 
 
 # ✅ CORRECT
-def process(data: t.RecursiveContainerMapping) -> r[ProcessedData]:
+def process(data: t.RecursiveContainerMapping) -> p.Result[ProcessedData]:
     return r.ok(ProcessedData(**data))
 ```
 
@@ -238,7 +238,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
@@ -269,7 +269,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
@@ -476,7 +476,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
@@ -513,14 +513,14 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
 from flext_core import u
 
 
-def safe_operation(data: dict) -> r[dict]:
+def safe_operation(data: dict) -> p.Result[dict]:
     try:
         # Your operation here
         result = process_data(data)
@@ -550,7 +550,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
@@ -760,7 +760,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
@@ -782,7 +782,7 @@ from flext_core import u
 
 ```python
 # ✅ GOOD
-def process(data: dict) -> r[ProcessedData]:
+def process(data: dict) -> p.Result[ProcessedData]:
     return r.ok(ProcessedData(**data))
 
 
@@ -794,7 +794,7 @@ def process(data: dict) -> ProcessedData:
 2. **Validate Input Early**
 
    ```python
-   def process_data(data: dict) -> r[dict]:
+   def process_data(data: dict) -> p.Result[dict]:
        if not data:
            return r.fail("Data required")
 
@@ -806,7 +806,7 @@ def process(data: dict) -> ProcessedData:
 
    ```python
    # ✅ GOOD
-   def process(items: Sequence[Item]) -> r[Sequence[ProcessedItem]]:
+   def process(items: Sequence[Item]) -> p.Result[Sequence[ProcessedItem]]:
        pass
 
 

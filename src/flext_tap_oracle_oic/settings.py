@@ -70,7 +70,7 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
         oauth_params: t.ContainerValueMapping,
         connection_params: t.ContainerValueMapping,
         tap_params: t.ContainerValueMapping | None = None,
-    ) -> r[Self]:
+    ) -> p.Result[Self]:
         """Create a validated tap configuration from grouped parameter blocks."""
         try:
             tap_config: t.MutableContainerValueMapping = (
@@ -89,7 +89,7 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
                 f"Oracle OIC tap configuration creation failed: {exc}",
             )
 
-    def validate_configuration(self) -> r[bool]:
+    def validate_configuration(self) -> p.Result[bool]:
         """Validate the current settings instance."""
         required_fields = [
             (self.oauth_client_id, "OAuth client ID is required"),
