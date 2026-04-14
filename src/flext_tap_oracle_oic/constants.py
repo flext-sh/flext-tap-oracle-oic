@@ -141,6 +141,48 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
             ERROR = "ERROR"
 
         @unique
+        class OicHealthStatus(StrEnum):
+            """OIC health status values for operational summaries."""
+
+            HEALTHY = "healthy"
+            UNHEALTHY = "unhealthy"
+            WARNING = "warning"
+            UNKNOWN = "unknown"
+            DEGRADED = "degraded"
+
+        @unique
+        class OicErrorSeverity(StrEnum):
+            """OIC error severity values for classification."""
+
+            CRITICAL = "critical"
+            WARNING = "warning"
+            ERROR = "error"
+            UNKNOWN = "unknown"
+
+        @unique
+        class OicConnectionTestStatus(StrEnum):
+            """Connection test status values."""
+
+            SUCCESS = "success"
+            FAILED = "failed"
+            ERROR = "error"
+
+        VALID_OIC_HEALTH_STATUSES: Final[frozenset[str]] = frozenset({
+            member.value for member in OicHealthStatus.__members__.values()
+        })
+        "Valid OIC health status values."
+
+        VALID_OIC_ERROR_SEVERITIES: Final[frozenset[str]] = frozenset({
+            member.value for member in OicErrorSeverity.__members__.values()
+        })
+        "Valid OIC error severity values."
+
+        VALID_OIC_CONNECTION_TEST_STATUSES: Final[frozenset[str]] = frozenset({
+            member.value for member in OicConnectionTestStatus.__members__.values()
+        })
+        "Valid OIC connection test status values."
+
+        @unique
         class OicReplicationMethod(StrEnum):
             """Singer replication method for OIC streams."""
 

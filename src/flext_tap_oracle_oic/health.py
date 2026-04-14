@@ -32,7 +32,7 @@ class FlextTapOracleOicHealthChecker:
             response_result = self._make_get_request(url)
             if response_result.failure:
                 return {
-                    "status": "error",
+                    "status": c.Monitoring.HealthStatus.ERROR.value,
                     "timestamp": datetime.now(UTC).isoformat(),
                     "instance_url": self.base_url,
                     "api_accessible": "False",
@@ -41,13 +41,13 @@ class FlextTapOracleOicHealthChecker:
             response = response_result.value
             if response.status_code == c.TapOracleOic.TapOicHttp.HTTP_OK:
                 return {
-                    "status": "healthy",
+                    "status": c.TapOracleOic.OicHealthStatus.HEALTHY.value,
                     "timestamp": datetime.now(UTC).isoformat(),
                     "instance_url": self.base_url,
                     "api_accessible": "True",
                 }
             return {
-                "status": "unhealthy",
+                "status": c.TapOracleOic.OicHealthStatus.UNHEALTHY.value,
                 "timestamp": datetime.now(UTC).isoformat(),
                 "instance_url": self.base_url,
                 "api_accessible": "False",
@@ -55,7 +55,7 @@ class FlextTapOracleOicHealthChecker:
             }
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             return {
-                "status": "error",
+                "status": c.Monitoring.HealthStatus.ERROR.value,
                 "timestamp": datetime.now(UTC).isoformat(),
                 "instance_url": self.base_url,
                 "api_accessible": "False",
@@ -70,7 +70,7 @@ class FlextTapOracleOicHealthChecker:
             if response_result.failure:
                 return {
                     "service": "monitoring",
-                    "status": "error",
+                    "status": c.Monitoring.HealthStatus.ERROR.value,
                     "timestamp": datetime.now(UTC).isoformat(),
                     "accessible": "False",
                     "error": str(response_result.error),
@@ -79,13 +79,13 @@ class FlextTapOracleOicHealthChecker:
             if response.status_code == c.TapOracleOic.TapOicHttp.HTTP_OK:
                 return {
                     "service": "monitoring",
-                    "status": "healthy",
+                    "status": c.TapOracleOic.OicHealthStatus.HEALTHY.value,
                     "timestamp": datetime.now(UTC).isoformat(),
                     "accessible": "True",
                 }
             return {
                 "service": "monitoring",
-                "status": "unhealthy",
+                "status": c.TapOracleOic.OicHealthStatus.UNHEALTHY.value,
                 "timestamp": datetime.now(UTC).isoformat(),
                 "accessible": "False",
                 "error": f"API returned status {response.status_code}",
@@ -93,7 +93,7 @@ class FlextTapOracleOicHealthChecker:
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             return {
                 "service": "monitoring",
-                "status": "error",
+                "status": c.Monitoring.HealthStatus.ERROR.value,
                 "timestamp": datetime.now(UTC).isoformat(),
                 "accessible": "False",
                 "error": str(e),
@@ -107,7 +107,7 @@ class FlextTapOracleOicHealthChecker:
             if response_result.failure:
                 return {
                     "connectionId": connection_id,
-                    "status": "error",
+                    "status": c.TapOracleOic.OicConnectionTestStatus.ERROR.value,
                     "timestamp": datetime.now(UTC).isoformat(),
                     "error": str(response_result.error),
                 }
@@ -120,7 +120,12 @@ class FlextTapOracleOicHealthChecker:
                     case _:
                         body_ = {}
                 body = body_
-                status_val = str(body.get("status", "success"))
+                status_val = str(
+                    body.get(
+                        "status",
+                        c.TapOracleOic.OicConnectionTestStatus.SUCCESS.value,
+                    ),
+                )
                 test_result_val = str(
                     body.get("testResult", "Connection test successful"),
                 )
@@ -134,14 +139,14 @@ class FlextTapOracleOicHealthChecker:
                 }
             return {
                 "connectionId": connection_id,
-                "status": "failed",
+                "status": c.TapOracleOic.OicConnectionTestStatus.FAILED.value,
                 "timestamp": datetime.now(UTC).isoformat(),
                 "error": f"Test failed with status {response.status_code}",
             }
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             return {
                 "connectionId": connection_id,
-                "status": "error",
+                "status": c.TapOracleOic.OicConnectionTestStatus.ERROR.value,
                 "timestamp": datetime.now(UTC).isoformat(),
                 "error": str(e),
             }
@@ -154,7 +159,7 @@ class FlextTapOracleOicHealthChecker:
             if response_result.failure:
                 return {
                     "integrationId": integration_id,
-                    "health": "error",
+                    "health": c.Monitoring.HealthStatus.ERROR.value,
                     "timestamp": datetime.now(UTC).isoformat(),
                     "error": str(response_result.error),
                 }
@@ -168,13 +173,19 @@ class FlextTapOracleOicHealthChecker:
                         integration_ = {}
                 integration = integration_
                 status_val = str(integration.get("status", "UNKNOWN"))
-                health_status = "unknown"
-                if status_val == "ACTIVATED":
-                    health_status = "healthy"
-                elif status_val in {"CONFIGURED", "DRAFT"}:
-                    health_status = "warning"
-                elif status_val in {"ERROR", "FAILED"}:
-                    health_status = "unhealthy"
+                health_status = c.TapOracleOic.OicHealthStatus.UNKNOWN.value
+                if status_val == c.TapOracleOic.OicIntegrationStatus.ACTIVATED.value:
+                    health_status = c.TapOracleOic.OicHealthStatus.HEALTHY.value
+                elif status_val in {
+                    c.TapOracleOic.OicIntegrationStatus.CONFIGURED.value,
+                    c.TapOracleOic.OicIntegrationStatus.DRAFT.value,
+                }:
+                    health_status = c.TapOracleOic.OicHealthStatus.WARNING.value
+                elif status_val in {
+                    c.TapOracleOic.OicIntegrationStatus.ERROR.value,
+                    c.TapOracleOic.OicIntegrationStatus.FAILED.value,
+                }:
+                    health_status = c.TapOracleOic.OicHealthStatus.UNHEALTHY.value
                 name_val = integration.get("name")
                 version_val = integration.get("version")
                 last_updated_val = integration.get("timeUpdated")
@@ -195,14 +206,14 @@ class FlextTapOracleOicHealthChecker:
                 }
             return {
                 "integrationId": integration_id,
-                "health": "error",
+                "health": c.Monitoring.HealthStatus.ERROR.value,
                 "timestamp": datetime.now(UTC).isoformat(),
                 "error": f"Failed to get integration status: {response.status_code}",
             }
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             return {
                 "integrationId": integration_id,
-                "health": "error",
+                "health": c.Monitoring.HealthStatus.ERROR.value,
                 "timestamp": datetime.now(UTC).isoformat(),
                 "error": str(e),
             }

@@ -829,10 +829,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         "total_executions": self.execution_count or 0,
                         "total_errors": self.error_count or 0,
                         "error_rate": error_rate,
-                        "health_status": "healthy"
+                        "health_status": c.TapOracleOic.OicHealthStatus.HEALTHY.value
                         if error_rate
                         < c.TapOracleOic.TapOicValidation.MAX_PERCENTAGE / 20
-                        else "degraded",
+                        else c.TapOracleOic.OicHealthStatus.DEGRADED.value,
                     },
                     "metadata": {
                         "pattern": self.pattern,
@@ -1133,7 +1133,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         "result": self.result,
                         "has_error": bool(self.error_message),
                         "error_message": self.error_message,
-                        "success": self.status == "COMPLETED",
+                        "success": self.status
+                        == c.TapOracleOic.OicJobStatus.COMPLETED.value,
                     },
                     "volume": {
                         "bytes_processed": self.bytes_processed or 0,
@@ -1519,11 +1520,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 self,
             ) -> Mapping[str, Mapping[str, t.ContainerValue | None]]:
                 """OIC agent health and connectivity summary."""
-                health_status = "healthy"
+                health_status = c.TapOracleOic.OicHealthStatus.HEALTHY.value
                 if self.status in {"ERROR", "OFFLINE"}:
-                    health_status = "unhealthy"
+                    health_status = c.TapOracleOic.OicHealthStatus.UNHEALTHY.value
                 elif self.last_error:
-                    health_status = "degraded"
+                    health_status = c.TapOracleOic.OicHealthStatus.DEGRADED.value
 
                 return {
                     "agent_identity": {
@@ -1950,17 +1951,17 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     c.TapOracleOic.OicErrorType.AUTHENTICATION,
                     c.TapOracleOic.OicErrorType.AUTHORIZATION,
                 }:
-                    return "critical"
+                    return c.TapOracleOic.OicErrorSeverity.CRITICAL.value
                 if self.error_type == c.TapOracleOic.OicErrorType.RATE_LIMIT:
-                    return "warning"
+                    return c.TapOracleOic.OicErrorSeverity.WARNING.value
                 if self.error_type == c.TapOracleOic.OicErrorType.SERVER_ERROR:
-                    return "error"
+                    return c.TapOracleOic.OicErrorSeverity.ERROR.value
                 if self.error_type in {
                     c.TapOracleOic.OicErrorType.NETWORK,
                     c.TapOracleOic.OicErrorType.VALIDATION,
                 }:
-                    return "warning"
-                return "unknown"
+                    return c.TapOracleOic.OicErrorSeverity.WARNING.value
+                return c.TapOracleOic.OicErrorSeverity.UNKNOWN.value
 
         class OracleOic(FlextOracleOicModels.OracleOic):
             """Domain entity models for Oracle OIC resources.
@@ -2040,7 +2041,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     """Mark connection as failed with error details."""
                     self.connection_status = c.TapOracleOic.ConnectionStatus.FAILED
                     self.test_result = {
-                        "error": "error",
+                        "error": c.TapOracleOic.OicErrorSeverity.ERROR.value,
                         "timestamp": datetime.now(UTC).isoformat(),
                     }
 
@@ -2309,15 +2310,18 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 def is_failed(self) -> bool:
                     """Check if execution failed."""
                     return self.execution_status.lower() in {
-                        "failed",
+                        c.TapOracleOic.OicJobStatus.FAILED.value.lower(),
                         "faulted",
-                        "aborted",
+                        c.TapOracleOic.OicJobStatus.ABORTED.value.lower(),
                     }
 
                 @property
                 def successful(self) -> bool:
                     """Check if execution was successful."""
-                    return self.execution_status.lower() in {"completed", "succeeded"}
+                    return self.execution_status.lower() in {
+                        c.TapOracleOic.OicJobStatus.COMPLETED.value.lower(),
+                        "succeeded",
+                    }
 
             class OICProject(FlextModels):
                 """OIC project domain entity using flext-core patterns."""
