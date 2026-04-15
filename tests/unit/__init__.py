@@ -10,6 +10,19 @@ _LAZY_IMPORTS = build_lazy_import_map(
         ".test_auth": ("test_auth",),
         ".test_tap": ("test_tap",),
         ".test_tap_core": ("test_tap_core",),
+        "flext_tap_oracle_oic": (
+            "c",
+            "d",
+            "e",
+            "h",
+            "m",
+            "p",
+            "r",
+            "s",
+            "t",
+            "u",
+            "x",
+        ),
     },
 )
 
