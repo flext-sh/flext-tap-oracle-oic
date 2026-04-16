@@ -13,8 +13,6 @@ from datetime import UTC, datetime
 from typing import ClassVar
 from urllib.parse import urljoin, urlparse
 
-from pydantic import ValidationError
-
 from flext_meltano import u
 from flext_oracle_oic import FlextOracleOicUtilities
 from flext_tap_oracle_oic import c, p, r, t
@@ -40,7 +38,7 @@ class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
             return t.STRICT_LIST_ADAPTER.validate_python(
                 value,
             )
-        except ValidationError:
+        except c.ValidationError:
             return None
 
     @staticmethod
@@ -50,7 +48,7 @@ class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
         """Strict map validation via Pydantic adapter."""
         try:
             return t.STRICT_MAP_ADAPTER.validate_python(value)
-        except ValidationError:
+        except c.ValidationError:
             return None
 
     @staticmethod
@@ -58,7 +56,7 @@ class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
         """Strict integer validation via Pydantic adapter."""
         try:
             return t.STRICT_INT_ADAPTER.validate_python(value)
-        except ValidationError:
+        except c.ValidationError:
             return None
 
     class TapOracleOic:
@@ -558,7 +556,7 @@ class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
                 try:
                     offset_val = t.STRICT_INT_ADAPTER.validate_python(offset)
                     page_size_val = t.STRICT_INT_ADAPTER.validate_python(page_size)
-                except ValidationError as e:
+                except c.ValidationError as e:
                     msg = f"Invalid pagination parameters: offset={offset}, size={page_size}"
                     raise ValueError(msg) from e
                 return FlextTapOracleOicUtilities.TapOracleOic.StateManagement.set_bookmark(
