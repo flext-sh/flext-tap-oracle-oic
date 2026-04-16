@@ -13,7 +13,7 @@ from flext_core.lazy import (
 from flext_tap_oracle_oic.__version__ import *
 
 if _t.TYPE_CHECKING:
-    from flext_oracle_oic import c, d, e, h, r, s, x
+    from flext_oracle_oic import d, e, h, r, s, x
     from flext_tap_oracle_oic._models.streams import (
         ALL_STREAMS,
         FlextTapOracleOicModelsStreams,
@@ -21,6 +21,7 @@ if _t.TYPE_CHECKING:
     )
     from flext_tap_oracle_oic.api import FlextTapOracleOicService, tap_oracle_oic
     from flext_tap_oracle_oic.cli import FlextTapOracleOicCli, main
+    from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
     from flext_tap_oracle_oic.errors import (
         FlextTapOracleOicApiError,
         FlextTapOracleOicAuthenticationError,
@@ -54,6 +55,11 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "__version__",
                 "__version_info__",
             ),
+            "._models.streams": (
+                "ALL_STREAMS",
+                "FlextTapOracleOicModelsStreams",
+                "th",
+            ),
             ".api": (
                 "FlextTapOracleOicService",
                 "tap_oracle_oic",
@@ -61,6 +67,10 @@ _LAZY_IMPORTS = merge_lazy_imports(
             ".cli": (
                 "FlextTapOracleOicCli",
                 "main",
+            ),
+            ".constants": (
+                "FlextTapOracleOicConstants",
+                "c",
             ),
             ".errors": (
                 "FlextTapOracleOicApiError",
@@ -94,7 +104,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "u",
             ),
             "flext_oracle_oic": (
-                "c",
                 "d",
                 "e",
                 "h",
@@ -128,6 +137,7 @@ __all__: list[str] = [
     "FlextTapOracleOicCli",
     "FlextTapOracleOicClient",
     "FlextTapOracleOicConnectionError",
+    "FlextTapOracleOicConstants",
     "FlextTapOracleOicExceptionFactory",
     "FlextTapOracleOicHealthChecker",
     "FlextTapOracleOicModels",

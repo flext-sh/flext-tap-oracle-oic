@@ -184,7 +184,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
     name: ClassVar[str] = "tap-oracle-oic"
     capabilities: ClassVar[t.StrSequence] = ["catalog", "state", "discover"]
     config_jsonschema: ClassVar[t.ContainerValueMapping] = {
-        "type": "t.RecursiveContainer",
+        "type": "object",
         "properties": {
             "oauth_client_id": {"type": "string", "description": "OAuth2 client ID"},
             "oauth_client_secret": {

@@ -249,3 +249,5 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
 
 
 c = FlextTapOracleOicConstants
+
+__all__: list[str] = ["FlextTapOracleOicConstants", "c"]

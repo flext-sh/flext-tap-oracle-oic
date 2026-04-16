@@ -29,7 +29,7 @@ def _build_singer_stream(
     return {
         "tap_stream_id": tap_stream_id,
         "schema": {
-            "type": "t.RecursiveContainer",
+            "type": "object",
             "properties": properties,
         },
         "metadata": [

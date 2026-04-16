@@ -2394,7 +2394,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         self.integration_ids.remove(integration_id)
 
             class OICResourceMetadata(FlextModels):
-                """OIC resource metadata value t.RecursiveContainer."""
+                """OIC resource metadata value object."""
 
                 resource_type: Annotated[
                     c.TapOracleOic.OICResourceType,
@@ -2418,7 +2418,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ]
 
             class OICExecutionSummary(FlextModels):
-                """OIC execution summary value t.RecursiveContainer."""
+                """OIC execution summary value object."""
 
                 integration_id: Annotated[str, Field(..., description="Integration ID")]
                 total_executions: Annotated[
