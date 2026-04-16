@@ -1,0 +1,28 @@
+docs/guides/configuration.md
+  h_9db9d35f50cf33 256,381,384,388
+docs/guides/troubleshooting.md
+  h_9db9d35f50cf33 250,528
+src/flext_tap_oracle_oic/typings.py
+  h_9db9d35f50cf33 3,17-18,22,25-26,30-31,34-35,38,44-46,48-50,52-53,58-59,64
+tests/unit/test_tap_core.py
+  h_9db9d35f50cf33 172
+tests/unit/test_tap.py
+  h_9db9d35f50cf33 84
+src/flext_tap_oracle_oic/models.py
+  h_9db9d35f50cf33 29,58,68,76,89,98,227-228,638,657,663,729,734,737,741,748,757,764,771,780,784,786,791,798,802,808,958,961,963,1177,1307,1374,1452,1488,1618,1656,2100,2104,2200,2259,2274,2289,2293,2333,2339,2342-2343,2346-2347,2350,2354,2358,2362,2366,2403,2409,2413,2417,2428
+docs/guides/development.md
+  h_9db9d35f50cf33 192,195,201,205,349,352,355
+src/flext_tap_oracle_oic/settings.py
+  h_9db9d35f50cf33 21,28,32-33,35,37-39,41,45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.0",
+  "base_commit_sha": "7cf194879aa0f3c0ebe5188795cd77d9aec68dac",
+  "prompts": {},
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
