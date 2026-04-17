@@ -21,9 +21,9 @@ from flext_core import (
     FlextConstants,
     FlextModels,
 )
-from flext_meltano import FlextMeltanoModels
+from flext_meltano import FlextMeltanoModels, m, u
 from flext_oracle_oic import FlextOracleOicModels
-from flext_tap_oracle_oic import FlextTapOracleOicUtilities, c, e, m, t, u
+from flext_tap_oracle_oic import FlextTapOracleOicUtilities, c, e, t
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import p
