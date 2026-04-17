@@ -15,9 +15,6 @@ from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 from pydantic import (
     ConfigDict,
-    FieldSerializationInfo,
-    field_serializer,
-    model_validator,
 )
 
 from flext_core import (
@@ -133,11 +130,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             },
         }
 
-    @field_serializer("*", when_used="json")
+    @u.field_serializer("*", when_used="json")
     def serialize_with_oic_metadata(
         self,
         value: t.ContainerValueMapping,
-        _info: FieldSerializationInfo,
+        _info: u.FieldSerializationInfo,
     ) -> t.ContainerValueMapping:
         """Add Singer Oracle OIC tap metadata to all serialized fields."""
         return {
@@ -150,7 +147,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             },
         }
 
-    @model_validator(mode="after")
+    @u.model_validator(mode="after")
     def validate_oic_tap_system_consistency(self) -> Self:
         """Validate Singer Oracle OIC tap system consistency and configuration."""
         # Singer OIC tap authentication validation
@@ -203,7 +200,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             items: Sequence[t.ContainerValueMapping] | None = None
             data: Sequence[t.ContainerValueMapping] | None = None
-            total_size: Annotated[int | None, m.Field(alias="totalSize")] = None
+            total_size: Annotated[int | None, u.Field(alias="totalSize")] = None
             count: int | None = None
 
         class OICBaseStream(m.BaseModel):
@@ -220,14 +217,14 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             - Support for all OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
             """
 
-            model_config: ClassVar[ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = ConfigDict(
                 arbitrary_types_allowed=True,
             )
 
-            settings: Annotated[t.ContainerValueMapping, m.Field(default_factory=dict)]
-            name: Annotated[str, m.Field(default="")]
-            replication_key: Annotated[str | None, m.Field(default=None)]
-            logger: p.Logger = m.Field(default_factory=lambda: u.fetch_logger(__name__))
+            settings: Annotated[t.ContainerValueMapping, u.Field(default_factory=dict)]
+            name: Annotated[str, u.Field(default="")]
+            replication_key: Annotated[str | None, u.Field(default=None)]
+            logger: p.Logger = u.Field(default_factory=lambda: u.fetch_logger(__name__))
 
             requires_design_api: ClassVar[bool] = False
             requires_runtime_api: ClassVar[bool] = False
@@ -602,7 +599,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OAuth2/IDCS authentication configuration for OIC API access."""
 
             # Pydantic 2.11 Configuration - Authentication Features
-            model_config: ClassVar[ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = ConfigDict(
                 json_schema_extra={
                     "description": "OAuth2/IDCS authentication for Oracle OIC API",
                     "examples": [
@@ -617,44 +614,44 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             oauth_client_id: Annotated[
                 str,
-                m.Field(
+                u.Field(
                     ...,
                     description="OAuth2 client ID for OIC API",
                 ),
             ]
             oauth_client_secret: Annotated[
                 str,
-                m.Field(..., description="OAuth2 client secret"),
+                u.Field(..., description="OAuth2 client secret"),
             ]
             oauth_token_url: Annotated[
                 str,
-                m.Field(
+                u.Field(
                     ...,
                     description="IDCS OAuth2 token endpoint URL",
                 ),
             ]
             oauth_client_aud: Annotated[
                 str,
-                m.Field(..., description="OAuth2 audience parameter"),
+                u.Field(..., description="OAuth2 audience parameter"),
             ]
-            base_url: Annotated[str, m.Field(..., description="OIC instance base URL")]
+            base_url: Annotated[str, u.Field(..., description="OIC instance base URL")]
 
             # Optional authentication settings
             token_expiry_buffer: Annotated[
                 int,
-                m.Field(
+                u.Field(
                     description="Token refresh buffer in seconds",
                 ),
             ] = 300
             max_retry_attempts: Annotated[
                 int,
-                m.Field(
+                u.Field(
                     description="Maximum authentication retry attempts",
                 ),
             ] = 3
             timeout_seconds: Annotated[
                 int,
-                m.Field(
+                u.Field(
                     description="Authentication timeout",
                 ),
             ] = 30
@@ -689,7 +686,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     },
                 }
 
-            @model_validator(mode="after")
+            @u.model_validator(mode="after")
             def validate_auth_config(self) -> Self:
                 """Validate OAuth2 authentication configuration."""
                 if not self.oauth_token_url.startswith("https://"):
@@ -710,7 +707,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Integration entity with complete metadata."""
 
             # Pydantic 2.11 Configuration - Integration Features
-            model_config: ClassVar[ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC integration with complete metadata",
                     "examples": [
@@ -726,26 +723,26 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             integration_id: Annotated[
                 str,
-                m.Field(
+                u.Field(
                     ...,
                     description="Unique integration identifier",
                 ),
             ]
-            name: Annotated[str, m.Field(..., description="Integration name")]
+            name: Annotated[str, u.Field(..., description="Integration name")]
             description: Annotated[
                 str | None,
-                m.Field(None, description="Integration description"),
+                u.Field(None, description="Integration description"),
             ]
             api_version: Annotated[
                 str,
-                m.Field(
+                u.Field(
                     ...,
                     description="Integration version from OIC API",
                 ),
             ]
             status: Annotated[
                 c.TapOracleOic.OicIntegrationStatus,
-                m.Field(
+                u.Field(
                     ...,
                     description="Integration status",
                 ),
@@ -754,21 +751,21 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Temporal information
             created_date: Annotated[
                 datetime | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Integration creation date",
                 ),
             ]
             last_updated: Annotated[
                 datetime | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Last update timestamp",
                 ),
             ]
             last_activated: Annotated[
                 datetime | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Last activation timestamp",
                 ),
@@ -777,29 +774,29 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Metadata
             package_id: Annotated[
                 str | None,
-                m.Field(None, description="Associated package ID"),
+                u.Field(None, description="Associated package ID"),
             ]
             pattern: Annotated[
                 str | None,
-                m.Field(None, description="Integration pattern type"),
+                u.Field(None, description="Integration pattern type"),
             ]
-            style: Annotated[str | None, m.Field(None, description="Integration style")]
+            style: Annotated[str | None, u.Field(None, description="Integration style")]
 
             # Runtime information
             execution_count: Annotated[
                 int | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Total execution count",
                 ),
             ]
             error_count: Annotated[
                 int | None,
-                m.Field(None, description="Total error count"),
+                u.Field(None, description="Total error count"),
             ]
             last_execution_time: Annotated[
                 datetime | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Last execution timestamp",
                 ),
@@ -841,7 +838,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     },
                 }
 
-            @model_validator(mode="after")
+            @u.model_validator(mode="after")
             def validate_integration_entity(self) -> Self:
                 """Validate OIC integration entity."""
                 if not self.integration_id:
@@ -859,7 +856,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Connection entity with security sanitization."""
 
             # Pydantic 2.11 Configuration - Connection Features
-            model_config: ClassVar[ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC connection with security sanitization",
                     "examples": [
@@ -875,29 +872,29 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             connection_id: Annotated[
                 str,
-                m.Field(..., description="Unique connection identifier"),
+                u.Field(..., description="Unique connection identifier"),
             ]
-            name: Annotated[str, m.Field(..., description="Connection name")]
+            name: Annotated[str, u.Field(..., description="Connection name")]
             description: Annotated[
                 str | None,
-                m.Field(None, description="Connection description"),
+                u.Field(None, description="Connection description"),
             ]
             connection_type: Annotated[
                 str,
-                m.Field(..., description="Connection adapter type"),
+                u.Field(..., description="Connection adapter type"),
             ]
 
             # Configuration (sanitized)
             host: Annotated[
                 str | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Connection host (if applicable)",
                 ),
             ]
             port: Annotated[
                 int | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Connection port (if applicable)",
                 ),
@@ -906,21 +903,21 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Security metadata (credentials removed)
             authentication_type: Annotated[
                 str | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Authentication method used",
                 ),
             ]
             security_policy: Annotated[
                 str | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Security policy name",
                 ),
             ]
             certificate_alias: Annotated[
                 str | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Certificate alias (if used)",
                 ),
@@ -929,36 +926,36 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Status and health
             status: Annotated[
                 c.TapOracleOic.OicIntegrationStatus,
-                m.Field(
+                u.Field(
                     ...,
                     description="Connection status",
                 ),
             ]
             last_tested: Annotated[
                 datetime | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Last connection test timestamp",
                 ),
             ]
             test_result: Annotated[
                 str | None,
-                m.Field(None, description="Last test result"),
+                u.Field(None, description="Last test result"),
             ]
 
             # Sanitization markers
             data_sanitized: Annotated[
                 bool,
-                m.Field(
+                u.Field(
                     description="Indicates if sensitive data was removed",
                 ),
             ] = True
             sanitization_timestamp: Annotated[
                 datetime | None,
-                m.Field(
+                u.Field(
                     description="When sanitization occurred",
                 ),
-            ] = m.Field(default_factory=lambda: datetime.now(UTC))
+            ] = u.Field(default_factory=lambda: datetime.now(UTC))
 
             @u.computed_field()
             @property
@@ -992,7 +989,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     },
                 }
 
-            @model_validator(mode="after")
+            @u.model_validator(mode="after")
             def validate_connection_entity(self) -> Self:
                 """Validate OIC connection entity."""
                 if not self.connection_id:
@@ -1014,7 +1011,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Activity monitoring record for incremental replication."""
 
             # Pydantic 2.11 Configuration - Activity Features
-            model_config: ClassVar[ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC activity record with performance tracking",
                     "examples": [
@@ -1030,35 +1027,35 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             activity_id: Annotated[
                 str,
-                m.Field(
+                u.Field(
                     ...,
                     description="Unique activity record identifier",
                 ),
             ]
             integration_id: Annotated[
                 str,
-                m.Field(..., description="Associated integration ID"),
+                u.Field(..., description="Associated integration ID"),
             ]
             instance_id: Annotated[
                 str,
-                m.Field(..., description="Integration instance ID"),
+                u.Field(..., description="Integration instance ID"),
             ]
 
             # Temporal information (for incremental replication)
             start_time: Annotated[
                 datetime,
-                m.Field(..., description="Activity start timestamp"),
+                u.Field(..., description="Activity start timestamp"),
             ]
             end_time: Annotated[
                 datetime | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Activity end timestamp",
                 ),
             ]
             duration_ms: Annotated[
                 int | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Activity duration in milliseconds",
                 ),
@@ -1067,15 +1064,15 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Status and results
             status: Annotated[
                 c.TapOracleOic.OicJobStatus,
-                m.Field(
+                u.Field(
                     ...,
                     description="Activity status",
                 ),
             ]
-            result: Annotated[str | None, m.Field(None, description="Activity result")]
+            result: Annotated[str | None, u.Field(None, description="Activity result")]
             error_message: Annotated[
                 str | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Error message if failed",
                 ),
@@ -1084,18 +1081,18 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Metrics
             messages_processed: Annotated[
                 int | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Number of messages processed",
                 ),
             ]
             bytes_processed: Annotated[
                 int | None,
-                m.Field(None, description="Bytes processed"),
+                u.Field(None, description="Bytes processed"),
             ]
             throughput_mps: Annotated[
                 float | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Messages per second throughput",
                 ),
@@ -1140,7 +1137,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     },
                 }
 
-            @model_validator(mode="after")
+            @u.model_validator(mode="after")
             def validate_activity_record(self) -> Self:
                 """Validate OIC activity record."""
                 if not self.activity_id:
@@ -1158,7 +1155,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Package entity for integration packages."""
 
             # Pydantic 2.11 Configuration - Package Features
-            model_config: ClassVar[ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC package with dependency tracking",
                     "examples": [
@@ -1174,33 +1171,33 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             package_id: Annotated[
                 str,
-                m.Field(..., description="Unique package identifier"),
+                u.Field(..., description="Unique package identifier"),
             ]
-            name: Annotated[str, m.Field(..., description="Package name")]
+            name: Annotated[str, u.Field(..., description="Package name")]
             description: Annotated[
                 str | None,
-                m.Field(None, description="Package description"),
+                u.Field(None, description="Package description"),
             ]
             api_version: Annotated[
                 str,
-                m.Field(..., description="Package version from OIC API"),
+                u.Field(..., description="Package version from OIC API"),
             ]
 
             # Package metadata
             package_type: Annotated[
                 c.TapOracleOic.OicIntegrationType,
-                m.Field(
+                u.Field(
                     ...,
                     description="Package type",
                 ),
             ]
             created_by: Annotated[
                 str | None,
-                m.Field(None, description="Package creator"),
+                u.Field(None, description="Package creator"),
             ]
             created_date: Annotated[
                 datetime | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Package creation date",
                 ),
@@ -1209,13 +1206,13 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Dependencies and relationships
             dependencies: Annotated[
                 t.StrSequence,
-                m.Field(
+                u.Field(
                     description="List of dependent package IDs",
                 ),
-            ] = m.Field(default_factory=list)
+            ] = u.Field(default_factory=list)
             integration_count: Annotated[
                 int | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Number of integrations in package",
                 ),
@@ -1224,14 +1221,14 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Status
             status: Annotated[
                 c.TapOracleOic.OicIntegrationStatus,
-                m.Field(
+                u.Field(
                     ...,
                     description="Package status",
                 ),
             ]
             download_count: Annotated[
                 int | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Package download count",
                 ),
@@ -1266,7 +1263,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     },
                 }
 
-            @model_validator(mode="after")
+            @u.model_validator(mode="after")
             def validate_package_entity(self) -> Self:
                 """Validate OIC package entity."""
                 if not self.package_id:
@@ -1284,7 +1281,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Metrics record for performance monitoring."""
 
             # Pydantic 2.11 Configuration - Metrics Features
-            model_config: ClassVar[ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC performance metrics with resource monitoring",
                     "examples": [
@@ -1300,41 +1297,41 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             metric_id: Annotated[
                 str,
-                m.Field(..., description="Unique metrics record identifier"),
+                u.Field(..., description="Unique metrics record identifier"),
             ]
             integration_id: Annotated[
                 str,
-                m.Field(..., description="Associated integration ID"),
+                u.Field(..., description="Associated integration ID"),
             ]
             timestamp: Annotated[
-                datetime, m.Field(..., description="Metrics timestamp")
+                datetime, u.Field(..., description="Metrics timestamp")
             ]
 
             # Performance metrics
             cpu_usage_percent: Annotated[
                 float | None,
-                m.Field(
+                u.Field(
                     None,
                     description="CPU usage percentage",
                 ),
             ]
             memory_usage_mb: Annotated[
                 float | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Memory usage in MB",
                 ),
             ]
             throughput_mps: Annotated[
                 float | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Messages per second",
                 ),
             ]
             latency_ms: Annotated[
                 float | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Average latency in milliseconds",
                 ),
@@ -1343,35 +1340,35 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Business metrics
             success_count: Annotated[
                 int | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Successful message count",
                 ),
             ]
             error_count: Annotated[
                 int | None,
-                m.Field(None, description="Error message count"),
+                u.Field(None, description="Error message count"),
             ]
             retry_count: Annotated[
                 int | None,
-                m.Field(None, description="Retry attempt count"),
+                u.Field(None, description="Retry attempt count"),
             ]
 
             # Resource utilization
             database_connections: Annotated[
                 int | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Active database connections",
                 ),
             ]
             thread_count: Annotated[
                 int | None,
-                m.Field(None, description="Active thread count"),
+                u.Field(None, description="Active thread count"),
             ]
             queue_depth: Annotated[
                 int | None,
-                m.Field(None, description="Message queue depth"),
+                u.Field(None, description="Message queue depth"),
             ]
 
             @u.computed_field()
@@ -1411,7 +1408,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     },
                 }
 
-            @model_validator(mode="after")
+            @u.model_validator(mode="after")
             def validate_metrics_record(self) -> Self:
                 """Validate OIC metrics record."""
                 if not self.metric_id:
@@ -1433,7 +1430,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Agent entity for connectivity agents."""
 
             # Pydantic 2.11 Configuration - Agent Features
-            model_config: ClassVar[ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC connectivity agent with health monitoring",
                     "examples": [
@@ -1448,12 +1445,12 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
 
             agent_id: Annotated[
-                str, m.Field(..., description="Unique agent identifier")
+                str, u.Field(..., description="Unique agent identifier")
             ]
-            agent_name: Annotated[str, m.Field(..., description="Agent display name")]
+            agent_name: Annotated[str, u.Field(..., description="Agent display name")]
             agent_type: Annotated[
                 c.TapOracleOic.OicAgentType,
-                m.Field(
+                u.Field(
                     ...,
                     description="Agent type",
                 ),
@@ -1462,21 +1459,21 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Agent status and health
             status: Annotated[
                 c.TapOracleOic.OicAgentStatus,
-                m.Field(
+                u.Field(
                     ...,
                     description="Agent status",
                 ),
             ]
             last_heartbeat: Annotated[
                 datetime | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Last heartbeat timestamp",
                 ),
             ]
             api_version: Annotated[
                 str | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Agent version from OIC API",
                 ),
@@ -1485,38 +1482,38 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Configuration
             host_machine: Annotated[
                 str | None,
-                m.Field(None, description="Host machine name"),
+                u.Field(None, description="Host machine name"),
             ]
             installation_path: Annotated[
                 str | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Agent installation path",
                 ),
             ]
             port: Annotated[
                 int | None,
-                m.Field(None, description="Agent communication port"),
+                u.Field(None, description="Agent communication port"),
             ]
 
             # Health metrics
             uptime_hours: Annotated[
                 float | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Agent uptime in hours",
                 ),
             ]
             connection_count: Annotated[
                 int | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Active connection count",
                 ),
             ]
             last_error: Annotated[
                 str | None,
-                m.Field(None, description="Last error message"),
+                u.Field(None, description="Last error message"),
             ]
 
             @u.computed_field()
@@ -1556,7 +1553,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     "configuration": {"installation_path": self.installation_path},
                 }
 
-            @model_validator(mode="after")
+            @u.model_validator(mode="after")
             def validate_agent_entity(self) -> Self:
                 """Validate OIC agent entity."""
                 if not self.agent_id:
@@ -1578,7 +1575,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """Configuration for OIC tap streams."""
 
             # Pydantic 2.11 Configuration - Stream Features
-            model_config: ClassVar[ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC tap stream configuration with filtering",
                     "examples": [
@@ -1592,16 +1589,16 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 },
             )
 
-            stream_name: Annotated[str, m.Field(..., description="Singer stream name")]
+            stream_name: Annotated[str, u.Field(..., description="Singer stream name")]
             replication_method: Annotated[
                 c.TapOracleOic.OicReplicationMethod,
-                m.Field(
+                u.Field(
                     description="Replication method",
                 ),
-            ] = "FULL_TABLE"
+            ] = c.TapOracleOic.OicReplicationMethod.FULL_TABLE
             replication_key: Annotated[
                 str | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Replication key field name",
                 ),
@@ -1610,7 +1607,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Pagination and performance
             page_size: Annotated[
                 int,
-                m.Field(
+                u.Field(
                     ge=1,
                     le=1000,
                     description="API pagination size",
@@ -1618,7 +1615,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             ] = 100
             include_extended: Annotated[
                 bool,
-                m.Field(
+                u.Field(
                     description="Include extended entity metadata",
                 ),
             ] = False
@@ -1626,14 +1623,14 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Filtering
             status_filter: Annotated[
                 t.StrSequence | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Filter by entity status values",
                 ),
             ]
             date_range_filter: Annotated[
                 str | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Date range filter for incremental streams",
                 ),
@@ -1642,13 +1639,13 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Security
             sanitize_sensitive_data: Annotated[
                 bool,
-                m.Field(
+                u.Field(
                     description="Enable data sanitization",
                 ),
             ] = True
             exclude_test_entities: Annotated[
                 bool,
-                m.Field(
+                u.Field(
                     description="Exclude test/demo entities",
                 ),
             ] = True
@@ -1682,7 +1679,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     },
                 }
 
-            @model_validator(mode="after")
+            @u.model_validator(mode="after")
             def validate_stream_config(self) -> Self:
                 """Validate OIC stream configuration."""
                 if not self.stream_name:
@@ -1703,7 +1700,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """Standardized OIC API response wrapper."""
 
             # Pydantic 2.11 Configuration - API Response Features
-            model_config: ClassVar[ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC API response with pagination and error handling",
                     "examples": [
@@ -1719,46 +1716,46 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             success: Annotated[
                 bool,
-                m.Field(..., description="Response success indicator"),
+                u.Field(..., description="Response success indicator"),
             ]
             data: Annotated[
                 t.ContainerValueMapping | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Response data payload",
                 ),
             ]
             total_count: Annotated[
                 int | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Total entity count (for pagination)",
                 ),
             ]
             page_size: Annotated[
                 int | None,
-                m.Field(None, description="Current page size"),
+                u.Field(None, description="Current page size"),
             ]
             page_number: Annotated[
                 int | None,
-                m.Field(None, description="Current page number"),
+                u.Field(None, description="Current page number"),
             ]
 
             # Error information
             error_code: Annotated[
                 str | None,
-                m.Field(None, description="Error code if failed"),
+                u.Field(None, description="Error code if failed"),
             ]
             error_message: Annotated[
                 str | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Error message if failed",
                 ),
             ]
             error_details: Annotated[
                 Mapping[str, t.ContainerValueMapping] | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Detailed error information",
                 ),
@@ -1767,17 +1764,17 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Metadata
             timestamp: Annotated[
                 datetime,
-                m.Field(
+                u.Field(
                     description="Response timestamp",
                 ),
-            ] = m.Field(default_factory=lambda: datetime.now(UTC))
+            ] = u.Field(default_factory=lambda: datetime.now(UTC))
             api_version: Annotated[
                 str | None,
-                m.Field(None, description="OIC API version"),
+                u.Field(None, description="OIC API version"),
             ]
             request_id: Annotated[
                 str | None,
-                m.Field(None, description="Request correlation ID"),
+                u.Field(None, description="Request correlation ID"),
             ]
 
             @u.computed_field()
@@ -1818,7 +1815,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     },
                 }
 
-            @model_validator(mode="after")
+            @u.model_validator(mode="after")
             def validate_api_response(self) -> Self:
                 """Validate OIC API response."""
                 if not self.success and not self.error_message:
@@ -1833,7 +1830,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """Error context for OIC API error handling."""
 
             # Pydantic 2.11 Configuration - Error Context Features
-            model_config: ClassVar[ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC API error context with recovery guidance",
                     "examples": [
@@ -1849,15 +1846,15 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             error_type: Annotated[
                 c.TapOracleOic.OicErrorType,
-                m.Field(..., description="Error category"),
+                u.Field(..., description="Error category"),
             ]
             http_status_code: Annotated[
                 int | None,
-                m.Field(None, description="HTTP status code"),
+                u.Field(None, description="HTTP status code"),
             ]
             retry_after_seconds: Annotated[
                 int | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Retry after duration",
                 ),
@@ -1866,15 +1863,15 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Context information
             endpoint: Annotated[
                 str | None,
-                m.Field(None, description="API endpoint that failed"),
+                u.Field(None, description="API endpoint that failed"),
             ]
             request_method: Annotated[
                 str | None,
-                m.Field(None, description="HTTP method used"),
+                u.Field(None, description="HTTP method used"),
             ]
             request_params: Annotated[
                 Mapping[str, t.ContainerValueMapping] | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Request parameters",
                 ),
@@ -1883,20 +1880,20 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             # Recovery information
             is_retryable: Annotated[
                 bool,
-                m.Field(
+                u.Field(
                     description="Whether error is retryable",
                 ),
             ] = False
             suggested_action: Annotated[
                 str | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Suggested recovery action",
                 ),
             ]
             max_retry_attempts: Annotated[
                 int | None,
-                m.Field(
+                u.Field(
                     None,
                     description="Maximum retry attempts for this error",
                 ),
@@ -1929,7 +1926,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     },
                 }
 
-            @model_validator(mode="after")
+            @u.model_validator(mode="after")
             def validate_error_context(self) -> Self:
                 """Validate OIC error context."""
                 if self.http_status_code is not None and not (
@@ -1977,11 +1974,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
                 connection_id: Annotated[
                     str,
-                    m.Field(..., min_length=1, description="OIC connection identifier"),
+                    u.Field(..., min_length=1, description="OIC connection identifier"),
                 ]
                 adapter_type: Annotated[
                     str,
-                    m.Field(
+                    u.Field(
                         ...,
                         min_length=1,
                         description="Adapter type (e.g., REST, SOAP, DB)",
@@ -1989,53 +1986,53 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 ]
                 name: Annotated[
                     str,
-                    m.Field(..., min_length=1, description="Connection name"),
+                    u.Field(..., min_length=1, description="Connection name"),
                 ]
                 connection_url: Annotated[
                     str | None,
-                    m.Field(None, description="Connection endpoint URL"),
+                    u.Field(None, description="Connection endpoint URL"),
                 ]
                 connection_properties: Annotated[
                     Mapping[str, t.ContainerValueMapping],
-                    m.Field(description="Connection properties"),
-                ] = m.Field(default_factory=dict)
+                    u.Field(description="Connection properties"),
+                ] = u.Field(default_factory=dict)
                 security_policy: Annotated[
                     str | None,
-                    m.Field(None, description="Security policy name"),
+                    u.Field(None, description="Security policy name"),
                 ]
                 connection_status: Annotated[
                     c.TapOracleOic.ConnectionStatus,
-                    m.Field(
+                    u.Field(
                         description="Connection status",
                     ),
                 ] = c.TapOracleOic.ConnectionStatus.CONFIGURED
                 last_tested: Annotated[
                     datetime | None,
-                    m.Field(None, description="Last test timestamp"),
+                    u.Field(None, description="Last test timestamp"),
                 ]
                 test_result: Annotated[
                     t.StrMapping | None,
-                    m.Field(None, description="Last test result"),
+                    u.Field(None, description="Last test result"),
                 ]
                 version: Annotated[
                     str | None,
-                    m.Field(None, description="Connection version"),
+                    u.Field(None, description="Connection version"),
                 ]
                 locked_by: Annotated[
                     str | None,
-                    m.Field(None, description="User who locked the connection"),
+                    u.Field(None, description="User who locked the connection"),
                 ]
                 locked_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Lock timestamp"),
+                    u.Field(None, description="Lock timestamp"),
                 ]
                 created_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Creation timestamp"),
+                    u.Field(None, description="Creation timestamp"),
                 ]
                 updated_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Last update timestamp"),
+                    u.Field(None, description="Last update timestamp"),
                 ]
 
                 def mark_failed(self, _error: str) -> None:
@@ -2056,85 +2053,85 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
                 integration_id: Annotated[
                     str,
-                    m.Field(
+                    u.Field(
                         ..., min_length=1, description="OIC integration identifier"
                     ),
                 ]
                 integration_code: Annotated[
                     str,
-                    m.Field(..., min_length=1, description="Integration code"),
+                    u.Field(..., min_length=1, description="Integration code"),
                 ]
                 name: Annotated[
                     str,
-                    m.Field(..., min_length=1, description="Integration name"),
+                    u.Field(..., min_length=1, description="Integration name"),
                 ]
                 package_name: Annotated[
-                    str | None, m.Field(None, description="Package name")
+                    str | None, u.Field(None, description="Package name")
                 ]
                 project_name: Annotated[
-                    str | None, m.Field(None, description="Project name")
+                    str | None, u.Field(None, description="Project name")
                 ]
                 integration_type: Annotated[
                     str,
-                    m.Field(
+                    u.Field(
                         ...,
                         description="Integration type (e.g., APP_DRIVEN, SCHEDULED)",
                     ),
                 ]
                 pattern: Annotated[
                     str | None,
-                    m.Field(None, description="Integration pattern"),
+                    u.Field(None, description="Integration pattern"),
                 ]
                 style: Annotated[
-                    str | None, m.Field(None, description="Integration style")
+                    str | None, u.Field(None, description="Integration style")
                 ]
                 endpoint_url: Annotated[
                     str | None,
-                    m.Field(None, description="Integration endpoint URL"),
+                    u.Field(None, description="Integration endpoint URL"),
                 ]
                 tracking_level: Annotated[
                     str | None,
-                    m.Field(None, description="Tracking level"),
+                    u.Field(None, description="Tracking level"),
                 ]
                 payload_tracking: Annotated[
-                    bool, m.Field(description="Enable payload tracking")
+                    bool, u.Field(description="Enable payload tracking")
                 ] = False
                 integration_status: Annotated[
                     c.TapOracleOic.IntegrationStatus,
-                    m.Field(
+                    u.Field(
                         description="Integration status",
                     ),
                 ] = c.TapOracleOic.IntegrationStatus.CONFIGURED
                 activated_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Activation timestamp"),
+                    u.Field(None, description="Activation timestamp"),
                 ]
                 deactivated_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Deactivation timestamp"),
+                    u.Field(None, description="Deactivation timestamp"),
                 ]
-                version: Annotated[str, m.Field(description="Integration version")] = (
+                version: Annotated[str, u.Field(description="Integration version")] = (
                     "01.00.0000"
                 )
                 locked_by: Annotated[
                     str | None,
-                    m.Field(None, description="User who locked the integration"),
+                    u.Field(None, description="User who locked the integration"),
                 ]
                 locked_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Lock timestamp"),
+                    u.Field(None, description="Lock timestamp"),
                 ]
                 connection_ids: Annotated[
                     t.StrSequence,
-                    m.Field(description="Associated connection IDs"),
-                ] = m.Field(default_factory=list)
+                    u.Field(description="Associated connection IDs"),
+                ] = u.Field(default_factory=list)
                 created_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Creation timestamp"),
+                    u.Field(None, description="Creation timestamp"),
                 ]
                 updated_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Last update timestamp"),
+                    u.Field(None, description="Last update timestamp"),
                 ]
 
                 @property
@@ -2173,55 +2170,55 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
                 lookup_id: Annotated[
                     str,
-                    m.Field(..., min_length=1, description="OIC lookup identifier"),
+                    u.Field(..., min_length=1, description="OIC lookup identifier"),
                 ]
                 lookup_name: Annotated[
                     str,
-                    m.Field(..., min_length=1, description="Lookup table name"),
+                    u.Field(..., min_length=1, description="Lookup table name"),
                 ]
                 domain_name: Annotated[
-                    str | None, m.Field(None, description="Domain name")
+                    str | None, u.Field(None, description="Domain name")
                 ]
                 columns: Annotated[
                     Sequence[t.FlatContainerMapping],
-                    m.Field(
+                    u.Field(
                         description="Column definitions",
                     ),
-                ] = m.Field(default_factory=list[t.FlatContainerMapping])
+                ] = u.Field(default_factory=list[t.FlatContainerMapping])
                 key_columns: Annotated[
                     t.StrSequence,
-                    m.Field(description="Key column names"),
-                ] = m.Field(default_factory=list)
+                    u.Field(description="Key column names"),
+                ] = u.Field(default_factory=list)
                 value_columns: Annotated[
                     t.StrSequence,
-                    m.Field(description="Value column names"),
-                ] = m.Field(default_factory=list)
+                    u.Field(description="Value column names"),
+                ] = u.Field(default_factory=list)
                 row_count: Annotated[
-                    t.NonNegativeInt, m.Field(description="Number of rows")
+                    t.NonNegativeInt, u.Field(description="Number of rows")
                 ] = 0
                 data_size_bytes: Annotated[
                     t.NonNegativeInt | None,
-                    m.Field(None, description="Data size in bytes"),
+                    u.Field(None, description="Data size in bytes"),
                 ]
                 locked_by: Annotated[
                     str | None,
-                    m.Field(None, description="User who locked the lookup"),
+                    u.Field(None, description="User who locked the lookup"),
                 ]
                 locked_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Lock timestamp"),
+                    u.Field(None, description="Lock timestamp"),
                 ]
                 last_imported: Annotated[
                     datetime | None,
-                    m.Field(None, description="Last import timestamp"),
+                    u.Field(None, description="Last import timestamp"),
                 ]
                 created_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Creation timestamp"),
+                    u.Field(None, description="Creation timestamp"),
                 ]
                 updated_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Last update timestamp"),
+                    u.Field(None, description="Last update timestamp"),
                 ]
 
                 @property
@@ -2247,53 +2244,53 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
                 instance_id: Annotated[
                     str,
-                    m.Field(..., min_length=1, description="Flow instance ID"),
+                    u.Field(..., min_length=1, description="Flow instance ID"),
                 ]
                 integration_id: Annotated[
                     str,
-                    m.Field(..., description="Associated integration ID"),
+                    u.Field(..., description="Associated integration ID"),
                 ]
-                flow_id: Annotated[str | None, m.Field(None, description="Flow ID")]
+                flow_id: Annotated[str | None, u.Field(None, description="Flow ID")]
                 tracking_level: Annotated[
                     str | None,
-                    m.Field(None, description="Tracking level"),
+                    u.Field(None, description="Tracking level"),
                 ]
                 started_at: Annotated[
                     datetime,
-                    m.Field(..., description="Execution start time"),
+                    u.Field(..., description="Execution start time"),
                 ]
                 completed_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Execution completion time"),
+                    u.Field(None, description="Execution completion time"),
                 ]
                 duration_ms: Annotated[
                     int | None,
-                    m.Field(None, ge=0, description="Duration in milliseconds"),
+                    u.Field(None, ge=0, description="Duration in milliseconds"),
                 ]
                 execution_status: Annotated[
-                    str, m.Field(..., description="Execution status")
+                    str, u.Field(..., description="Execution status")
                 ]
                 error_code: Annotated[
                     str | None,
-                    m.Field(None, description="Error code if failed"),
+                    u.Field(None, description="Error code if failed"),
                 ]
                 error_message: Annotated[
                     str | None,
-                    m.Field(None, description="Error message if failed"),
+                    u.Field(None, description="Error message if failed"),
                 ]
                 message_count: Annotated[
                     t.NonNegativeInt,
-                    m.Field(description="Number of messages processed"),
+                    u.Field(description="Number of messages processed"),
                 ] = 0
                 error_count: Annotated[
-                    t.NonNegativeInt, m.Field(description="Number of errors")
+                    t.NonNegativeInt, u.Field(description="Number of errors")
                 ] = 0
                 business_identifiers: Annotated[
                     Mapping[str, t.ContainerValueMapping],
-                    m.Field(
+                    u.Field(
                         description="Business tracking identifiers",
                     ),
-                ] = m.Field(default_factory=dict)
+                ] = u.Field(default_factory=dict)
 
                 @property
                 def duration_seconds(self) -> float | None:
@@ -2326,44 +2323,44 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
                 project_id: Annotated[
                     t.NonEmptyStr,
-                    m.Field(..., description="OIC project identifier"),
+                    u.Field(..., description="OIC project identifier"),
                 ]
                 project_code: Annotated[
                     t.NonEmptyStr,
-                    m.Field(..., description="Project code"),
+                    u.Field(..., description="Project code"),
                 ]
-                name: Annotated[t.NonEmptyStr, m.Field(..., description="Project name")]
+                name: Annotated[t.NonEmptyStr, u.Field(..., description="Project name")]
                 integration_ids: Annotated[
                     MutableSequence[str],
-                    m.Field(description="Integration IDs in project"),
-                ] = m.Field(default_factory=list)
+                    u.Field(description="Integration IDs in project"),
+                ] = u.Field(default_factory=list)
                 connection_ids: Annotated[
                     t.StrSequence,
-                    m.Field(description="Connection IDs in project"),
-                ] = m.Field(default_factory=list)
+                    u.Field(description="Connection IDs in project"),
+                ] = u.Field(default_factory=list)
                 lookup_ids: Annotated[
                     t.StrSequence,
-                    m.Field(description="Lookup IDs in project"),
-                ] = m.Field(default_factory=list)
+                    u.Field(description="Lookup IDs in project"),
+                ] = u.Field(default_factory=list)
                 deployment_status: Annotated[
                     str | None,
-                    m.Field(None, description="Deployment status"),
+                    u.Field(None, description="Deployment status"),
                 ]
                 deployed_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Deployment timestamp"),
+                    u.Field(None, description="Deployment timestamp"),
                 ]
                 deployed_by: Annotated[
                     str | None,
-                    m.Field(None, description="User who deployed"),
+                    u.Field(None, description="User who deployed"),
                 ]
                 created_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Creation timestamp"),
+                    u.Field(None, description="Creation timestamp"),
                 ]
                 updated_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Last update timestamp"),
+                    u.Field(None, description="Last update timestamp"),
                 ]
 
                 @property
@@ -2396,49 +2393,49 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
                 resource_type: Annotated[
                     c.TapOracleOic.OICResourceType,
-                    m.Field(..., description="Resource type"),
+                    u.Field(..., description="Resource type"),
                 ]
                 resource_id: Annotated[
                     t.NonEmptyStr,
-                    m.Field(..., description="Resource identifier"),
+                    u.Field(..., description="Resource identifier"),
                 ]
                 name: Annotated[
-                    t.NonEmptyStr, m.Field(..., description="Resource name")
+                    t.NonEmptyStr, u.Field(..., description="Resource name")
                 ]
                 version: Annotated[
-                    str | None, m.Field(None, description="Resource version")
+                    str | None, u.Field(None, description="Resource version")
                 ]
                 created_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Creation timestamp"),
+                    u.Field(None, description="Creation timestamp"),
                 ]
                 updated_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Last update timestamp"),
+                    u.Field(None, description="Last update timestamp"),
                 ]
 
             class OICExecutionSummary(FlextModels):
                 """OIC execution summary value object."""
 
                 integration_id: Annotated[
-                    str, m.Field(..., description="Integration ID")
+                    str, u.Field(..., description="Integration ID")
                 ]
                 total_executions: Annotated[
-                    t.NonNegativeInt, m.Field(description="Total number of executions")
+                    t.NonNegativeInt, u.Field(description="Total number of executions")
                 ] = 0
                 successful_executions: Annotated[
-                    t.NonNegativeInt, m.Field(description="Successful executions")
+                    t.NonNegativeInt, u.Field(description="Successful executions")
                 ] = 0
                 failed_executions: Annotated[
-                    t.NonNegativeInt, m.Field(description="Failed executions")
+                    t.NonNegativeInt, u.Field(description="Failed executions")
                 ] = 0
                 average_duration_ms: Annotated[
                     t.NonNegativeFloat | None,
-                    m.Field(None, description="Average execution duration"),
+                    u.Field(None, description="Average execution duration"),
                 ]
                 last_execution_at: Annotated[
                     datetime | None,
-                    m.Field(None, description="Last execution timestamp"),
+                    u.Field(None, description="Last execution timestamp"),
                 ]
 
                 @property

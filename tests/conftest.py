@@ -162,7 +162,7 @@ def sample_integration_data() -> Sequence[t.RecursiveContainerMapping]:
             "tracking": {
                 "payloadTracking": True,
                 "tracing": True,
-                "trackingFields": ["orderId", "customerId"],
+                "trackingu.Fields": ["orderId", "customerId"],
             },
             "style": "WORKFLOW",
             "lockedBy": None,
@@ -186,7 +186,7 @@ def sample_integration_data() -> Sequence[t.RecursiveContainerMapping]:
             "tracking": {
                 "payloadTracking": False,
                 "tracing": True,
-                "trackingFields": ["transactionId"],
+                "trackingu.Fields": ["transactionId"],
             },
             "style": "MAP",
             "lockedBy": "data.engineer",

@@ -119,7 +119,7 @@ class FlextTapOracleOicModelsStreams:
                         description="Integration endpoints",
                     ),
                     th.Meltano.SingerProperty(
-                        "trackingFields",
+                        "trackingu.Fields",
                         th.Meltano.SingerArrayType(
                             th.Meltano.SingerStringType(),
                         ),

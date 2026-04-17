@@ -18,7 +18,7 @@ from pydantic_settings import SettingsConfigDict
 
 from flext_core import FlextSettings
 from flext_oracle_oic import FlextOracleOicSettings
-from flext_tap_oracle_oic import c, m, p, r, t
+from flext_tap_oracle_oic import c, m, p, r, t, u
 
 
 @FlextSettings.auto_register("tap-oracle-oic")
@@ -29,20 +29,20 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
         env_prefix="FLEXT_TAP_ORACLE_OIC_", extra="ignore"
     )
 
-    oauth_client_id: Annotated[str, m.Field(default="")]
-    oauth_client_secret: Annotated[SecretStr, m.Field(default=SecretStr(""))]
+    oauth_client_id: Annotated[str, u.Field(default="")]
+    oauth_client_secret: Annotated[SecretStr, u.Field(default=SecretStr(""))]
     oauth_token_url: Annotated[
-        str, m.Field(default=f"{c.OracleOic.DEFAULT_BASE_URL}/oauth/token")
+        str, u.Field(default=f"{c.OracleOic.DEFAULT_BASE_URL}/oauth/token")
     ]
-    oauth_audience: Annotated[str, m.Field(default="")]
-    base_url: Annotated[str, m.Field(default=c.OracleOic.DEFAULT_BASE_URL)]
-    timeout: Annotated[t.PositiveInt, m.Field(default=c.DEFAULT_TIMEOUT_SECONDS)]
+    oauth_audience: Annotated[str, u.Field(default="")]
+    base_url: Annotated[str, u.Field(default=c.OracleOic.DEFAULT_BASE_URL)]
+    timeout: Annotated[t.PositiveInt, u.Field(default=c.DEFAULT_TIMEOUT_SECONDS)]
     max_retries: Annotated[
-        t.NonNegativeInt, m.Field(default=c.TapOracleOic.DEFAULT_MAX_RETRIES)
+        t.NonNegativeInt, u.Field(default=c.TapOracleOic.DEFAULT_MAX_RETRIES)
     ]
     page_size: Annotated[
         t.PositiveInt,
-        m.Field(default=c.TapOracleOic.TapOicProcessing.DEFAULT_PAGE_SIZE),
+        u.Field(default=c.TapOracleOic.TapOicProcessing.DEFAULT_PAGE_SIZE),
     ]
 
     def get_api_base_url(self) -> str:

@@ -15,12 +15,15 @@ from collections.abc import Mapping, Sequence
 from pydantic import ConfigDict, TypeAdapter
 
 from flext_core import t
-from flext_meltano import m
+from flext_meltano import FlextMeltanoTypingsSinger, m
 from flext_oracle_oic import FlextOracleOicTypes
 
 
 class FlextTapOracleOicTypes(m, FlextOracleOicTypes):
     """MRO facade composing Meltano + Oracle OIC type namespaces."""
+
+    class Meltano(m.Meltano, FlextMeltanoTypingsSinger):
+        """Extended Meltano namespace with Singer type aliases."""
 
     CONTAINER_VALUE_MAP_ADAPTER: m.TypeAdapter[t.ContainerValueMapping] = m.TypeAdapter(
         t.ContainerValueMapping
