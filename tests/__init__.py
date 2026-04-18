@@ -19,6 +19,12 @@ if _t.TYPE_CHECKING:
     from tests.models import TestsFlextTapOracleOicModels, m
     from tests.protocols import TestsFlextTapOracleOicProtocols, p
     from tests.typings import TestsFlextTapOracleOicTypes, t
+    from tests.unit.test_auth import TestOICOAuth2Authenticator
+    from tests.unit.test_tap import TestTapOracleOic
+    from tests.unit.test_tap_core import (
+        TestTapOracleOicIntegration,
+        TestTapOracleOicWithFixtures,
+    )
     from tests.utilities import TestsFlextTapOracleOicUtilities, u
 _LAZY_IMPORTS = merge_lazy_imports(
     (".unit",),
@@ -39,6 +45,12 @@ _LAZY_IMPORTS = merge_lazy_imports(
             ".typings": (
                 "TestsFlextTapOracleOicTypes",
                 "t",
+            ),
+            ".unit.test_auth": ("TestOICOAuth2Authenticator",),
+            ".unit.test_tap": ("TestTapOracleOic",),
+            ".unit.test_tap_core": (
+                "TestTapOracleOicIntegration",
+                "TestTapOracleOicWithFixtures",
             ),
             ".utilities": (
                 "TestsFlextTapOracleOicUtilities",
@@ -77,6 +89,10 @@ _LAZY_IMPORTS = merge_lazy_imports(
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
 
 __all__: list[str] = [
+    "TestOICOAuth2Authenticator",
+    "TestTapOracleOic",
+    "TestTapOracleOicIntegration",
+    "TestTapOracleOicWithFixtures",
     "TestsFlextTapOracleOicConstants",
     "TestsFlextTapOracleOicModels",
     "TestsFlextTapOracleOicProtocols",
