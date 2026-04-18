@@ -22,6 +22,7 @@ if _t.TYPE_CHECKING:
     from tests.unit.test_auth import TestOICOAuth2Authenticator
     from tests.unit.test_tap import TestTapOracleOic
     from tests.unit.test_tap_core import (
+        TestTapOracleOicCore,
         TestTapOracleOicIntegration,
         TestTapOracleOicWithFixtures,
     )
@@ -49,6 +50,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
             ".unit.test_auth": ("TestOICOAuth2Authenticator",),
             ".unit.test_tap": ("TestTapOracleOic",),
             ".unit.test_tap_core": (
+                "TestTapOracleOicCore",
                 "TestTapOracleOicIntegration",
                 "TestTapOracleOicWithFixtures",
             ),
@@ -91,6 +93,7 @@ install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
 __all__: list[str] = [
     "TestOICOAuth2Authenticator",
     "TestTapOracleOic",
+    "TestTapOracleOicCore",
     "TestTapOracleOicIntegration",
     "TestTapOracleOicWithFixtures",
     "TestsFlextTapOracleOicConstants",

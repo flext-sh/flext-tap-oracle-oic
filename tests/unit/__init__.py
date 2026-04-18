@@ -10,6 +10,7 @@ _LAZY_IMPORTS = build_lazy_import_map(
         ".test_auth": ("TestOICOAuth2Authenticator",),
         ".test_tap": ("TestTapOracleOic",),
         ".test_tap_core": (
+            "TestTapOracleOicCore",
             "TestTapOracleOicIntegration",
             "TestTapOracleOicWithFixtures",
         ),

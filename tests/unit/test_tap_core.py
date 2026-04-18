@@ -41,7 +41,7 @@ def _discover_stream_names(tap: FlextTapOracleOic) -> t.StrSequence:
     return [str(s["tap_stream_id"]) for s in streams if isinstance(s, Mapping)]
 
 
-class TestTapOracleOic:
+class TestTapOracleOicCore:
     """Test the main FlextTapOracleOic class."""
 
     def test_tap_initialization(self) -> None:
