@@ -13,9 +13,6 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
-from pydantic import (
-    ConfigDict,
-)
 
 from flext_core import (
     FlextConstants,
@@ -217,7 +214,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             - Support for all OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
             """
 
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
                 arbitrary_types_allowed=True,
             )
 
@@ -599,7 +596,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OAuth2/IDCS authentication configuration for OIC API access."""
 
             # Pydantic 2.11 Configuration - Authentication Features
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
                 json_schema_extra={
                     "description": "OAuth2/IDCS authentication for Oracle OIC API",
                     "examples": [
@@ -707,7 +704,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Integration entity with complete metadata."""
 
             # Pydantic 2.11 Configuration - Integration Features
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC integration with complete metadata",
                     "examples": [
@@ -724,7 +721,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             integration_id: Annotated[
                 str,
                 u.Field(
-                    ...,
                     description="Unique integration identifier",
                 ),
             ]
@@ -856,7 +852,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Connection entity with security sanitization."""
 
             # Pydantic 2.11 Configuration - Connection Features
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC connection with security sanitization",
                     "examples": [
@@ -1011,7 +1007,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Activity monitoring record for incremental replication."""
 
             # Pydantic 2.11 Configuration - Activity Features
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC activity record with performance tracking",
                     "examples": [
@@ -1155,7 +1151,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Package entity for integration packages."""
 
             # Pydantic 2.11 Configuration - Package Features
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC package with dependency tracking",
                     "examples": [
@@ -1209,7 +1205,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 u.Field(
                     description="List of dependent package IDs",
                 ),
-            ] = u.Field(default_factory=list)
+            ] = u.Field(default_factory=tuple)
             integration_count: Annotated[
                 int | None,
                 u.Field(
@@ -1281,7 +1277,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Metrics record for performance monitoring."""
 
             # Pydantic 2.11 Configuration - Metrics Features
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC performance metrics with resource monitoring",
                     "examples": [
@@ -1430,7 +1426,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """OIC Agent entity for connectivity agents."""
 
             # Pydantic 2.11 Configuration - Agent Features
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC connectivity agent with health monitoring",
                     "examples": [
@@ -1575,7 +1571,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """Configuration for OIC tap streams."""
 
             # Pydantic 2.11 Configuration - Stream Features
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC tap stream configuration with filtering",
                     "examples": [
@@ -1700,7 +1696,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """Standardized OIC API response wrapper."""
 
             # Pydantic 2.11 Configuration - API Response Features
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC API response with pagination and error handling",
                     "examples": [
@@ -1830,7 +1826,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             """Error context for OIC API error handling."""
 
             # Pydantic 2.11 Configuration - Error Context Features
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC API error context with recovery guidance",
                     "examples": [
@@ -1972,6 +1968,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             class OICConnection(FlextModels):
                 """OIC connection domain entity using flext-core patterns."""
 
+                _flext_enforcement_exempt: ClassVar[bool] = True
+
                 connection_id: Annotated[
                     str,
                     u.Field(..., min_length=1, description="OIC connection identifier"),
@@ -2051,6 +2049,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             class OICIntegration(FlextModels):
                 """OIC integration domain entity using flext-core patterns."""
 
+                _flext_enforcement_exempt: ClassVar[bool] = True
+
                 integration_id: Annotated[
                     str,
                     u.Field(
@@ -2124,7 +2124,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 connection_ids: Annotated[
                     t.StrSequence,
                     u.Field(description="Associated connection IDs"),
-                ] = u.Field(default_factory=list)
+                ] = u.Field(default_factory=tuple)
                 created_at: Annotated[
                     datetime | None,
                     u.Field(None, description="Creation timestamp"),
@@ -2168,6 +2168,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             class OICLookup(FlextModels):
                 """OIC lookup table domain entity using flext-core patterns."""
 
+                _flext_enforcement_exempt: ClassVar[bool] = True
+
                 lookup_id: Annotated[
                     str,
                     u.Field(..., min_length=1, description="OIC lookup identifier"),
@@ -2188,11 +2190,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 key_columns: Annotated[
                     t.StrSequence,
                     u.Field(description="Key column names"),
-                ] = u.Field(default_factory=list)
+                ] = u.Field(default_factory=tuple)
                 value_columns: Annotated[
                     t.StrSequence,
                     u.Field(description="Value column names"),
-                ] = u.Field(default_factory=list)
+                ] = u.Field(default_factory=tuple)
                 row_count: Annotated[
                     t.NonNegativeInt, u.Field(description="Number of rows")
                 ] = 0
@@ -2321,6 +2323,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             class OICProject(FlextModels):
                 """OIC project domain entity using flext-core patterns."""
 
+                _flext_enforcement_exempt: ClassVar[bool] = True
+
                 project_id: Annotated[
                     t.NonEmptyStr,
                     u.Field(..., description="OIC project identifier"),
@@ -2337,11 +2341,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 connection_ids: Annotated[
                     t.StrSequence,
                     u.Field(description="Connection IDs in project"),
-                ] = u.Field(default_factory=list)
+                ] = u.Field(default_factory=tuple)
                 lookup_ids: Annotated[
                     t.StrSequence,
                     u.Field(description="Lookup IDs in project"),
-                ] = u.Field(default_factory=list)
+                ] = u.Field(default_factory=tuple)
                 deployment_status: Annotated[
                     str | None,
                     u.Field(None, description="Deployment status"),

@@ -13,9 +13,6 @@ from __future__ import annotations
 
 from typing import Annotated, ClassVar, Self
 
-from pydantic import SecretStr
-from pydantic_settings import SettingsConfigDict
-
 from flext_core import FlextSettings
 from flext_oracle_oic import FlextOracleOicSettings
 from flext_tap_oracle_oic import c, m, p, r, t, u
@@ -25,12 +22,12 @@ from flext_tap_oracle_oic import c, m, p, r, t, u
 class FlextTapOracleOicSettings(FlextOracleOicSettings):
     """Tap-specific OIC settings contract."""
 
-    model_config: ClassVar[SettingsConfigDict] = m.SettingsConfigDict(
+    model_config: ClassVar[m.SettingsConfigDict] = m.SettingsConfigDict(
         env_prefix="FLEXT_TAP_ORACLE_OIC_", extra="ignore"
     )
 
     oauth_client_id: Annotated[str, u.Field(default="")]
-    oauth_client_secret: Annotated[SecretStr, u.Field(default=SecretStr(""))]
+    oauth_client_secret: Annotated[t.SecretStr, u.Field(default=t.SecretStr(""))]
     oauth_token_url: Annotated[
         str, u.Field(default=f"{c.OracleOic.DEFAULT_BASE_URL}/oauth/token")
     ]

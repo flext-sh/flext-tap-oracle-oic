@@ -12,8 +12,6 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 
-from pydantic import ConfigDict, TypeAdapter
-
 from flext_core import t
 from flext_meltano import FlextMeltanoTypingsSinger, m
 from flext_oracle_oic import FlextOracleOicTypes
@@ -30,35 +28,35 @@ class FlextTapOracleOicTypes(m, FlextOracleOicTypes):
     )
 
     # ── Strict adapters (from utilities.py) ───────────────────────
-    STRICT_LIST_ADAPTER: m.TypeAdapter[t.ContainerValueList] = TypeAdapter(
+    STRICT_LIST_ADAPTER: m.TypeAdapter[t.ContainerValueList] = m.TypeAdapter(
         t.ContainerValueList,
-        config=ConfigDict(strict=True),
+        config=m.ConfigDict(strict=True),
     )
-    STRICT_MAP_ADAPTER: m.TypeAdapter[t.ContainerValueMapping] = TypeAdapter(
+    STRICT_MAP_ADAPTER: m.TypeAdapter[t.ContainerValueMapping] = m.TypeAdapter(
         t.ContainerValueMapping,
-        config=ConfigDict(strict=True),
+        config=m.ConfigDict(strict=True),
     )
-    STRICT_INT_ADAPTER: m.TypeAdapter[int] = TypeAdapter(
+    STRICT_INT_ADAPTER: m.TypeAdapter[int] = m.TypeAdapter(
         int,
-        config=ConfigDict(strict=True),
+        config=m.ConfigDict(strict=True),
     )
 
     # ── General adapters (from models.py) ─────────────────────────
-    GENERAL_LIST_ADAPTER: m.TypeAdapter[Sequence[t.ContainerValue]] = TypeAdapter(
+    GENERAL_LIST_ADAPTER: m.TypeAdapter[Sequence[t.ContainerValue]] = m.TypeAdapter(
         Sequence[t.ContainerValue],
-        config=ConfigDict(strict=True),
+        config=m.ConfigDict(strict=True),
     )
-    GENERAL_MAP_ADAPTER: m.TypeAdapter[Mapping[str, t.ContainerValue]] = TypeAdapter(
+    GENERAL_MAP_ADAPTER: m.TypeAdapter[Mapping[str, t.ContainerValue]] = m.TypeAdapter(
         Mapping[str, t.ContainerValue],
-        config=ConfigDict(strict=True),
+        config=m.ConfigDict(strict=True),
     )
-    STRING_LIST_ADAPTER: m.TypeAdapter[t.StrSequence] = TypeAdapter(
+    STRING_LIST_ADAPTER: m.TypeAdapter[t.StrSequence] = m.TypeAdapter(
         t.StrSequence,
-        config=ConfigDict(strict=True),
+        config=m.ConfigDict(strict=True),
     )
 
     # ── Schema adapter (from _models/streams.py) ─────────────────
-    SCHEMA_ADAPTER: m.TypeAdapter[t.ContainerValueMapping] = TypeAdapter(
+    SCHEMA_ADAPTER: m.TypeAdapter[t.ContainerValueMapping] = m.TypeAdapter(
         t.ContainerValueMapping,
     )
 
