@@ -139,7 +139,7 @@ except ImportError as e:
 
 ```python
 # Error
-error: Argument 1 to "process" has incompatible type "str"; expected "t.RecursiveContainerMapping"
+error: Argument 1 to "process" has incompatible type "str"; expected "Mapping[str, t.Container]"
 ```
 
 #### Solutions
@@ -153,7 +153,7 @@ def process(data):
 
 
 # ✅ CORRECT
-def process(data: t.RecursiveContainerMapping) -> p.Result[ProcessedData]:
+def process(data: Mapping[str, t.Container]) -> p.Result[ProcessedData]:
     return r.ok(ProcessedData(**data))
 ```
 

@@ -56,7 +56,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     def _as_value_map(
         value: t.ContainerValue | None,
     ) -> t.ContainerValueMapping | None:
-        """Validate payload as strict t.RecursiveContainerMapping."""
+        """Validate payload as strict Mapping[str, t.Container]."""
         try:
             return t.GENERAL_MAP_ADAPTER.validate_python(value)
         except c.ValidationError:
