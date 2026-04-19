@@ -28,7 +28,7 @@ class FlextTapOracleOicCli:
     def run(cls, args: t.StrSequence | None = None) -> int:
         """Execute the canonical tap-oracle-oic CLI entry point."""
         _ = cls
-        return FlextTapOracleOicService.get_instance().cli_main(args)
+        return FlextTapOracleOicService().cli_main(args)
 
 
 def main(args: t.StrSequence | None = None) -> int:
