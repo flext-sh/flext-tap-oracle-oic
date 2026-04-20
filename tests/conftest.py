@@ -12,7 +12,13 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import os
-from collections.abc import Callable, Generator, Iterator, Sequence
+from collections.abc import (
+    Callable,
+    Generator,
+    Iterator,
+    Mapping,
+    Sequence,
+)
 from unittest.mock import Mock
 
 import pytest

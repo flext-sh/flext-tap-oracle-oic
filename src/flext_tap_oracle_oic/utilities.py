@@ -8,7 +8,11 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import re
-from collections.abc import Mapping, MutableMapping, Sequence
+from collections.abc import (
+    Mapping,
+    MutableMapping,
+    Sequence,
+)
 from datetime import UTC, datetime
 from typing import ClassVar
 from urllib.parse import urljoin, urlparse
