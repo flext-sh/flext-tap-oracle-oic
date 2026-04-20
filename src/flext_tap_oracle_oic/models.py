@@ -18,13 +18,13 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
-
 from flext_core import (
     FlextConstants,
     FlextModels,
 )
 from flext_meltano import FlextMeltanoModels, m, u
 from flext_oracle_oic import FlextOracleOicModels
+
 from flext_tap_oracle_oic import FlextTapOracleOicUtilities, c, e, t
 
 if TYPE_CHECKING:

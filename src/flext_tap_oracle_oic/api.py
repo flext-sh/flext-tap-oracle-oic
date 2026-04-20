@@ -16,6 +16,7 @@ from typing import Annotated, Never, override
 
 from flext_core import u
 from flext_meltano import FlextMeltanoTapServiceBase
+
 from flext_tap_oracle_oic import t
 
 
