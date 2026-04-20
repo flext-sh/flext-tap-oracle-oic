@@ -45,12 +45,12 @@ class FlextTapOracleOicTypes(m, FlextOracleOicTypes):
     )
 
     # ── General adapters (from models.py) ─────────────────────────
-    GENERAL_LIST_ADAPTER: m.TypeAdapter[Sequence[t.ContainerValue]] = m.TypeAdapter(
-        Sequence[t.ContainerValue],
+    GENERAL_LIST_ADAPTER: m.TypeAdapter[Sequence[t.Container]] = m.TypeAdapter(
+        Sequence[t.Container],
         config=m.ConfigDict(strict=True),
     )
-    GENERAL_MAP_ADAPTER: m.TypeAdapter[Mapping[str, t.ContainerValue]] = m.TypeAdapter(
-        Mapping[str, t.ContainerValue],
+    GENERAL_MAP_ADAPTER: m.TypeAdapter[Mapping[str, t.Container]] = m.TypeAdapter(
+        Mapping[str, t.Container],
         config=m.ConfigDict(strict=True),
     )
     STRING_LIST_ADAPTER: m.TypeAdapter[t.StrSequence] = m.TypeAdapter(

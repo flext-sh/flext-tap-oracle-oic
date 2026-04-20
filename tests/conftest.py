@@ -89,7 +89,7 @@ def extended_oic_config(
     basic_oic_config: Mapping[str, t.Container],
 ) -> Mapping[str, t.Container]:
     """Extended Oracle OIC tap configuration with all streams."""
-    settings: t.MutableRecursiveContainerMapping = dict(basic_oic_config)
+    settings: t.MutableFlatContainerMapping = dict(basic_oic_config)
     settings.update({
         "include_extended": True,
         "include_integration_details": True,
@@ -108,7 +108,7 @@ def filtered_oic_config(
     basic_oic_config: Mapping[str, t.Container],
 ) -> Mapping[str, t.Container]:
     """Oracle OIC tap configuration with filters."""
-    settings: t.MutableRecursiveContainerMapping = dict(basic_oic_config)
+    settings: t.MutableFlatContainerMapping = dict(basic_oic_config)
     settings.update({
         "integration_status_filter": ["ACTIVATED", "CONFIGURED"],
         "connection_type_filter": ["rest", "ftp", "database"],
@@ -122,7 +122,7 @@ def performance_oic_config(
     basic_oic_config: Mapping[str, t.Container],
 ) -> Mapping[str, t.Container]:
     """Oracle OIC tap configuration for performance testing."""
-    settings: t.MutableRecursiveContainerMapping = dict(basic_oic_config)
+    settings: t.MutableFlatContainerMapping = dict(basic_oic_config)
     settings.update({
         "page_size": 100,
         "concurrent_requests": 10,

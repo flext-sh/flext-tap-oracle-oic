@@ -36,7 +36,7 @@ class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
     DEFAULT_PAGE_SIZE: ClassVar[int] = 50
 
     @staticmethod
-    def _as_list(value: t.ContainerValue | None) -> Sequence[t.ContainerValue] | None:
+    def _as_list(value: t.Container | None) -> Sequence[t.Container] | None:
         """Strict list validation via Pydantic adapter."""
         try:
             return t.STRICT_LIST_ADAPTER.validate_python(
@@ -47,7 +47,7 @@ class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
 
     @staticmethod
     def _as_map(
-        value: t.ContainerValue | None,
+        value: t.Container | None,
     ) -> t.ContainerValueMapping | None:
         """Strict map validation via Pydantic adapter."""
         try:
@@ -56,7 +56,7 @@ class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
             return None
 
     @staticmethod
-    def _as_int(value: t.ContainerValue | None) -> int | None:
+    def _as_int(value: t.Container | None) -> int | None:
         """Strict integer validation via Pydantic adapter."""
         try:
             return t.STRICT_INT_ADAPTER.validate_python(value)
@@ -132,9 +132,9 @@ class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
                         "total_count": 0,
                         "current_page_size": 0,
                     }
-                items: t.ContainerValue = response.get("items", [])
+                items: t.Container = response.get("items", [])
                 items_list_raw = FlextTapOracleOicUtilities._as_list(items)
-                items_list: Sequence[t.ContainerValue] = (
+                items_list: Sequence[t.Container] = (
                     items_list_raw if items_list_raw is not None else []
                 )
                 return {
@@ -222,7 +222,7 @@ class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
                 """
                 if not integration_data:
                     return {}
-                metadata: MutableMapping[str, t.ContainerValue | None] = {
+                metadata: MutableMapping[str, t.Container | None] = {
                     "id": integration_data.get("id"),
                     "name": integration_data.get("name"),
                     "version": integration_data.get("version"),
@@ -234,7 +234,7 @@ class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
                 }
                 connections = integration_data.get("connectionInstances", [])
                 connection_list_raw = FlextTapOracleOicUtilities._as_list(connections)
-                connection_list: Sequence[t.ContainerValue] = (
+                connection_list: Sequence[t.Container] = (
                     connection_list_raw if connection_list_raw is not None else []
                 )
                 metadata["connection_count"] = len(connection_list)
@@ -425,7 +425,7 @@ class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
                 state: Mapping[str, t.ContainerValueMapping],
                 stream_name: str,
                 bookmark_key: str,
-            ) -> t.ContainerValue | None:
+            ) -> t.Container | None:
                 """Get bookmark value for a stream.
 
                 Args:
@@ -434,7 +434,7 @@ class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
                 bookmark_key: Bookmark key
 
                 Returns:
-                t.ContainerValue: Bookmark value or None
+                t.Container: Bookmark value or None
 
                 """
                 stream_state = FlextTapOracleOicUtilities.TapOracleOic.StateManagement.get_stream_state(
@@ -472,7 +472,7 @@ class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
                 state: Mapping[str, t.ContainerValueMapping],
                 stream_name: str,
                 bookmark_key: str,
-                bookmark_value: t.ContainerValue,
+                bookmark_value: t.Container,
             ) -> t.ContainerValueMapping:
                 """Set bookmark value for a stream.
 
@@ -495,9 +495,7 @@ class FlextTapOracleOicUtilities(u, FlextOracleOicUtilities):
                 if bookmark_map is not None:
                     updated_bookmark_map = dict(bookmark_map)
                     if stream_name not in updated_bookmark_map:
-                        empty_stream_bookmarks: MutableMapping[
-                            str, t.ContainerValue
-                        ] = {}
+                        empty_stream_bookmarks: MutableMapping[str, t.Container] = {}
                         updated_bookmark_map[stream_name] = empty_stream_bookmarks
                     stream_bookmarks = FlextTapOracleOicUtilities._as_map(
                         updated_bookmark_map[stream_name],

@@ -309,7 +309,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         return r[Mapping[str, t.Container]].ok(catalog)
 
     @staticmethod
-    def _to_positive_int(value: t.ContainerValue | None, default: int) -> int:
+    def _to_positive_int(value: t.Container | None, default: int) -> int:
         if isinstance(value, int):
             return value
         if isinstance(value, float):
