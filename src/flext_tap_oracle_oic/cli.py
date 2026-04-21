@@ -55,13 +55,13 @@ def main(args: t.StrSequence | None = None) -> int:
         tap-oracle-oic --config settings.json --catalog catalog.json --state state.json
 
     Integration:
-        Compatible with flext-meltano FlextMeltanoSingerCliTranslator for orchestration:
+        Compatible with flext-meltano Singer CLI translation for orchestration:
 
         >>> from flext_meltano import (
         ...     FlextMeltanoSingerCliTranslator,
-        ...     FlextMeltanoModels,
+        ...     m,
         ... )
-        >>> params = FlextMeltanoModels.TapRunParams(
+        >>> params = m.Meltano.TapRunParams(
         ...     tap_name="tap-oracle-oic", config_file="settings.json", discover=True
         ... )
         >>> command = FlextMeltanoSingerCliTranslator.translate_tap_run(params)

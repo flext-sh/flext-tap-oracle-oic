@@ -143,7 +143,7 @@ class FlextTapOracleOicProtocols(p, FlextOracleOicProtocols):
                 self,
                 start_value: int = 0,
                 page_size: int = 100,
-            ) -> FlextTapOracleOicProtocols.TapOracleOic.TapOracleOicPrivate.Paginator:
+            ) -> FlextTapOracleOicProtocols.TapOracleOic.Paginator:
                 """Build a paginator instance."""
                 ...
 

@@ -18,6 +18,8 @@ class FlextTapOracleOicTypes(meltano_t, t):
     """MRO facade composing Meltano + Oracle OIC type namespaces."""
 
     class TapOracleOic:
+        """Tap Oracle OIC-specific adapter namespace."""
+
         CONTAINER_VALUE_MAP_ADAPTER: m.TypeAdapter[t.JsonMapping] = m.TypeAdapter(
             t.JsonMapping
         )

@@ -21,7 +21,7 @@ from flext_api import FlextApi, FlextApiSettings
 from flext_meltano import m as meltano_m
 from flext_oracle_oic import m
 
-from flext_tap_oracle_oic import FlextTapOracleOicUtilities, c, e, t, u
+from flext_tap_oracle_oic import c, e, t, u
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import p
@@ -143,7 +143,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             ]
             return sum(1 for name in model_names if getattr(self, name) is not None)
 
-        class OicEnvelope(m.BaseModel):
+        class OicEnvelope(meltano_m.BaseModel):
             """OIC API response envelope for paginated list endpoints.
 
             Parses the outer wrapper that Oracle OIC returns for list responses,
@@ -155,7 +155,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             total_size: Annotated[int | None, u.Field(alias="totalSize")] = None
             count: int | None = None
 
-        class OICBaseStream(m.BaseModel):
+        class OICBaseStream(meltano_m.BaseModel):
             """Professional base stream class for Oracle Integration Cloud APIs.
 
             stream implementation with:
@@ -206,7 +206,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                 if not base_url:
                     msg = "Base URL is required but not configured"
                     raise ValueError(msg)
-                validation_result = FlextTapOracleOicUtilities.TapOracleOic.OicApiProcessing.validate_oic_endpoint(
+                validation_result = u.TapOracleOic.validate_oic_endpoint(
                     base_url,
                 )
                 if validation_result.failure:
@@ -228,24 +228,24 @@ class FlextTapOracleOicModels(meltano_m, m):
                 if self.api_path is not None:
                     return base_url + self.api_path
                 api_paths = {
-                    "core": c.OIC_API_BASE_PATH,
-                    "monitoring": c.OIC_MONITORING_API_PATH,
-                    "b2b": c.OIC_B2B_API_PATH,
-                    "process": c.OIC_PROCESS_API_PATH,
+                    "core": c.TapOracleOic.OIC_API_BASE_PATH,
+                    "monitoring": c.TapOracleOic.OIC_MONITORING_API_PATH,
+                    "b2b": c.TapOracleOic.OIC_B2B_API_PATH,
+                    "process": c.TapOracleOic.OIC_PROCESS_API_PATH,
                 }
                 return base_url + api_paths.get(
                     self.api_category,
-                    c.OIC_API_BASE_PATH,
+                    c.TapOracleOic.OIC_API_BASE_PATH,
                 )
 
-            def get_new_paginator(self) -> p.TapOracleOic.TapOracleOicPrivate.Paginator:
+            def get_new_paginator(self) -> p.TapOracleOic.Paginator:
                 """Create new Oracle OIC paginator with configuration.
 
                 Returns:
                 Paginator instance configured with settings from tap settings.
 
                 """
-                paginator_cls = FlextTapOracleOicModels._get_oic_paginator_class()
+                paginator_cls = u.TapOracleOic.get_oic_paginator_class()
                 page_size_val = self.settings.get("page_size", 100)
                 page_size = page_size_val if isinstance(page_size_val, int) else 100
                 return paginator_cls(start_value=0, page_size=page_size)
@@ -309,7 +309,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                     params[f"{self.replication_key}>="] = start_date
                 select_fields = self.settings.get("select_fields")
                 if select_fields:
-                    field_list = FlextTapOracleOicModels._as_string_list(select_fields)
+                    field_list = u.TapOracleOic.as_string_list(select_fields)
                     params["fields"] = (
                         ",".join(field_list)
                         if field_list is not None
@@ -335,7 +335,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                 try:
                     if (
                         response.status_code
-                        >= c.TapOracleOic.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD
+                        >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD
                     ):
                         self._handle_response_error(response)
                         return
@@ -374,7 +374,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                         yield self._enrich_record(item)
                         records_yielded += 1
                 if records_yielded == 0 and (not self._is_empty_result_expected(data)):
-                    map_data = FlextTapOracleOicModels._as_value_map(data)
+                    map_data = data if isinstance(data, Mapping) else None
                     payload_descriptor: str = (
                         str(list(map_data.keys()))
                         if map_data is not None
@@ -397,16 +397,13 @@ class FlextTapOracleOicModels(meltano_m, m):
                 data: t.ContainerValueMapping | Sequence[t.Container],
             ) -> Iterator[t.ContainerValueMapping]:
                 """Extract items from various OIC response formats for processing."""
+                if isinstance(data, Mapping):
+                    yield from self._process_dict_data(data)
+                    return
                 if isinstance(data, list):
                     yield from self._process_list_data(data)
-                    return
-                list_payload = FlextTapOracleOicModels.as_value_list(data)
-                if list_payload is not None:
-                    yield from self._process_list_data(list_payload)
-                    return
-                map_payload = FlextTapOracleOicModels._as_value_map(data)
-                if map_payload is not None:
-                    yield from self._process_dict_data(map_payload)
+                else:
+                    yield from self._process_list_data(list(data))
 
             def _get_response_data(
                 self,
@@ -417,7 +414,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                     case dict() as body_map:
                         return body_map
                     case str() as body_str if body_str.strip():
-                        return t.GENERAL_MAP_ADAPTER.validate_json(
+                        return t.TapOracleOic.GENERAL_MAP_ADAPTER.validate_json(
                             body_str,
                         )
                     case _:
@@ -433,6 +430,20 @@ class FlextTapOracleOicModels(meltano_m, m):
                     return response.request_id
                 return self.api_path or self.name
 
+            @staticmethod
+            def _as_oic_envelope(
+                data: t.ContainerValueMapping,
+            ) -> FlextTapOracleOicModels.TapOracleOic.OicEnvelope | None:
+                try:
+                    return (
+                        FlextTapOracleOicModels.TapOracleOic.OicEnvelope.model_validate(
+                            data,
+                            strict=True,
+                        )
+                    )
+                except c.ValidationError:
+                    return None
+
             def _handle_response_error(
                 self,
                 response: m.Api.HttpResponse,
@@ -440,24 +451,26 @@ class FlextTapOracleOicModels(meltano_m, m):
                 """Handle Oracle OIC API response errors with proper categorization."""
                 error_message: t.Container | None = None
                 if isinstance(response.body, dict):
-                    error_data = FlextTapOracleOicModels._as_value_map(response.body)
-                    if error_data is not None:
-                        error_message = error_data.get("message") or error_data.get(
-                            "error",
-                        )
+                    error_message = response.body.get("message") or response.body.get(
+                        "error",
+                    )
                 if error_message is None:
-                    error_message = response.body or f"HTTP {response.status_code}"
+                    error_message = (
+                        str(response.body)
+                        if response.body
+                        else f"HTTP {response.status_code}"
+                    )
                 response_url = self._get_response_identifier(response)
                 err_msg = str(error_message)
                 self.logger.error("OIC API error from %s: %s", response_url, err_msg)
                 status_code = response.status_code
-                if status_code == c.TapOracleOic.TapOicHttp.HTTP_UNAUTHORIZED:
+                if status_code == c.TapOracleOic.HTTP_UNAUTHORIZED:
                     msg = "Unauthorized: Authentication failed or token expired"
                     raise e.AuthenticationError(msg)
-                if status_code == c.TapOracleOic.TapOicHttp.HTTP_FORBIDDEN:
+                if status_code == c.TapOracleOic.HTTP_FORBIDDEN:
                     msg = "Forbidden: Insufficient permissions to access resource"
                     raise e.AuthorizationError(msg)
-                if status_code == c.TapOracleOic.TapOicHttp.HTTP_RATE_LIMITED:
+                if status_code == c.TapOracleOic.HTTP_RATE_LIMITED:
                     msg = "Rate limit exceeded: Too many requests"
                     raise e.RateLimitError(msg)
                 raise e.OperationError(err_msg)
@@ -469,7 +482,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                 """Check if empty result is expected/normal based on OIC response metadata."""
                 if not isinstance(data, Mapping):
                     return not data
-                envelope = FlextTapOracleOicModels.as_oic_envelope(data)
+                envelope = self._as_oic_envelope(data)
                 if envelope is not None:
                     return (
                         envelope.total_size == 0
@@ -477,8 +490,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                         or (envelope.items is not None and not envelope.items)
                         or (envelope.data is not None and not envelope.data)
                     )
-                list_payload = FlextTapOracleOicModels.as_value_list(data)
-                return not list_payload if list_payload is not None else False
+                return False
 
             def _is_single_record(self, data: t.ContainerValueMapping) -> bool:
                 """Check if dict represents a single record vs OIC metadata container."""
@@ -498,23 +510,26 @@ class FlextTapOracleOicModels(meltano_m, m):
                 data: t.ContainerValueMapping,
             ) -> Iterator[t.ContainerValueMapping]:
                 """Process dict-type response data with OIC format detection."""
-                envelope = FlextTapOracleOicModels.as_oic_envelope(data)
+                envelope = self._as_oic_envelope(data)
                 if envelope is not None and envelope.items is not None:
-                    yield from self._process_list_data(list(envelope.items))
+                    yield from self._process_list_data(envelope.items)
                     return
                 if envelope is not None and envelope.data is not None:
-                    yield from self._process_list_data(list(envelope.data))
+                    yield from self._process_list_data(envelope.data)
                     return
                 if self._is_single_record(data):
                     yield data
 
             def _process_list_data(
                 self,
-                data: Sequence[t.Container],
+                data: Sequence[t.Container] | Sequence[t.ContainerValueMapping],
             ) -> Iterator[t.ContainerValueMapping]:
                 """Process list-type response data."""
                 for item in data:
-                    record = FlextTapOracleOicModels._as_value_map(item)
+                    if isinstance(item, Mapping):
+                        yield item
+                        continue
+                    record = u.TapOracleOic.as_value_map(item)
                     if record is not None:
                         yield record
 
@@ -528,11 +543,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                 if not isinstance(data, Mapping):
                     self.logger.debug("Received %s records", len(data))
                     return
-                list_payload = FlextTapOracleOicModels.as_value_list(data)
-                if list_payload is not None:
-                    self.logger.debug("Received %s records", len(list_payload))
-                    return
-                envelope = FlextTapOracleOicModels.as_oic_envelope(data)
+                envelope = self._as_oic_envelope(data)
                 if envelope is None:
                     return
                 if envelope.items is not None:
@@ -542,7 +553,7 @@ class FlextTapOracleOicModels(meltano_m, m):
 
             def _validate_record(self, record: t.ContainerValueMapping) -> bool:
                 """Validate record meets basic requirements for processing."""
-                return FlextTapOracleOicModels._as_value_map(record) is not None
+                return bool(record)
 
         class OicAuthenticationConfig(meltano_m.ArbitraryTypesModel):
             """OAuth2/IDCS authentication configuration for OIC API access."""
@@ -641,10 +652,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                 if not self.base_url.startswith("https://"):
                     msg = "OIC base URL must use HTTPS"
                     raise ValueError(msg)
-                if (
-                    self.token_expiry_buffer
-                    < c.TapOracleOic.TapOicValidation.MIN_TOKEN_EXPIRY_BUFFER
-                ):
+                if self.token_expiry_buffer < c.TapOracleOic.MIN_TOKEN_EXPIRY_BUFFER:
                     msg = "Token expiry buffer must be at least 60 seconds"
                     raise ValueError(msg)
                 return self
@@ -769,8 +777,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                         "total_errors": self.error_count or 0,
                         "error_rate": error_rate,
                         "health_status": c.TapOracleOic.OicHealthStatus.HEALTHY.value
-                        if error_rate
-                        < c.TapOracleOic.TapOicValidation.MAX_PERCENTAGE / 20
+                        if error_rate < c.TapOracleOic.MAX_PERCENTAGE / 20
                         else c.TapOracleOic.OicHealthStatus.DEGRADED.value,
                     },
                     "metadata": {
@@ -1361,9 +1368,9 @@ class FlextTapOracleOicModels(meltano_m, m):
                     msg = "Integration ID is required"
                     raise ValueError(msg)
                 if self.cpu_usage_percent is not None and not (
-                    c.TapOracleOic.TapOicValidation.MIN_PERCENTAGE
+                    c.TapOracleOic.MIN_PERCENTAGE
                     <= self.cpu_usage_percent
-                    <= c.TapOracleOic.TapOicValidation.MAX_PERCENTAGE
+                    <= c.TapOracleOic.MAX_PERCENTAGE
                 ):
                     msg = "CPU usage must be between 0 and 100 percent"
                     raise ValueError(msg)

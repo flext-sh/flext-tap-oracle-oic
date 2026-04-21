@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from enum import StrEnum, unique
-from typing import Final
+from typing import ClassVar, Final
 
 from flext_meltano import c
 from flext_oracle_oic import FlextOracleOicConstants

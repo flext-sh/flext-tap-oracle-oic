@@ -55,10 +55,7 @@ class FlextOracleOicAuthenticator:
             if response_result.failure:
                 return r[str].fail(f"OAuth2 request failed: {response_result.error}")
             response = response_result.value
-            if (
-                response.status_code
-                >= c.TapOracleOic.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD
-            ):
+            if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
                 return r[str].fail(
                     f"OAuth2 request failed with status {response.status_code}",
                 )
@@ -67,7 +64,11 @@ class FlextOracleOicAuthenticator:
                 case dict() as token_dict:
                     token_data = token_dict
                 case str() as body_str:
-                    token_data = t.CONTAINER_VALUE_MAP_ADAPTER.validate_json(body_str)
+                    token_data = (
+                        t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_json(
+                            body_str
+                        )
+                    )
                 case _:
                     return r[str].fail("Empty or invalid OAuth response body")
             access_token = token_data.get("access_token")
@@ -115,10 +116,7 @@ class FlextTapOracleOicClient:
                     f"OIC API request failed: {response_result.error}",
                 )
             response = response_result.value
-            if (
-                response.status_code
-                >= c.TapOracleOic.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD
-            ):
+            if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
                 return r[FlextApiModels.Api.HttpResponse].fail(
                     f"OIC API request failed with status {response.status_code}",
                 )
@@ -142,8 +140,8 @@ class FlextTapOracleOicClient:
             )
         try:
             json_body = (
-                t.CONTAINER_VALUE_MAP_ADAPTER.dump_json(
-                    t.CONTAINER_VALUE_MAP_ADAPTER.validate_python(data),
+                t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.dump_json(
+                    t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(data),
                 ).decode("utf-8")
                 if data
                 else None
@@ -158,10 +156,7 @@ class FlextTapOracleOicClient:
                     f"OIC API request failed: {response_result.error}",
                 )
             response = response_result.value
-            if (
-                response.status_code
-                >= c.TapOracleOic.TapOicHttp.HTTP_ERROR_STATUS_THRESHOLD
-            ):
+            if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
                 return r[FlextApiModels.Api.HttpResponse].fail(
                     f"OIC API request failed with status {response.status_code}",
                 )
@@ -309,7 +304,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             ],
         }
         return r[Mapping[str, t.Container]].ok(
-            t.CONTAINER_VALUE_MAP_ADAPTER.validate_python(catalog),
+            t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(catalog),
         )
 
     @staticmethod

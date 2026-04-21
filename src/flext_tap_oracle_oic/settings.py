@@ -40,7 +40,7 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
     ]
     page_size: Annotated[
         t.PositiveInt,
-        u.Field(default=c.TapOracleOic.TapOicProcessing.DEFAULT_PAGE_SIZE),
+        u.Field(default=c.TapOracleOic.DEFAULT_PAGE_SIZE),
     ]
 
     def get_api_base_url(self) -> str:
