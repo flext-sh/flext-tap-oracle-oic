@@ -17,181 +17,131 @@ from collections.abc import (
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
-from flext_api import FlextApi, FlextApiModels, FlextApiSettings
-from flext_core import (
-    FlextConstants,
-    FlextModels,
-)
-from flext_meltano import FlextMeltanoModels, m, u
-from flext_oracle_oic import FlextOracleOicModels
+from flext_api import FlextApi, FlextApiSettings
+from flext_meltano import m as meltano_m
+from flext_oracle_oic import m
 
-from flext_tap_oracle_oic import FlextTapOracleOicUtilities, c, e, t
+from flext_tap_oracle_oic import FlextTapOracleOicUtilities, c, e, t, u
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import p
 
 
-class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
-    """Oracle Integration Cloud tap models extending flext-core FlextModels.
+class FlextTapOracleOicModels(meltano_m, m):
+    """Oracle Integration Cloud tap models extending flext-core m.
 
     Provides complete models for OIC entity extraction, authentication,
     monitoring, and Singer protocol compliance following standardized patterns.
     """
 
-    @staticmethod
-    def _get_oic_paginator_class() -> (
-        p.TapOracleOic.TapOracleOicPrivate.PaginatorFactory
-    ):
-        """Lazy import to break circular dependency between models and tap_streams."""
-        from flext_tap_oracle_oic import FlextTapOracleOicPaginator as _Cls
-
-        return _Cls
-
-    @staticmethod
-    def as_value_list(
-        value: t.Container | None,
-    ) -> Sequence[t.Container] | None:
-        """Validate payload as strict t.FlatContainerList."""
-        try:
-            return t.GENERAL_LIST_ADAPTER.validate_python(value)
-        except c.ValidationError:
-            return None
-
-    @staticmethod
-    def _as_value_map(
-        value: t.Container | None,
-    ) -> t.ContainerValueMapping | None:
-        """Validate payload as strict Mapping[str, t.Container]."""
-        try:
-            return t.GENERAL_MAP_ADAPTER.validate_python(value)
-        except c.ValidationError:
-            return None
-
-    @staticmethod
-    def _as_string_list(value: t.Container | None) -> t.StrSequence | None:
-        """Validate payload as strict t.StrSequence."""
-        try:
-            return t.STRING_LIST_ADAPTER.validate_python(value)
-        except c.ValidationError:
-            return None
-
-    @staticmethod
-    def as_oic_envelope(
-        value: t.ContainerValueMapping,
-    ) -> FlextTapOracleOicModels.TapOracleOic.OicEnvelope | None:
-        """Validate payload as an OIC envelope model."""
-        try:
-            return FlextTapOracleOicModels.TapOracleOic.OicEnvelope.model_validate(
-                value,
-                strict=True,
-            )
-        except c.ValidationError:
-            return None
-
-    # Dynamic attributes for runtime configuration (accessed via hasattr checks)
-    _oic_authentication: t.ContainerValueMapping | None = None
-    _stream_configurations: t.ContainerValueMapping | None = None
-    _singer_mode: t.ContainerValueMapping | None = None
-    _include_oic_metadata: t.ContainerValueMapping | None = None
-
-    @u.computed_field()
-    @property
-    def active_oic_tap_models_count(self) -> int:
-        """Count of active Oracle OIC tap models with API extraction capabilities."""
-        return self._count_active_oic_tap_models()
-
-    @u.computed_field()
-    @property
-    def oic_tap_system_summary(self) -> t.ContainerValueMapping:
-        """Complete Singer Oracle OIC tap system summary with API extraction capabilities."""
-        model_count: int = self._count_active_oic_tap_models()
-        return {
-            "total_models": model_count,
-            "tap_type": "singer_oracle_oic_api_extractor",
-            "extraction_features": [
-                "oic_integration_monitoring",
-                "connection_metadata_extraction",
-                "activity_incremental_replication",
-                "package_management_tracking",
-                "performance_metrics_collection",
-                "agent_health_monitoring",
-            ],
-            "singer_compliance": {
-                "protocol_version": "singer_v1",
-                "stream_discovery": True,
-                "catalog_generation": True,
-                "state_management": True,
-                "incremental_bookmarking": True,
-            },
-            "oic_capabilities": {
-                "oauth2_authentication": True,
-                "api_pagination": True,
-                "data_sanitization": True,
-                "error_recovery": True,
-                "rate_limit_handling": True,
-            },
-        }
-
-    @u.field_serializer("*", when_used="json")
-    def serialize_with_oic_metadata(
-        self,
-        value: t.ContainerValueMapping,
-        _info: u.FieldSerializationInfo,
-    ) -> t.ContainerValueMapping:
-        """Add Singer Oracle OIC tap metadata to all serialized fields."""
-        return {
-            **value,
-            "_oic_tap_metadata": {
-                "extraction_timestamp": datetime.now(UTC).isoformat(),
-                "tap_type": "oracle_oic_api_extractor",
-                "singer_protocol": "v1.0",
-                "data_source": "oracle_integration_cloud",
-            },
-        }
-
-    @u.model_validator(mode="after")
-    def validate_oic_tap_system_consistency(self) -> Self:
-        """Validate Singer Oracle OIC tap system consistency and configuration."""
-        # Singer OIC tap authentication validation
-        if self._oic_authentication and not hasattr(self, "OicAuthenticationConfig"):
-            msg = "OicAuthenticationConfig required when OIC authentication configured"
-            raise ValueError(msg)
-
-        # Stream configuration validation
-        if self._stream_configurations and not hasattr(self, "OicStreamConfiguration"):
-            msg = "OicStreamConfiguration required for stream configurations"
-            raise ValueError(msg)
-
-        # Singer protocol compliance validation
-        if self._singer_mode:
-            required_models = ["OicApiResponse", "OicErrorContext"]
-            for model in required_models:
-                if not hasattr(self, model):
-                    msg = f"{model} required for Singer protocol compliance"
-                    raise ValueError(msg)
-
-        return self
-
-    # Advanced Pydantic 2.11 Features - Singer Oracle OIC Tap Domain
-
-    def _count_active_oic_tap_models(self) -> int:
-        """Count of active Oracle OIC tap models with API extraction capabilities."""
-        model_names = [
-            "OicAuthenticationConfig",
-            "OicIntegrationEntity",
-            "OicConnectionEntity",
-            "OicActivityRecord",
-            "OicPackageEntity",
-            "OicMetricsRecord",
-            "OicAgentEntity",
-            "OicStreamConfiguration",
-            "OicApiResponse",
-            "OicErrorContext",
-        ]
-        return sum(1 for name in model_names if getattr(self, name) is not None)
-
     class TapOracleOic:
         """TapOracleOic domain namespace."""
+
+        # Dynamic attributes for runtime configuration (accessed via hasattr checks)
+        _oic_authentication: t.ContainerValueMapping | None = None
+        _stream_configurations: t.ContainerValueMapping | None = None
+        _singer_mode: t.ContainerValueMapping | None = None
+        _include_oic_metadata: t.ContainerValueMapping | None = None
+
+        @u.computed_field()
+        @property
+        def active_oic_tap_models_count(self) -> int:
+            """Count of active Oracle OIC tap models with API extraction capabilities."""
+            return self._count_active_oic_tap_models()
+
+        @u.computed_field()
+        @property
+        def oic_tap_system_summary(self) -> t.ContainerValueMapping:
+            """Complete Singer Oracle OIC tap system summary with API extraction capabilities."""
+            model_count: int = self._count_active_oic_tap_models()
+            return {
+                "total_models": model_count,
+                "tap_type": "singer_oracle_oic_api_extractor",
+                "extraction_features": [
+                    "oic_integration_monitoring",
+                    "connection_metadata_extraction",
+                    "activity_incremental_replication",
+                    "package_management_tracking",
+                    "performance_metrics_collection",
+                    "agent_health_monitoring",
+                ],
+                "singer_compliance": {
+                    "protocol_version": "singer_v1",
+                    "stream_discovery": True,
+                    "catalog_generation": True,
+                    "state_management": True,
+                    "incremental_bookmarking": True,
+                },
+                "oic_capabilities": {
+                    "oauth2_authentication": True,
+                    "api_pagination": True,
+                    "data_sanitization": True,
+                    "error_recovery": True,
+                    "rate_limit_handling": True,
+                },
+            }
+
+        @u.field_serializer("*", when_used="json")
+        def serialize_with_oic_metadata(
+            self,
+            value: t.ContainerValueMapping,
+            _info: u.FieldSerializationInfo,
+        ) -> t.ContainerValueMapping:
+            """Add Singer Oracle OIC tap metadata to all serialized fields."""
+            return {
+                **value,
+                "_oic_tap_metadata": {
+                    "extraction_timestamp": datetime.now(UTC).isoformat(),
+                    "tap_type": "oracle_oic_api_extractor",
+                    "singer_protocol": "v1.0",
+                    "data_source": "oracle_integration_cloud",
+                },
+            }
+
+        @u.model_validator(mode="after")
+        def validate_oic_tap_system_consistency(self) -> Self:
+            """Validate Singer Oracle OIC tap system consistency and configuration."""
+            # Singer OIC tap authentication validation
+            if self._oic_authentication and not hasattr(
+                self, "OicAuthenticationConfig"
+            ):
+                msg = "OicAuthenticationConfig required when OIC authentication configured"
+                raise ValueError(msg)
+
+            # Stream configuration validation
+            if self._stream_configurations and not hasattr(
+                self, "OicStreamConfiguration"
+            ):
+                msg = "OicStreamConfiguration required for stream configurations"
+                raise ValueError(msg)
+
+            # Singer protocol compliance validation
+            if self._singer_mode:
+                required_models = ["OicApiResponse", "OicErrorContext"]
+                for model in required_models:
+                    if not hasattr(self, model):
+                        msg = f"{model} required for Singer protocol compliance"
+                        raise ValueError(msg)
+
+            return self
+
+        # Advanced Pydantic 2.11 Features - Singer Oracle OIC Tap Domain
+
+        def _count_active_oic_tap_models(self) -> int:
+            """Count of active Oracle OIC tap models with API extraction capabilities."""
+            model_names = [
+                "OicAuthenticationConfig",
+                "OicIntegrationEntity",
+                "OicConnectionEntity",
+                "OicActivityRecord",
+                "OicPackageEntity",
+                "OicMetricsRecord",
+                "OicAgentEntity",
+                "OicStreamConfiguration",
+                "OicApiResponse",
+                "OicErrorContext",
+            ]
+            return sum(1 for name in model_names if getattr(self, name) is not None)
 
         class OicEnvelope(m.BaseModel):
             """OIC API response envelope for paginated list endpoints.
@@ -219,7 +169,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             - Support for all OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
             """
 
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 arbitrary_types_allowed=True,
             )
 
@@ -250,17 +200,14 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Base URL with appropriate OIC API endpoint for stream type.
 
                 """
-                utilities = FlextTapOracleOicUtilities()
                 base_url = str(
                     self.settings.get("base_url") or self.settings.get("oic_url", ""),
                 ).rstrip("/")
                 if not base_url:
                     msg = "Base URL is required but not configured"
                     raise ValueError(msg)
-                validation_result = (
-                    utilities.TapOracleOic.OicApiProcessing.validate_oic_endpoint(
-                        base_url,
-                    )
+                validation_result = FlextTapOracleOicUtilities.TapOracleOic.OicApiProcessing.validate_oic_endpoint(
+                    base_url,
                 )
                 if validation_result.failure:
                     msg = f"Invalid OIC endpoint: {validation_result.error}"
@@ -374,7 +321,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             def parse_response(
                 self,
-                response: FlextApiModels.Api.HttpResponse,
+                response: m.Api.HttpResponse,
             ) -> Iterator[t.ContainerValueMapping]:
                 """Parse Oracle OIC API response and yield records with validation.
 
@@ -463,7 +410,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             def _get_response_data(
                 self,
-                response: FlextApiModels.Api.HttpResponse,
+                response: m.Api.HttpResponse,
             ) -> t.ContainerValueMapping | Sequence[t.Container]:
                 """Normalize flext-api response bodies to OIC payload structures."""
                 match response.body:
@@ -479,7 +426,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             def _get_response_identifier(
                 self,
-                response: FlextApiModels.Api.HttpResponse,
+                response: m.Api.HttpResponse,
             ) -> str:
                 """Return a stable identifier for response logging."""
                 if response.request_id:
@@ -488,7 +435,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             def _handle_response_error(
                 self,
-                response: FlextApiModels.Api.HttpResponse,
+                response: m.Api.HttpResponse,
             ) -> None:
                 """Handle Oracle OIC API response errors with proper categorization."""
                 error_message: t.Container | None = None
@@ -553,10 +500,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 """Process dict-type response data with OIC format detection."""
                 envelope = FlextTapOracleOicModels.as_oic_envelope(data)
                 if envelope is not None and envelope.items is not None:
-                    yield from self._process_list_data(envelope.items)
+                    yield from self._process_list_data(list(envelope.items))
                     return
                 if envelope is not None and envelope.data is not None:
-                    yield from self._process_list_data(envelope.data)
+                    yield from self._process_list_data(list(envelope.data))
                     return
                 if self._is_single_record(data):
                     yield data
@@ -573,7 +520,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             def _track_response_metrics(
                 self,
-                response: FlextApiModels.Api.HttpResponse,
+                response: m.Api.HttpResponse,
                 data: t.ContainerValueMapping | Sequence[t.Container],
             ) -> None:
                 """Track response metrics for monitoring and optimization."""
@@ -595,13 +542,13 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             def _validate_record(self, record: t.ContainerValueMapping) -> bool:
                 """Validate record meets basic requirements for processing."""
-                return FlextTapOracleOicModels._as_value_map(dict(record)) is not None
+                return FlextTapOracleOicModels._as_value_map(record) is not None
 
-        class OicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
+        class OicAuthenticationConfig(meltano_m.ArbitraryTypesModel):
             """OAuth2/IDCS authentication configuration for OIC API access."""
 
             # Pydantic 2.11 Configuration - Authentication Features
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 json_schema_extra={
                     "description": "OAuth2/IDCS authentication for Oracle OIC API",
                     "examples": [
@@ -666,11 +613,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 """OAuth2 authentication configuration summary."""
                 return {
                     "oauth_setup": {
-                        "client_id": self.oauth_client_id[
-                            : FlextConstants.MIN_NAME_LENGTH
-                        ]
-                        + "..."
-                        if len(self.oauth_client_id) > FlextConstants.MIN_NAME_LENGTH
+                        "client_id": self.oauth_client_id[: c.MIN_NAME_LENGTH] + "..."
+                        if len(self.oauth_client_id) > c.MIN_NAME_LENGTH
                         else self.oauth_client_id,
                         "token_endpoint": self.oauth_token_url,
                         "audience": self.oauth_client_aud,
@@ -705,11 +649,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicIntegrationEntity(FlextMeltanoModels.Entity):
+        class OicIntegrationEntity(meltano_m.Entity):
             """OIC Integration entity with complete metadata."""
 
             # Pydantic 2.11 Configuration - Integration Features
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC integration with complete metadata",
                     "examples": [
@@ -853,11 +797,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicConnectionEntity(FlextMeltanoModels.Entity):
+        class OicConnectionEntity(meltano_m.Entity):
             """OIC Connection entity with security sanitization."""
 
             # Pydantic 2.11 Configuration - Connection Features
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC connection with security sanitization",
                     "examples": [
@@ -1000,19 +944,17 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     msg = "Connection name is required"
                     raise ValueError(msg)
                 if self.port is not None and not (
-                    c.DEFAULT_RETRY_DELAY_SECONDS
-                    <= self.port
-                    <= FlextConstants.MAX_PORT
+                    c.DEFAULT_RETRY_DELAY_SECONDS <= self.port <= c.MAX_PORT
                 ):
                     msg = "Port must be between 1 and 65535"
                     raise ValueError(msg)
                 return self
 
-        class OicActivityRecord(FlextMeltanoModels.Entity):
+        class OicActivityRecord(meltano_m.Entity):
             """OIC Activity monitoring record for incremental replication."""
 
             # Pydantic 2.11 Configuration - Activity Features
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC activity record with performance tracking",
                     "examples": [
@@ -1152,11 +1094,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicPackageEntity(FlextMeltanoModels.Entity):
+        class OicPackageEntity(meltano_m.Entity):
             """OIC Package entity for integration packages."""
 
             # Pydantic 2.11 Configuration - Package Features
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC package with dependency tracking",
                     "examples": [
@@ -1278,11 +1220,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicMetricsRecord(FlextMeltanoModels.Entity):
+        class OicMetricsRecord(meltano_m.Entity):
             """OIC Metrics record for performance monitoring."""
 
             # Pydantic 2.11 Configuration - Metrics Features
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC performance metrics with resource monitoring",
                     "examples": [
@@ -1427,11 +1369,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicAgentEntity(FlextMeltanoModels.Entity):
+        class OicAgentEntity(meltano_m.Entity):
             """OIC Agent entity for connectivity agents."""
 
             # Pydantic 2.11 Configuration - Agent Features
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC connectivity agent with health monitoring",
                     "examples": [
@@ -1564,19 +1506,17 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     msg = "Agent name is required"
                     raise ValueError(msg)
                 if self.port is not None and not (
-                    c.DEFAULT_RETRY_DELAY_SECONDS
-                    <= self.port
-                    <= FlextConstants.MAX_PORT
+                    c.DEFAULT_RETRY_DELAY_SECONDS <= self.port <= c.MAX_PORT
                 ):
                     msg = "Port must be between 1 and 65535"
                     raise ValueError(msg)
                 return self
 
-        class OicStreamConfiguration(FlextMeltanoModels.ArbitraryTypesModel):
+        class OicStreamConfiguration(meltano_m.ArbitraryTypesModel):
             """Configuration for OIC tap streams."""
 
             # Pydantic 2.11 Configuration - Stream Features
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC tap stream configuration with filtering",
                     "examples": [
@@ -1697,11 +1637,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicApiResponse(FlextMeltanoModels.Entity):
+        class OicApiResponse(meltano_m.Entity):
             """Standardized OIC API response wrapper."""
 
             # Pydantic 2.11 Configuration - API Response Features
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC API response with pagination and error handling",
                     "examples": [
@@ -1827,11 +1767,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     raise ValueError(msg)
                 return self
 
-        class OicErrorContext(FlextMeltanoModels.Entity):
+        class OicErrorContext(meltano_m.Entity):
             """Error context for OIC API error handling."""
 
             # Pydantic 2.11 Configuration - Error Context Features
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 json_schema_extra={
                     "description": "Oracle OIC API error context with recovery guidance",
                     "examples": [
@@ -1931,9 +1871,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             def validate_error_context(self) -> Self:
                 """Validate OIC error context."""
                 if self.http_status_code is not None and not (
-                    FlextConstants.HTTP_STATUS_MIN
-                    <= self.http_status_code
-                    <= FlextConstants.HTTP_STATUS_MAX
+                    c.HTTP_STATUS_MIN <= self.http_status_code <= c.HTTP_STATUS_MAX
                 ):
                     msg = "HTTP status code must be between 100 and 599"
                     raise ValueError(msg)
@@ -1963,14 +1901,14 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     return c.TapOracleOic.OicErrorSeverity.WARNING.value
                 return c.TapOracleOic.OicErrorSeverity.UNKNOWN.value
 
-        class OracleOic(FlextOracleOicModels.OracleOic):
+        class OracleOic(m.OracleOic):
             """Domain entity models for Oracle OIC resources.
 
             Canonical home for OIC entity classes, migrated from domain/entities.py
-            per MRO policy: all FlextModels subclasses live under [Project]Models.
+            per MRO policy: all m subclasses live under [Project]Models.
             """
 
-            class OICConnection(FlextModels):
+            class OICConnection(m):
                 """OIC connection domain entity using flext-core patterns."""
 
                 _flext_enforcement_exempt: ClassVar[bool] = True
@@ -2051,7 +1989,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     self.last_tested = datetime.now(UTC)
                     self.connection_status = c.TapOracleOic.ConnectionStatus.TESTED
 
-            class OICIntegration(FlextModels):
+            class OICIntegration(m):
                 """OIC integration domain entity using flext-core patterns."""
 
                 _flext_enforcement_exempt: ClassVar[bool] = True
@@ -2170,7 +2108,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     self.locked_by = None
                     self.locked_at = None
 
-            class OICLookup(FlextModels):
+            class OICLookup(m):
                 """OIC lookup table domain entity using flext-core patterns."""
 
                 _flext_enforcement_exempt: ClassVar[bool] = True
@@ -2246,7 +2184,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     self.row_count = row_count
                     self.data_size_bytes = data_size
 
-            class OICMonitoringRecord(FlextModels):
+            class OICMonitoringRecord(m):
                 """OIC monitoring record domain entity using flext-core patterns."""
 
                 instance_id: Annotated[
@@ -2325,7 +2263,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         "succeeded",
                     }
 
-            class OICProject(FlextModels):
+            class OICProject(m):
                 """OIC project domain entity using flext-core patterns."""
 
                 _flext_enforcement_exempt: ClassVar[bool] = True
@@ -2397,7 +2335,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     if integration_id in self.integration_ids:
                         self.integration_ids.remove(integration_id)
 
-            class OICResourceMetadata(FlextModels):
+            class OICResourceMetadata(m):
                 """OIC resource metadata value object."""
 
                 resource_type: Annotated[
@@ -2423,7 +2361,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     u.Field(None, description="Last update timestamp"),
                 ]
 
-            class OICExecutionSummary(FlextModels):
+            class OICExecutionSummary(m):
                 """OIC execution summary value object."""
 
                 integration_id: Annotated[

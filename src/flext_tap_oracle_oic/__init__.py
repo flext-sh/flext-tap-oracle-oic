@@ -14,7 +14,7 @@ from flext_core.lazy import (
 from flext_tap_oracle_oic.__version__ import *
 
 if _t.TYPE_CHECKING:
-    from flext_oracle_oic import d, e, h, r, s, x
+    from flext_meltano import d, e, h, r, s, x
 
     from flext_tap_oracle_oic._models.streams import (
         ALL_STREAMS,
@@ -105,7 +105,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "FlextTapOracleOicUtilities",
                 "u",
             ),
-            "flext_oracle_oic": (
+            "flext_meltano": (
                 "d",
                 "e",
                 "h",

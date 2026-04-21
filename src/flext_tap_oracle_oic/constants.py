@@ -12,23 +12,27 @@ from __future__ import annotations
 from enum import StrEnum, unique
 from typing import Final
 
-from flext_meltano import FlextMeltanoConstants
+from flext_meltano import c
 from flext_oracle_oic import FlextOracleOicConstants
 
 
-class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants):
+class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
     """FLEXT Oracle OIC TAP constants extending flext-core platform constants.
 
     Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
     """
 
-    OIC_API_BASE_PATH: Final[str] = "/ic/api/integration/v1"
-    OIC_MONITORING_API_PATH: Final[str] = "/ic/api/monitoring/v1"
-    OIC_B2B_API_PATH: Final[str] = "/ic/api/b2b/v1"
-    OIC_PROCESS_API_PATH: Final[str] = "/ic/api/process/v1"
-
     class TapOracleOic:
         """OIC connection configuration."""
+
+        DEFAULT_BATCH_SIZE: ClassVar[int] = 100
+        MAX_RETRIES: ClassVar[int] = 3
+        DEFAULT_PAGE_SIZE: ClassVar[int] = 50
+
+        OIC_API_BASE_PATH: Final[str] = "/ic/api/integration/v1"
+        OIC_MONITORING_API_PATH: Final[str] = "/ic/api/monitoring/v1"
+        OIC_B2B_API_PATH: Final[str] = "/ic/api/b2b/v1"
+        OIC_PROCESS_API_PATH: Final[str] = "/ic/api/process/v1"
 
         DEFAULT_TIMEOUT: Final[int] = (
             FlextOracleOicConstants.OracleOic.MIN_REQUEST_TIMEOUT
@@ -47,49 +51,27 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         EXTENDED_STREAMS: Final[tuple[str, ...]] = ("projects",)
         MONITORING_STREAMS: Final[tuple[str, ...]] = ("executions", "metrics")
 
-        class TapOicProcessing:
-            """OIC tap processing configuration.
+        MAX_PAGE_SIZE: Final[int] = 1000
+        MIN_PAGE_SIZE: Final[int] = FlextOracleOicConstants.DEFAULT_RETRY_DELAY_SECONDS
+        DEFAULT_PAGINATOR_START: Final[int] = 0
+        DEFAULT_PAGINATOR_PAGE_SIZE: Final[int] = 100
+        PAGINATOR_MAX_PAGE_SIZE: Final[int] = 1000
+        PAGINATOR_MIN_PAGE_SIZE: Final[int] = 10
 
-            Note: Does not override parent Processing class to avoid inheritance conflicts.
-            """
+        HTTP_OK: Final[int] = 200
+        HTTP_UNAUTHORIZED: Final[int] = 401
+        HTTP_FORBIDDEN: Final[int] = 403
+        HTTP_ERROR_STATUS_THRESHOLD: Final[int] = 400
+        HTTP_RATE_LIMITED: Final[int] = 429
+        JSON_MIME: Final[str] = "application/json"
 
-            DEFAULT_PAGE_SIZE: Final[int] = (
-                FlextOracleOicConstants.OracleOic.DEFAULT_PAGE_SIZE
-            )
-            MAX_PAGE_SIZE: Final[int] = 1000
-            MIN_PAGE_SIZE: Final[int] = (
-                FlextOracleOicConstants.DEFAULT_RETRY_DELAY_SECONDS
-            )
-            DEFAULT_PAGINATOR_START: Final[int] = 0
-            DEFAULT_PAGINATOR_PAGE_SIZE: Final[int] = 100
-            PAGINATOR_MAX_PAGE_SIZE: Final[int] = 1000
-            PAGINATOR_MIN_PAGE_SIZE: Final[int] = 10
+        MIN_TOKEN_EXPIRY_BUFFER: Final[int] = 60
+        MIN_PERCENTAGE: Final[float] = 0.0
+        MAX_PERCENTAGE: Final[float] = 100.0
 
-        class TapOicHttp:
-            """HTTP status codes and MIME types for OIC API communication."""
-
-            HTTP_OK: Final[int] = 200
-            HTTP_UNAUTHORIZED: Final[int] = 401
-            HTTP_FORBIDDEN: Final[int] = 403
-            HTTP_ERROR_STATUS_THRESHOLD: Final[int] = 400
-            HTTP_RATE_LIMITED: Final[int] = 429
-            JSON_MIME: Final[str] = "application/json"
-
-        class TapOicValidation:
-            """OIC tap validation constants."""
-
-            MIN_TOKEN_EXPIRY_BUFFER: Final[int] = 60
-            MIN_PERCENTAGE: Final[float] = 0.0
-            MAX_PERCENTAGE: Final[float] = 100.0
-
-        class TapOicPerformance:
-            """OIC tap performance and monitoring constants."""
-
-            RESPONSE_TIME_HISTORY_SIZE: Final[int] = 10
-            MIN_RESPONSE_SAMPLES: Final[int] = 5
-            SLOW_RESPONSE_THRESHOLD: Final[float] = 5.0
-            MIN_PERCENTAGE: Final[float] = 0.0
-            MAX_PERCENTAGE: Final[float] = 100.0
+        RESPONSE_TIME_HISTORY_SIZE: Final[int] = 10
+        MIN_RESPONSE_SAMPLES: Final[int] = 5
+        SLOW_RESPONSE_THRESHOLD: Final[float] = 5.0
 
         @unique
         class OicIntegrationStatus(StrEnum):

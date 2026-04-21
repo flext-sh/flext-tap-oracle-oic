@@ -17,7 +17,7 @@ from typing import ClassVar
 
 from flext_tap_oracle_oic import m, p, t
 
-th = t()
+th = m
 
 
 def _properties_to_dict(

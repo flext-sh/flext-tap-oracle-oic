@@ -142,7 +142,9 @@ class FlextTapOracleOicClient:
             )
         try:
             json_body = (
-                t.CONTAINER_VALUE_MAP_ADAPTER.dump_json(dict(data)).decode("utf-8")
+                t.CONTAINER_VALUE_MAP_ADAPTER.dump_json(
+                    t.CONTAINER_VALUE_MAP_ADAPTER.validate_python(data),
+                ).decode("utf-8")
                 if data
                 else None
             )
@@ -306,7 +308,9 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
                 for stream in streams
             ],
         }
-        return r[Mapping[str, t.Container]].ok(catalog)
+        return r[Mapping[str, t.Container]].ok(
+            t.CONTAINER_VALUE_MAP_ADAPTER.validate_python(catalog),
+        )
 
     @staticmethod
     def _to_positive_int(value: t.Container | None, default: int) -> int:
