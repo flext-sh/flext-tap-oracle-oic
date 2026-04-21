@@ -1918,8 +1918,6 @@ class FlextTapOracleOicModels(meltano_m, m):
             class OICConnection(m):
                 """OIC connection domain entity using flext-core patterns."""
 
-                _flext_enforcement_exempt: ClassVar[bool] = True
-
                 connection_id: Annotated[
                     str,
                     u.Field(..., min_length=1, description="OIC connection identifier"),
@@ -1998,8 +1996,6 @@ class FlextTapOracleOicModels(meltano_m, m):
 
             class OICIntegration(m):
                 """OIC integration domain entity using flext-core patterns."""
-
-                _flext_enforcement_exempt: ClassVar[bool] = True
 
                 integration_id: Annotated[
                     str,
@@ -2117,8 +2113,6 @@ class FlextTapOracleOicModels(meltano_m, m):
 
             class OICLookup(m):
                 """OIC lookup table domain entity using flext-core patterns."""
-
-                _flext_enforcement_exempt: ClassVar[bool] = True
 
                 lookup_id: Annotated[
                     str,
@@ -2272,8 +2266,6 @@ class FlextTapOracleOicModels(meltano_m, m):
 
             class OICProject(m):
                 """OIC project domain entity using flext-core patterns."""
-
-                _flext_enforcement_exempt: ClassVar[bool] = True
 
                 project_id: Annotated[
                     t.NonEmptyStr,
