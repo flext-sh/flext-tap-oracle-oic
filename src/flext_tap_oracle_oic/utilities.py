@@ -690,7 +690,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
             )
 
 
-from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator
+from flext_tap_oracle_oic import FlextTapOracleOicPaginator
 
 u = FlextTapOracleOicUtilities
 
