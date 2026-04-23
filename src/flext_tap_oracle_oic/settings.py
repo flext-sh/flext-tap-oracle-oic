@@ -42,6 +42,25 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
         t.PositiveInt,
         u.Field(default=c.TapOracleOic.DEFAULT_PAGE_SIZE),
     ]
+    include_extended: Annotated[
+        bool,
+        u.Field(
+            default=False,
+            description="Include extended entity metadata streams",
+        ),
+    ]
+    include_monitoring: Annotated[
+        bool,
+        u.Field(default=False, description="Include monitoring data streams"),
+    ]
+    include_logs: Annotated[
+        bool,
+        u.Field(default=False, description="Include log data streams"),
+    ]
+    include_artifacts: Annotated[
+        bool,
+        u.Field(default=False, description="Include artifact data streams"),
+    ]
 
     def get_api_base_url(self) -> str:
         """Return base URL without trailing slash."""
