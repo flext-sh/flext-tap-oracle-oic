@@ -559,13 +559,13 @@ def mock_oic_client() -> type:
             self.authenticated = True
             return True
 
-        def get_integrations(self, **_kwargs: t.Scalar) -> t.JsonMapping:
+        def get_integrations(self, **kwargs: t.Scalar) -> t.JsonMapping:
             self.call_count["get_integrations"] = (
                 self.call_count.get("get_integrations", 0) + 1
             )
             return {"success": True, "items": [], "hasMore": False, "count": 0}
 
-        def get_connections(self, **_kwargs: t.Scalar) -> t.JsonMapping:
+        def get_connections(self, **kwargs: t.Scalar) -> t.JsonMapping:
             self.call_count["get_connections"] = (
                 self.call_count.get("get_connections", 0) + 1
             )
@@ -574,7 +574,7 @@ def mock_oic_client() -> type:
         def paginate_request(
             self,
             _request_func: Callable[..., t.JsonMapping],
-            **_kwargs: t.Scalar,
+            **kwargs: t.Scalar,
         ) -> Iterator[t.JsonMapping]:
             """Mock pagination."""
             yield from []

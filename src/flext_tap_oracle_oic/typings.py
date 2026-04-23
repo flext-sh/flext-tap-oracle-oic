@@ -52,7 +52,7 @@ class FlextTapOracleOicTypes(meltano_t, t):
             config=m.ConfigDict(strict=True),
         )
 
-        # ── Schema adapter (from _models/streams.py) ─────────────────
+        # ── Schema adapter (from models/streams.py) ─────────────────
         SCHEMA_ADAPTER: m.TypeAdapter[t.JsonMapping] = m.TypeAdapter(
             t.JsonMapping,
         )
