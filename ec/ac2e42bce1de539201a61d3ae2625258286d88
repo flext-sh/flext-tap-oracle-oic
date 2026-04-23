@@ -1,0 +1,26 @@
+src/flext_tap_oracle_oic/settings.py
+  02db55bf620bbdf2 45-63
+tests/unit/test_tap_core.py
+  02db55bf620bbdf2 160
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "ecac2e42bce1de539201a61d3ae2625258286d88",
+  "prompts": {
+    "02db55bf620bbdf2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dd88b7e6-5715-4a2d-af33-58b483877723",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "FLEXT Bot",
+      "messages": [],
+      "total_additions": 20,
+      "total_deletions": 2,
+      "accepted_lines": 20,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/554c9f0aa520d5cc6e059eddf463712ba2dad057e0be584654d7c9845331454e"
+    }
+  }
+}
