@@ -90,7 +90,7 @@ class TestTapOracleOic:
     def test_include_extended_streams(self) -> None:
         """Test method."""
         "Test include extended streams function."
-        settings: t.ContainerValueMapping = {
+        settings: t.JsonMapping = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client",
             "oauth_client_secret": "test_secret",

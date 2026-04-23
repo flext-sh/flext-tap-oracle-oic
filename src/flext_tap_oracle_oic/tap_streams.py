@@ -16,7 +16,7 @@ from flext_tap_oracle_oic import c, m, t, u
 
 
 def _as_oic_envelope(
-    value: t.ContainerValueMapping,
+    value: t.JsonMapping,
 ) -> m.TapOracleOic.OicEnvelope | None:
     try:
         return m.TapOracleOic.OicEnvelope.model_validate(value, strict=True)
@@ -56,7 +56,7 @@ class FlextTapOracleOicPaginator:
     def _normalize_response_payload(
         self,
         response: FlextApiModels.Api.HttpResponse,
-    ) -> t.ContainerValueMapping:
+    ) -> t.JsonMapping:
         """Normalize flext-api response bodies to OIC pagination payloads."""
         match response.body:
             case dict() as body_map:
@@ -67,7 +67,7 @@ class FlextTapOracleOicPaginator:
 
     def _calculate_next_offset(
         self,
-        data: t.ContainerValueMapping,
+        data: t.JsonMapping,
     ) -> int | None:
         """Calculate next offset based on OIC response format."""
         items = self._extract_items_from_response(data)
@@ -77,8 +77,8 @@ class FlextTapOracleOicPaginator:
 
     def _extract_items_from_response(
         self,
-        data: t.ContainerValueMapping,
-    ) -> Sequence[t.ContainerValueMapping] | None:
+        data: t.JsonMapping,
+    ) -> Sequence[t.JsonMapping] | None:
         """Extract items from various OIC response formats."""
         envelope = _as_oic_envelope(data)
         if envelope is None:

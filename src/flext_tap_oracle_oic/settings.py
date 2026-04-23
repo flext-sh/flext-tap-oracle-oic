@@ -66,13 +66,13 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
     @classmethod
     def create_config(
         cls,
-        oauth_params: t.ContainerValueMapping,
-        connection_params: t.ContainerValueMapping,
-        tap_params: t.ContainerValueMapping | None = None,
+        oauth_params: t.JsonMapping,
+        connection_params: t.JsonMapping,
+        tap_params: t.JsonMapping | None = None,
     ) -> p.Result[Self]:
         """Create a validated tap configuration from grouped parameter blocks."""
         try:
-            tap_config: t.MutableContainerValueMapping = (
+            tap_config: t.MutableJsonMapping = (
                 dict(tap_params) if tap_params is not None else {}
             )
             tap_config.setdefault(

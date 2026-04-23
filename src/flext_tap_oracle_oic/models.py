@@ -38,10 +38,10 @@ class FlextTapOracleOicModels(meltano_m, m):
         """TapOracleOic domain namespace."""
 
         # Dynamic attributes for runtime configuration (accessed via hasattr checks)
-        _oic_authentication: t.ContainerValueMapping | None = None
-        _stream_configurations: t.ContainerValueMapping | None = None
-        _singer_mode: t.ContainerValueMapping | None = None
-        _include_oic_metadata: t.ContainerValueMapping | None = None
+        _oic_authentication: t.JsonMapping | None = None
+        _stream_configurations: t.JsonMapping | None = None
+        _singer_mode: t.JsonMapping | None = None
+        _include_oic_metadata: t.JsonMapping | None = None
 
         @u.computed_field()
         @property
@@ -51,7 +51,7 @@ class FlextTapOracleOicModels(meltano_m, m):
 
         @u.computed_field()
         @property
-        def oic_tap_system_summary(self) -> t.ContainerValueMapping:
+        def oic_tap_system_summary(self) -> t.JsonMapping:
             """Complete Singer Oracle OIC tap system summary with API extraction capabilities."""
             model_count: int = self._count_active_oic_tap_models()
             return {
@@ -84,9 +84,9 @@ class FlextTapOracleOicModels(meltano_m, m):
         @u.field_serializer("*", when_used="json")
         def serialize_with_oic_metadata(
             self,
-            value: t.ContainerValueMapping,
+            value: t.JsonMapping,
             _info: u.FieldSerializationInfo,
-        ) -> t.ContainerValueMapping:
+        ) -> t.JsonMapping:
             """Add Singer Oracle OIC tap metadata to all serialized fields."""
             return {
                 **value,
@@ -150,8 +150,8 @@ class FlextTapOracleOicModels(meltano_m, m):
             normalizing between 'items', 'data', 'count', and 'totalSize' fields.
             """
 
-            items: Sequence[t.ContainerValueMapping] | None = None
-            data: Sequence[t.ContainerValueMapping] | None = None
+            items: Sequence[t.JsonMapping] | None = None
+            data: Sequence[t.JsonMapping] | None = None
             total_size: Annotated[int | None, u.Field(alias="totalSize")] = None
             count: int | None = None
 
@@ -173,7 +173,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                 arbitrary_types_allowed=True,
             )
 
-            settings: Annotated[t.ContainerValueMapping, u.Field(default_factory=dict)]
+            settings: Annotated[t.JsonMapping, u.Field(default_factory=dict)]
             name: Annotated[str, u.Field(default="")]
             replication_key: Annotated[str | None, u.Field(default=None)]
             logger: p.Logger = u.Field(default_factory=lambda: u.fetch_logger(__name__))
@@ -183,7 +183,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             api_path: ClassVar[str | None] = None
             api_category: ClassVar[str] = "core"
             default_sort: ClassVar[str | None] = None
-            additional_params: ClassVar[t.ContainerValueMapping | None] = None
+            additional_params: ClassVar[t.JsonMapping | None] = None
             primary_keys: ClassVar[t.StrSequence] = []
 
             @property
@@ -252,8 +252,8 @@ class FlextTapOracleOicModels(meltano_m, m):
 
             def get_records(
                 self,
-                context: t.ContainerValueMapping | None = None,
-            ) -> Iterator[t.ContainerValueMapping]:
+                context: t.JsonMapping | None = None,
+            ) -> Iterator[t.JsonMapping]:
                 """Get records from OIC API.
 
                 Args:
@@ -268,9 +268,9 @@ class FlextTapOracleOicModels(meltano_m, m):
 
             def get_url_params(
                 self,
-                context: t.ContainerValueMapping | None,
+                context: t.JsonMapping | None,
                 next_page_token: int | None,
-            ) -> t.ContainerValueMapping:
+            ) -> t.JsonMapping:
                 """Build URL parameters for Oracle OIC API requests.
 
                 Args:
@@ -281,7 +281,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                 Dictionary of URL parameters optimized for OIC API.
 
                 """
-                params: t.MutableContainerValueMapping = {}
+                params: t.MutableJsonMapping = {}
                 page_size_val = self.settings.get("page_size", 100)
                 page_size = page_size_val if isinstance(page_size_val, int) else 100
                 params["limit"] = min(page_size, 1000)
@@ -322,7 +322,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             def parse_response(
                 self,
                 response: m.Api.HttpResponse,
-            ) -> Iterator[t.ContainerValueMapping]:
+            ) -> Iterator[t.JsonMapping]:
                 """Parse Oracle OIC API response and yield records with validation.
 
                 Args:
@@ -354,19 +354,19 @@ class FlextTapOracleOicModels(meltano_m, m):
 
             def _enrich_record(
                 self,
-                record: t.ContainerValueMapping,
-            ) -> t.ContainerValueMapping:
+                record: t.JsonMapping,
+            ) -> t.JsonMapping:
                 """Enrich record with tap metadata for traceability."""
-                enriched: t.MutableContainerValueMapping = dict(record)
+                enriched: t.MutableJsonMapping = dict(record)
                 enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
                 enriched["_tap_stream_name"] = self.name
                 return enriched
 
             def _extract_and_yield_records(
                 self,
-                data: t.ContainerValueMapping | Sequence[t.Container],
+                data: t.JsonMapping | t.JsonList,
                 url: str,
-            ) -> Iterator[t.ContainerValueMapping]:
+            ) -> Iterator[t.JsonMapping]:
                 """Extract and yield records with validation and enrichment."""
                 records_yielded = 0
                 for item in self._extract_items_for_processing(data):
@@ -394,8 +394,8 @@ class FlextTapOracleOicModels(meltano_m, m):
 
             def _extract_items_for_processing(
                 self,
-                data: t.ContainerValueMapping | Sequence[t.Container],
-            ) -> Iterator[t.ContainerValueMapping]:
+                data: t.JsonMapping | t.JsonList,
+            ) -> Iterator[t.JsonMapping]:
                 """Extract items from various OIC response formats for processing."""
                 if isinstance(data, Mapping):
                     yield from self._process_dict_data(data)
@@ -408,7 +408,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             def _get_response_data(
                 self,
                 response: m.Api.HttpResponse,
-            ) -> t.ContainerValueMapping | Sequence[t.Container]:
+            ) -> t.JsonMapping | t.JsonList:
                 """Normalize flext-api response bodies to OIC payload structures."""
                 match response.body:
                     case dict() as body_map:
@@ -432,7 +432,7 @@ class FlextTapOracleOicModels(meltano_m, m):
 
             @staticmethod
             def _as_oic_envelope(
-                data: t.ContainerValueMapping,
+                data: t.JsonMapping,
             ) -> FlextTapOracleOicModels.TapOracleOic.OicEnvelope | None:
                 try:
                     return (
@@ -449,7 +449,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                 response: m.Api.HttpResponse,
             ) -> None:
                 """Handle Oracle OIC API response errors with proper categorization."""
-                error_message: t.Container | None = None
+                error_message: t.JsonValue | None = None
                 if isinstance(response.body, dict):
                     error_message = response.body.get("message") or response.body.get(
                         "error",
@@ -477,7 +477,7 @@ class FlextTapOracleOicModels(meltano_m, m):
 
             def _is_empty_result_expected(
                 self,
-                data: t.ContainerValueMapping | Sequence[t.Container],
+                data: t.JsonMapping | t.JsonList,
             ) -> bool:
                 """Check if empty result is expected/normal based on OIC response metadata."""
                 if not isinstance(data, Mapping):
@@ -492,7 +492,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                     )
                 return False
 
-            def _is_single_record(self, data: t.ContainerValueMapping) -> bool:
+            def _is_single_record(self, data: t.JsonMapping) -> bool:
                 """Check if dict represents a single record vs OIC metadata container."""
                 metadata_keys = {
                     "totalSize",
@@ -507,8 +507,8 @@ class FlextTapOracleOicModels(meltano_m, m):
 
             def _process_dict_data(
                 self,
-                data: t.ContainerValueMapping,
-            ) -> Iterator[t.ContainerValueMapping]:
+                data: t.JsonMapping,
+            ) -> Iterator[t.JsonMapping]:
                 """Process dict-type response data with OIC format detection."""
                 envelope = self._as_oic_envelope(data)
                 if envelope is not None and envelope.items is not None:
@@ -522,8 +522,8 @@ class FlextTapOracleOicModels(meltano_m, m):
 
             def _process_list_data(
                 self,
-                data: Sequence[t.Container] | Sequence[t.ContainerValueMapping],
-            ) -> Iterator[t.ContainerValueMapping]:
+                data: t.JsonList | Sequence[t.JsonMapping],
+            ) -> Iterator[t.JsonMapping]:
                 """Process list-type response data."""
                 for item in data:
                     if isinstance(item, Mapping):
@@ -536,7 +536,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             def _track_response_metrics(
                 self,
                 response: m.Api.HttpResponse,
-                data: t.ContainerValueMapping | Sequence[t.Container],
+                data: t.JsonMapping | t.JsonList,
             ) -> None:
                 """Track response metrics for monitoring and optimization."""
                 self.logger.debug("Response status: %s", response.status_code)
@@ -551,7 +551,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                 elif envelope.data is not None:
                     self.logger.debug("Received %s records", len(envelope.data))
 
-            def _validate_record(self, record: t.ContainerValueMapping) -> bool:
+            def _validate_record(self, record: t.JsonMapping) -> bool:
                 """Validate record meets basic requirements for processing."""
                 return bool(record)
 
@@ -620,7 +620,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             @property
             def auth_config_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.Container | None]]:
+            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
                 """OAuth2 authentication configuration summary."""
                 return {
                     "oauth_setup": {
@@ -759,7 +759,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             @property
             def integration_health_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.Container | None]]:
+            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
                 """OIC integration health and performance summary."""
                 error_rate = 0.0
                 if self.execution_count and self.execution_count > 0:
@@ -913,7 +913,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             @property
             def connection_security_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.Container | None]]:
+            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
                 """OIC connection security and health summary."""
                 return {
                     "connection_identity": {
@@ -1052,7 +1052,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             @property
             def activity_performance_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.Container | None]]:
+            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
                 """OIC activity performance summary."""
                 duration_seconds = 0.0
                 if self.duration_ms:
@@ -1188,7 +1188,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             @property
             def package_composition_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.Container | None]]:
+            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
                 """OIC package composition and usage summary."""
                 return {
                     "package_identity": {
@@ -1325,7 +1325,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             @property
             def metrics_analysis_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.Container | None]]:
+            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
                 """OIC metrics complete analysis summary."""
                 total_messages = (self.success_count or 0) + (self.error_count or 0)
                 error_rate = 0.0
@@ -1470,7 +1470,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             @property
             def agent_health_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.Container | None]]:
+            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
                 """OIC agent health and connectivity summary."""
                 health_status = c.TapOracleOic.OicHealthStatus.HEALTHY.value
                 if self.status in {"ERROR", "OFFLINE"}:
@@ -1602,7 +1602,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             @property
             def stream_config_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.Container | None]]:
+            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
                 """OIC stream configuration summary."""
                 return {
                     "stream_identity": {
@@ -1667,7 +1667,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                 u.Field(..., description="Response success indicator"),
             ]
             data: Annotated[
-                t.ContainerValueMapping | None,
+                t.JsonMapping | None,
                 u.Field(
                     None,
                     description="Response data payload",
@@ -1702,7 +1702,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                 ),
             ]
             error_details: Annotated[
-                Mapping[str, t.ContainerValueMapping] | None,
+                Mapping[str, t.JsonMapping] | None,
                 u.Field(
                     None,
                     description="Detailed error information",
@@ -1729,7 +1729,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             @property
             def api_response_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.Container | None]]:
+            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
                 """OIC API response summary."""
                 return {
                     "response_status": {
@@ -1818,7 +1818,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                 u.Field(None, description="HTTP method used"),
             ]
             request_params: Annotated[
-                Mapping[str, t.ContainerValueMapping] | None,
+                Mapping[str, t.JsonMapping] | None,
                 u.Field(
                     None,
                     description="Request parameters",
@@ -1851,7 +1851,7 @@ class FlextTapOracleOicModels(meltano_m, m):
             @property
             def error_context_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.Container | None]]:
+            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
                 """OIC error context summary."""
                 return {
                     "error_classification": {
@@ -1939,7 +1939,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                     u.Field(None, description="Connection endpoint URL"),
                 ]
                 connection_properties: Annotated[
-                    Mapping[str, t.ContainerValueMapping],
+                    Mapping[str, t.JsonMapping],
                     u.Field(description="Connection properties"),
                 ] = u.Field(default_factory=dict)
                 security_policy: Annotated[
@@ -2126,11 +2126,11 @@ class FlextTapOracleOicModels(meltano_m, m):
                     str | None, u.Field(None, description="Domain name")
                 ]
                 columns: Annotated[
-                    Sequence[t.FlatContainerMapping],
+                    Sequence[t.JsonMapping],
                     u.Field(
                         description="Column definitions",
                     ),
-                ] = u.Field(default_factory=list[t.FlatContainerMapping])
+                ] = u.Field(default_factory=list[t.JsonMapping])
                 key_columns: Annotated[
                     t.StrSequence,
                     u.Field(description="Key column names"),
@@ -2232,7 +2232,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                     t.NonNegativeInt, u.Field(description="Number of errors")
                 ] = 0
                 business_identifiers: Annotated[
-                    Mapping[str, t.ContainerValueMapping],
+                    Mapping[str, t.JsonMapping],
                     u.Field(
                         description="Business tracking identifiers",
                     ),

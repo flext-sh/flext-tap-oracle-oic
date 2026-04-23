@@ -113,7 +113,7 @@ class FlextTapOracleOicHealthChecker:
                 }
             response = response_result.value
             if response.status_code in {200, 202}:
-                body_: t.ContainerValueMapping
+                body_: t.JsonMapping
                 match response.body:
                     case dict() as body_dict:
                         body_ = body_dict
@@ -165,7 +165,7 @@ class FlextTapOracleOicHealthChecker:
                 }
             response = response_result.value
             if response.status_code == c.TapOracleOic.HTTP_OK:
-                integration_: t.ContainerValueMapping
+                integration_: t.JsonMapping
                 match response.body:
                     case dict() as integration_dict:
                         integration_ = integration_dict

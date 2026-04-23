@@ -95,7 +95,7 @@ class TestTapOracleOicCore:
 
     def test_extended_streams_discovery(self) -> None:
         """Test method."""
-        settings: t.ContainerValueMapping = {
+        settings: t.JsonMapping = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
             "oauth_client_secret": "test_client_secret",
@@ -121,7 +121,7 @@ class TestTapOracleOicCore:
 
     def test_extended_streams_disabled(self) -> None:
         """Test method."""
-        settings: t.ContainerValueMapping = {
+        settings: t.JsonMapping = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
             "oauth_client_secret": "test_client_secret",
@@ -137,7 +137,7 @@ class TestTapOracleOicCore:
 
     def test_discover_streams(self) -> None:
         """Test method."""
-        settings: t.ContainerValueMapping = {
+        settings: t.JsonMapping = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
             "oauth_client_secret": "test_client_secret",

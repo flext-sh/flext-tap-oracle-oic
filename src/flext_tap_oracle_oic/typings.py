@@ -25,12 +25,12 @@ class FlextTapOracleOicTypes(meltano_t, t):
         )
 
         # ── Strict adapters (from utilities.py) ───────────────────────
-        STRICT_LIST_ADAPTER: m.TypeAdapter[t.Cli.JsonList] = m.TypeAdapter(
-            t.Cli.JsonList,
+        STRICT_LIST_ADAPTER: m.TypeAdapter[t.JsonList] = m.TypeAdapter(
+            t.JsonList,
             config=m.ConfigDict(strict=True),
         )
-        STRICT_MAP_ADAPTER: m.TypeAdapter[t.Cli.JsonMapping] = m.TypeAdapter(
-            t.Cli.JsonMapping,
+        STRICT_MAP_ADAPTER: m.TypeAdapter[t.JsonMapping] = m.TypeAdapter(
+            t.JsonMapping,
             config=m.ConfigDict(strict=True),
         )
         STRICT_INT_ADAPTER: m.TypeAdapter[int] = m.TypeAdapter(
@@ -39,12 +39,12 @@ class FlextTapOracleOicTypes(meltano_t, t):
         )
 
         # ── General adapters (from models.py) ─────────────────────────
-        GENERAL_LIST_ADAPTER: m.TypeAdapter[t.Cli.JsonList] = m.TypeAdapter(
-            t.Cli.JsonList,
+        GENERAL_LIST_ADAPTER: m.TypeAdapter[t.JsonList] = m.TypeAdapter(
+            t.JsonList,
             config=m.ConfigDict(strict=True),
         )
-        GENERAL_MAP_ADAPTER: m.TypeAdapter[t.Cli.JsonMapping] = m.TypeAdapter(
-            t.Cli.JsonMapping,
+        GENERAL_MAP_ADAPTER: m.TypeAdapter[t.JsonMapping] = m.TypeAdapter(
+            t.JsonMapping,
             config=m.ConfigDict(strict=True),
         )
         STRING_LIST_ADAPTER: m.TypeAdapter[t.StrSequence] = m.TypeAdapter(
@@ -53,8 +53,8 @@ class FlextTapOracleOicTypes(meltano_t, t):
         )
 
         # ── Schema adapter (from _models/streams.py) ─────────────────
-        SCHEMA_ADAPTER: m.TypeAdapter[t.Cli.JsonMapping] = m.TypeAdapter(
-            t.Cli.JsonMapping,
+        SCHEMA_ADAPTER: m.TypeAdapter[t.JsonMapping] = m.TypeAdapter(
+            t.JsonMapping,
         )
 
 

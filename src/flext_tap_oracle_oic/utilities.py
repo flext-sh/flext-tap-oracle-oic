@@ -11,7 +11,6 @@ import re
 from collections.abc import (
     Mapping,
     MutableMapping,
-    Sequence,
 )
 from datetime import UTC, datetime
 from urllib.parse import urljoin, urlparse
@@ -35,11 +34,8 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
         @staticmethod
         def as_list(
-            value: t.Container
-            | Sequence[t.Container]
-            | Mapping[str, t.Container]
-            | None,
-        ) -> Sequence[t.Container] | None:
+            value: t.JsonValue | t.JsonList | t.JsonMapping | None,
+        ) -> t.JsonList | None:
             """Strict list validation via Pydantic adapter."""
             try:
                 return t.TapOracleOic.STRICT_LIST_ADAPTER.validate_python(
@@ -50,11 +46,8 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
         @staticmethod
         def as_map(
-            value: t.Container
-            | Mapping[str, t.Container]
-            | Sequence[t.Container]
-            | None,
-        ) -> t.ContainerValueMapping | None:
+            value: t.JsonValue | t.JsonMapping | t.JsonList | None,
+        ) -> t.JsonMapping | None:
             """Strict map validation via Pydantic adapter."""
             try:
                 return t.TapOracleOic.STRICT_MAP_ADAPTER.validate_python(value)
@@ -62,7 +55,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
                 return None
 
         @staticmethod
-        def as_int(value: t.Container | None) -> int | None:
+        def as_int(value: t.JsonValue | None) -> int | None:
             """Strict integer validation via Pydantic adapter."""
             try:
                 return t.TapOracleOic.STRICT_INT_ADAPTER.validate_python(value)
@@ -110,15 +103,15 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
         @staticmethod
         def extract_pagination_info(
-            response: Mapping[str, t.ContainerValueMapping] | None,
-        ) -> t.ContainerValueMapping:
+            response: Mapping[str, t.JsonMapping] | None,
+        ) -> t.JsonMapping:
             """Extract pagination information from OIC response.
 
             Args:
             response: OIC API response
 
             Returns:
-            t.ContainerValueMapping: Pagination information
+            t.JsonMapping: Pagination information
 
             """
             if not response:
@@ -131,7 +124,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
                 }
             items = response.get("items", [])
             items_list_raw = FlextTapOracleOicUtilities.TapOracleOic.as_list(items)
-            items_list: Sequence[t.Container] = (
+            items_list: t.JsonList = (
                 items_list_raw if items_list_raw is not None else []
             )
             return t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python({
@@ -147,19 +140,19 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
         @staticmethod
         def parse_oic_response(
-            response_data: t.ContainerValueMapping,
-        ) -> p.Result[t.ContainerValueMapping]:
+            response_data: t.JsonMapping,
+        ) -> p.Result[t.JsonMapping]:
             """Parse Oracle OIC API response.
 
             Args:
             response_data: Raw API response data
 
             Returns:
-            r[t.ContainerValueMapping]: Parsed response or error
+            r[t.JsonMapping]: Parsed response or error
 
             """
             if not response_data:
-                return r[t.ContainerValueMapping].fail(
+                return r[t.JsonMapping].fail(
                     "Response data cannot be empty",
                 )
             try:
@@ -172,9 +165,9 @@ class FlextTapOracleOicUtilities(u, meltano_u):
                 }
                 if "data" in response_data:
                     parsed_response["items"] = response_data["data"]
-                return r[t.ContainerValueMapping].ok(parsed_response)
+                return r[t.JsonMapping].ok(parsed_response)
             except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-                return r[t.ContainerValueMapping].fail(
+                return r[t.JsonMapping].fail(
                     f"Response parsing error: {e}",
                 )
 
@@ -203,20 +196,20 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
         @staticmethod
         def extract_integration_metadata(
-            integration_data: t.ContainerValueMapping | None,
-        ) -> t.ContainerValueMapping:
+            integration_data: t.JsonMapping | None,
+        ) -> t.JsonMapping:
             """Extract metadata from Oracle OIC integration data.
 
             Args:
             integration_data: Raw integration data
 
             Returns:
-            t.ContainerValueMapping: Extracted metadata
+            t.JsonMapping: Extracted metadata
 
             """
             if not integration_data:
                 return {}
-            metadata: MutableMapping[str, t.Container | None] = {
+            metadata: MutableMapping[str, t.JsonValue | None] = {
                 "id": integration_data.get("id"),
                 "name": integration_data.get("name"),
                 "version": integration_data.get("version"),
@@ -230,7 +223,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
             connection_list_raw = FlextTapOracleOicUtilities.TapOracleOic.as_list(
                 connections,
             )
-            connection_list: Sequence[t.Container] = (
+            connection_list: t.JsonList = (
                 connection_list_raw if connection_list_raw is not None else []
             )
             metadata["connection_count"] = len(connection_list)
@@ -320,15 +313,15 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
         @staticmethod
         def validate_oic_connection_config(
-            settings: t.ContainerValueMapping,
-        ) -> p.Result[t.ContainerValueMapping]:
+            settings: t.JsonMapping,
+        ) -> p.Result[t.JsonMapping]:
             """Validate Oracle OIC connection configuration.
 
             Args:
             settings: Configuration dictionary
 
             Returns:
-            r[t.ContainerValueMapping]: Validated settings or error
+            r[t.JsonMapping]: Validated settings or error
 
             """
             required_fields = ["oic_base_url", "username", "password"]
@@ -336,7 +329,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
                 field for field in required_fields if field not in settings
             ]
             if missing_fields:
-                return r[t.ContainerValueMapping].fail(
+                return r[t.JsonMapping].fail(
                     f"Missing required fields: {', '.join(missing_fields)}",
                 )
             url_validation = (
@@ -345,15 +338,15 @@ class FlextTapOracleOicUtilities(u, meltano_u):
                 )
             )
             if url_validation.failure:
-                return r[t.ContainerValueMapping].fail(
+                return r[t.JsonMapping].fail(
                     f"Invalid OIC URL: {url_validation.error}",
                 )
             if not str(settings["username"]).strip():
-                return r[t.ContainerValueMapping].fail(
+                return r[t.JsonMapping].fail(
                     "Username cannot be empty",
                 )
             if not str(settings["password"]).strip():
-                return r[t.ContainerValueMapping].fail(
+                return r[t.JsonMapping].fail(
                     "Password cannot be empty",
                 )
             if "timeout" in settings:
@@ -361,34 +354,34 @@ class FlextTapOracleOicUtilities(u, meltano_u):
                     settings["timeout"],
                 )
                 if timeout is None or timeout <= 0:
-                    return r[t.ContainerValueMapping].fail(
+                    return r[t.JsonMapping].fail(
                         "Timeout must be a positive integer",
                     )
-            return r[t.ContainerValueMapping].ok(
+            return r[t.JsonMapping].ok(
                 t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(settings),
             )
 
         @staticmethod
         def validate_stream_config(
-            settings: t.ContainerValueMapping,
-        ) -> p.Result[t.ContainerValueMapping]:
+            settings: t.JsonMapping,
+        ) -> p.Result[t.JsonMapping]:
             """Validate OIC tap stream configuration.
 
             Args:
             settings: Stream configuration
 
             Returns:
-            r[t.ContainerValueMapping]: Validated settings or error
+            r[t.JsonMapping]: Validated settings or error
 
             """
             if "streams" not in settings:
-                return r[t.ContainerValueMapping].fail(
+                return r[t.JsonMapping].fail(
                     "Configuration must include 'streams' section",
                 )
             streams = settings["streams"]
             stream_map = FlextTapOracleOicUtilities.TapOracleOic.as_map(streams)
             if stream_map is None:
-                return r[t.ContainerValueMapping].fail(
+                return r[t.JsonMapping].fail(
                     "Streams configuration must be a dictionary",
                 )
             for stream_name, stream_payload in stream_map.items():
@@ -396,11 +389,11 @@ class FlextTapOracleOicUtilities(u, meltano_u):
                     stream_payload,
                 )
                 if stream_config is None:
-                    return r[t.ContainerValueMapping].fail(
+                    return r[t.JsonMapping].fail(
                         f"Stream '{stream_name}' configuration must be a dictionary",
                     )
                 if "selected" not in stream_config:
-                    return r[t.ContainerValueMapping].fail(
+                    return r[t.JsonMapping].fail(
                         f"Stream '{stream_name}' must have 'selected' field",
                     )
                 if "page_size" in stream_config:
@@ -409,19 +402,19 @@ class FlextTapOracleOicUtilities(u, meltano_u):
                     )
                     max_page_size = c.TapOracleOic.MAX_PAGE_SIZE
                     if page_size is None or page_size <= 0 or page_size > max_page_size:
-                        return r[t.ContainerValueMapping].fail(
+                        return r[t.JsonMapping].fail(
                             f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}",
                         )
-            return r[t.ContainerValueMapping].ok(
+            return r[t.JsonMapping].ok(
                 t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(settings),
             )
 
         @staticmethod
         def get_bookmark(
-            state: Mapping[str, t.ContainerValueMapping],
+            state: Mapping[str, t.JsonMapping],
             stream_name: str,
             bookmark_key: str,
-        ) -> t.Container | None:
+        ) -> t.JsonValue | None:
             """Get bookmark value for a stream.
 
             Args:
@@ -430,7 +423,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
             bookmark_key: Bookmark key
 
             Returns:
-            t.Container: Bookmark value or None
+            t.JsonValue: Bookmark value or None
 
             """
             stream_state = FlextTapOracleOicUtilities.TapOracleOic.get_stream_state(
@@ -441,9 +434,9 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
         @staticmethod
         def get_stream_state(
-            state: Mapping[str, t.ContainerValueMapping],
+            state: Mapping[str, t.JsonMapping],
             stream_name: str,
-        ) -> t.ContainerValueMapping:
+        ) -> t.JsonMapping:
             """Get state for a specific stream.
 
             Args:
@@ -451,7 +444,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
             stream_name: Name of the stream
 
             Returns:
-            t.ContainerValueMapping: Stream state
+            t.JsonMapping: Stream state
 
             """
             bookmarks = state.get("bookmarks", {})
@@ -465,11 +458,11 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
         @staticmethod
         def set_bookmark(
-            state: Mapping[str, t.ContainerValueMapping],
+            state: Mapping[str, t.JsonMapping],
             stream_name: str,
             bookmark_key: str,
             bookmark_value: t.JsonValue,
-        ) -> t.ContainerValueMapping:
+        ) -> t.JsonMapping:
             """Set bookmark value for a stream.
 
             Args:
@@ -479,31 +472,31 @@ class FlextTapOracleOicUtilities(u, meltano_u):
             bookmark_value: Bookmark value
 
             Returns:
-            t.ContainerValueMapping: Updated state
+            t.JsonMapping: Updated state
 
             """
-            state_copy: dict[str, t.JsonValue] = dict(
+            state_copy: t.JsonMapping = dict(
                 t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(state),
             )
             if "bookmarks" not in state_copy:
-                empty_bookmarks: dict[str, t.JsonValue] = {}
+                empty_bookmarks: t.JsonMapping = {}
                 state_copy["bookmarks"] = empty_bookmarks
             bookmarks = state_copy["bookmarks"]
             bookmark_map = FlextTapOracleOicUtilities.TapOracleOic.as_map(bookmarks)
             if bookmark_map is not None:
-                updated_bookmark_map: dict[str, t.JsonValue] = dict(
+                updated_bookmark_map: t.JsonMapping = dict(
                     t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(
                         bookmark_map,
                     ),
                 )
                 if stream_name not in updated_bookmark_map:
-                    empty_stream_bookmarks: dict[str, t.JsonValue] = {}
+                    empty_stream_bookmarks: t.JsonMapping = {}
                     updated_bookmark_map[stream_name] = empty_stream_bookmarks
                 stream_bookmarks = FlextTapOracleOicUtilities.TapOracleOic.as_map(
                     updated_bookmark_map[stream_name],
                 )
                 if stream_bookmarks is not None:
-                    updated_stream_bookmarks: dict[str, t.JsonValue] = dict(
+                    updated_stream_bookmarks: t.JsonMapping = dict(
                         t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(
                             stream_bookmarks,
                         ),
@@ -515,10 +508,10 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
         @staticmethod
         def set_stream_state(
-            state: Mapping[str, t.ContainerValueMapping],
+            state: Mapping[str, t.JsonMapping],
             stream_name: str,
-            stream_state: Mapping[str, t.Container],
-        ) -> t.ContainerValueMapping:
+            stream_state: t.JsonMapping,
+        ) -> t.JsonMapping:
             """Set state for a specific stream.
 
             Args:
@@ -527,19 +520,19 @@ class FlextTapOracleOicUtilities(u, meltano_u):
             stream_state: State data for the stream
 
             Returns:
-            t.ContainerValueMapping: Updated state
+            t.JsonMapping: Updated state
 
             """
-            state_copy: dict[str, t.JsonValue] = dict(
+            state_copy: t.JsonMapping = dict(
                 t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(state),
             )
             if "bookmarks" not in state_copy:
-                empty_bookmarks: dict[str, t.JsonValue] = {}
+                empty_bookmarks: t.JsonMapping = {}
                 state_copy["bookmarks"] = empty_bookmarks
             bookmarks = state_copy["bookmarks"]
             bookmark_map = FlextTapOracleOicUtilities.TapOracleOic.as_map(bookmarks)
             if bookmark_map is not None:
-                updated_bookmark_map: dict[str, t.JsonValue] = dict(
+                updated_bookmark_map: t.JsonMapping = dict(
                     t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(
                         bookmark_map,
                     ),
@@ -554,10 +547,10 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
         @staticmethod
         def update_pagination_bookmark(
-            state: Mapping[str, t.ContainerValueMapping],
+            state: Mapping[str, t.JsonMapping],
             stream_name: str,
-            pagination_info: Mapping[str, t.ContainerValueMapping],
-        ) -> t.ContainerValueMapping:
+            pagination_info: Mapping[str, t.JsonMapping],
+        ) -> t.JsonMapping:
             """Update pagination bookmark for stream.
 
             Args:
@@ -566,7 +559,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
             pagination_info: Pagination information
 
             Returns:
-            t.ContainerValueMapping: Updated state
+            t.JsonMapping: Updated state
 
             """
             offset = pagination_info.get("offset", 0)
@@ -612,7 +605,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
         def estimate_extraction_time(
             record_count: int,
             records_per_second: float = 10.0,
-        ) -> t.ContainerValueMapping:
+        ) -> t.JsonMapping:
             """Estimate extraction time for OIC data.
 
             Args:
@@ -620,7 +613,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
             records_per_second: Processing rate
 
             Returns:
-            t.ContainerValueMapping: Time estimation
+            t.JsonMapping: Time estimation
 
             """
             if record_count <= 0:
@@ -641,12 +634,9 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
         @staticmethod
         def as_value_list(
-            value: t.Container
-            | Mapping[str, t.JsonValue]
-            | Sequence[t.Container]
-            | None,
-        ) -> Sequence[t.Container] | None:
-            """Validate payload as strict t.FlatContainerList."""
+            value: t.JsonValue | t.JsonMapping | t.JsonList | None,
+        ) -> t.JsonList | None:
+            """Validate payload as strict t.JsonList."""
             try:
                 return t.TapOracleOic.GENERAL_LIST_ADAPTER.validate_python(value)
             except c.ValidationError:
@@ -654,19 +644,16 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
         @staticmethod
         def as_value_map(
-            value: t.Container
-            | Mapping[str, t.JsonValue]
-            | Sequence[t.Container]
-            | None,
-        ) -> t.ContainerValueMapping | None:
-            """Validate payload as strict Mapping[str, t.Container]."""
+            value: t.JsonValue | t.JsonMapping | t.JsonList | None,
+        ) -> t.JsonMapping | None:
+            """Validate payload as strict t.JsonMapping."""
             try:
                 return t.TapOracleOic.GENERAL_MAP_ADAPTER.validate_python(value)
             except c.ValidationError:
                 return None
 
         @staticmethod
-        def as_string_list(value: t.Container | None) -> t.StrSequence | None:
+        def as_string_list(value: t.JsonValue | None) -> t.StrSequence | None:
             """Validate payload as strict t.StrSequence."""
             try:
                 return t.TapOracleOic.STRING_LIST_ADAPTER.validate_python(value)
@@ -675,8 +662,8 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
         @staticmethod
         def as_oic_envelope(
-            value: t.ContainerValueMapping,
-        ) -> t.ContainerValueMapping | None:
+            value: t.JsonMapping,
+        ) -> t.JsonMapping | None:
             """Return normalized envelope payload when OIC wrapper keys are present."""
             envelope = FlextTapOracleOicUtilities.TapOracleOic.as_map(value)
             if envelope is None:

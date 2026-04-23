@@ -9,9 +9,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Mapping,
-)
 from typing import Annotated, Never, override
 
 from flext_core import u
@@ -31,7 +28,7 @@ class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
     @override
     def create_tap_instance(
         self,
-        settings: Mapping[str, t.Container] | None = None,
+        settings: t.JsonMapping | None = None,
     ) -> Never:
         """Not supported — use FlextTapOracleOic directly."""
         msg = "tap-oracle-oic uses CLI dispatch, not singer_sdk.Tap"
