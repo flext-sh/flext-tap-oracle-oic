@@ -1,0 +1,28 @@
+tests/conftest.py
+  829bd02b9844440d 33-48,50-51,53,211-213,219,276-278,284,327-329,335,376-378,384,440,442-443,454-456,467-471
+src/flext_tap_oracle_oic/models.py
+  829bd02b9844440d 1202-1208,1217
+src/flext_tap_oracle_oic/utilities.py
+  829bd02b9844440d 209-210
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "6dd7fa56ec85d089fee57b720367369a8054cd92",
+  "prompts": {
+    "829bd02b9844440d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c7999663-f020-473e-b97a-736d5ebfd970",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "FLEXT Bot",
+      "messages": [],
+      "total_additions": 72,
+      "total_deletions": 58,
+      "accepted_lines": 76,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/300844e9da4d8a22157159de27a0cba91111d16d77989dc9d6bf9ba208b71da8"
+    }
+  }
+}
