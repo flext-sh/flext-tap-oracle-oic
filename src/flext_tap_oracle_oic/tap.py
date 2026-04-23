@@ -231,8 +231,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         self._utilities = u()
 
     @property
-    @override
-    def settings(self) -> FlextTapOracleOicSettings:
+    def oic_settings(self) -> FlextTapOracleOicSettings:
         """Return typed OIC settings."""
         return self._oic_settings
 
