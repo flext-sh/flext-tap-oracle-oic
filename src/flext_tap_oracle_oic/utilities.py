@@ -206,7 +206,8 @@ class FlextTapOracleOicUtilities(u, meltano_u):
                 connection_type = conn_map.get("connectionType")
                 if connection_type is not None:
                     connection_types.append(str(connection_type))
-            metadata["connection_types"] = list(connection_types)
+            connection_types_payload: list[t.JsonValue] = list(connection_types)
+            metadata["connection_types"] = connection_types_payload
             return {k: v for k, v in metadata.items() if v is not None}
 
         @staticmethod

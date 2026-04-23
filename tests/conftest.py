@@ -30,24 +30,27 @@ def _build_singer_stream(
     tap_stream_id: str,
     replication_key: str,
     properties: t.JsonMapping,
-) -> Sequence[t.JsonMapping]:
-    return {
-        "tap_stream_id": tap_stream_id,
-        "schema": {
-            "type": "object",
-            "properties": properties,
-        },
-        "metadata": [
-            {
-                "breadcrumb": [],
-                "metadata": {
-                    "replication-method": "INCREMENTAL",
-                    "replication-key": replication_key,
-                    "selected": True,
-                },
-            },
-        ],
+) -> t.JsonMapping:
+    schema: dict[str, t.JsonValue] = {
+        "type": "object",
+        "properties": dict(properties),
     }
+    metadata_inner: dict[str, t.JsonValue] = {
+        "replication-method": "INCREMENTAL",
+        "replication-key": replication_key,
+        "selected": True,
+    }
+    metadata_entry: dict[str, t.JsonValue] = {
+        "breadcrumb": [],
+        "metadata": metadata_inner,
+    }
+    metadata_list: list[t.JsonValue] = [metadata_entry]
+    result: dict[str, t.JsonValue] = {
+        "tap_stream_id": tap_stream_id,
+        "schema": schema,
+        "metadata": metadata_list,
+    }
+    return result
 
 
 @pytest.fixture(autouse=True)
@@ -205,13 +208,15 @@ def mock_integrations_response(
     sample_integration_data: Sequence[t.JsonMapping],
 ) -> t.JsonMapping:
     """Mock integrations API response."""
-    return {
-        "items": sample_integration_data,
+    items_payload: list[t.JsonValue] = [dict(item) for item in sample_integration_data]
+    payload: dict[str, t.JsonValue] = {
+        "items": items_payload,
         "hasMore": False,
         "count": len(sample_integration_data),
         "offset": 0,
         "limit": 50,
     }
+    return payload
 
 
 @pytest.fixture
@@ -268,13 +273,15 @@ def mock_connections_response(
     sample_connection_data: Sequence[t.JsonMapping],
 ) -> t.JsonMapping:
     """Mock connections API response."""
-    return {
-        "items": sample_connection_data,
+    items_payload: list[t.JsonValue] = [dict(item) for item in sample_connection_data]
+    payload: dict[str, t.JsonValue] = {
+        "items": items_payload,
         "hasMore": False,
         "count": len(sample_connection_data),
         "offset": 0,
         "limit": 50,
     }
+    return payload
 
 
 @pytest.fixture
@@ -317,13 +324,15 @@ def mock_packages_response(
     sample_package_data: Sequence[t.JsonMapping],
 ) -> t.JsonMapping:
     """Mock packages API response."""
-    return {
-        "items": sample_package_data,
+    items_payload: list[t.JsonValue] = [dict(item) for item in sample_package_data]
+    payload: dict[str, t.JsonValue] = {
+        "items": items_payload,
         "hasMore": False,
         "count": len(sample_package_data),
         "offset": 0,
         "limit": 50,
     }
+    return payload
 
 
 @pytest.fixture
@@ -364,13 +373,15 @@ def mock_lookups_response(
     sample_lookup_data: Sequence[t.JsonMapping],
 ) -> t.JsonMapping:
     """Mock lookups API response."""
-    return {
-        "items": sample_lookup_data,
+    items_payload: list[t.JsonValue] = [dict(item) for item in sample_lookup_data]
+    payload: dict[str, t.JsonValue] = {
+        "items": items_payload,
         "hasMore": False,
         "count": len(sample_lookup_data),
         "offset": 0,
         "limit": 50,
     }
+    return payload
 
 
 @pytest.fixture
@@ -426,10 +437,10 @@ def sample_adapter_data() -> Sequence[t.JsonMapping]:
 
 
 @pytest.fixture
-def singer_catalog() -> Sequence[t.JsonMapping]:
+def singer_catalog() -> t.JsonMapping:
     """Singer catalog for OIC tap."""
-    return {
-        "streams": [
+    streams: list[t.JsonValue] = [
+        dict(
             _build_singer_stream(
                 tap_stream_id="integrations",
                 replication_key="lastUpdatedTime",
@@ -440,7 +451,9 @@ def singer_catalog() -> Sequence[t.JsonMapping]:
                     "status": {"type": "string"},
                     "lastUpdatedTime": {"type": "string", "format": "date-time"},
                 },
-            ),
+            )
+        ),
+        dict(
             _build_singer_stream(
                 tap_stream_id="connections",
                 replication_key="modifiedDate",
@@ -451,9 +464,11 @@ def singer_catalog() -> Sequence[t.JsonMapping]:
                     "status": {"type": "string"},
                     "modifiedDate": {"type": "string", "format": "date-time"},
                 },
-            ),
-        ],
-    }
+            )
+        ),
+    ]
+    catalog: dict[str, t.JsonValue] = {"streams": streams}
+    return catalog
 
 
 @pytest.fixture

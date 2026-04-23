@@ -1199,6 +1199,13 @@ class FlextTapOracleOicModels(meltano_m, m):
                 self,
             ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
                 """OIC package composition and usage summary."""
+                dependencies_payload: list[t.JsonValue] = list(self.dependencies)
+                composition: dict[str, t.JsonValue | None] = {
+                    "integration_count": self.integration_count or 0,
+                    "dependency_count": len(self.dependencies),
+                    "has_dependencies": bool(self.dependencies),
+                    "dependencies": dependencies_payload,
+                }
                 return {
                     "package_identity": {
                         "id": self.package_id,
@@ -1207,12 +1214,7 @@ class FlextTapOracleOicModels(meltano_m, m):
                         "type": self.package_type,
                         "status": self.status,
                     },
-                    "composition": {
-                        "integration_count": self.integration_count or 0,
-                        "dependency_count": len(self.dependencies),
-                        "has_dependencies": bool(self.dependencies),
-                        "dependencies": list(self.dependencies),
-                    },
+                    "composition": composition,
                     "usage": {
                         "download_count": self.download_count or 0,
                         "created_by": self.created_by,
