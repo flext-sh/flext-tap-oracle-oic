@@ -21,7 +21,7 @@ from flext_api import FlextApi, FlextApiSettings
 from flext_meltano import m as meltano_m
 from flext_oracle_oic import m
 
-from flext_tap_oracle_oic import c, e, t, u
+from flext_tap_oracle_oic import FlextTapOracleOicPaginator, c, e, t, u
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import p
@@ -245,10 +245,9 @@ class FlextTapOracleOicModels(meltano_m, m):
                 Paginator instance configured with settings from tap settings.
 
                 """
-                paginator_cls = u.TapOracleOic.get_oic_paginator_class()
                 page_size_val = self.settings.get("page_size", 100)
                 page_size = page_size_val if isinstance(page_size_val, int) else 100
-                return paginator_cls(start_value=0, page_size=page_size)
+                return FlextTapOracleOicPaginator(start_value=0, page_size=page_size)
 
             def get_records(
                 self,
@@ -309,7 +308,12 @@ class FlextTapOracleOicModels(meltano_m, m):
                     params[f"{self.replication_key}>="] = start_date
                 select_fields = self.settings.get("select_fields")
                 if select_fields:
-                    field_list = u.TapOracleOic.as_string_list(select_fields)
+                    try:
+                        field_list = t.TapOracleOic.STRING_LIST_ADAPTER.validate_python(
+                            select_fields,
+                        )
+                    except c.ValidationError:
+                        field_list = None
                     params["fields"] = (
                         ",".join(field_list)
                         if field_list is not None
@@ -529,7 +533,12 @@ class FlextTapOracleOicModels(meltano_m, m):
                     if isinstance(item, Mapping):
                         yield item
                         continue
-                    record = u.TapOracleOic.as_value_map(item)
+                    try:
+                        record = t.TapOracleOic.GENERAL_MAP_ADAPTER.validate_python(
+                            item,
+                        )
+                    except c.ValidationError:
+                        record = None
                     if record is not None:
                         yield record
 
