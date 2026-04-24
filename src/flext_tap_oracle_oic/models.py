@@ -631,10 +631,11 @@ class FlextTapOracleOicModels(meltano_m, m):
                 self,
             ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
                 """OAuth2 authentication configuration summary."""
+                min_name_length: int = 2
                 return {
                     "oauth_setup": {
-                        "client_id": self.oauth_client_id[: c.MIN_NAME_LENGTH] + "..."
-                        if len(self.oauth_client_id) > c.MIN_NAME_LENGTH
+                        "client_id": self.oauth_client_id[:min_name_length] + "..."
+                        if len(self.oauth_client_id) > min_name_length
                         else self.oauth_client_id,
                         "token_endpoint": self.oauth_token_url,
                         "audience": self.oauth_client_aud,
@@ -845,7 +846,6 @@ class FlextTapOracleOicModels(meltano_m, m):
                 u.Field(..., description="Connection adapter type"),
             ]
 
-            # Configuration (sanitized)
             host: Annotated[
                 str | None,
                 u.Field(

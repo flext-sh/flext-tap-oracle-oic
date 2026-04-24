@@ -284,24 +284,41 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         """Discover stream catalog matching FlextMeltanoAbstractions contract."""
         _ = tap_instance
         streams = self.discover_oic_streams()
-        catalog: t.Meltano.SingerStreamCatalog = {
-            "streams": [
-                {
-                    "tap_stream_id": getattr(
-                        stream,
-                        "name",
-                        c.IDENTIFIER_UNKNOWN,
-                    ),
-                    "schema": getattr(stream, "stream_schema", {}),
+        catalog_entries: list[m.Meltano.SingerCatalogEntry] = []
+        for stream in streams:
+            stream_name = str(getattr(stream, "name", c.IDENTIFIER_UNKNOWN))
+            stream_schema_raw: object = getattr(stream, "stream_schema", {})
+            stream_schema: t.JsonMapping = (
+                t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(
+                    stream_schema_raw,
+                )
+                if isinstance(stream_schema_raw, Mapping)
+                else {}
+            )
+            catalog_entries.append(
+                m.Meltano.SingerCatalogEntry.model_validate({
+                    "tap_stream_id": stream_name,
+                    "stream": stream_name,
+                    "schema": stream_schema,
                     "replication_method": "INCREMENTAL"
                     if getattr(stream, "replication_key", None)
                     else "FULL_TABLE",
-                }
-                for stream in streams
-            ],
-        }
+                })
+            )
+        catalog: t.JsonMapping = (
+            t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(
+                m.Meltano.SingerCatalog(streams=catalog_entries).model_dump(
+                    by_alias=True,
+                    exclude_defaults=True,
+                    exclude_none=True,
+                    mode="json",
+                )
+            )
+        )
         return r[t.JsonMapping].ok(
-            t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(catalog),
+            t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python({
+                "streams": catalog.get("streams", []),
+            }),
         )
 
     @staticmethod
