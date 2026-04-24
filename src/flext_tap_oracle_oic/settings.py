@@ -40,7 +40,7 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
     ]
     page_size: Annotated[
         t.PositiveInt,
-        u.Field(default=c.TapOracleOic.DEFAULT_PAGE_SIZE),
+        u.Field(default=c.DEFAULT_PAGE_SIZE),
     ]
     include_extended: Annotated[
         bool,

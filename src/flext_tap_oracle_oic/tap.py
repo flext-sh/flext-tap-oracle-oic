@@ -295,16 +295,24 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
                 if isinstance(stream_schema_raw, Mapping)
                 else {}
             )
-            catalog_entries.append(
-                m.Meltano.SingerCatalogEntry.model_validate({
-                    "tap_stream_id": stream_name,
-                    "stream": stream_name,
-                    "schema": stream_schema,
-                    "replication_method": "INCREMENTAL"
-                    if getattr(stream, "replication_key", None)
-                    else "FULL_TABLE",
-                })
+            entry_result = u.Meltano.build_catalog_entry(
+                stream_name=stream_name,
+                schema=stream_schema,
+                key_properties=(),
+                replication_key=(
+                    str(replication_key)
+                    if (replication_key := getattr(stream, "replication_key", None))
+                    is not None
+                    else None
+                ),
             )
+            if entry_result.failure:
+                return r[t.JsonMapping].fail(
+                    entry_result.error
+                    or f"Failed to build Singer catalog entry for {stream_name}",
+                )
+            if entry_result.value is not None:
+                catalog_entries.append(entry_result.value)
         catalog: t.JsonMapping = (
             t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(
                 m.Meltano.SingerCatalog(streams=catalog_entries).model_dump(

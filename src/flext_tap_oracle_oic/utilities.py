@@ -87,7 +87,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
             if not response:
                 return {
                     "has_more": False,
-                    "limit": c.TapOracleOic.DEFAULT_PAGE_SIZE,
+                    "limit": c.DEFAULT_PAGE_SIZE,
                     "offset": 0,
                     "total_count": 0,
                     "current_page_size": 0,
@@ -101,7 +101,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
                 "has_more": response.get("hasMore", False),
                 "limit": response.get(
                     "limit",
-                    c.TapOracleOic.DEFAULT_PAGE_SIZE,
+                    c.DEFAULT_PAGE_SIZE,
                 ),
                 "offset": response.get("offset", 0),
                 "total_count": response.get("count", 0),
@@ -383,7 +383,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
                         )
                     except c.ValidationError:
                         page_size = None
-                    max_page_size = c.TapOracleOic.MAX_PAGE_SIZE
+                    max_page_size = c.MAX_PAGE_SIZE
                     if page_size is None or page_size <= 0 or page_size > max_page_size:
                         return r[t.JsonMapping].fail(
                             f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}",
@@ -584,7 +584,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
             """
             if total_records <= 0:
-                return int(c.TapOracleOic.DEFAULT_PAGE_SIZE)
+                return int(c.DEFAULT_PAGE_SIZE)
             calculated_size = max(1, total_records // target_requests)
             return min(calculated_size, 1000)
 

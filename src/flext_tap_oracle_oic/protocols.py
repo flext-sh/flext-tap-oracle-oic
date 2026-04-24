@@ -39,7 +39,7 @@ class FlextTapOracleOicProtocols(p, FlextOracleOicProtocols):
     service: p.Service[str]
 
     # Oracle protocols (inherited)
-    connection: p.OracleOic.Connection
+    connection: p.Connection
 
     # Meltano protocols (inherited)
     tap: p.Meltano.Tap
