@@ -96,7 +96,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
             try:
                 items_list = t.TapOracleOic.STRICT_LIST_ADAPTER.validate_python(items)
             except c.ValidationError:
-                items_list: t.JsonList = []
+                items_list = t.TapOracleOic.STRICT_LIST_ADAPTER.validate_python([])
             return t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python({
                 "has_more": response.get("hasMore", False),
                 "limit": response.get(
@@ -195,7 +195,9 @@ class FlextTapOracleOicUtilities(u, meltano_u):
                     connections,
                 )
             except c.ValidationError:
-                connection_list: t.JsonList = []
+                connection_list = t.TapOracleOic.STRICT_LIST_ADAPTER.validate_python(
+                    [],
+                )
             metadata["connection_count"] = len(connection_list)
             connection_types: list[str] = []
             for conn in connection_list:
@@ -582,7 +584,7 @@ class FlextTapOracleOicUtilities(u, meltano_u):
 
             """
             if total_records <= 0:
-                return c.TapOracleOic.DEFAULT_PAGE_SIZE
+                return int(c.TapOracleOic.DEFAULT_PAGE_SIZE)
             calculated_size = max(1, total_records // target_requests)
             return min(calculated_size, 1000)
 

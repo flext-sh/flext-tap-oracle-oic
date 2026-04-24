@@ -58,8 +58,8 @@ class TestTapOracleOicCore:
         if tap.name != "tap-oracle-oic":
             msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
-        assert tap.settings.base_url == settings["base_url"]
-        assert tap.settings.oauth_client_id == settings["oauth_client_id"]
+        assert tap.oic_settings.base_url == settings["base_url"]
+        assert tap.oic_settings.oauth_client_id == settings["oauth_client_id"]
 
     def test_tap_initialization_without_config(self) -> None:
         """Test method."""
@@ -164,8 +164,7 @@ class TestTapOracleOicCore:
             msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
         assert (
-            getattr(tap.settings, "base_url", None)
-            == "http://test.integration.ocp.oraclecloud.com"
+            tap.oic_settings.base_url == "http://test.integration.ocp.oraclecloud.com"
         )
 
     def test_missing_required_fields_warning(self) -> None:
@@ -239,14 +238,11 @@ class TestTapOracleOicWithFixtures:
         """Test method."""
         "Test that the tap is initialized correctly with the sample settings."
         tap = FlextTapOracleOic(settings=sample_config, validate_config=False)
-        configured_base_url = getattr(tap.settings, "base_url", None)
+        configured_base_url = tap.oic_settings.base_url
         if configured_base_url != sample_config["base_url"]:
             msg = f"Expected {sample_config['base_url']}, got {configured_base_url}"
             raise AssertionError(msg)
-        assert (
-            getattr(tap.settings, "oauth_client_id", None)
-            == sample_config["oauth_client_id"]
-        )
+        assert tap.oic_settings.oauth_client_id == sample_config["oauth_client_id"]
 
     def test_streams_count_with_extended_config(
         self,
