@@ -21,9 +21,7 @@ if _t.TYPE_CHECKING:
     from tests.typings import TestsFlextTapOracleOicTypes, t
     from tests.unit.test_auth import TestsFlextTapOracleOicAuth
     from tests.unit.test_tap import TestsFlextTapOracleOicTap
-    from tests.unit.test_tap_core import (
-        TestsFlextTapOracleOicTapCore,
-    )
+    from tests.unit.test_tap_core import TestsFlextTapOracleOicTapCore
     from tests.utilities import TestsFlextTapOracleOicUtilities, u
 _LAZY_IMPORTS = merge_lazy_imports(
     (".unit",),
