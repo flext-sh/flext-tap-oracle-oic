@@ -43,7 +43,7 @@ def _discover_stream_names(tap: FlextTapOracleOic) -> t.StrSequence:
     return [str(s["tap_stream_id"]) for s in streams if isinstance(s, Mapping)]
 
 
-class TestTapOracleOicCore:
+class TestsFlextTapOracleOicTapCore:
     """Test the main FlextTapOracleOic class."""
 
     def test_tap_initialization(self) -> None:
@@ -186,13 +186,8 @@ class TestTapOracleOicCore:
                 msg = f"Expected {capability} in {sorted(capability_values)}"
                 raise AssertionError(msg)
 
-
-class TestTapOracleOicIntegration:
-    """Integration tests for FlextTapOracleOic."""
-
     def test_streams_have_correct_tap_reference(self) -> None:
         """Test method."""
-        "Test that the streams have the correct tap reference."
         settings = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
@@ -204,39 +199,14 @@ class TestTapOracleOicIntegration:
         for stream_name in stream_names:
             assert stream_name
 
-
-@pytest.fixture
-def sample_config() -> t.StrMapping:
-    """Sample settings."""
-    return {
-        "base_url": "https://test.integration.ocp.oraclecloud.com",
-        "oauth_client_id": "test_client_id",
-        "oauth_client_secret": "test_client_secret",
-        "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
-    }
-
-
-@pytest.fixture
-def sample_config_with_extended() -> Mapping[str, bool | str]:
-    """Sample settings with extended streams."""
-    return {
-        "base_url": "https://test.integration.ocp.oraclecloud.com",
-        "oauth_client_id": "test_client_id",
-        "oauth_client_secret": "test_client_secret",
-        "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
-        "include_extended": True,
-        "include_monitoring": True,
-        "include_logs": True,
-        "include_artifacts": True,
-    }
-
-
-class TestTapOracleOicWithFixtures:
-    """Tests using fixtures."""
-
-    def test_self(self, sample_config: t.StrMapping) -> None:
+    def test_sample_config_initializes_tap_correctly(self) -> None:
         """Test method."""
-        "Test that the tap is initialized correctly with the sample settings."
+        sample_config = {
+            "base_url": "https://test.integration.ocp.oraclecloud.com",
+            "oauth_client_id": "test_client_id",
+            "oauth_client_secret": "test_client_secret",
+            "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
+        }
         tap = FlextTapOracleOic(settings=sample_config, validate_config=False)
         configured_base_url = tap.oic_settings.base_url
         if configured_base_url != sample_config["base_url"]:
@@ -244,11 +214,18 @@ class TestTapOracleOicWithFixtures:
             raise AssertionError(msg)
         assert tap.oic_settings.oauth_client_id == sample_config["oauth_client_id"]
 
-    def test_streams_count_with_extended_config(
-        self,
-        sample_config_with_extended: Mapping[str, bool | str],
-    ) -> None:
+    def test_streams_count_with_extended_config(self) -> None:
         """Test that the number of streams is correct with the extended settings."""
+        sample_config_with_extended: Mapping[str, bool | str] = {
+            "base_url": "https://test.integration.ocp.oraclecloud.com",
+            "oauth_client_id": "test_client_id",
+            "oauth_client_secret": "test_client_secret",
+            "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
+            "include_extended": True,
+            "include_monitoring": True,
+            "include_logs": True,
+            "include_artifacts": True,
+        }
         tap = FlextTapOracleOic(
             settings=sample_config_with_extended, validate_config=False
         )

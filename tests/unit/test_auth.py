@@ -21,7 +21,7 @@ from flext_tap_oracle_oic import FlextOracleOicAuthenticator
 from tests import r
 
 
-class TestOICOAuth2Authenticator:
+class TestsFlextTapOracleOicAuth:
     """Test OIC OAuth2 authenticator with mocked dependencies."""
 
     @pytest.fixture

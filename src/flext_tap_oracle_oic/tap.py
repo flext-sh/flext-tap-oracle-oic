@@ -142,7 +142,7 @@ class FlextTapOracleOicClient:
             json_body = (
                 t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.dump_json(
                     t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(data),
-                ).decode("utf-8")
+                ).decode(c.DEFAULT_ENCODING)
                 if data
                 else None
             )

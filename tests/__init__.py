@@ -19,12 +19,10 @@ if _t.TYPE_CHECKING:
     from tests.models import TestsFlextTapOracleOicModels, m
     from tests.protocols import TestsFlextTapOracleOicProtocols, p
     from tests.typings import TestsFlextTapOracleOicTypes, t
-    from tests.unit.test_auth import TestOICOAuth2Authenticator
-    from tests.unit.test_tap import TestTapOracleOic
+    from tests.unit.test_auth import TestsFlextTapOracleOicAuth
+    from tests.unit.test_tap import TestsFlextTapOracleOicTap
     from tests.unit.test_tap_core import (
-        TestTapOracleOicCore,
-        TestTapOracleOicIntegration,
-        TestTapOracleOicWithFixtures,
+        TestsFlextTapOracleOicTapCore,
     )
     from tests.utilities import TestsFlextTapOracleOicUtilities, u
 _LAZY_IMPORTS = merge_lazy_imports(
@@ -47,13 +45,9 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "TestsFlextTapOracleOicTypes",
                 "t",
             ),
-            ".unit.test_auth": ("TestOICOAuth2Authenticator",),
-            ".unit.test_tap": ("TestTapOracleOic",),
-            ".unit.test_tap_core": (
-                "TestTapOracleOicCore",
-                "TestTapOracleOicIntegration",
-                "TestTapOracleOicWithFixtures",
-            ),
+            ".unit.test_auth": ("TestsFlextTapOracleOicAuth",),
+            ".unit.test_tap": ("TestsFlextTapOracleOicTap",),
+            ".unit.test_tap_core": ("TestsFlextTapOracleOicTapCore",),
             ".utilities": (
                 "TestsFlextTapOracleOicUtilities",
                 "u",
@@ -91,14 +85,12 @@ _LAZY_IMPORTS = merge_lazy_imports(
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
 
 __all__: list[str] = [
-    "TestOICOAuth2Authenticator",
-    "TestTapOracleOic",
-    "TestTapOracleOicCore",
-    "TestTapOracleOicIntegration",
-    "TestTapOracleOicWithFixtures",
+    "TestsFlextTapOracleOicAuth",
     "TestsFlextTapOracleOicConstants",
     "TestsFlextTapOracleOicModels",
     "TestsFlextTapOracleOicProtocols",
+    "TestsFlextTapOracleOicTap",
+    "TestsFlextTapOracleOicTapCore",
     "TestsFlextTapOracleOicTypes",
     "TestsFlextTapOracleOicUtilities",
     "c",
