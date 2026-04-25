@@ -15,13 +15,13 @@ from collections.abc import (
 from datetime import UTC, datetime
 from urllib.parse import urljoin, urlparse
 
-from flext_meltano import u as meltano_u
+from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_oic import u
 
 from flext_tap_oracle_oic import c, p, r, t
 
 
-class FlextTapOracleOicUtilities(u, meltano_u):
+class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
     """Single unified utilities class for Singer tap Oracle OIC operations.
 
     Follows FLEXT unified class pattern with nested helper classes for
