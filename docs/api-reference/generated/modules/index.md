@@ -4,6 +4,7 @@
 
 These pages are generated from public modules and their docstrings.
 
+- [flext_tap_oracle_oic](flext_tap_oracle_oic.md)
 - [flext_tap_oracle_oic.api](api.md)
 - [flext_tap_oracle_oic.cli](cli.md)
 - [flext_tap_oracle_oic.constants](constants.md)

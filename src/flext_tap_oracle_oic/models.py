@@ -169,8 +169,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             - Support for all OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
             """
 
-            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = FlextMeltanoModels.ConfigDict(
-                arbitrary_types_allowed=True,
+            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
+                FlextMeltanoModels.ConfigDict(
+                    arbitrary_types_allowed=True,
+                )
             )
 
             settings: Annotated[t.JsonMapping, u.Field(default_factory=dict)]
@@ -568,17 +570,19 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             """OAuth2/IDCS authentication configuration for OIC API access."""
 
             # Pydantic 2.11 Configuration - Authentication Features
-            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = FlextMeltanoModels.ConfigDict(
-                json_schema_extra={
-                    "description": "OAuth2/IDCS authentication for Oracle OIC API",
-                    "examples": [
-                        {
-                            "oauth_client_id": "my-client-id",
-                            "oauth_token_url": "https://idcs-instance.identity.oraclecloud.com/oauth2/v1/token",
-                            "base_url": "https://mycompany-oic.integration.ocp.oraclecloud.com",
-                        },
-                    ],
-                },
+            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
+                FlextMeltanoModels.ConfigDict(
+                    json_schema_extra={
+                        "description": "OAuth2/IDCS authentication for Oracle OIC API",
+                        "examples": [
+                            {
+                                "oauth_client_id": "my-client-id",
+                                "oauth_token_url": "https://idcs-instance.identity.oraclecloud.com/oauth2/v1/token",
+                                "base_url": "https://mycompany-oic.integration.ocp.oraclecloud.com",
+                            },
+                        ],
+                    },
+                )
             )
 
             oauth_client_id: Annotated[
@@ -671,18 +675,20 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             """OIC Integration entity with complete metadata."""
 
             # Pydantic 2.11 Configuration - Integration Features
-            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = FlextMeltanoModels.ConfigDict(
-                json_schema_extra={
-                    "description": "Oracle OIC integration with complete metadata",
-                    "examples": [
-                        {
-                            "integration_id": "CUSTOMER_SYNC_01.00.0000",
-                            "name": "Customer Synchronization",
-                            "status": "ACTIVE",
-                            "version": "01.00.0000",
-                        },
-                    ],
-                },
+            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
+                FlextMeltanoModels.ConfigDict(
+                    json_schema_extra={
+                        "description": "Oracle OIC integration with complete metadata",
+                        "examples": [
+                            {
+                                "integration_id": "CUSTOMER_SYNC_01.00.0000",
+                                "name": "Customer Synchronization",
+                                "status": "ACTIVE",
+                                "version": "01.00.0000",
+                            },
+                        ],
+                    },
+                )
             )
 
             integration_id: Annotated[
@@ -818,18 +824,20 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             """OIC Connection entity with security sanitization."""
 
             # Pydantic 2.11 Configuration - Connection Features
-            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = FlextMeltanoModels.ConfigDict(
-                json_schema_extra={
-                    "description": "Oracle OIC connection with security sanitization",
-                    "examples": [
-                        {
-                            "connection_id": "SALESFORCE_CONN_01",
-                            "name": "Salesforce Production",
-                            "connection_type": "SALESFORCE_ADAPTER",
-                            "status": "ACTIVE",
-                        },
-                    ],
-                },
+            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
+                FlextMeltanoModels.ConfigDict(
+                    json_schema_extra={
+                        "description": "Oracle OIC connection with security sanitization",
+                        "examples": [
+                            {
+                                "connection_id": "SALESFORCE_CONN_01",
+                                "name": "Salesforce Production",
+                                "connection_type": "SALESFORCE_ADAPTER",
+                                "status": "ACTIVE",
+                            },
+                        ],
+                    },
+                )
             )
 
             connection_id: Annotated[
@@ -970,18 +978,20 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             """OIC Activity monitoring record for incremental replication."""
 
             # Pydantic 2.11 Configuration - Activity Features
-            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = FlextMeltanoModels.ConfigDict(
-                json_schema_extra={
-                    "description": "Oracle OIC activity record with performance tracking",
-                    "examples": [
-                        {
-                            "activity_id": "ACT_20230101_001",
-                            "integration_id": "CUSTOMER_SYNC_01.00.0000",
-                            "status": "COMPLETED",
-                            "messages_processed": 1500,
-                        },
-                    ],
-                },
+            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
+                FlextMeltanoModels.ConfigDict(
+                    json_schema_extra={
+                        "description": "Oracle OIC activity record with performance tracking",
+                        "examples": [
+                            {
+                                "activity_id": "ACT_20230101_001",
+                                "integration_id": "CUSTOMER_SYNC_01.00.0000",
+                                "status": "COMPLETED",
+                                "messages_processed": 1500,
+                            },
+                        ],
+                    },
+                )
             )
 
             activity_id: Annotated[
@@ -1114,18 +1124,20 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             """OIC Package entity for integration packages."""
 
             # Pydantic 2.11 Configuration - Package Features
-            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = FlextMeltanoModels.ConfigDict(
-                json_schema_extra={
-                    "description": "Oracle OIC package with dependency tracking",
-                    "examples": [
-                        {
-                            "package_id": "CUSTOMER_SUITE_V1",
-                            "name": "Customer Management Suite",
-                            "package_type": "INTEGRATION",
-                            "status": "ACTIVE",
-                        },
-                    ],
-                },
+            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
+                FlextMeltanoModels.ConfigDict(
+                    json_schema_extra={
+                        "description": "Oracle OIC package with dependency tracking",
+                        "examples": [
+                            {
+                                "package_id": "CUSTOMER_SUITE_V1",
+                                "name": "Customer Management Suite",
+                                "package_type": "INTEGRATION",
+                                "status": "ACTIVE",
+                            },
+                        ],
+                    },
+                )
             )
 
             package_id: Annotated[
@@ -1242,18 +1254,20 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             """OIC Metrics record for performance monitoring."""
 
             # Pydantic 2.11 Configuration - Metrics Features
-            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = FlextMeltanoModels.ConfigDict(
-                json_schema_extra={
-                    "description": "Oracle OIC performance metrics with resource monitoring",
-                    "examples": [
-                        {
-                            "metric_id": "METRIC_20230101_001",
-                            "integration_id": "CUSTOMER_SYNC_01.00.0000",
-                            "throughput_mps": 125.5,
-                            "cpu_usage_percent": 45.2,
-                        },
-                    ],
-                },
+            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
+                FlextMeltanoModels.ConfigDict(
+                    json_schema_extra={
+                        "description": "Oracle OIC performance metrics with resource monitoring",
+                        "examples": [
+                            {
+                                "metric_id": "METRIC_20230101_001",
+                                "integration_id": "CUSTOMER_SYNC_01.00.0000",
+                                "throughput_mps": 125.5,
+                                "cpu_usage_percent": 45.2,
+                            },
+                        ],
+                    },
+                )
             )
 
             metric_id: Annotated[
@@ -1391,18 +1405,20 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             """OIC Agent entity for connectivity agents."""
 
             # Pydantic 2.11 Configuration - Agent Features
-            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = FlextMeltanoModels.ConfigDict(
-                json_schema_extra={
-                    "description": "Oracle OIC connectivity agent with health monitoring",
-                    "examples": [
-                        {
-                            "agent_id": "AGENT_ONPREM_01",
-                            "agent_name": "On-Premises Agent 01",
-                            "agent_type": "CONNECTIVITY_AGENT",
-                            "status": "ONLINE",
-                        },
-                    ],
-                },
+            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
+                FlextMeltanoModels.ConfigDict(
+                    json_schema_extra={
+                        "description": "Oracle OIC connectivity agent with health monitoring",
+                        "examples": [
+                            {
+                                "agent_id": "AGENT_ONPREM_01",
+                                "agent_name": "On-Premises Agent 01",
+                                "agent_type": "CONNECTIVITY_AGENT",
+                                "status": "ONLINE",
+                            },
+                        ],
+                    },
+                )
             )
 
             agent_id: Annotated[
@@ -1534,18 +1550,20 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             """Configuration for OIC tap streams."""
 
             # Pydantic 2.11 Configuration - Stream Features
-            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = FlextMeltanoModels.ConfigDict(
-                json_schema_extra={
-                    "description": "Oracle OIC tap stream configuration with filtering",
-                    "examples": [
-                        {
-                            "stream_name": "integrations",
-                            "replication_method": "INCREMENTAL",
-                            "replication_key": "last_updated",
-                            "page_size": 100,
-                        },
-                    ],
-                },
+            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
+                FlextMeltanoModels.ConfigDict(
+                    json_schema_extra={
+                        "description": "Oracle OIC tap stream configuration with filtering",
+                        "examples": [
+                            {
+                                "stream_name": "integrations",
+                                "replication_method": "INCREMENTAL",
+                                "replication_key": "last_updated",
+                                "page_size": 100,
+                            },
+                        ],
+                    },
+                )
             )
 
             stream_name: Annotated[str, u.Field(..., description="Singer stream name")]
@@ -1659,18 +1677,20 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             """Standardized OIC API response wrapper."""
 
             # Pydantic 2.11 Configuration - API Response Features
-            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = FlextMeltanoModels.ConfigDict(
-                json_schema_extra={
-                    "description": "Oracle OIC API response with pagination and error handling",
-                    "examples": [
-                        {
-                            "success": True,
-                            "total_count": 150,
-                            "page_size": 50,
-                            "page_number": 1,
-                        },
-                    ],
-                },
+            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
+                FlextMeltanoModels.ConfigDict(
+                    json_schema_extra={
+                        "description": "Oracle OIC API response with pagination and error handling",
+                        "examples": [
+                            {
+                                "success": True,
+                                "total_count": 150,
+                                "page_size": 50,
+                                "page_number": 1,
+                            },
+                        ],
+                    },
+                )
             )
 
             success: Annotated[
@@ -1789,18 +1809,20 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             """Error context for OIC API error handling."""
 
             # Pydantic 2.11 Configuration - Error Context Features
-            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = FlextMeltanoModels.ConfigDict(
-                json_schema_extra={
-                    "description": "Oracle OIC API error context with recovery guidance",
-                    "examples": [
-                        {
-                            "error_type": "RATE_LIMIT",
-                            "http_status_code": 429,
-                            "retry_after_seconds": 60,
-                            "is_retryable": True,
-                        },
-                    ],
-                },
+            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
+                FlextMeltanoModels.ConfigDict(
+                    json_schema_extra={
+                        "description": "Oracle OIC API error context with recovery guidance",
+                        "examples": [
+                            {
+                                "error_type": "RATE_LIMIT",
+                                "http_status_code": 429,
+                                "retry_after_seconds": 60,
+                                "is_retryable": True,
+                            },
+                        ],
+                    },
+                )
             )
 
             error_type: Annotated[

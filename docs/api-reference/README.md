@@ -19,7 +19,7 @@ This section is generated from public exports and real docstrings.
 
 ## Surface Summary
 
-- Primary facades: `FlextOracleOicAuthenticator`, `FlextTapOracleOic`, `FlextTapOracleOicApiError`, `FlextTapOracleOicAuthenticationError`, `FlextTapOracleOicClient`, `FlextTapOracleOicConnectionError` (+11 more)
-- Generated module pages: `12`
+- Primary facades: `FlextOracleOicAuthenticator`, `FlextTapOracleOicExceptionFactory`, `FlextTapOracleOicSettings`, `FlextTapOracleOicUtilities`, `FlextTapOracleOicPaginator`, `FlextTapOracleOicTypes` (+13 more)
+- Generated module pages: `13`
 
 - [Back to project docs](../index.md)
