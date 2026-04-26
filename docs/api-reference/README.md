@@ -19,7 +19,7 @@ This section is generated from public exports and real docstrings.
 
 ## Surface Summary
 
-- Primary facades: `FlextTapOracleOic`, `FlextTapOracleOicValidationError`, `FlextTapOracleOicApiError`, `FlextTapOracleOicTypes`, `FlextTapOracleOicService`, `FlextTapOracleOicUtilities` (+13 more)
+- Primary facades: `FlextTapOracleOicConstants`, `FlextTapOracleOicService`, `FlextTapOracleOicProtocols`, `FlextTapOracleOicExceptionFactory`, `FlextTapOracleOicClient`, `FlextTapOracleOicModelsStreams` (+13 more)
 - Generated module pages: `13`
 
 - [Back to project docs](../index.md)
