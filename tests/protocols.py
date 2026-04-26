@@ -16,12 +16,6 @@ from flext_tap_oracle_oic import FlextTapOracleOicProtocols
 class TestsFlextTapOracleOicProtocols(FlextTestsProtocols, FlextTapOracleOicProtocols):
     """Test protocols for flext-tap-oracle-oic."""
 
-    class TapOracleOic(FlextTapOracleOicProtocols.TapOracleOic):
-        """TapOracleOic test protocols namespace."""
-
-        class Tests:
-            """Internal tests declarations."""
-
 
 p = TestsFlextTapOracleOicProtocols
 __all__: list[str] = ["TestsFlextTapOracleOicProtocols", "p"]
