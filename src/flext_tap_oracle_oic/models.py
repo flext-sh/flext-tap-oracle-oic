@@ -37,6 +37,46 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
     class TapOracleOic:
         """TapOracleOic domain namespace."""
 
+        @staticmethod
+        def require_entity_value(
+            value: str,
+            *,
+            label: str,
+        ) -> None:
+            """Require one non-empty entity identifier/name value."""
+            if not value:
+                msg = f"{label} is required"
+                raise ValueError(msg)
+
+        @staticmethod
+        def validate_optional_port(port: int | None) -> None:
+            """Validate optional network port within canonical bounds."""
+            if port is not None and not (
+                c.DEFAULT_RETRY_DELAY_SECONDS <= port <= c.MAX_PORT
+            ):
+                msg = "Port must be between 1 and 65535"
+                raise ValueError(msg)
+
+        @staticmethod
+        def validate_entity_identity_and_port(
+            *,
+            entity_id: str,
+            entity_name: str,
+            id_label: str,
+            name_label: str,
+            port: int | None,
+        ) -> None:
+            """Validate required entity id/name fields and optional port."""
+            FlextTapOracleOicModels.TapOracleOic.require_entity_value(
+                entity_id,
+                label=id_label,
+            )
+            FlextTapOracleOicModels.TapOracleOic.require_entity_value(
+                entity_name,
+                label=name_label,
+            )
+            FlextTapOracleOicModels.TapOracleOic.validate_optional_port(port)
+
         class OicEnvelope(FlextMeltanoModels.BaseModel):
             """OIC API response envelope for paginated list endpoints.
 
@@ -855,17 +895,13 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             @u.model_validator(mode="after")
             def validate_connection_entity(self) -> Self:
                 """Validate OIC connection entity."""
-                if not self.connection_id:
-                    msg = "Connection ID is required"
-                    raise ValueError(msg)
-                if not self.name:
-                    msg = "Connection name is required"
-                    raise ValueError(msg)
-                if self.port is not None and not (
-                    c.DEFAULT_RETRY_DELAY_SECONDS <= self.port <= c.MAX_PORT
-                ):
-                    msg = "Port must be between 1 and 65535"
-                    raise ValueError(msg)
+                FlextTapOracleOicModels.TapOracleOic.validate_entity_identity_and_port(
+                    entity_id=self.connection_id,
+                    entity_name=self.name,
+                    id_label="Connection ID",
+                    name_label="Connection name",
+                    port=self.port,
+                )
                 return self
 
         class OicActivityRecord(FlextMeltanoModels.Entity):
@@ -1427,17 +1463,13 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             @u.model_validator(mode="after")
             def validate_agent_entity(self) -> Self:
                 """Validate OIC agent entity."""
-                if not self.agent_id:
-                    msg = "Agent ID is required"
-                    raise ValueError(msg)
-                if not self.agent_name:
-                    msg = "Agent name is required"
-                    raise ValueError(msg)
-                if self.port is not None and not (
-                    c.DEFAULT_RETRY_DELAY_SECONDS <= self.port <= c.MAX_PORT
-                ):
-                    msg = "Port must be between 1 and 65535"
-                    raise ValueError(msg)
+                FlextTapOracleOicModels.TapOracleOic.validate_entity_identity_and_port(
+                    entity_id=self.agent_id,
+                    entity_name=self.agent_name,
+                    id_label="Agent ID",
+                    name_label="Agent name",
+                    port=self.port,
+                )
                 return self
 
         class OicStreamConfiguration(FlextMeltanoModels.ArbitraryTypesModel):
