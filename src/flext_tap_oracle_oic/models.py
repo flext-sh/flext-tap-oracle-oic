@@ -18,9 +18,9 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
 from flext_api import FlextApi, FlextApiSettings
+
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import m
-
 from flext_tap_oracle_oic import FlextTapOracleOicPaginator, c, e, t, u
 
 if TYPE_CHECKING:
@@ -36,112 +36,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
     class TapOracleOic:
         """TapOracleOic domain namespace."""
-
-        # Dynamic attributes for runtime configuration (accessed via hasattr checks)
-        _oic_authentication: t.JsonMapping | None = None
-        _stream_configurations: t.JsonMapping | None = None
-        _singer_mode: t.JsonMapping | None = None
-        _include_oic_metadata: t.JsonMapping | None = None
-
-        @u.computed_field()
-        @property
-        def active_oic_tap_models_count(self) -> int:
-            """Count of active Oracle OIC tap models with API extraction capabilities."""
-            return self._count_active_oic_tap_models()
-
-        @u.computed_field()
-        @property
-        def oic_tap_system_summary(self) -> t.JsonMapping:
-            """Complete Singer Oracle OIC tap system summary with API extraction capabilities."""
-            model_count: int = self._count_active_oic_tap_models()
-            return {
-                "total_models": model_count,
-                "tap_type": "singer_oracle_oic_api_extractor",
-                "extraction_features": [
-                    "oic_integration_monitoring",
-                    "connection_metadata_extraction",
-                    "activity_incremental_replication",
-                    "package_management_tracking",
-                    "performance_metrics_collection",
-                    "agent_health_monitoring",
-                ],
-                "singer_compliance": {
-                    "protocol_version": "singer_v1",
-                    "stream_discovery": True,
-                    "catalog_generation": True,
-                    "state_management": True,
-                    "incremental_bookmarking": True,
-                },
-                "oic_capabilities": {
-                    "oauth2_authentication": True,
-                    "api_pagination": True,
-                    "data_sanitization": True,
-                    "error_recovery": True,
-                    "rate_limit_handling": True,
-                },
-            }
-
-        @u.field_serializer("*", when_used="json")
-        def serialize_with_oic_metadata(
-            self,
-            value: t.JsonMapping,
-            _info: u.FieldSerializationInfo,
-        ) -> t.JsonMapping:
-            """Add Singer Oracle OIC tap metadata to all serialized fields."""
-            return {
-                **value,
-                "_oic_tap_metadata": {
-                    "extraction_timestamp": datetime.now(UTC).isoformat(),
-                    "tap_type": "oracle_oic_api_extractor",
-                    "singer_protocol": "v1.0",
-                    "data_source": "oracle_integration_cloud",
-                },
-            }
-
-        @u.model_validator(mode="after")
-        def validate_oic_tap_system_consistency(self) -> Self:
-            """Validate Singer Oracle OIC tap system consistency and configuration."""
-            # Singer OIC tap authentication validation
-            if self._oic_authentication and not hasattr(
-                self, "OicAuthenticationConfig"
-            ):
-                msg = "OicAuthenticationConfig required when OIC authentication configured"
-                raise ValueError(msg)
-
-            # Stream configuration validation
-            if self._stream_configurations and not hasattr(
-                self, "OicStreamConfiguration"
-            ):
-                msg = "OicStreamConfiguration required for stream configurations"
-                raise ValueError(msg)
-
-            # Singer protocol compliance validation
-            if self._singer_mode:
-                required_models = ["OicApiResponse", "OicErrorContext"]
-                for model in required_models:
-                    if not hasattr(self, model):
-                        msg = f"{model} required for Singer protocol compliance"
-                        raise ValueError(msg)
-
-            return self
-
-        # Advanced Pydantic 2.11 Features - Singer Oracle OIC Tap Domain
-
-        def _count_active_oic_tap_models(self) -> int:
-            """Count of active Oracle OIC tap models with API extraction capabilities."""
-            model_names = [
-                "OicAuthenticationConfig",
-                "OicIntegrationEntity",
-                "OicConnectionEntity",
-                "OicActivityRecord",
-                "OicPackageEntity",
-                "OicMetricsRecord",
-                "OicAgentEntity",
-                "OicStreamConfiguration",
-                "OicApiResponse",
-                "OicErrorContext",
-            ]
-            return sum(1 for name in model_names if getattr(self, name) is not None)
 
         class OicEnvelope(FlextMeltanoModels.BaseModel):
             """OIC API response envelope for paginated list endpoints.
@@ -633,7 +527,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             @property
             def auth_config_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
+            ) -> t.TapOracleOic.SectionedSummary:
                 """OAuth2 authentication configuration summary."""
                 min_name_length: int = 2
                 return {
@@ -775,7 +669,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             @property
             def integration_health_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
+            ) -> t.TapOracleOic.SectionedSummary:
                 """OIC integration health and performance summary."""
                 error_rate = 0.0
                 if self.execution_count and self.execution_count > 0:
@@ -930,7 +824,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             @property
             def connection_security_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
+            ) -> t.TapOracleOic.SectionedSummary:
                 """OIC connection security and health summary."""
                 return {
                     "connection_identity": {
@@ -1071,7 +965,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             @property
             def activity_performance_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
+            ) -> t.TapOracleOic.SectionedSummary:
                 """OIC activity performance summary."""
                 duration_seconds = 0.0
                 if self.duration_ms:
@@ -1209,7 +1103,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             @property
             def package_composition_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
+            ) -> t.TapOracleOic.SectionedSummary:
                 """OIC package composition and usage summary."""
                 dependencies_payload: list[t.JsonValue] = list(self.dependencies)
                 composition: dict[str, t.JsonValue | None] = {
@@ -1350,7 +1244,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             @property
             def metrics_analysis_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
+            ) -> t.TapOracleOic.SectionedSummary:
                 """OIC metrics complete analysis summary."""
                 total_messages = (self.success_count or 0) + (self.error_count or 0)
                 error_rate = 0.0
@@ -1497,7 +1391,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             @property
             def agent_health_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
+            ) -> t.TapOracleOic.SectionedSummary:
                 """OIC agent health and connectivity summary."""
                 health_status = c.TapOracleOic.OicHealthStatus.HEALTHY.value
                 if self.status in {"ERROR", "OFFLINE"}:
@@ -1631,7 +1525,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             @property
             def stream_config_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
+            ) -> t.TapOracleOic.SectionedSummary:
                 """OIC stream configuration summary."""
                 return {
                     "stream_identity": {
@@ -1760,7 +1654,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             @property
             def api_response_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
+            ) -> t.TapOracleOic.SectionedSummary:
                 """OIC API response summary."""
                 return {
                     "response_status": {
@@ -1884,7 +1778,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             @property
             def error_context_summary(
                 self,
-            ) -> Mapping[str, Mapping[str, t.JsonValue | None]]:
+            ) -> t.TapOracleOic.SectionedSummary:
                 """OIC error context summary."""
                 return {
                     "error_classification": {

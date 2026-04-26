@@ -15,7 +15,6 @@ from typing import Annotated, ClassVar, Self
 
 from flext_core import FlextSettings
 from flext_oracle_oic import FlextOracleOicSettings
-
 from flext_tap_oracle_oic import c, m, p, r, t, u
 
 

@@ -17,7 +17,6 @@ from urllib.parse import urljoin, urlparse
 
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_oic import u
-
 from flext_tap_oracle_oic import c, p, r, t
 
 
