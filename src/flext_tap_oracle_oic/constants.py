@@ -232,4 +232,4 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
 
 c = FlextTapOracleOicConstants
 
-__all__: list[str] = ["FlextTapOracleOicConstants", "c"]
+__all__: tuple[str, ...] = ("FlextTapOracleOicConstants", "c")
