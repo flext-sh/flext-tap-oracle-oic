@@ -162,16 +162,16 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                             f"https://runtime.integration.{region}.ocp.oraclecloud.com"
                         )
                 if self.api_path is not None:
-                    return base_url + self.api_path
-                api_paths = {
-                    "core": c.TapOracleOic.OIC_API_BASE_PATH,
-                    "monitoring": c.TapOracleOic.OIC_MONITORING_API_PATH,
-                    "b2b": c.TapOracleOic.OIC_B2B_API_PATH,
-                    "process": c.TapOracleOic.OIC_PROCESS_API_PATH,
+                    return base_url + str(self.api_path)
+                api_paths: dict[str, str] = {
+                    "core": str(c.TapOracleOic.OIC_API_BASE_PATH),
+                    "monitoring": str(c.TapOracleOic.OIC_MONITORING_API_PATH),
+                    "b2b": str(c.TapOracleOic.OIC_B2B_API_PATH),
+                    "process": str(c.TapOracleOic.OIC_PROCESS_API_PATH),
                 }
                 return base_url + api_paths.get(
                     self.api_category,
-                    c.TapOracleOic.OIC_API_BASE_PATH,
+                    str(c.TapOracleOic.OIC_API_BASE_PATH),
                 )
 
             def get_new_paginator(self) -> p.TapOracleOic.Paginator:
@@ -367,8 +367,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             ) -> str:
                 """Return a stable identifier for response logging."""
                 if response.request_id:
-                    return response.request_id
-                return self.api_path or self.name
+                    return str(response.request_id)
+                return str(self.api_path or self.name)
 
             @staticmethod
             def _as_oic_envelope(
@@ -1855,17 +1855,17 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                     c.TapOracleOic.OicErrorType.AUTHENTICATION,
                     c.TapOracleOic.OicErrorType.AUTHORIZATION,
                 }:
-                    return c.TapOracleOic.OicErrorSeverity.CRITICAL.value
+                    return str(c.TapOracleOic.OicErrorSeverity.CRITICAL.value)
                 if self.error_type == c.TapOracleOic.OicErrorType.RATE_LIMIT:
-                    return c.TapOracleOic.OicErrorSeverity.WARNING.value
+                    return str(c.TapOracleOic.OicErrorSeverity.WARNING.value)
                 if self.error_type == c.TapOracleOic.OicErrorType.SERVER_ERROR:
-                    return c.TapOracleOic.OicErrorSeverity.ERROR.value
+                    return str(c.TapOracleOic.OicErrorSeverity.ERROR.value)
                 if self.error_type in {
                     c.TapOracleOic.OicErrorType.NETWORK,
                     c.TapOracleOic.OicErrorType.VALIDATION,
                 }:
-                    return c.TapOracleOic.OicErrorSeverity.WARNING.value
-                return c.TapOracleOic.OicErrorSeverity.UNKNOWN.value
+                    return str(c.TapOracleOic.OicErrorSeverity.WARNING.value)
+                return str(c.TapOracleOic.OicErrorSeverity.UNKNOWN.value)
 
         class OracleOic(m.OracleOic):
             """Domain entity models for Oracle OIC resources.
@@ -2042,7 +2042,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 @property
                 def is_active(self) -> bool:
                     """Check if integration is active."""
-                    return (
+                    return bool(
                         self.integration_status
                         == c.TapOracleOic.IntegrationStatus.ACTIVATED
                     )
@@ -2129,7 +2129,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 @property
                 def is_empty(self) -> bool:
                     """Check if lookup is empty."""
-                    return self.row_count == 0
+                    return bool(self.row_count == 0)
 
                 def record_import(self) -> None:
                     """Record successful import."""
@@ -2353,7 +2353,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                     """Calculate success rate percentage."""
                     if self.total_executions == 0:
                         return 0.0
-                    return self.successful_executions / self.total_executions * 100.0
+                    return float(
+                        self.successful_executions / self.total_executions * 100.0,
+                    )
 
 
 # Short alias
