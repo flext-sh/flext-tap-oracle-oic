@@ -212,15 +212,9 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         self,
         *,
         settings: t.JsonMapping | None = None,
-        catalog: t.JsonMapping | None = None,
-        state: t.JsonMapping | None = None,
-        parse_env_config: bool = False,
         validate_config: bool = True,
     ) -> None:
         """Initialize Oracle OIC tap with library composition."""
-        _ = catalog
-        _ = state
-        _ = parse_env_config
         super().__init__()
         self._tap_config: t.JsonMapping = dict(settings) if settings is not None else {}
         self._oic_settings = FlextTapOracleOicSettings.model_validate(
