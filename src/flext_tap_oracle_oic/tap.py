@@ -242,11 +242,14 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
                     config_dict.get("oauth_scope", "urn:opc:resource:consumer:all"),
                 ),
                 "base_url": str(config_dict["oic_url"]),
-                "timeout": self._to_positive_int(
+                "timeout": u.to_positive_int(
                     config_dict.get("request_timeout"),
-                    30,
+                    default=30,
                 ),
-                "max_retries": self._to_positive_int(config_dict.get("max_retries"), 3),
+                "max_retries": u.to_positive_int(
+                    config_dict.get("max_retries"),
+                    default=3,
+                ),
             }
             oic_config = FlextTapOracleOicSettings.model_validate(oic_config_data)
             authenticator = FlextOracleOicAuthenticator(settings=oic_config)
@@ -322,16 +325,6 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
                 "streams": catalog.get("streams", []),
             }),
         )
-
-    @staticmethod
-    def _to_positive_int(value: t.JsonValue | None, default: int) -> int:
-        if isinstance(value, int):
-            return value
-        if isinstance(value, float):
-            return int(value)
-        if isinstance(value, str) and value.strip().isdigit():
-            return int(value)
-        return default
 
     def test_connection(self) -> p.Result[bool]:
         """Test connection to Oracle OIC using real API client."""
