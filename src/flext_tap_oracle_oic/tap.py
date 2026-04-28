@@ -375,8 +375,8 @@ def _build_config_from_env() -> t.StrMapping:
         return {
             "oauth_client_id": settings.oauth_client_id,
             "oauth_client_secret": settings.oauth_client_secret.get_secret_value(),
-            "oauth_token_url": str(settings.oauth_token_url),
-            "oic_url": str(settings.base_url),
+            "oauth_token_url": settings.oauth_token_url,
+            "oic_url": settings.base_url,
             "oauth_scope": settings.oauth_audience,
         }
     except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:

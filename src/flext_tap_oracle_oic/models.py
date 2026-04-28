@@ -2129,7 +2129,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 @property
                 def is_empty(self) -> bool:
                     """Check if lookup is empty."""
-                    return bool(self.row_count == 0)
+                    return self.row_count == 0
 
                 def record_import(self) -> None:
                     """Record successful import."""
