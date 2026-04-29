@@ -48,7 +48,7 @@ class FlextOracleOicAuthenticator:
                 for key, value in self.settings.get_token_request_data().items()
             )
             response_result = self._api_client.post(
-                str(self.settings.oauth_token_url),
+                self.settings.oauth_token_url,
                 data=token_request_data,
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
             )

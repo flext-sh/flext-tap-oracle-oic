@@ -178,8 +178,7 @@ class TestsFlextTapOracleOicTapCore:
         expected_capabilities = ["catalog", "state", "discover"]
         raw_capabilities = FlextTapOracleOic.capabilities
         capability_values = {
-            str(cap.value) if hasattr(cap, "value") else str(cap)
-            for cap in raw_capabilities
+            str(cap.value) if hasattr(cap, "value") else cap for cap in raw_capabilities
         }
         for capability in expected_capabilities:
             if capability not in capability_values:

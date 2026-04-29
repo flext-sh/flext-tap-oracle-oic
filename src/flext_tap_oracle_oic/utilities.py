@@ -583,7 +583,7 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
 
             """
             if total_records <= 0:
-                return int(c.DEFAULT_PAGE_SIZE)
+                return c.DEFAULT_PAGE_SIZE
             calculated_size = max(1, total_records // target_requests)
             return min(calculated_size, 1000)
 

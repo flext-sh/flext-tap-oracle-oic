@@ -136,15 +136,14 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 Base URL with appropriate OIC API endpoint for stream type.
 
                 """
-                base_url = str(
-                    self.settings.get("base_url") or self.settings.get("oic_url", ""),
-                ).rstrip("/")
+                base_url_raw = self.settings.get("base_url") or self.settings.get(
+                    "oic_url", ""
+                )
+                base_url = str(base_url_raw).rstrip("/")
                 if not base_url:
                     msg = "Base URL is required but not configured"
                     raise ValueError(msg)
-                validation_result = u.TapOracleOic.validate_oic_endpoint(
-                    base_url,
-                )
+                validation_result = u.TapOracleOic.validate_oic_endpoint(base_url)
                 if validation_result.failure:
                     msg = f"Invalid OIC endpoint: {validation_result.error}"
                     raise ValueError(msg)
@@ -162,17 +161,19 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                             f"https://runtime.integration.{region}.ocp.oraclecloud.com"
                         )
                 if self.api_path is not None:
-                    return base_url + str(self.api_path)
+                    api_path: str = self.api_path
+                    return base_url + api_path
                 api_paths: dict[str, str] = {
-                    "core": str(c.TapOracleOic.OIC_API_BASE_PATH),
-                    "monitoring": str(c.TapOracleOic.OIC_MONITORING_API_PATH),
-                    "b2b": str(c.TapOracleOic.OIC_B2B_API_PATH),
-                    "process": str(c.TapOracleOic.OIC_PROCESS_API_PATH),
+                    "core": c.TapOracleOic.OIC_API_BASE_PATH,
+                    "monitoring": c.TapOracleOic.OIC_MONITORING_API_PATH,
+                    "b2b": c.TapOracleOic.OIC_B2B_API_PATH,
+                    "process": c.TapOracleOic.OIC_PROCESS_API_PATH,
                 }
-                return base_url + api_paths.get(
+                resolved_api_path: str = api_paths.get(
                     self.api_category,
-                    str(c.TapOracleOic.OIC_API_BASE_PATH),
+                    c.TapOracleOic.OIC_API_BASE_PATH,
                 )
+                return base_url + resolved_api_path
 
             def get_new_paginator(self) -> p.TapOracleOic.Paginator:
                 """Create new Oracle OIC paginator with configuration.
@@ -366,9 +367,13 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 response: m.Api.HttpResponse,
             ) -> str:
                 """Return a stable identifier for response logging."""
-                if response.request_id:
-                    return str(response.request_id)
-                return str(self.api_path or self.name)
+                request_id_raw: object = response.request_id
+                if isinstance(request_id_raw, str) and request_id_raw:
+                    return request_id_raw
+                identifier: str = (
+                    self.api_path if self.api_path is not None else self.name
+                )
+                return identifier
 
             @staticmethod
             def _as_oic_envelope(
@@ -1699,12 +1704,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                         "total_count": self.total_count,
                         "page_size": self.page_size,
                         "page_number": self.page_number,
-                        "has_more": bool(
-                            self.total_count
-                            and self.page_size
-                            and (self.page_number or 1) * self.page_size
-                            < self.total_count,
-                        ),
+                        "has_more": self.total_count
+                        and self.page_size
+                        and (self.page_number or 1) * self.page_size < self.total_count,
                     },
                     "error_info": {
                         "has_error": not self.success,
@@ -2042,10 +2044,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 @property
                 def is_active(self) -> bool:
                     """Check if integration is active."""
-                    return bool(
+                    is_active: bool = (
                         self.integration_status
                         == c.TapOracleOic.IntegrationStatus.ACTIVATED
                     )
+                    return is_active
 
                 def activate(self) -> None:
                     """Activate the integration."""
@@ -2129,7 +2132,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 @property
                 def is_empty(self) -> bool:
                     """Check if lookup is empty."""
-                    return self.row_count == 0
+                    is_empty: bool = self.row_count == 0
+                    return is_empty
 
                 def record_import(self) -> None:
                     """Record successful import."""
@@ -2353,9 +2357,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                     """Calculate success rate percentage."""
                     if self.total_executions == 0:
                         return 0.0
-                    return float(
-                        self.successful_executions / self.total_executions * 100.0,
+                    success_rate: float = (
+                        self.successful_executions / self.total_executions * 100.0
                     )
+                    return success_rate
 
 
 # Short alias

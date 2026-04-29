@@ -117,7 +117,7 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
             (self.oauth_audience, "OAuth audience is required"),
         ]
         for field_value, error_message in required_fields:
-            if not (field_value and str(field_value).strip()):
+            if not (field_value and field_value.strip()):
                 return r[bool].fail(error_message)
         if self.timeout <= 0:
             return r[bool].fail("Timeout must be positive")
