@@ -215,7 +215,7 @@ class TestsFlextTapOracleOicTapCore:
 
     def test_streams_count_with_extended_config(self) -> None:
         """Test that the number of streams is correct with the extended settings."""
-        sample_config_with_extended: Mapping[str, bool | str] = {
+        sample_config_with_extended: t.MappingKV[str, bool | str] = {
             "base_url": "https://test.integration.ocp.oraclecloud.com",
             "oauth_client_id": "test_client_id",
             "oauth_client_secret": "test_client_secret",

@@ -6,10 +6,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Sequence,
-)
-
 from flext_api import FlextApiModels
 
 from flext_tap_oracle_oic import c, m, t, u
@@ -78,7 +74,7 @@ class FlextTapOracleOicPaginator:
     def _extract_items_from_response(
         self,
         data: t.JsonMapping,
-    ) -> Sequence[t.JsonMapping] | None:
+    ) -> t.SequenceOf[t.JsonMapping] | None:
         """Extract items from various OIC response formats."""
         envelope = _as_oic_envelope(data)
         if envelope is None:

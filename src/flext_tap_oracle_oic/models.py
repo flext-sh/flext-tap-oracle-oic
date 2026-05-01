@@ -12,7 +12,6 @@ from collections.abc import (
     Iterator,
     Mapping,
     MutableSequence,
-    Sequence,
 )
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar, Self
@@ -84,8 +83,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             normalizing between 'items', 'data', 'count', and 'totalSize' fields.
             """
 
-            items: Sequence[t.JsonMapping] | None = None
-            data: Sequence[t.JsonMapping] | None = None
+            items: t.SequenceOf[t.JsonMapping] | None = None
+            data: t.SequenceOf[t.JsonMapping] | None = None
             total_size: Annotated[int | None, u.Field(alias="totalSize")] = None
             count: int | None = None
 
@@ -467,7 +466,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
             def _process_list_data(
                 self,
-                data: t.JsonList | Sequence[t.JsonMapping],
+                data: t.JsonList | t.SequenceOf[t.JsonMapping],
             ) -> Iterator[t.JsonMapping]:
                 """Process list-type response data."""
                 for item in data:
@@ -1664,7 +1663,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 ),
             ]
             error_details: Annotated[
-                Mapping[str, t.JsonMapping] | None,
+                t.MappingKV[str, t.JsonMapping] | None,
                 u.Field(
                     None,
                     description="Detailed error information",
@@ -1779,7 +1778,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 u.Field(None, description="HTTP method used"),
             ]
             request_params: Annotated[
-                Mapping[str, t.JsonMapping] | None,
+                t.MappingKV[str, t.JsonMapping] | None,
                 u.Field(
                     None,
                     description="Request parameters",
@@ -1900,7 +1899,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                     u.Field(None, description="Connection endpoint URL"),
                 ]
                 connection_properties: Annotated[
-                    Mapping[str, t.JsonMapping],
+                    t.MappingKV[str, t.JsonMapping],
                     u.Field(description="Connection properties"),
                 ] = u.Field(default_factory=dict)
                 security_policy: Annotated[
@@ -2088,7 +2087,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                     str | None, u.Field(None, description="Domain name")
                 ]
                 columns: Annotated[
-                    Sequence[t.JsonMapping],
+                    t.SequenceOf[t.JsonMapping],
                     u.Field(
                         description="Column definitions",
                     ),
@@ -2195,7 +2194,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                     t.NonNegativeInt, u.Field(description="Number of errors")
                 ] = 0
                 business_identifiers: Annotated[
-                    Mapping[str, t.JsonMapping],
+                    t.MappingKV[str, t.JsonMapping],
                     u.Field(
                         description="Business tracking identifiers",
                     ),

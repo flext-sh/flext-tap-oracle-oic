@@ -16,7 +16,6 @@ from collections.abc import (
     Callable,
     Generator,
     Iterator,
-    Sequence,
 )
 from unittest.mock import Mock
 
@@ -149,7 +148,7 @@ def mock_oauth_token_response() -> t.JsonMapping:
 
 
 @pytest.fixture
-def sample_integration_data() -> Sequence[t.JsonMapping]:
+def sample_integration_data() -> t.SequenceOf[t.JsonMapping]:
     """Sample integration data for testing."""
     return [
         {
@@ -205,7 +204,7 @@ def sample_integration_data() -> Sequence[t.JsonMapping]:
 
 @pytest.fixture
 def mock_integrations_response(
-    sample_integration_data: Sequence[t.JsonMapping],
+    sample_integration_data: t.SequenceOf[t.JsonMapping],
 ) -> t.JsonMapping:
     """Mock integrations API response."""
     items_payload: list[t.JsonValue] = [dict(item) for item in sample_integration_data]
@@ -220,7 +219,7 @@ def mock_integrations_response(
 
 
 @pytest.fixture
-def sample_connection_data() -> Sequence[t.JsonMapping]:
+def sample_connection_data() -> t.SequenceOf[t.JsonMapping]:
     """Sample connection data for testing."""
     return [
         {
@@ -270,7 +269,7 @@ def sample_connection_data() -> Sequence[t.JsonMapping]:
 
 @pytest.fixture
 def mock_connections_response(
-    sample_connection_data: Sequence[t.JsonMapping],
+    sample_connection_data: t.SequenceOf[t.JsonMapping],
 ) -> t.JsonMapping:
     """Mock connections API response."""
     items_payload: list[t.JsonValue] = [dict(item) for item in sample_connection_data]
@@ -285,7 +284,7 @@ def mock_connections_response(
 
 
 @pytest.fixture
-def sample_package_data() -> Sequence[t.JsonMapping]:
+def sample_package_data() -> t.SequenceOf[t.JsonMapping]:
     """Sample package data for testing."""
     return [
         {
@@ -321,7 +320,7 @@ def sample_package_data() -> Sequence[t.JsonMapping]:
 
 @pytest.fixture
 def mock_packages_response(
-    sample_package_data: Sequence[t.JsonMapping],
+    sample_package_data: t.SequenceOf[t.JsonMapping],
 ) -> t.JsonMapping:
     """Mock packages API response."""
     items_payload: list[t.JsonValue] = [dict(item) for item in sample_package_data]
@@ -336,7 +335,7 @@ def mock_packages_response(
 
 
 @pytest.fixture
-def sample_lookup_data() -> Sequence[t.JsonMapping]:
+def sample_lookup_data() -> t.SequenceOf[t.JsonMapping]:
     """Sample lookup data for testing."""
     return [
         {
@@ -370,7 +369,7 @@ def sample_lookup_data() -> Sequence[t.JsonMapping]:
 
 @pytest.fixture
 def mock_lookups_response(
-    sample_lookup_data: Sequence[t.JsonMapping],
+    sample_lookup_data: t.SequenceOf[t.JsonMapping],
 ) -> t.JsonMapping:
     """Mock lookups API response."""
     items_payload: list[t.JsonValue] = [dict(item) for item in sample_lookup_data]
@@ -385,7 +384,7 @@ def mock_lookups_response(
 
 
 @pytest.fixture
-def sample_library_data() -> Sequence[t.JsonMapping]:
+def sample_library_data() -> t.SequenceOf[t.JsonMapping]:
     """Sample library data for testing."""
     return [
         {
@@ -402,7 +401,7 @@ def sample_library_data() -> Sequence[t.JsonMapping]:
 
 
 @pytest.fixture
-def sample_certificate_data() -> Sequence[t.JsonMapping]:
+def sample_certificate_data() -> t.SequenceOf[t.JsonMapping]:
     """Sample certificate data for testing."""
     return [
         {
@@ -420,7 +419,7 @@ def sample_certificate_data() -> Sequence[t.JsonMapping]:
 
 
 @pytest.fixture
-def sample_adapter_data() -> Sequence[t.JsonMapping]:
+def sample_adapter_data() -> t.SequenceOf[t.JsonMapping]:
     """Sample adapter data for testing."""
     return [
         {
@@ -514,7 +513,7 @@ def mock_rate_limit_response() -> Mock:
 
 
 @pytest.fixture
-def large_integration_dataset() -> Sequence[t.JsonMapping]:
+def large_integration_dataset() -> t.SequenceOf[t.JsonMapping]:
     """Large integration dataset for performance testing."""
     integrations: list[t.JsonMapping] = []
     for i in range(1000):

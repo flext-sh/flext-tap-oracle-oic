@@ -10,7 +10,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from typing import TypeAlias
 
 from flext_meltano import m, t as meltano_t
@@ -23,7 +22,9 @@ class FlextTapOracleOicTypes(meltano_t, t):
     class TapOracleOic:
         """Tap Oracle OIC-specific adapter namespace."""
 
-        SectionedSummary: TypeAlias = Mapping[str, Mapping[str, t.JsonValue | None]]
+        SectionedSummary: TypeAlias = t.MappingKV[
+            str, t.MappingKV[str, t.JsonValue | None]
+        ]
         """Two-level summary mapping (section -> field -> value-or-None)."""
 
         CONTAINER_VALUE_MAP_ADAPTER: m.TypeAdapter[t.JsonMapping] = m.TypeAdapter(

@@ -9,7 +9,6 @@ from __future__ import annotations
 import sys
 from collections.abc import (
     Mapping,
-    Sequence,
 )
 from typing import ClassVar, override
 
@@ -129,7 +128,7 @@ class FlextTapOracleOicClient:
     def post(
         self,
         endpoint: str,
-        data: Mapping[str, t.JsonMapping] | None = None,
+        data: t.MappingKV[str, t.JsonMapping] | None = None,
     ) -> p.Result[FlextApiModels.Api.HttpResponse]:
         """Make authenticated POST request to OIC API."""
         url = f"{self.settings.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
@@ -259,7 +258,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             )
         return self._client
 
-    def discover_oic_streams(self) -> Sequence[m.TapOracleOic.OICBaseStream]:
+    def discover_oic_streams(self) -> t.SequenceOf[m.TapOracleOic.OICBaseStream]:
         """Discover OIC stream class instances for this tap."""
         logger.info("Discovering Oracle OIC streams using consolidated streams")
         stream_names = list(c.TapOracleOic.CORE_STREAMS)

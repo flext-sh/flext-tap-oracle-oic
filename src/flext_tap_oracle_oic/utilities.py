@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import re
 from collections.abc import (
-    Mapping,
     MutableMapping,
 )
 from datetime import UTC, datetime
@@ -72,7 +71,7 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
 
         @staticmethod
         def extract_pagination_info(
-            response: Mapping[str, t.JsonMapping] | None,
+            response: t.MappingKV[str, t.JsonMapping] | None,
         ) -> t.JsonMapping:
             """Extract pagination information from OIC response.
 

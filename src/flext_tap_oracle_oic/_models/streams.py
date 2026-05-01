@@ -10,9 +10,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Mapping,
-)
 from typing import ClassVar
 
 from flext_tap_oracle_oic import m, p, t
@@ -914,7 +911,7 @@ class FlextTapOracleOicModelsStreams:
 
 
 # Stream registry - maps stream names to their classes
-ALL_STREAMS: Mapping[str, type[m.TapOracleOic.OICBaseStream]] = {
+ALL_STREAMS: t.MappingKV[str, type[m.TapOracleOic.OICBaseStream]] = {
     "integrations": FlextTapOracleOicModelsStreams.IntegrationsStream,
     "connections": FlextTapOracleOicModelsStreams.ConnectionsStream,
     "packages": FlextTapOracleOicModelsStreams.PackagesStream,
