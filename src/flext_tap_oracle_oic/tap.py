@@ -52,7 +52,7 @@ class FlextOracleOicAuthenticator:
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
             )
             if response_result.failure:
-                return r[str].fail(f"OAuth2 request failed: {response_result.error}")
+                return r[str].fail_op("OAuth2 request", response_result.error)
             response = response_result.value
             if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
                 return r[str].fail(
@@ -79,7 +79,7 @@ class FlextOracleOicAuthenticator:
                 case _:
                     return r[str].fail("No valid access token in response")
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-            return r[str].fail(f"OAuth2 authentication failed: {e}")
+            return r[str].fail_op("OAuth2 authentication", e)
 
 
 class FlextTapOracleOicClient:
