@@ -1,0 +1,51 @@
+src/flext_tap_oracle_oic/_models/_error_context.py
+  473c59be621cc5d5 1-124,126-149
+src/flext_tap_oracle_oic/_models/_auth_config.py
+  473c59be621cc5d5 1-121
+src/flext_tap_oracle_oic/_models/_activity.py
+  473c59be621cc5d5 1-160
+src/flext_tap_oracle_oic/_models/_agent.py
+  473c59be621cc5d5 1-157
+src/flext_tap_oracle_oic/_models/_metrics.py
+  473c59be621cc5d5 1-166
+src/flext_tap_oracle_oic/_models/_integration.py
+  473c59be621cc5d5 1-166
+src/flext_tap_oracle_oic/_models/_api_response.py
+  473c59be621cc5d5 1-146
+src/flext_tap_oracle_oic/_models/_connection.py
+  473c59be621cc5d5 1-168
+src/flext_tap_oracle_oic/_models/_helpers.py
+  473c59be621cc5d5 1-50
+src/flext_tap_oracle_oic/models.py
+  473c59be621cc5d5 17,24-46,102,520,522,524,526,528,530,532,534,536,538
+src/flext_tap_oracle_oic/_models/_stream_config.py
+  473c59be621cc5d5 1-128,130-138
+src/flext_tap_oracle_oic/_models/_package.py
+  473c59be621cc5d5 1-147
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "1964f30e9d78f03896ce014c10dac4a0ca3c7832",
+  "prompts": {
+    "473c59be621cc5d5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f6001f8b-afdd-4757-8812-9bff0bfd46d9",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "FLEXT Bot",
+      "messages": [],
+      "total_additions": 1657,
+      "total_deletions": 1397,
+      "accepted_lines": 1600,
+      "overriden_lines": 2,
+      "messages_url": "https://usegitai.com/cas/be151aa01c891c82404bb2d84bf98660665730b373c27f86e8e283c20d8dcb26"
+    }
+  },
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
