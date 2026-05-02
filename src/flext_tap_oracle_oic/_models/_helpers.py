@@ -22,9 +22,7 @@ def require_entity_value(
 
 def validate_optional_port(port: int | None) -> None:
     """Validate optional network port within canonical bounds."""
-    if port is not None and not (
-        c.DEFAULT_RETRY_DELAY_SECONDS <= port <= c.MAX_PORT
-    ):
+    if port is not None and not (c.DEFAULT_RETRY_DELAY_SECONDS <= port <= c.MAX_PORT):
         msg = "Port must be between 1 and 65535"
         raise ValueError(msg)
 
