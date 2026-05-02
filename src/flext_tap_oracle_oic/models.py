@@ -366,7 +366,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 response: m.Api.HttpResponse,
             ) -> str:
                 """Return a stable identifier for response logging."""
-                request_id_raw: object = response.request_id
+                request_id_raw: p.AttributeProbe = response.request_id
                 if isinstance(request_id_raw, str) and request_id_raw:
                     return request_id_raw
                 identifier: str = (

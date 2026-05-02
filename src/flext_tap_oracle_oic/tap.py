@@ -111,7 +111,9 @@ class FlextTapOracleOicClient:
         try:
             response_result = self._api_client.get(url, headers=headers_result.value)
             if response_result.failure:
-                return r[FlextApiModels.Api.HttpResponse].fail_op("OIC API request", response_result.error)
+                return r[FlextApiModels.Api.HttpResponse].fail_op(
+                    "OIC API request", response_result.error
+                )
             response = response_result.value
             if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
                 return r[FlextApiModels.Api.HttpResponse].fail(
@@ -148,7 +150,8 @@ class FlextTapOracleOicClient:
             )
             if response_result.failure:
                 return r[FlextApiModels.Api.HttpResponse].fail_op(
-                    "OIC API request", response_result.error,
+                    "OIC API request",
+                    response_result.error,
                 )
             response = response_result.value
             if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
@@ -277,7 +280,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         catalog_entries: list[m.Meltano.SingerCatalogEntry] = []
         for stream in streams:
             stream_name = str(getattr(stream, "name", c.IDENTIFIER_UNKNOWN))
-            stream_schema_raw: object = getattr(stream, "stream_schema", {})
+            stream_schema_raw: p.AttributeProbe = getattr(stream, "stream_schema", {})
             stream_schema: t.JsonMapping = (
                 t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(
                     stream_schema_raw,
