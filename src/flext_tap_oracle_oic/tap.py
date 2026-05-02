@@ -147,8 +147,8 @@ class FlextTapOracleOicClient:
                 headers=headers_result.value,
             )
             if response_result.failure:
-                return r[FlextApiModels.Api.HttpResponse].fail(
-                    f"OIC API request failed: {response_result.error}",
+                return r[FlextApiModels.Api.HttpResponse].fail_op(
+                    "OIC API request", response_result.error,
                 )
             response = response_result.value
             if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
@@ -157,9 +157,7 @@ class FlextTapOracleOicClient:
                 )
             return r[FlextApiModels.Api.HttpResponse].ok(response)
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-            return r[FlextApiModels.Api.HttpResponse].fail(
-                f"OIC API request failed: {e}",
-            )
+            return r[FlextApiModels.Api.HttpResponse].fail_op("OIC API request", e)
 
     def _get_auth_headers(self) -> p.Result[t.StrMapping]:
         """Get authorization headers with OAuth2 token."""
