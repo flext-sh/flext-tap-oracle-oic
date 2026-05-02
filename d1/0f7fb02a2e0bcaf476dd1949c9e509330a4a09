@@ -1,0 +1,45 @@
+src/flext_tap_oracle_oic/_models/_oic_integration.py
+  473c59be621cc5d5 1-9,11-69,71-106,108-122
+src/flext_tap_oracle_oic/_models/_oic_connection.py
+  473c59be621cc5d5 1-9,11-96
+src/flext_tap_oracle_oic/models.py
+  473c59be621cc5d5 546,548,550,552,554-558
+src/flext_tap_oracle_oic/_models/_oic_project.py
+  473c59be621cc5d5 1-9,11-85
+src/flext_tap_oracle_oic/_models/__init__.py
+  473c59be621cc5d5 10-32
+src/flext_tap_oracle_oic/_models/_oic_execution_summary.py
+  473c59be621cc5d5 1-9,11-47,49-52
+src/flext_tap_oracle_oic/_models/_oic_resource_metadata.py
+  473c59be621cc5d5 1-9,11-39
+src/flext_tap_oracle_oic/_models/_oic_monitoring.py
+  473c59be621cc5d5 1-9,11-69,71-90
+src/flext_tap_oracle_oic/_models/_oic_lookup.py
+  473c59be621cc5d5 1-9,11-88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "d10f7fb02a2e0bcaf476dd1949c9e509330a4a09",
+  "prompts": {
+    "473c59be621cc5d5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f6001f8b-afdd-4757-8812-9bff0bfd46d9",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "FLEXT Bot",
+      "messages": [],
+      "total_additions": 642,
+      "total_deletions": 472,
+      "accepted_lines": 583,
+      "overriden_lines": 11,
+      "messages_url": "https://usegitai.com/cas/10e0abfaa88acdcb40e85d901ba90c9fa540d3fce0cd30ec78d5e9dc233caccb"
+    }
+  },
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
