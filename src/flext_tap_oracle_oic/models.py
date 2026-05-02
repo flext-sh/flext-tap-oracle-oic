@@ -39,6 +39,23 @@ from flext_tap_oracle_oic._models._integration import (
     OicIntegrationEntity as _OicIntegrationEntity,
 )
 from flext_tap_oracle_oic._models._metrics import OicMetricsRecord as _OicMetricsRecord
+from flext_tap_oracle_oic._models._oic_connection import (
+    OICConnection as _OICConnection,
+)
+from flext_tap_oracle_oic._models._oic_execution_summary import (
+    OICExecutionSummary as _OICExecutionSummary,
+)
+from flext_tap_oracle_oic._models._oic_integration import (
+    OICIntegration as _OICIntegration,
+)
+from flext_tap_oracle_oic._models._oic_lookup import OICLookup as _OICLookup
+from flext_tap_oracle_oic._models._oic_monitoring import (
+    OICMonitoringRecord as _OICMonitoringRecord,
+)
+from flext_tap_oracle_oic._models._oic_project import OICProject as _OICProject
+from flext_tap_oracle_oic._models._oic_resource_metadata import (
+    OICResourceMetadata as _OICResourceMetadata,
+)
 from flext_tap_oracle_oic._models._package import OicPackageEntity as _OicPackageEntity
 from flext_tap_oracle_oic._models._stream_config import (
     OicStreamConfiguration as _OicStreamConfiguration,
