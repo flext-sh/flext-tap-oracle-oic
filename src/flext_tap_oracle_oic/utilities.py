@@ -54,9 +54,7 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
                     )
                 )
                 if validation_result.failure:
-                    return r[str].fail(
-                        f"Base URL validation failed: {validation_result.error}",
-                    )
+                    return r[str].fail_op("Base URL validation", validation_result.error)
                 if not resource_path.startswith("/"):
                     resource_path = f"/{resource_path}"
                 api_url = urljoin(base_url, resource_path)

@@ -102,9 +102,7 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
             config_instance = cls.model_validate(config_data)
             return r[Self].ok(config_instance)
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as exc:
-            return r[Self].fail(
-                f"Oracle OIC tap configuration creation failed: {exc}",
-            )
+            return r[Self].fail_op("Oracle OIC tap configuration creation", exc)
 
     def validate_configuration(self) -> p.Result[bool]:
         """Validate the current settings instance."""
