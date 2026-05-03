@@ -35,10 +35,8 @@ if _t.TYPE_CHECKING:
         FlextTapOracleOicApiError,
         FlextTapOracleOicAuthenticationError,
         FlextTapOracleOicConnectionError,
-        FlextTapOracleOicExceptionFactory,
         FlextTapOracleOicValidationError,
     )
-    from flext_tap_oracle_oic.health import FlextTapOracleOicHealthChecker
     from flext_tap_oracle_oic.models import FlextTapOracleOicModels, m
     from flext_tap_oracle_oic.protocols import FlextTapOracleOicProtocols, p
     from flext_tap_oracle_oic.settings import FlextTapOracleOicSettings
@@ -85,10 +83,8 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "FlextTapOracleOicApiError",
                 "FlextTapOracleOicAuthenticationError",
                 "FlextTapOracleOicConnectionError",
-                "FlextTapOracleOicExceptionFactory",
                 "FlextTapOracleOicValidationError",
             ),
-            ".health": ("FlextTapOracleOicHealthChecker",),
             ".models": (
                 "FlextTapOracleOicModels",
                 "m",
@@ -157,8 +153,6 @@ __all__: list[str] = [
     "FlextTapOracleOicClient",
     "FlextTapOracleOicConnectionError",
     "FlextTapOracleOicConstants",
-    "FlextTapOracleOicExceptionFactory",
-    "FlextTapOracleOicHealthChecker",
     "FlextTapOracleOicModels",
     "FlextTapOracleOicModelsStreams",
     "FlextTapOracleOicPaginator",

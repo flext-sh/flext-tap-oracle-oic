@@ -15,32 +15,6 @@ from __future__ import annotations
 from flext_tap_oracle_oic import e, t
 
 
-class FlextTapOracleOicExceptionFactory:
-    """Factory for Oracle OIC specific exceptions."""
-
-    @staticmethod
-    def create_api_error(message: str) -> FlextTapOracleOicApiError:
-        """Create OIC API error."""
-        return FlextTapOracleOicApiError(message)
-
-    @staticmethod
-    def create_authentication_error(
-        message: str,
-    ) -> FlextTapOracleOicAuthenticationError:
-        """Create OIC authentication error."""
-        return FlextTapOracleOicAuthenticationError(message)
-
-    @staticmethod
-    def create_connection_error(message: str) -> FlextTapOracleOicConnectionError:
-        """Create OIC connection error."""
-        return FlextTapOracleOicConnectionError(message)
-
-    @staticmethod
-    def create_validation_error(message: str) -> FlextTapOracleOicValidationError:
-        """Create OIC validation error."""
-        return FlextTapOracleOicValidationError(message)
-
-
 class FlextTapOracleOicAuthenticationError(e.AuthenticationError):
     """Oracle OIC authentication error."""
 
@@ -61,6 +35,5 @@ __all__: t.StrSequence = [
     "FlextTapOracleOicApiError",
     "FlextTapOracleOicAuthenticationError",
     "FlextTapOracleOicConnectionError",
-    "FlextTapOracleOicExceptionFactory",
     "FlextTapOracleOicValidationError",
 ]
