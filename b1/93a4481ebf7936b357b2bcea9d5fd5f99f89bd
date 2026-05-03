@@ -1,0 +1,29 @@
+src/flext_tap_oracle_oic/utilities.py
+  81bd344b75a4c5f1 93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "b193a4481ebf7936b357b2bcea9d5fd5f99f89bd",
+  "prompts": {
+    "81bd344b75a4c5f1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "288f9aad-a0e4-4b23-a3ad-bc9b7b265cbd",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "FLEXT Bot",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/3b3293743886d5ec6d23aa02004e7219dc59a9e5ed843e5c74d3e85330258840"
+    }
+  },
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
