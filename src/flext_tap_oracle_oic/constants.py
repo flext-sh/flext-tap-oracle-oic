@@ -48,8 +48,6 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
             "libraries",
         )
         INFRASTRUCTURE_STREAMS: Final[tuple[str, ...]] = ("certificates", "adapters")
-        EXTENDED_STREAMS: Final[tuple[str, ...]] = ("projects",)
-        MONITORING_STREAMS: Final[tuple[str, ...]] = ("executions", "metrics")
 
         MAX_PAGE_SIZE: Final[int] = 1000
         MIN_PAGE_SIZE: Final[int] = FlextOracleOicConstants.DEFAULT_RETRY_DELAY_SECONDS
@@ -58,12 +56,10 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
         PAGINATOR_MAX_PAGE_SIZE: Final[int] = 1000
         PAGINATOR_MIN_PAGE_SIZE: Final[int] = 10
 
-        HTTP_OK: Final[int] = 200
         HTTP_UNAUTHORIZED: Final[int] = 401
         HTTP_FORBIDDEN: Final[int] = 403
         HTTP_ERROR_STATUS_THRESHOLD: Final[int] = 400
         HTTP_RATE_LIMITED: Final[int] = 429
-        JSON_MIME: Final[str] = "application/json"
 
         MIN_TOKEN_EXPIRY_BUFFER: Final[int] = 60
         MIN_PERCENTAGE: Final[float] = 0.0
@@ -148,21 +144,6 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
             SUCCESS = "success"
             FAILED = "failed"
             ERROR = "error"
-
-        VALID_OIC_HEALTH_STATUSES: Final[frozenset[str]] = frozenset({
-            member.value for member in OicHealthStatus.__members__.values()
-        })
-        "Valid OIC health status values."
-
-        VALID_OIC_ERROR_SEVERITIES: Final[frozenset[str]] = frozenset({
-            member.value for member in OicErrorSeverity.__members__.values()
-        })
-        "Valid OIC error severity values."
-
-        VALID_OIC_CONNECTION_TEST_STATUSES: Final[frozenset[str]] = frozenset({
-            member.value for member in OicConnectionTestStatus.__members__.values()
-        })
-        "Valid OIC connection test status values."
 
         @unique
         class OicReplicationMethod(StrEnum):
