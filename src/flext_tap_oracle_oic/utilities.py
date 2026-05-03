@@ -90,7 +90,7 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
                     "total_count": 0,
                     "current_page_size": 0,
                 }
-            items = response.get("items", [])
+            items: t.JsonValue = response.get("items", [])
             try:
                 items_list = t.TapOracleOic.STRICT_LIST_ADAPTER.validate_python(items)
             except c.ValidationError:
