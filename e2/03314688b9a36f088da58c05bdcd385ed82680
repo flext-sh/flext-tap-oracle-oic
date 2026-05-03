@@ -1,0 +1,14 @@
+src/flext_tap_oracle_oic/utilities.py
+  h_9db9d35f50cf33 74,93,96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "e203314688b9a36f088da58c05bdcd385ed82680",
+  "prompts": {},
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
