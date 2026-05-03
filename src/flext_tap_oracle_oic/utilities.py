@@ -71,7 +71,7 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
 
         @staticmethod
         def extract_pagination_info(
-            response: t.MappingKV[str, t.JsonMapping] | None,
+            response: t.JsonMapping | None,
         ) -> t.JsonMapping:
             """Extract pagination information from OIC response.
 
@@ -90,9 +90,11 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
                     "total_count": 0,
                     "current_page_size": 0,
                 }
-            items: t.JsonValue = response.get("items", [])
+            items_value = response.get("items")
             try:
-                items_list = t.TapOracleOic.STRICT_LIST_ADAPTER.validate_python(items)
+                items_list = t.TapOracleOic.STRICT_LIST_ADAPTER.validate_python(
+                    items_value if items_value is not None else []
+                )
             except c.ValidationError:
                 items_list = t.TapOracleOic.STRICT_LIST_ADAPTER.validate_python([])
             return t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python({
