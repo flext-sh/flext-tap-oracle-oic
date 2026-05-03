@@ -90,7 +90,6 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
             RUNNING = "RUNNING"
             PENDING = "PENDING"
             ABORTED = "ABORTED"
-            QUEUED = "QUEUED"
 
         @unique
         class OicIntegrationType(StrEnum):
@@ -101,14 +100,12 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
             INTEGRATION = "INTEGRATION"
             BASIC = "BASIC"
             PUBLISH = "PUBLISH"
-            SUBSCRIBE = "SUBSCRIBE"
 
         @unique
         class OicAgentType(StrEnum):
             """OIC connectivity agent type."""
 
             CONNECTIVITY_AGENT = "CONNECTIVITY_AGENT"
-            EXECUTION_AGENT = "EXECUTION_AGENT"
 
         @unique
         class OicAgentStatus(StrEnum):
@@ -164,9 +161,6 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
 
             INTEGRATION = "integration"
             CONNECTION = "connection"
-            LOOKUP = "lookup"
-            LIBRARY = "library"
-            AGENT = "agent"
             CERTIFICATE = "certificate"
             PACKAGE = "package"
             PROJECT = "project"
