@@ -1,0 +1,33 @@
+src/flext_tap_oracle_oic/utilities.py
+  26f224f147ec0d09 264-269,285-291
+src/flext_tap_oracle_oic/models.py
+  26f224f147ec0d09 179
+src/flext_tap_oracle_oic/constants.py
+  26f224f147ec0d09 12,29-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "4cde6598d5cc9075c81ff4c28da8fdf5d8d56efb",
+  "prompts": {
+    "26f224f147ec0d09": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "af795733-b18d-4c66-a653-6ff9466111c6",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "FLEXT Bot",
+      "messages": [],
+      "total_additions": 26,
+      "total_deletions": 6,
+      "accepted_lines": 26,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/f727dc94e6abc6c3ae977a9940637f1459b1cd966d8fb74295bc6eae773137e9"
+    }
+  },
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
