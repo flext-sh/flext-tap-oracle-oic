@@ -7,7 +7,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import re
 from collections.abc import (
     Iterator,
     Mapping,
@@ -177,7 +176,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                     raise ValueError(msg)
                 region = self.settings.get("region")
                 if not region and "integration.ocp.oraclecloud.com" in base_url:
-                    region_match = re.search(r"(\\w+-\\w+-\\d+)", base_url)
+                    region_match = c.TapOracleOic.OCI_REGION_RE.search(base_url)
                     region = region_match.group(1) if region_match else "us-ashburn-1"
                 if "integration.ocp.oraclecloud.com" in base_url:
                     if self.requires_design_api:

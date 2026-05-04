@@ -9,6 +9,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import re
 from enum import StrEnum, unique
 from typing import ClassVar, Final
 
@@ -24,6 +25,17 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
 
     class TapOracleOic:
         """OIC connection configuration."""
+
+        # === Regex authority for the TapOracleOic domain ===
+        OCI_REGION_RE: ClassVar[re.Pattern[str]] = re.compile(r"(\w+-\w+-\d+)")
+        NORMALIZE_NON_ALNUM_RE: ClassVar[re.Pattern[str]] = re.compile(r"[^a-zA-Z0-9]")
+        NORMALIZE_REPEATED_UNDERSCORE_RE: ClassVar[re.Pattern[str]] = re.compile(r"_+")
+        SANITIZE_CAMEL_BOUNDARY_RE: ClassVar[re.Pattern[str]] = re.compile(
+            r"(?<!^)(?=[A-Z])"
+        )
+        SANITIZE_NON_IDENTIFIER_RE: ClassVar[re.Pattern[str]] = re.compile(
+            r"[^a-zA-Z0-9_]"
+        )
 
         DEFAULT_BATCH_SIZE: ClassVar[int] = 100
         MAX_RETRIES: ClassVar[int] = 3

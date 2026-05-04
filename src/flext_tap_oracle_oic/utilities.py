@@ -7,7 +7,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import re
 from collections.abc import (
     MutableMapping,
 )
@@ -262,8 +261,12 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
             """
             if not integration_name:
                 return ""
-            normalized = re.sub(r"[^a-zA-Z0-9]", "_", integration_name.lower())
-            normalized = re.sub(r"_+", "_", normalized)
+            normalized = c.TapOracleOic.NORMALIZE_NON_ALNUM_RE.sub(
+                "_", integration_name.lower()
+            )
+            normalized = c.TapOracleOic.NORMALIZE_REPEATED_UNDERSCORE_RE.sub(
+                "_", normalized
+            )
             return normalized.strip("_")
 
         @staticmethod
@@ -279,9 +282,13 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
             """
             if not field_name:
                 return ""
-            sanitized = re.sub(r"(?<!^)(?=[A-Z])", "_", field_name).lower()
-            sanitized = re.sub(r"[^a-zA-Z0-9_]", "_", sanitized)
-            sanitized = re.sub(r"_+", "_", sanitized)
+            sanitized = c.TapOracleOic.SANITIZE_CAMEL_BOUNDARY_RE.sub(
+                "_", field_name
+            ).lower()
+            sanitized = c.TapOracleOic.SANITIZE_NON_IDENTIFIER_RE.sub("_", sanitized)
+            sanitized = c.TapOracleOic.NORMALIZE_REPEATED_UNDERSCORE_RE.sub(
+                "_", sanitized
+            )
             if sanitized and sanitized[0].isdigit():
                 sanitized = f"field_{sanitized}"
             return sanitized.strip("_")
