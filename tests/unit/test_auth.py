@@ -11,11 +11,11 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import base64
-import json
 from typing import cast
 from unittest.mock import MagicMock
 
 import pytest
+from flext_cli import u as cli_u
 
 from flext_tap_oracle_oic import FlextOracleOicAuthenticator
 from tests import r
@@ -158,10 +158,10 @@ class TestsFlextTapOracleOicAuth:
         """Test token retrieval with JSON string body."""
         mock_response = MagicMock()
         mock_response.status_code = 200
-        mock_response.body = json.dumps({
+        mock_response.body = cli_u.Cli.json_dumps({
             "access_token": "string_body_token",
             "token_type": "Bearer",
-        })
+        }).unwrap()
         cast("MagicMock", authenticator._api_client).post.return_value = r[
             MagicMock
         ].ok(

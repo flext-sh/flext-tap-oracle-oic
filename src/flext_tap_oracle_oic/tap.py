@@ -13,6 +13,7 @@ from collections.abc import (
 from typing import ClassVar, override
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
+from flext_cli import cli
 
 from flext_meltano import FlextMeltanoAbstractions
 from flext_tap_oracle_oic import (
@@ -442,7 +443,7 @@ def _execute_run_command(_tap: FlextTapOracleOic) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    cli.exit(main())
 
 __all__: list[str] = [
     "FlextOracleOicAuthenticator",
