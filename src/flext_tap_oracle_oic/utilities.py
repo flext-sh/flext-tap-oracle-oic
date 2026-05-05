@@ -267,7 +267,8 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
             normalized = c.TapOracleOic.NORMALIZE_REPEATED_UNDERSCORE_RE.sub(
                 "_", normalized
             )
-            return normalized.strip("_")
+            stripped: str = normalized.strip("_")
+            return stripped
 
         @staticmethod
         def sanitize_oic_field_name(field_name: str) -> str:
@@ -291,7 +292,8 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
             )
             if sanitized and sanitized[0].isdigit():
                 sanitized = f"field_{sanitized}"
-            return sanitized.strip("_")
+            stripped: str = sanitized.strip("_")
+            return stripped
 
         @staticmethod
         def validate_oic_connection_config(
