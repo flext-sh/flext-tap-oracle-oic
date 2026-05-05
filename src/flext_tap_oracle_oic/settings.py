@@ -13,12 +13,10 @@ from __future__ import annotations
 
 from typing import Annotated, ClassVar, Self
 
-from flext_core import FlextSettings
 from flext_oracle_oic import FlextOracleOicSettings
 from flext_tap_oracle_oic import c, m, p, r, t, u
 
 
-@FlextSettings.auto_register("tap-oracle-oic")
 class FlextTapOracleOicSettings(FlextOracleOicSettings):
     """Tap-specific OIC settings contract."""
 
