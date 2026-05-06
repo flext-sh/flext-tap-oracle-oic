@@ -55,14 +55,14 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
         DEFAULT_MAX_RETRIES: Final[int] = 3
         DEFAULT_VERIFY_SSL: Final[bool] = True
 
-        CORE_STREAMS: Final[tuple[str, ...]] = (
+        CORE_STREAMS: Final[t.StrSequence] = (
             "integrations",
             "connections",
             "packages",
             "lookups",
             "libraries",
         )
-        INFRASTRUCTURE_STREAMS: Final[tuple[str, ...]] = ("certificates", "adapters")
+        INFRASTRUCTURE_STREAMS: Final[t.StrSequence] = ("certificates", "adapters")
 
         MAX_PAGE_SIZE: Final[int] = 1000
         MIN_PAGE_SIZE: Final[int] = FlextOracleOicConstants.DEFAULT_RETRY_DELAY_SECONDS
@@ -222,4 +222,4 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
 
 c = FlextTapOracleOicConstants
 
-__all__: tuple[str, ...] = ("FlextTapOracleOicConstants", "c")
+__all__: t.StrSequence = ("FlextTapOracleOicConstants", "c")

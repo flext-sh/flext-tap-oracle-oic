@@ -31,9 +31,9 @@ class FlextTapOracleOicApiError(e.OperationError):
     """Oracle OIC API error."""
 
 
-__all__: t.StrSequence = [
+__all__: t.StrSequence = (
     "FlextTapOracleOicApiError",
     "FlextTapOracleOicAuthenticationError",
     "FlextTapOracleOicConnectionError",
     "FlextTapOracleOicValidationError",
-]
+)

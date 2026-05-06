@@ -13,8 +13,8 @@ from collections.abc import (
 from typing import ClassVar, override
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
-from flext_cli import cli
 
+from flext_cli import cli
 from flext_meltano import FlextMeltanoAbstractions
 from flext_tap_oracle_oic import (
     ALL_STREAMS,

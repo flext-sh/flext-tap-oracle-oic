@@ -15,8 +15,8 @@ from typing import cast
 from unittest.mock import MagicMock
 
 import pytest
-from flext_cli import u as cli_u
 
+from flext_cli import u as cli_u
 from flext_tap_oracle_oic import FlextOracleOicAuthenticator
 from tests import r
 
