@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, Self
+from typing import Annotated, ClassVar
 
 from flext_oracle_oic import FlextOracleOicSettings
 from flext_tap_oracle_oic import c, m, p, r, t, u
@@ -85,7 +85,7 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
         oauth_params: t.JsonMapping,
         connection_params: t.JsonMapping,
         tap_params: t.JsonMapping | None = None,
-    ) -> p.Result[Self]:
+    ) -> p.Result[FlextTapOracleOicSettings]:
         """Create a validated tap configuration from grouped parameter blocks."""
         try:
             tap_config: t.MutableJsonMapping = (
@@ -97,10 +97,13 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
             )
             tap_config.setdefault("stream_prefix", "oic")
             config_data = {**oauth_params, **connection_params, **tap_config}
-            config_instance = cls.model_validate(config_data)
-            return r[Self].ok(config_instance)
+            config_instance = FlextTapOracleOicSettings.model_validate(config_data)
+            return r[FlextTapOracleOicSettings].ok(config_instance)
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as exc:
-            return r[Self].fail_op("Oracle OIC tap configuration creation", exc)
+            return r[FlextTapOracleOicSettings].fail_op(
+                "Oracle OIC tap configuration creation",
+                exc,
+            )
 
     def validate_configuration(self) -> p.Result[bool]:
         """Validate the current settings instance."""

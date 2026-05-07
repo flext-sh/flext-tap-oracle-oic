@@ -104,7 +104,7 @@ class OicPackageEntity(FlextMeltanoModels.Entity):
         self,
     ) -> t.TapOracleOic.SectionedSummary:
         """OIC package composition and usage summary."""
-        dependencies_payload: list[t.JsonValue] = list(self.dependencies)
+        dependencies_payload: t.JsonValueList = list(self.dependencies)
         composition: dict[str, t.JsonValue | None] = {
             "integration_count": self.integration_count or 0,
             "dependency_count": len(self.dependencies),

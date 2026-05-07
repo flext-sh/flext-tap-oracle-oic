@@ -64,11 +64,7 @@ class FlextOracleOicAuthenticator:
                 case dict() as token_dict:
                     token_data = token_dict
                 case str() as body_str:
-                    token_data = (
-                        t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_json(
-                            body_str
-                        )
-                    )
+                    token_data = t.json_mapping_adapter().validate_json(body_str)
                 case _:
                     return r[str].fail("Empty or invalid OAuth response body")
             access_token = token_data.get("access_token")
@@ -138,9 +134,12 @@ class FlextTapOracleOicClient:
             )
         try:
             json_body = (
-                t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.dump_json(
-                    t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(data),
-                ).decode(c.DEFAULT_ENCODING)
+                t
+                .json_mapping_adapter()
+                .dump_json(
+                    t.json_mapping_adapter().validate_python(data),
+                )
+                .decode(c.DEFAULT_ENCODING)
                 if data
                 else None
             )
@@ -213,7 +212,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
     ) -> None:
         """Initialize Oracle OIC tap with library composition."""
         super().__init__()
-        self._tap_config: t.JsonMapping = dict(settings) if settings is not None else {}
+        self._tap_config = t.json_dict_adapter().validate_python(settings or {})
         self._oic_settings = FlextTapOracleOicSettings.model_validate(
             self._tap_config,
             strict=validate_config,
@@ -283,7 +282,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             stream_name = str(getattr(stream, "name", c.IDENTIFIER_UNKNOWN))
             stream_schema_raw: p.AttributeProbe = getattr(stream, "stream_schema", {})
             stream_schema: t.JsonMapping = (
-                t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(
+                t.json_mapping_adapter().validate_python(
                     stream_schema_raw,
                 )
                 if isinstance(stream_schema_raw, Mapping)
@@ -307,18 +306,16 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
                 )
             if entry_result.value is not None:
                 catalog_entries.append(entry_result.value)
-        catalog: t.JsonMapping = (
-            t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python(
-                m.Meltano.SingerCatalog(streams=catalog_entries).model_dump(
-                    by_alias=True,
-                    exclude_defaults=True,
-                    exclude_none=True,
-                    mode="json",
-                )
+        catalog: t.JsonMapping = t.json_mapping_adapter().validate_python(
+            m.Meltano.SingerCatalog(streams=catalog_entries).model_dump(
+                by_alias=True,
+                exclude_defaults=True,
+                exclude_none=True,
+                mode="json",
             )
         )
         return r[t.JsonMapping].ok(
-            t.TapOracleOic.CONTAINER_VALUE_MAP_ADAPTER.validate_python({
+            t.json_mapping_adapter().validate_python({
                 "streams": catalog.get("streams", []),
             }),
         )
@@ -345,8 +342,7 @@ def main() -> int:
     exit_code = _validate_and_setup_config()
     if exit_code != 0:
         return exit_code
-    settings = dict(_build_config_from_env())
-    config_typed: t.JsonMapping = dict(settings)
+    config_typed = t.json_dict_adapter().validate_python(_build_config_from_env())
     tap = FlextTapOracleOic(settings=config_typed)
     try:
         return _execute_tap_command(tap)

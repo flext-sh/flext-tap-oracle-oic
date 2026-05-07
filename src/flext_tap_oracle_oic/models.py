@@ -273,7 +273,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 select_fields = self.settings.get("select_fields")
                 if select_fields:
                     try:
-                        field_list = t.TapOracleOic.STRING_LIST_ADAPTER.validate_python(
+                        field_list = t.strict_str_sequence_adapter().validate_python(
                             select_fields,
                         )
                     except c.ValidationError:
@@ -325,7 +325,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 record: t.JsonMapping,
             ) -> t.JsonMapping:
                 """Enrich record with tap metadata for traceability."""
-                enriched: t.MutableJsonMapping = dict(record)
+                enriched = t.json_dict_adapter().validate_python(record)
                 enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
                 enriched["_tap_stream_name"] = self.name
                 return enriched
@@ -382,7 +382,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                     case dict() as body_map:
                         return body_map
                     case str() as body_str if body_str.strip():
-                        return t.TapOracleOic.GENERAL_MAP_ADAPTER.validate_json(
+                        return t.strict_json_mapping_adapter().validate_json(
                             body_str,
                         )
                     case _:
@@ -405,13 +405,11 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             @staticmethod
             def _as_oic_envelope(
                 data: t.JsonMapping,
-            ) -> FlextTapOracleOicModels.TapOracleOic.OicEnvelope | None:
+            ) -> _OicEnvelope | None:
                 try:
-                    return (
-                        FlextTapOracleOicModels.TapOracleOic.OicEnvelope.model_validate(
-                            data,
-                            strict=True,
-                        )
+                    return _OicEnvelope.model_validate(
+                        data,
+                        strict=True,
                     )
                 except c.ValidationError:
                     return None
@@ -502,7 +500,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                         yield item
                         continue
                     try:
-                        record = t.TapOracleOic.GENERAL_MAP_ADAPTER.validate_python(
+                        record = t.strict_json_mapping_adapter().validate_python(
                             item,
                         )
                     except c.ValidationError:
