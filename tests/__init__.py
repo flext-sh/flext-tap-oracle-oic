@@ -14,10 +14,12 @@ from flext_core.lazy import (
 if _t.TYPE_CHECKING:
     from flext_tests import td, tf, tk, tm, tv
 
-    from flext_tap_oracle_oic import d, e, h, r, s, x
+    from flext_tap_oracle_oic import d, e, h, r, x
+    from tests.base import TestsFlextTapOracleOicServiceBase, s
     from tests.constants import TestsFlextTapOracleOicConstants, c
     from tests.models import TestsFlextTapOracleOicModels, m
     from tests.protocols import TestsFlextTapOracleOicProtocols, p
+    from tests.settings import TestsFlextTapOracleOicSettings
     from tests.typings import TestsFlextTapOracleOicTypes, t
     from tests.unit.test_auth import TestsFlextTapOracleOicAuth
     from tests.unit.test_tap import TestsFlextTapOracleOicTap
@@ -27,6 +29,10 @@ _LAZY_IMPORTS = merge_lazy_imports(
     (".unit",),
     build_lazy_import_map(
         {
+            ".base": (
+                "TestsFlextTapOracleOicServiceBase",
+                "s",
+            ),
             ".constants": (
                 "TestsFlextTapOracleOicConstants",
                 "c",
@@ -39,6 +45,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "TestsFlextTapOracleOicProtocols",
                 "p",
             ),
+            ".settings": ("TestsFlextTapOracleOicSettings",),
             ".typings": (
                 "TestsFlextTapOracleOicTypes",
                 "t",
@@ -55,7 +62,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "e",
                 "h",
                 "r",
-                "s",
                 "x",
             ),
             "flext_tests": (
@@ -97,6 +103,8 @@ __all__: list[str] = [
     "TestsFlextTapOracleOicConstants",
     "TestsFlextTapOracleOicModels",
     "TestsFlextTapOracleOicProtocols",
+    "TestsFlextTapOracleOicServiceBase",
+    "TestsFlextTapOracleOicSettings",
     "TestsFlextTapOracleOicTap",
     "TestsFlextTapOracleOicTapCore",
     "TestsFlextTapOracleOicTypes",
