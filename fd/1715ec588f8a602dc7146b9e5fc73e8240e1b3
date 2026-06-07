@@ -1,0 +1,19 @@
+src/flext_tap_oracle_oic/_models/_oic_project.py
+  s_9942ef7a89ba9a::t_ac8e14639738f1 10,77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "fd1715ec588f8a602dc7146b9e5fc73e8240e1b3",
+  "prompts": {},
+  "sessions": {
+    "s_9942ef7a89ba9a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "84fb5cb9-a1bd-4654-9339-7a49b63e96d1",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Zed <hi@zed.dev>"
+    }
+  }
+}
