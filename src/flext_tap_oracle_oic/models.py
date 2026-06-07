@@ -11,7 +11,6 @@ from collections.abc import (
     Iterator,
     Mapping,
 )
-from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Annotated, ClassVar
 
 from flext_api import FlextApi, FlextApiSettings
@@ -326,7 +325,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             ) -> t.JsonMapping:
                 """Enrich record with tap metadata for traceability."""
                 enriched = t.json_dict_adapter().validate_python(record)
-                enriched["_tap_extracted_at"] = datetime.now(UTC).isoformat()
+                enriched["_tap_extracted_at"] = u.generate_datetime_utc().isoformat()
                 enriched["_tap_stream_name"] = self.name
                 return enriched
 
