@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Annotated
 
 from flext_oracle_oic import m
@@ -100,17 +100,17 @@ class OICIntegration(m):
     def activate(self) -> None:
         """Activate the integration."""
         self.integration_status = c.TapOracleOic.IntegrationStatus.ACTIVATED
-        self.activated_at = datetime.now(UTC)
+        self.activated_at = u.now()
 
     def deactivate(self) -> None:
         """Deactivate the integration."""
         self.integration_status = c.TapOracleOic.IntegrationStatus.DEACTIVATED
-        self.deactivated_at = datetime.now(UTC)
+        self.deactivated_at = u.now()
 
     def lock(self, user: str) -> None:
         """Lock the integration for a specific user."""
         self.locked_by = user
-        self.locked_at = datetime.now(UTC)
+        self.locked_at = u.now()
         self.integration_status = c.TapOracleOic.IntegrationStatus.LOCKED
 
     def unlock(self) -> None:
