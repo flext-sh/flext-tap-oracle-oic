@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Annotated, ClassVar, Self
 
 from flext_meltano import FlextMeltanoModels
@@ -86,7 +86,7 @@ class OicApiResponse(FlextMeltanoModels.Entity):
         u.Field(
             description="Response timestamp",
         ),
-    ] = u.Field(default_factory=lambda: datetime.now(UTC))
+    ] = u.Field(default_factory=lambda: u.now())
     api_version: Annotated[
         str | None,
         u.Field(None, description="OIC API version"),
