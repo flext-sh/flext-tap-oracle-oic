@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Annotated
 
 from flext_oracle_oic import m
@@ -84,12 +84,12 @@ class OICConnection(m):
         self.connection_status = c.TapOracleOic.ConnectionStatus.FAILED
         self.test_result = {
             "error": c.TapOracleOic.OicErrorSeverity.ERROR.value,
-            "timestamp": datetime.now(UTC).isoformat(),
+            "timestamp": u.now().isoformat(),
         }
 
     def test_connection(self) -> None:
         """Mark connection as tested."""
-        self.last_tested = datetime.now(UTC)
+        self.last_tested = u.now()
         self.connection_status = c.TapOracleOic.ConnectionStatus.TESTED
 
 
