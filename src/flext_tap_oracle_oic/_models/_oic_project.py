@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import MutableSequence
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Annotated
 
 from flext_oracle_oic import m
@@ -74,7 +74,7 @@ class OICProject(m):
     def deploy(self, user: str) -> None:
         """Deploy the project."""
         self.deployment_status = "deployed"
-        self.deployed_at = datetime.now(UTC)
+        self.deployed_at = u.now()
         self.deployed_by = user
 
     def remove_integration(self, integration_id: str) -> None:
