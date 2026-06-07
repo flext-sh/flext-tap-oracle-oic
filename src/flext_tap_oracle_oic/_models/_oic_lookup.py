@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Annotated
 
 from flext_oracle_oic import m
@@ -73,7 +73,7 @@ class OICLookup(m):
 
     def record_import(self) -> None:
         """Record successful import."""
-        self.last_imported = datetime.now(UTC)
+        self.last_imported = u.now()
 
     def update_statistics(
         self,
