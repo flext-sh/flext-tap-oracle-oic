@@ -3,15 +3,15 @@
 # flext-tap-oracle-oic API Overview
 
 - Package: `flext_tap_oracle_oic`
-- Version: ``
+- Version: `0.12.0-dev`
 - Description: FLEXT Tap Oracle OIC - Singer Tap for Oracle Integration Cloud
 - Project class: `integration`
 - Keywords: `data-extraction`, `enterprise`, `etl`, `flext`, `singer`, `tap`, `typed`
-- Main facades: `FlextTapOracleOicConstants`, `FlextTapOracleOicService`, `FlextTapOracleOicProtocols`, `FlextTapOracleOicExceptionFactory`, `FlextTapOracleOicClient`, `FlextTapOracleOicModelsStreams`, `FlextTapOracleOicTypes`, `FlextTapOracleOicAuthenticationError` (+11 more)
+- Main facades: _none_
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
-- Public symbol exports: `FlextTapOracleOicConstants`, `FlextTapOracleOicService`, `main`, `FlextTapOracleOicProtocols`, `FlextTapOracleOicExceptionFactory`, `FlextTapOracleOicClient`, `FlextTapOracleOicModelsStreams`, `FlextTapOracleOicTypes`, `FlextTapOracleOicAuthenticationError`, `FlextTapOracleOicSettings` (+13 more)
+- Public symbol exports: `FlextTapOracleOicAuthenticationError`, `FlextOracleOicAuthenticator`, `FlextTapOracleOicPaginator`, `th`, `FlextTapOracleOicCli`, `FlextTapOracleOicClient`, `ALL_STREAMS`, `FlextTapOracleOicProtocols`, `tap_oracle_oic`, `FlextTapOracleOicValidationError` (+11 more)
 - Exported module shortcuts: _none_
-- Generated module pages: `13`
+- Generated module pages: `11`
 
 ## Next Pages
 
