@@ -15,9 +15,8 @@ from typing import ClassVar, override
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 
 from flext_cli import cli
-from flext_meltano import FlextMeltanoAbstractions
+from flext_meltano.services.abstractions import FlextMeltanoAbstractions
 from flext_tap_oracle_oic import (
-    ALL_STREAMS,
     FlextTapOracleOicSettings,
     c,
     m,
@@ -26,6 +25,7 @@ from flext_tap_oracle_oic import (
     t,
     u,
 )
+from flext_tap_oracle_oic._models.streams import ALL_STREAMS
 
 logger = u.fetch_logger(__name__)
 

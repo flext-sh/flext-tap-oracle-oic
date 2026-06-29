@@ -14,8 +14,10 @@ from collections.abc import (
 
 import pytest
 
-from flext_tap_oracle_oic import FlextTapOracleOic as TapOracleOic
-from tests import c, m, t
+from flext_tap_oracle_oic.tap import FlextTapOracleOic as TapOracleOic
+from tests.constants import c
+from tests.models import m
+from tests.typings import t
 
 
 def _build_tap_instance() -> m.Meltano.TapInstance:

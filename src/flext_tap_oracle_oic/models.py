@@ -17,7 +17,7 @@ from flext_api import FlextApi, FlextApiSettings
 
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import m
-from flext_tap_oracle_oic import FlextTapOracleOicPaginator, c, e, t, u
+from flext_tap_oracle_oic import c, e, t, u
 from flext_tap_oracle_oic._models._activity import (
     OicActivityRecord as _OicActivityRecord,
 )
@@ -58,6 +58,7 @@ from flext_tap_oracle_oic._models._package import OicPackageEntity as _OicPackag
 from flext_tap_oracle_oic._models._stream_config import (
     OicStreamConfiguration as _OicStreamConfiguration,
 )
+from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import p
