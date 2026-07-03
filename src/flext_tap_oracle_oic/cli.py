@@ -18,10 +18,20 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tap_oracle_oic.tap_client import TapOracleOic
+from flext_tap_oracle_oic import FlextTapOracleOicService, t
 
 
-def main() -> None:
+class FlextTapOracleOicCli:
+    """CLI wrapper bound to the tap-oracle-oic service facade."""
+
+    @classmethod
+    def run(cls, args: t.StrSequence | None = None) -> int:
+        """Execute the canonical tap-oracle-oic CLI entry point."""
+        _ = cls
+        return FlextTapOracleOicService().cli_main(args)
+
+
+def main(args: t.StrSequence | None = None) -> int:
     """Execute Oracle OIC tap using Singer SDK CLI.
 
     This function serves as the primary entry point for the tap when
@@ -36,35 +46,36 @@ def main() -> None:
 
     Example:
         # Discovery
-        tap-oracle-oic --config config.json --discover > catalog.json
+        tap-oracle-oic --config settings.json --discover > catalog.json
 
         # Extraction
-        tap-oracle-oic --config config.json --catalog catalog.json
+        tap-oracle-oic --config settings.json --catalog catalog.json
 
         # Incremental sync
-        tap-oracle-oic --config config.json --catalog catalog.json --state state.json
+        tap-oracle-oic --config settings.json --catalog catalog.json --state state.json
 
     Integration:
-        Compatible with flext-meltano FlextMeltanoSingerCliTranslator for orchestration:
+        Compatible with flext-meltano Singer CLI translation for orchestration:
 
         >>> from flext_meltano import (
         ...     FlextMeltanoSingerCliTranslator,
-        ...     FlextMeltanoModels,
+        ...     m,
         ... )
-        >>> params = FlextMeltanoModels.TapRunParams(
-        ...     tap_name="tap-oracle-oic", config_file="config.json", discover=True
+        >>> params = m.Meltano.TapRunParams(
+        ...     tap_name="tap-oracle-oic", config_file="settings.json", discover=True
         ... )
         >>> command = FlextMeltanoSingerCliTranslator.translate_tap_run(params)
-        >>> # Executes: ["tap-oracle-oic", "--config", "config.json", "--discover"]
+        >>> # Executes: ["tap-oracle-oic", "--config", "settings.json", "--discover"]
 
     Raises:
         SystemExit: On configuration errors or execution failures
 
     """
-    tap_cli = getattr(TapOracleOic, "cli", None)
-    if callable(tap_cli):
-        tap_cli()
+    return FlextTapOracleOicCli.run(args)
 
 
 if __name__ == "__main__":
     main()
+
+
+__all__: list[str] = ["FlextTapOracleOicCli", "main"]

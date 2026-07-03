@@ -9,250 +9,217 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from enum import StrEnum
-from typing import Final
+import re
+from enum import StrEnum, unique
+from typing import TYPE_CHECKING, ClassVar, Final
 
-from flext_meltano import FlextMeltanoConstants
+from flext_meltano import c
 from flext_oracle_oic import FlextOracleOicConstants
-from flext_oracle_oic.constants import FlextOracleOicConstants as ParentOicConstants
+
+if TYPE_CHECKING:
+    from flext_tap_oracle_oic import t
 
 
-class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants):
+class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
     """FLEXT Oracle OIC TAP constants extending flext-core platform constants.
 
     Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
     """
 
-    OIC_API_BASE_PATH: Final[str] = (
-        ParentOicConstants.API.ENDPOINT_INTEGRATIONS.replace("/integrations", "")
-    )
-    OIC_MONITORING_API_PATH: Final[str] = "/ic/api/integration/v1/monitoring"
-    OIC_DESIGNTIME_API_PATH: Final[str] = "/ic/api/integration/v1/designtime"
-    OIC_PROCESS_API_PATH: Final[str] = "/ic/api/integration/v1/processes"
-    OIC_B2B_API_PATH: Final[str] = "/ic/api/integration/v1/b2b"
-    OIC_ENVIRONMENT_API_PATH: Final[str] = "/ic/api/integration/v1/environments"
-    OIC_ENDPOINTS: Final[dict[str, str]] = {
-        "integrations": "/integrations",
-        "integrations_detail": "/integrations/{id}",
-        "integrations_status": "/integrations/{id}/status",
-        "integrations_archive": "/integrations/{id}/archive",
-        "connections": "/connections",
-        "connections_detail": "/connections/{id}",
-        "connections_test": "/connections/{id}/test",
-        "packages": "/packages",
-        "packages_detail": "/packages/{id}",
-        "packages_export": "/packages/export",
-        "packages_import": "/packages/import",
-        "monitoring_instances": "/monitoring/instances",
-        "monitoring_instances_detail": "/monitoring/instances/{id}",
-        "monitoring_messages": "/monitoring/messages",
-        "monitoring_errors": "/monitoring/errors",
-        "monitoring_activity": "/monitoring/activity",
-        "audit_records": "/audit/events",
-        "usage_analytics": "/monitoring/usage",
-        "lookups": "/lookups",
-        "lookup_values": "/lookups/{name}/values",
-        "libraries": "/libraries",
-        "libraries_detail": "/libraries/{id}",
-        "agent_groups": "/agentGroups",
-        "agent_groups_detail": "/agentGroups/{id}",
-        "certificates": "/certificates",
-        "certificates_detail": "/certificates/{alias}",
-        "adapters": "/adapters",
-        "adapters_detail": "/adapters/{id}",
-        "process_definitions": "/process-definitions",
-        "process_definitions_detail": "/process-definitions/{id}",
-        "processes": "/processes",
-        "processes_detail": "/processes/{id}",
-        "process_instances": "/processes/{id}/instances",
-        "tasks": "/tasks",
-        "tasks_detail": "/tasks/{id}",
-        "spaces": "/spaces",
-        "spaces_detail": "/spaces/{id}",
-        "trading_partners": "/tpm/partners",
-        "trading_partners_detail": "/tpm/partners/{id}",
-        "document_types": "/tpm/documents",
-        "document_types_detail": "/tpm/documents/{id}",
-        "business_messages": "/monitoring/business-messages",
-        "wire_messages": "/monitoring/wire-messages",
-        "cors_domains": "/cors-domains",
-        "health": "/health",
-        "metadata": "/metadata",
-        "execution_logs": "/monitoring/logs",
-        "execution_logs_detail": "/monitoring/logs/{id}",
-        "lookup_usage": "/lookups/{name}/usage",
-    }
-
     class TapOracleOic:
         """OIC connection configuration."""
 
-        DEFAULT_TIMEOUT: Final[int] = ParentOicConstants.OracleOic.DEFAULT_TIMEOUT
-        DEFAULT_MAX_RETRIES: Final[int] = (
-            ParentOicConstants.OracleOic.DEFAULT_MAX_RETRIES
+        # === Regex authority for the TapOracleOic domain ===
+        OCI_REGION_RE: ClassVar[t.RegexPattern] = re.compile(r"(\w+-\w+-\d+)")
+        NORMALIZE_NON_ALNUM_RE: ClassVar[t.RegexPattern] = re.compile(r"[^a-zA-Z0-9]")
+        NORMALIZE_REPEATED_UNDERSCORE_RE: ClassVar[t.RegexPattern] = re.compile(r"_+")
+        SANITIZE_CAMEL_BOUNDARY_RE: ClassVar[t.RegexPattern] = re.compile(
+            r"(?<!^)(?=[A-Z])"
         )
-        DEFAULT_VERIFY_SSL: Final[bool] = (
-            ParentOicConstants.OracleOic.DEFAULT_VERIFY_SSL
+        SANITIZE_NON_IDENTIFIER_RE: ClassVar[t.RegexPattern] = re.compile(
+            r"[^a-zA-Z0-9_]"
         )
 
-    class TapOicProcessing:
-        """OIC tap processing configuration.
+        DEFAULT_BATCH_SIZE: ClassVar[int] = 100
+        MAX_RETRIES: ClassVar[int] = 3
+        DEFAULT_PAGE_SIZE: ClassVar[int] = 50
 
-        Note: Does not override parent Processing class to avoid inheritance conflicts.
-        """
+        OIC_API_BASE_PATH: Final[str] = "/ic/api/integration/v1"
+        OIC_MONITORING_API_PATH: Final[str] = "/ic/api/monitoring/v1"
+        OIC_B2B_API_PATH: Final[str] = "/ic/api/b2b/v1"
+        OIC_PROCESS_API_PATH: Final[str] = "/ic/api/process/v1"
 
-        DEFAULT_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.DEFAULT_PAGE_SIZE
-        MAX_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.MAX_PAGE_SIZE
-        MIN_PAGE_SIZE: Final[int] = ParentOicConstants.OracleOic.MIN_PAGE_SIZE
+        DEFAULT_TIMEOUT: Final[int] = (
+            FlextOracleOicConstants.OracleOic.MIN_REQUEST_TIMEOUT
+        )
+        DEFAULT_MAX_RETRIES: Final[int] = 3
+        DEFAULT_VERIFY_SSL: Final[bool] = True
+
+        CORE_STREAMS: Final[t.StrSequence] = (
+            "integrations",
+            "connections",
+            "packages",
+            "lookups",
+            "libraries",
+        )
+        INFRASTRUCTURE_STREAMS: Final[t.StrSequence] = ("certificates", "adapters")
+
+        MAX_PAGE_SIZE: Final[int] = 1000
+        MIN_PAGE_SIZE: Final[int] = FlextOracleOicConstants.DEFAULT_RETRY_DELAY_SECONDS
         DEFAULT_PAGINATOR_START: Final[int] = 0
         DEFAULT_PAGINATOR_PAGE_SIZE: Final[int] = 100
         PAGINATOR_MAX_PAGE_SIZE: Final[int] = 1000
         PAGINATOR_MIN_PAGE_SIZE: Final[int] = 10
 
-    class TapOicAuth:
-        """OIC authentication configuration.
-
-        Note: Does not override parent Auth class to avoid inheritance conflicts.
-        """
-
-        DEFAULT_OAUTH_CLIENT_ID: Final[str] = (
-            ParentOicConstants.Auth.DEFAULT_OAUTH_CLIENT_ID
-        )
-        DEFAULT_OAUTH_TOKEN_URL: Final[str] = (
-            ParentOicConstants.Auth.DEFAULT_OAUTH_TOKEN_URL
-        )
-        DEFAULT_TOKEN_EXPIRY_SECONDS: Final[int] = (
-            ParentOicConstants.Auth.DEFAULT_TOKEN_EXPIRY_SECONDS
-        )
-
-    class TapOicHttp:
-        """HTTP status codes and MIME types for OIC API communication."""
-
-        HTTP_OK: Final[int] = 200
         HTTP_UNAUTHORIZED: Final[int] = 401
         HTTP_FORBIDDEN: Final[int] = 403
         HTTP_ERROR_STATUS_THRESHOLD: Final[int] = 400
         HTTP_RATE_LIMITED: Final[int] = 429
-        JSON_MIME: Final[str] = "application/json"
 
-    class TapOicValidation:
-        """OIC tap validation constants."""
-
-        MAX_STREAM_PREFIX_LENGTH: Final[int] = 255
-        MIN_DATE_LENGTH: Final[int] = 10
         MIN_TOKEN_EXPIRY_BUFFER: Final[int] = 60
         MIN_PERCENTAGE: Final[float] = 0.0
         MAX_PERCENTAGE: Final[float] = 100.0
 
-    class TapOicPerformance:
-        """OIC tap performance and monitoring constants."""
-
         RESPONSE_TIME_HISTORY_SIZE: Final[int] = 10
         MIN_RESPONSE_SAMPLES: Final[int] = 5
         SLOW_RESPONSE_THRESHOLD: Final[float] = 5.0
-        MAX_SAFE_PARALLEL_STREAMS: Final[int] = 4
-        MIN_PERCENTAGE: Final[float] = 0.0
-        MAX_PERCENTAGE: Final[float] = 100.0
 
-    class OICResourceType(StrEnum):
-        """Oracle Integration Cloud resource types.
+        @unique
+        class OicIntegrationStatus(StrEnum):
+            """OIC integration lifecycle status."""
 
-        DRY Pattern:
-            StrEnum is the single source of truth. Use OICResourceType.INTEGRATION.value
-            or OICResourceType.INTEGRATION directly - no base strings needed.
-        """
+            CONFIGURED = "CONFIGURED"
+            ACTIVATED = "ACTIVATED"
+            DEACTIVATED = "DEACTIVATED"
+            DRAFT = "DRAFT"
+            ERROR = "ERROR"
+            FAILED = "FAILED"
+            LOCKED = "LOCKED"
 
-        INTEGRATION = "integration"
-        CONNECTION = "connection"
-        LOOKUP = "lookup"
-        LIBRARY = "library"
-        AGENT = "agent"
-        CERTIFICATE = "certificate"
-        PACKAGE = "package"
-        PROJECT = "project"
+        @unique
+        class OicJobStatus(StrEnum):
+            """OIC job/activity execution status."""
 
-    class IntegrationStatus(StrEnum):
-        """Integration lifecycle status.
+            COMPLETED = "COMPLETED"
+            FAILED = "FAILED"
+            RUNNING = "RUNNING"
+            PENDING = "PENDING"
+            ABORTED = "ABORTED"
 
-        DRY Pattern:
-            StrEnum is the single source of truth. Use IntegrationStatus.ACTIVATED.value
-            or IntegrationStatus.ACTIVATED directly - no base strings needed.
-        """
+        @unique
+        class OicIntegrationType(StrEnum):
+            """OIC integration/package type."""
 
-        CONFIGURED = "configured"
-        ACTIVATED = "activated"
-        DEACTIVATED = "deactivated"
-        FAILED = "failed"
-        LOCKED = "locked"
+            APP_DRIVEN = "APP_DRIVEN"
+            SCHEDULED = "SCHEDULED"
+            INTEGRATION = "INTEGRATION"
+            BASIC = "BASIC"
+            PUBLISH = "PUBLISH"
 
-    class ConnectionStatus(StrEnum):
-        """Connection status.
+        @unique
+        class OicAgentType(StrEnum):
+            """OIC connectivity agent type."""
 
-        DRY Pattern:
-            StrEnum is the single source of truth. Use ConnectionStatus.TESTED.value
-            or ConnectionStatus.TESTED directly - no base strings needed.
-        """
+            CONNECTIVITY_AGENT = "CONNECTIVITY_AGENT"
 
-        CONFIGURED = "configured"
-        TESTED = "tested"
-        FAILED = "failed"
+        @unique
+        class OicAgentStatus(StrEnum):
+            """OIC agent operational status."""
 
-    class OicIntegrationStatus(StrEnum):
-        """OIC integration lifecycle status using StrEnum for type safety."""
+            ONLINE = "ONLINE"
+            OFFLINE = "OFFLINE"
+            ERROR = "ERROR"
 
-        ACTIVE = "ACTIVE"
-        INACTIVE = "INACTIVE"
-        DRAFT = "DRAFT"
-        ERROR = "ERROR"
-        TESTING = "TESTING"
-        DEPRECATED = "DEPRECATED"
+        @unique
+        class OicHealthStatus(StrEnum):
+            """OIC health status values for operational summaries."""
 
-    class OicJobStatus(StrEnum):
-        """OIC job execution status using StrEnum for type safety."""
+            HEALTHY = "healthy"
+            UNHEALTHY = "unhealthy"
+            WARNING = "warning"
+            UNKNOWN = "unknown"
+            DEGRADED = "degraded"
 
-        RUNNING = "RUNNING"
-        COMPLETED = "COMPLETED"
-        FAILED = "FAILED"
-        ABORTED = "ABORTED"
-        SUSPENDED = "SUSPENDED"
+        @unique
+        class OicErrorSeverity(StrEnum):
+            """OIC error severity values for classification."""
 
-    class OicIntegrationType(StrEnum):
-        """OIC integration type using StrEnum for type safety."""
+            CRITICAL = "critical"
+            WARNING = "warning"
+            ERROR = "error"
+            UNKNOWN = "unknown"
 
-        INTEGRATION = "INTEGRATION"
-        LIBRARY = "LIBRARY"
-        TEMPLATE = "TEMPLATE"
-        RECIPE = "RECIPE"
-        CONNECTIVITY_AGENT = "CONNECTIVITY_AGENT"
+        @unique
+        class OicConnectionTestStatus(StrEnum):
+            """Connection test status values."""
 
-    class OicAgentType(StrEnum):
-        """OIC agent type using StrEnum for type safety."""
+            SUCCESS = "success"
+            FAILED = "failed"
+            ERROR = "error"
 
-        ON_PREMISES_AGENT = "ON_PREMISES_AGENT"
-        FILE_AGENT = "FILE_AGENT"
+        @unique
+        class OicReplicationMethod(StrEnum):
+            """Singer replication method for OIC streams."""
 
-    class OicAgentStatus(StrEnum):
-        """OIC agent operational status using StrEnum for type safety."""
+            FULL_TABLE = "FULL_TABLE"
+            INCREMENTAL = "INCREMENTAL"
+            LOG_BASED = "LOG_BASED"
 
-        ONLINE = "ONLINE"
-        OFFLINE = "OFFLINE"
-        MAINTENANCE = "MAINTENANCE"
+        @unique
+        class OICResourceType(StrEnum):
+            """Oracle Integration Cloud resource types.
 
-    class OicReplicationMethod(StrEnum):
-        """Replication method types using StrEnum for type safety."""
+            DRY Pattern:
+                StrEnum is the single source of truth. Use OICResourceType.INTEGRATION.value
+                or OICResourceType.INTEGRATION directly - no base strings needed.
+            """
 
-        FULL_TABLE = "FULL_TABLE"
-        INCREMENTAL = "INCREMENTAL"
+            INTEGRATION = "integration"
+            CONNECTION = "connection"
+            CERTIFICATE = "certificate"
+            PACKAGE = "package"
+            PROJECT = "project"
 
-    class OicErrorType(StrEnum):
-        """Error type constants using StrEnum for type safety."""
+        @unique
+        class IntegrationStatus(StrEnum):
+            """Integration lifecycle status.
 
-        AUTHENTICATION = "AUTHENTICATION"
-        AUTHORIZATION = "AUTHORIZATION"
-        RATE_LIMIT = "RATE_LIMIT"
-        SERVER_ERROR = "SERVER_ERROR"
-        NETWORK = "NETWORK"
-        VALIDATION = "VALIDATION"
+            DRY Pattern:
+                StrEnum is the single source of truth. Use IntegrationStatus.ACTIVATED.value
+                or IntegrationStatus.ACTIVATED directly - no base strings needed.
+            """
+
+            CONFIGURED = "configured"
+            ACTIVATED = "activated"
+            DEACTIVATED = "deactivated"
+            FAILED = "failed"
+            LOCKED = "locked"
+
+        @unique
+        class ConnectionStatus(StrEnum):
+            """Connection status.
+
+            DRY Pattern:
+                StrEnum is the single source of truth. Use ConnectionStatus.TESTED.value
+                or ConnectionStatus.TESTED directly - no base strings needed.
+            """
+
+            CONFIGURED = "configured"
+            TESTED = "tested"
+            FAILED = "failed"
+
+        @unique
+        class OicErrorType(StrEnum):
+            """Error type constants using StrEnum for type safety."""
+
+            AUTHENTICATION = "AUTHENTICATION"
+            AUTHORIZATION = "AUTHORIZATION"
+            RATE_LIMIT = "RATE_LIMIT"
+            SERVER_ERROR = "SERVER_ERROR"
+            NETWORK = "NETWORK"
+            VALIDATION = "VALIDATION"
 
 
 c = FlextTapOracleOicConstants
-__all__: list[str] = ["FlextTapOracleOicConstants", "c"]
+
+__all__: t.StrSequence = ("FlextTapOracleOicConstants", "c")

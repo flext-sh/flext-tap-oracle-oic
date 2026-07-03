@@ -8,9 +8,9 @@ Cloud Singer tap with complete Singer protocol compliance and orchestration
 integration through flext-meltano.
 
 Usage:
- python -m flext_tap_oracle_oic --config config.json --discover
- python -m flext_tap_oracle_oic --config config.json --catalog catalog.json
- python -m flext_tap_oracle_oic --config config.json --catalog catalog.json --state state.json
+ python -m flext_tap_oracle_oic --config settings.json --discover
+ python -m flext_tap_oracle_oic --config settings.json --catalog catalog.json
+ python -m flext_tap_oracle_oic --config settings.json --catalog catalog.json --state state.json
 
 Architecture:
  - Standard Singer TAP protocol (--discover, --catalog, --state)
@@ -24,7 +24,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tap_oracle_oic.cli import main
+from flext_tap_oracle_oic import main
 
 if __name__ == "__main__":
     main()
