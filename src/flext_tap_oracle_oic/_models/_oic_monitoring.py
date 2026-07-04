@@ -6,11 +6,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 from flext_oracle_oic import m
 from flext_tap_oracle_oic import c, t, u
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 class FlextTapOracleOicMonitoringRecord(m):
@@ -55,7 +57,8 @@ class FlextTapOracleOicMonitoringRecord(m):
         u.Field(description="Number of messages processed"),
     ] = 0
     error_count: Annotated[
-        t.NonNegativeInt, u.Field(description="Number of errors")
+        t.NonNegativeInt,
+        u.Field(description="Number of errors"),
     ] = 0
     business_identifiers: Annotated[
         t.MappingKV[str, t.JsonMapping],

@@ -6,11 +6,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 from flext_oracle_oic import m
 from flext_tap_oracle_oic import t, u
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 class FlextTapOracleOicExecutionSummary(m):
@@ -18,13 +20,16 @@ class FlextTapOracleOicExecutionSummary(m):
 
     integration_id: Annotated[str, u.Field(..., description="Integration ID")]
     total_executions: Annotated[
-        t.NonNegativeInt, u.Field(description="Total number of executions")
+        t.NonNegativeInt,
+        u.Field(description="Total number of executions"),
     ] = 0
     successful_executions: Annotated[
-        t.NonNegativeInt, u.Field(description="Successful executions")
+        t.NonNegativeInt,
+        u.Field(description="Successful executions"),
     ] = 0
     failed_executions: Annotated[
-        t.NonNegativeInt, u.Field(description="Failed executions")
+        t.NonNegativeInt,
+        u.Field(description="Failed executions"),
     ] = 0
     average_duration_ms: Annotated[
         t.NonNegativeFloat | None,

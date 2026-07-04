@@ -113,7 +113,8 @@ class FlextTapOracleOicClient:
             response_result = self._api_client.get(url, headers=headers_result.value)
             if response_result.failure:
                 return r[FlextApiModels.Api.HttpResponse].fail_op(
-                    "OIC API request", response_result.error
+                    "OIC API request",
+                    response_result.error,
                 )
             response = response_result.value
             if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
@@ -316,7 +317,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
                 exclude_defaults=True,
                 exclude_none=True,
                 mode="json",
-            )
+            ),
         )
         return r[t.JsonMapping].ok(
             t.json_mapping_adapter().validate_python({
@@ -374,7 +375,7 @@ def _build_config_from_env() -> t.StrMapping:
             "oauth_scope": settings.oauth_audience,
         }
     except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-        logger.debug(f"Configuration loading failed: {e}")
+        logger.debug("Configuration loading failed: %s", e)
         return {}
 
 

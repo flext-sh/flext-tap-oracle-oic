@@ -228,7 +228,8 @@ class TestsFlextTapOracleOicTapCore:
             "include_artifacts": True,
         }
         tap = FlextTapOracleOic(
-            settings=sample_config_with_extended, validate_config=False
+            settings=sample_config_with_extended,
+            validate_config=False,
         )
         stream_names = _discover_stream_names(tap)
         if len(stream_names) != 5:

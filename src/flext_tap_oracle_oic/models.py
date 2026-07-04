@@ -168,7 +168,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
                 """
                 base_url_raw = self.settings.get("base_url") or self.settings.get(
-                    "oic_url", ""
+                    "oic_url",
+                    "",
                 )
                 base_url = str(base_url_raw).rstrip("/")
                 if not base_url:

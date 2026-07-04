@@ -6,11 +6,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Annotated, ClassVar, Self
+from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
 from flext_meltano import FlextMeltanoModels
 from flext_tap_oracle_oic import t, u
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 class OicApiResponse(FlextMeltanoModels.Entity):
@@ -86,7 +88,7 @@ class OicApiResponse(FlextMeltanoModels.Entity):
         u.Field(
             description="Response timestamp",
         ),
-    ] = u.Field(default_factory=lambda: u.now())
+    ] = u.Field(default_factory=u.now)
     api_version: Annotated[
         str | None,
         u.Field(None, description="OIC API version"),

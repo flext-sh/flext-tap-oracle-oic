@@ -6,11 +6,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 from flext_oracle_oic import m
 from flext_tap_oracle_oic import c, t, u
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 class FlextTapOracleOicIntegration(m):
@@ -51,7 +53,8 @@ class FlextTapOracleOicIntegration(m):
         u.Field(None, description="Tracking level"),
     ]
     payload_tracking: Annotated[
-        bool, u.Field(description="Enable payload tracking")
+        bool,
+        u.Field(description="Enable payload tracking"),
     ] = False
     integration_status: Annotated[
         c.TapOracleOic.IntegrationStatus,

@@ -7,16 +7,19 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    MutableMapping,
-)
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 from urllib.parse import urljoin, urlparse
 
 from flext_core import FlextUtilitiesConversion
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_oic import u
 from flext_tap_oracle_oic import c, p, r, t
+
+if TYPE_CHECKING:
+    from collections.abc import (
+        MutableMapping,
+    )
 
 
 class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities, FlextUtilitiesConversion):
@@ -56,7 +59,8 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities, FlextUtilitiesConvers
                 )
                 if validation_result.failure:
                     return r[str].fail_op(
-                        "Base URL validation", validation_result.error
+                        "Base URL validation",
+                        validation_result.error,
                     )
                 normalized_path = (
                     resource_path
@@ -100,7 +104,7 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities, FlextUtilitiesConvers
             items_value = response.get("items")
             try:
                 items_list = t.strict_json_list_adapter().validate_python(
-                    items_value if items_value is not None else []
+                    items_value if items_value is not None else [],
                 )
             except c.ValidationError:
                 items_list = t.strict_json_list_adapter().validate_python([])
@@ -267,10 +271,12 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities, FlextUtilitiesConvers
             if not integration_name:
                 return ""
             normalized = c.TapOracleOic.NORMALIZE_NON_ALNUM_RE.sub(
-                "_", integration_name.lower()
+                "_",
+                integration_name.lower(),
             )
             normalized = c.TapOracleOic.NORMALIZE_REPEATED_UNDERSCORE_RE.sub(
-                "_", normalized
+                "_",
+                normalized,
             )
             stripped: str = normalized.strip("_")
             return stripped
@@ -289,11 +295,13 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities, FlextUtilitiesConvers
             if not field_name:
                 return ""
             sanitized = c.TapOracleOic.SANITIZE_CAMEL_BOUNDARY_RE.sub(
-                "_", field_name
+                "_",
+                field_name,
             ).lower()
             sanitized = c.TapOracleOic.SANITIZE_NON_IDENTIFIER_RE.sub("_", sanitized)
             sanitized = c.TapOracleOic.NORMALIZE_REPEATED_UNDERSCORE_RE.sub(
-                "_", sanitized
+                "_",
+                sanitized,
             )
             if sanitized and sanitized[0].isdigit():
                 sanitized = f"field_{sanitized}"
@@ -529,7 +537,7 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities, FlextUtilitiesConvers
                 state_map,
             )
             normalized_stream_state = t.json_mapping_adapter().validate_python(
-                stream_state
+                stream_state,
             )
             updated_bookmarks = t.json_mapping_adapter().validate_python({
                 **bookmarks,

@@ -21,19 +21,22 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
     """Tap-specific OIC settings contract."""
 
     model_config: ClassVar[m.SettingsConfigDict] = m.SettingsConfigDict(
-        env_prefix="FLEXT_TAP_ORACLE_OIC_", extra="ignore"
+        env_prefix="FLEXT_TAP_ORACLE_OIC_",
+        extra="ignore",
     )
 
     oauth_client_id: Annotated[str, u.Field(default="")]
     oauth_client_secret: Annotated[t.SecretStr, u.Field(default=t.SecretStr(""))]
     oauth_token_url: Annotated[
-        str, u.Field(default=f"{c.OracleOic.DEFAULT_BASE_URL}/oauth/token")
+        str,
+        u.Field(default=f"{c.OracleOic.DEFAULT_BASE_URL}/oauth/token"),
     ]
     oauth_audience: Annotated[str, u.Field(default="")]
     base_url: Annotated[str, u.Field(default=c.OracleOic.DEFAULT_BASE_URL)]
     timeout: Annotated[t.PositiveInt, u.Field(default=c.DEFAULT_TIMEOUT_SECONDS)]
     max_retries: Annotated[
-        t.NonNegativeInt, u.Field(default=c.TapOracleOic.DEFAULT_MAX_RETRIES)
+        t.NonNegativeInt,
+        u.Field(default=c.TapOracleOic.DEFAULT_MAX_RETRIES),
     ]
     page_size: Annotated[
         t.PositiveInt,
