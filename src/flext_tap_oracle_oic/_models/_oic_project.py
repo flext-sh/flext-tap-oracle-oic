@@ -61,7 +61,7 @@ class OICProject(m):
 
     @property
     def total_resources(self) -> int:
-        """Get total number of resources in project."""
+        """The total number of resources in project."""
         return (
             len(self.integration_ids) + len(self.connection_ids) + len(self.lookup_ids)
         )

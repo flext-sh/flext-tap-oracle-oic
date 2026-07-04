@@ -151,7 +151,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
             @property
             def api_client(self) -> FlextApi:
-                """Get authenticated API client from parent tap's OIC client."""
+                """The authenticated API client from parent tap's OIC client."""
                 api_config = FlextApiSettings.model_validate({})
                 return FlextApi(settings=api_config)
 
@@ -217,7 +217,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 self,
                 context: t.JsonMapping | None = None,
             ) -> Iterator[t.JsonMapping]:
-                """Get records from OIC API.
+                """The records from OIC API.
 
                 Args:
                     context: Optional context for record extraction.
@@ -393,7 +393,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 self,
                 response: m.Api.HttpResponse,
             ) -> str:
-                """Return a stable identifier for response logging."""
+                """A stable identifier for response logging."""
                 request_id_raw: p.AttributeProbe = response.request_id
                 if isinstance(request_id_raw, str) and request_id_raw:
                     return request_id_raw

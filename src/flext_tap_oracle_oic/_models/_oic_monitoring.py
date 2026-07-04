@@ -66,7 +66,7 @@ class OICMonitoringRecord(m):
 
     @property
     def duration_seconds(self) -> float | None:
-        """Get duration in seconds."""
+        """The duration in seconds."""
         return self.duration_ms / 1000.0 if self.duration_ms is not None else None
 
     @property
