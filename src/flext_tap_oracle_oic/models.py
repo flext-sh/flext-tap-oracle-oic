@@ -301,16 +301,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
                 """
                 try:
-                    if (
-                        response.status_code
-                        >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD
-                    ):
-                        self._handle_response_error(response)
-                        return
-                    data = self._get_response_data(response)
-                    self._track_response_metrics(response, data)
-                    response_url = self._get_response_identifier(response)
-                    yield from self._extract_and_yield_records(data, response_url)
+                    records = self._parse_response_records(response)
                 except c.Meltano.SINGER_SAFE_EXCEPTIONS:
                     response_url_err = self._get_response_identifier(response)
                     self.logger.exception(
@@ -319,6 +310,21 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                     )
                     if self.settings.get("fail_on_parsing_errors", True):
                         raise
+                    return
+                yield from records
+
+            def _parse_response_records(
+                self,
+                response: m.Api.HttpResponse,
+            ) -> t.SequenceOf[t.JsonMapping]:
+                """Parse one response into enriched records."""
+                if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
+                    self._handle_response_error(response)
+                    return ()
+                data = self._get_response_data(response)
+                self._track_response_metrics(response, data)
+                response_url = self._get_response_identifier(response)
+                return tuple(self._extract_and_yield_records(data, response_url))
 
             def _enrich_record(
                 self,

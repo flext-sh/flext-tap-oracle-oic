@@ -58,9 +58,12 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities, FlextUtilitiesConvers
                     return r[str].fail_op(
                         "Base URL validation", validation_result.error
                     )
-                if not resource_path.startswith("/"):
-                    resource_path = f"/{resource_path}"
-                api_url = urljoin(base_url, resource_path)
+                normalized_path = (
+                    resource_path
+                    if resource_path.startswith("/")
+                    else f"/{resource_path}"
+                )
+                api_url = urljoin(base_url, normalized_path)
                 if query_params:
                     query_string = "&".join(
                         (f"{k}={v}" for k, v in query_params.items()),
@@ -182,7 +185,7 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities, FlextUtilitiesConvers
 
             """
             if not integration_data:
-                return {}
+                return t.json_mapping_adapter().validate_python({})
             metadata: MutableMapping[str, t.JsonValue | None] = {
                 "id": integration_data.get("id"),
                 "name": integration_data.get("name"),
@@ -229,29 +232,26 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities, FlextUtilitiesConvers
             """
             if not timestamp_str:
                 return r[str].fail("Timestamp string cannot be empty")
-            try:
-                formats = [
-                    "%Y-%m-%dT%H:%M:%S.%fZ",
-                    "%Y-%m-%dT%H:%M:%SZ",
-                    "%Y-%m-%dT%H:%M:%S%z",
-                    "%Y-%m-%dT%H:%M:%S.%f%z",
-                    "%Y-%m-%dT%H:%M:%S",
-                    "%Y-%m-%d %H:%M:%S",
-                ]
-                for fmt in formats:
-                    try:
-                        dt_naive = datetime.strptime(timestamp_str, fmt)
-                        dt = (
-                            dt_naive.replace(tzinfo=UTC)
-                            if dt_naive.tzinfo is None
-                            else dt_naive
-                        )
-                        return r[str].ok(dt.isoformat())
-                    except ValueError:
-                        continue
-                return r[str].fail(f"Unsupported timestamp format: {timestamp_str}")
-            except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-                return r[str].fail(f"Timestamp formatting error: {e}")
+            formats = [
+                "%Y-%m-%dT%H:%M:%S.%fZ",
+                "%Y-%m-%dT%H:%M:%SZ",
+                "%Y-%m-%dT%H:%M:%S%z",
+                "%Y-%m-%dT%H:%M:%S.%f%z",
+                "%Y-%m-%dT%H:%M:%S",
+                "%Y-%m-%d %H:%M:%S",
+            ]
+            for fmt in formats:
+                try:
+                    dt_naive = datetime.strptime(timestamp_str, fmt)
+                    dt = (
+                        dt_naive.replace(tzinfo=UTC)
+                        if dt_naive.tzinfo is None
+                        else dt_naive
+                    )
+                    return r[str].ok(dt.isoformat())
+                except ValueError:
+                    continue
+            return r[str].fail(f"Unsupported timestamp format: {timestamp_str}")
 
         @staticmethod
         def normalize_integration_name(integration_name: str) -> str:
