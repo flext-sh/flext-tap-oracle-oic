@@ -42,7 +42,8 @@ class FlextOracleOicAuthenticator:
 
     def get_access_token(self) -> p.Result[str]:
         """Get OAuth2 access token using client credentials flow."""
-        try:
+
+        def _run_get_access_token() -> p.Result[str]:
             token_request_data = "&".join(
                 f"{key}={value}"
                 for key, value in self.settings.get_token_request_data().items()
@@ -75,6 +76,9 @@ class FlextOracleOicAuthenticator:
                     return r[str].ok(access_token_str)
                 case _:
                     return r[str].fail("No valid access token in response")
+
+        try:
+            return _run_get_access_token()
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             return r[str].fail_op("OAuth2 authentication", e)
 
@@ -322,7 +326,8 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
 
     def test_connection(self) -> p.Result[bool]:
         """Test connection to Oracle OIC using real API client."""
-        try:
+
+        def _run_test_connection() -> p.Result[bool]:
             logger.info("Testing Oracle OIC connection")
             test_result = self.client.get("integrations")
             if test_result.success:
@@ -331,6 +336,9 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             error_msg = f"Oracle OIC connection test failed: {test_result.error}"
             logger.error(error_msg)
             return r[bool].fail(error_msg)
+
+        try:
+            return _run_test_connection()
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             exception_msg = f"Oracle OIC connection test exception: {e}"
             logger.exception(exception_msg)

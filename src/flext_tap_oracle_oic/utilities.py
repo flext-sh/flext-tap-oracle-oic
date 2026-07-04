@@ -47,7 +47,8 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities, FlextUtilitiesConvers
             r[str]: Complete API URL or error
 
             """
-            try:
+
+            def _run_build_oic_api_url() -> p.Result[str]:
                 validation_result = (
                     FlextTapOracleOicUtilities.TapOracleOic.validate_oic_endpoint(
                         base_url,
@@ -66,6 +67,9 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities, FlextUtilitiesConvers
                     )
                     api_url = f"{api_url}?{query_string}"
                 return r[str].ok(api_url)
+
+            try:
+                return _run_build_oic_api_url()
             except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
                 return r[str].fail(f"URL building error: {e}")
 
