@@ -41,8 +41,9 @@ class FlextOracleOicAuthenticator:
         self._api_client = FlextApi(settings=api_config)
 
     def get_access_token(self) -> p.Result[str]:
-        """The OAuth2 access token using client credentials flow."""
-        try:
+        """Get OAuth2 access token using client credentials flow."""
+
+        def _run_get_access_token() -> p.Result[str]:
             token_request_data = "&".join(
                 f"{key}={value}"
                 for key, value in self.settings.get_token_request_data().items()
@@ -75,6 +76,9 @@ class FlextOracleOicAuthenticator:
                     return r[str].ok(access_token_str)
                 case _:
                     return r[str].fail("No valid access token in response")
+
+        try:
+            return _run_get_access_token()
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             return r[str].fail_op("OAuth2 authentication", e)
 
@@ -163,7 +167,7 @@ class FlextTapOracleOicClient:
             return r[FlextApiModels.Api.HttpResponse].fail_op("OIC API request", e)
 
     def _get_auth_headers(self) -> p.Result[t.StrMapping]:
-        """The authorization headers with OAuth2 token."""
+        """Get authorization headers with OAuth2 token."""
         token_result = self.authenticator.get_access_token()
         if token_result.failure:
             return r[t.StrMapping].fail(
@@ -222,12 +226,12 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
 
     @property
     def oic_settings(self) -> FlextTapOracleOicSettings:
-        """The typed OIC settings."""
+        """Return typed OIC settings."""
         return self._oic_settings
 
     @property
     def client(self) -> FlextTapOracleOicClient:
-        """The Oracle OIC client instance using flext-oracle-oic."""
+        """Get Oracle OIC client instance using flext-oracle-oic."""
         if self._client is None:
             config_dict = self._tap_config
             oic_config_data: t.JsonMapping = {
@@ -322,7 +326,8 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
 
     def test_connection(self) -> p.Result[bool]:
         """Test connection to Oracle OIC using real API client."""
-        try:
+
+        def _run_test_connection() -> p.Result[bool]:
             logger.info("Testing Oracle OIC connection")
             test_result = self.client.get("integrations")
             if test_result.success:
@@ -331,6 +336,9 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             error_msg = f"Oracle OIC connection test failed: {test_result.error}"
             logger.error(error_msg)
             return r[bool].fail(error_msg)
+
+        try:
+            return _run_test_connection()
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             exception_msg = f"Oracle OIC connection test exception: {e}"
             logger.exception(exception_msg)
