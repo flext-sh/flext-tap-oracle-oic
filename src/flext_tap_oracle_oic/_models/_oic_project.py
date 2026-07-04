@@ -1,4 +1,4 @@
-"""OracleOic.OICProject entity model.
+"""OracleOic.FlextTapOracleOicProject entity model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -14,7 +14,7 @@ from flext_oracle_oic import m
 from flext_tap_oracle_oic import t, u
 
 
-class OICProject(m):
+class FlextTapOracleOicProject(m):
     """OIC project domain entity using flext-core patterns."""
 
     project_id: Annotated[
@@ -83,4 +83,4 @@ class OICProject(m):
             self.integration_ids.remove(integration_id)
 
 
-__all__: list[str] = ["OICProject"]
+__all__: list[str] = ["FlextTapOracleOicProject"]

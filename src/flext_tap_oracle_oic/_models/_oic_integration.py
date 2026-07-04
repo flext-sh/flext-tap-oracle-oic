@@ -1,4 +1,4 @@
-"""OracleOic.OICIntegration entity model.
+"""OracleOic.FlextTapOracleOicIntegration entity model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -13,7 +13,7 @@ from flext_oracle_oic import m
 from flext_tap_oracle_oic import c, t, u
 
 
-class OICIntegration(m):
+class FlextTapOracleOicIntegration(m):
     """OIC integration domain entity using flext-core patterns."""
 
     integration_id: Annotated[
@@ -119,4 +119,4 @@ class OICIntegration(m):
         self.locked_at = None
 
 
-__all__: list[str] = ["OICIntegration"]
+__all__: list[str] = ["FlextTapOracleOicIntegration"]

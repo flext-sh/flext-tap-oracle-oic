@@ -1,4 +1,4 @@
-"""OracleOic.OICLookup entity model.
+"""OracleOic.FlextTapOracleOicLookup entity model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -13,7 +13,7 @@ from flext_oracle_oic import m
 from flext_tap_oracle_oic import t, u
 
 
-class OICLookup(m):
+class FlextTapOracleOicLookup(m):
     """OIC lookup table domain entity using flext-core patterns."""
 
     lookup_id: Annotated[
@@ -85,4 +85,4 @@ class OICLookup(m):
         self.data_size_bytes = data_size
 
 
-__all__: list[str] = ["OICLookup"]
+__all__: list[str] = ["FlextTapOracleOicLookup"]

@@ -37,21 +37,25 @@ if TYPE_CHECKING:
         OicMetricsRecord as OicMetricsRecord,
     )
     from flext_tap_oracle_oic._models._oic_connection import (
-        OICConnection as OICConnection,
+        FlextTapOracleOicConnection as FlextTapOracleOicConnection,
     )
     from flext_tap_oracle_oic._models._oic_execution_summary import (
-        OICExecutionSummary as OICExecutionSummary,
+        FlextTapOracleOicExecutionSummary as FlextTapOracleOicExecutionSummary,
     )
     from flext_tap_oracle_oic._models._oic_integration import (
-        OICIntegration as OICIntegration,
+        FlextTapOracleOicIntegration as FlextTapOracleOicIntegration,
     )
-    from flext_tap_oracle_oic._models._oic_lookup import OICLookup as OICLookup
+    from flext_tap_oracle_oic._models._oic_lookup import (
+        FlextTapOracleOicLookup as FlextTapOracleOicLookup,
+    )
     from flext_tap_oracle_oic._models._oic_monitoring import (
-        OICMonitoringRecord as OICMonitoringRecord,
+        FlextTapOracleOicMonitoringRecord as FlextTapOracleOicMonitoringRecord,
     )
-    from flext_tap_oracle_oic._models._oic_project import OICProject as OICProject
+    from flext_tap_oracle_oic._models._oic_project import (
+        FlextTapOracleOicProject as FlextTapOracleOicProject,
+    )
     from flext_tap_oracle_oic._models._oic_resource_metadata import (
-        OICResourceMetadata as OICResourceMetadata,
+        FlextTapOracleOicResourceMetadata as FlextTapOracleOicResourceMetadata,
     )
     from flext_tap_oracle_oic._models._package import (
         OicPackageEntity as OicPackageEntity,
@@ -80,13 +84,13 @@ _LAZY_IMPORTS = build_lazy_import_map(
         ),
         "._integration": ("OicIntegrationEntity",),
         "._metrics": ("OicMetricsRecord",),
-        "._oic_connection": ("OICConnection",),
-        "._oic_execution_summary": ("OICExecutionSummary",),
-        "._oic_integration": ("OICIntegration",),
-        "._oic_lookup": ("OICLookup",),
-        "._oic_monitoring": ("OICMonitoringRecord",),
-        "._oic_project": ("OICProject",),
-        "._oic_resource_metadata": ("OICResourceMetadata",),
+        "._oic_connection": ("FlextTapOracleOicConnection",),
+        "._oic_execution_summary": ("FlextTapOracleOicExecutionSummary",),
+        "._oic_integration": ("FlextTapOracleOicIntegration",),
+        "._oic_lookup": ("FlextTapOracleOicLookup",),
+        "._oic_monitoring": ("FlextTapOracleOicMonitoringRecord",),
+        "._oic_project": ("FlextTapOracleOicProject",),
+        "._oic_resource_metadata": ("FlextTapOracleOicResourceMetadata",),
         "._package": ("OicPackageEntity",),
         "._stream_config": ("OicStreamConfiguration",),
         ".streams": (

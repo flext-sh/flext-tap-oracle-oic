@@ -1,4 +1,4 @@
-"""OracleOic.OICExecutionSummary entity model.
+"""OracleOic.FlextTapOracleOicExecutionSummary entity model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -13,7 +13,7 @@ from flext_oracle_oic import m
 from flext_tap_oracle_oic import t, u
 
 
-class OICExecutionSummary(m):
+class FlextTapOracleOicExecutionSummary(m):
     """OIC execution summary value object."""
 
     integration_id: Annotated[str, u.Field(..., description="Integration ID")]
@@ -49,4 +49,4 @@ class OICExecutionSummary(m):
         return success_rate
 
 
-__all__: list[str] = ["OICExecutionSummary"]
+__all__: list[str] = ["FlextTapOracleOicExecutionSummary"]

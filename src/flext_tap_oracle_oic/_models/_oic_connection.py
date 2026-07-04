@@ -1,4 +1,4 @@
-"""OracleOic.OICConnection entity model.
+"""OracleOic.FlextTapOracleOicConnection entity model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -13,7 +13,7 @@ from flext_oracle_oic import m
 from flext_tap_oracle_oic import c, t, u
 
 
-class OICConnection(m):
+class FlextTapOracleOicConnection(m):
     """OIC connection domain entity using flext-core patterns."""
 
     connection_id: Annotated[
@@ -93,4 +93,4 @@ class OICConnection(m):
         self.connection_status = c.TapOracleOic.ConnectionStatus.TESTED
 
 
-__all__: list[str] = ["OICConnection"]
+__all__: list[str] = ["FlextTapOracleOicConnection"]

@@ -38,21 +38,25 @@ from flext_tap_oracle_oic._models._integration import (
 )
 from flext_tap_oracle_oic._models._metrics import OicMetricsRecord as _OicMetricsRecord
 from flext_tap_oracle_oic._models._oic_connection import (
-    OICConnection as _OICConnection,
+    FlextTapOracleOicConnection as _FlextTapOracleOicConnection,
 )
 from flext_tap_oracle_oic._models._oic_execution_summary import (
-    OICExecutionSummary as _OICExecutionSummary,
+    FlextTapOracleOicExecutionSummary as _FlextTapOracleOicExecutionSummary,
 )
 from flext_tap_oracle_oic._models._oic_integration import (
-    OICIntegration as _OICIntegration,
+    FlextTapOracleOicIntegration as _FlextTapOracleOicIntegration,
 )
-from flext_tap_oracle_oic._models._oic_lookup import OICLookup as _OICLookup
+from flext_tap_oracle_oic._models._oic_lookup import (
+    FlextTapOracleOicLookup as _FlextTapOracleOicLookup,
+)
 from flext_tap_oracle_oic._models._oic_monitoring import (
-    OICMonitoringRecord as _OICMonitoringRecord,
+    FlextTapOracleOicMonitoringRecord as _FlextTapOracleOicMonitoringRecord,
 )
-from flext_tap_oracle_oic._models._oic_project import OICProject as _OICProject
+from flext_tap_oracle_oic._models._oic_project import (
+    FlextTapOracleOicProject as _FlextTapOracleOicProject,
+)
 from flext_tap_oracle_oic._models._oic_resource_metadata import (
-    OICResourceMetadata as _OICResourceMetadata,
+    FlextTapOracleOicResourceMetadata as _FlextTapOracleOicResourceMetadata,
 )
 from flext_tap_oracle_oic._models._package import OicPackageEntity as _OicPackageEntity
 from flext_tap_oracle_oic._models._stream_config import (
@@ -563,19 +567,19 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             per MRO policy: all m subclasses live under [Project]Models.
             """
 
-            OICConnection = _OICConnection
+            FlextTapOracleOicConnection = _FlextTapOracleOicConnection
 
-            OICIntegration = _OICIntegration
+            FlextTapOracleOicIntegration = _FlextTapOracleOicIntegration
 
-            OICLookup = _OICLookup
+            FlextTapOracleOicLookup = _FlextTapOracleOicLookup
 
-            OICMonitoringRecord = _OICMonitoringRecord
+            FlextTapOracleOicMonitoringRecord = _FlextTapOracleOicMonitoringRecord
 
-            OICProject = _OICProject
+            FlextTapOracleOicProject = _FlextTapOracleOicProject
 
-            OICResourceMetadata = _OICResourceMetadata
+            FlextTapOracleOicResourceMetadata = _FlextTapOracleOicResourceMetadata
 
-            OICExecutionSummary = _OICExecutionSummary
+            FlextTapOracleOicExecutionSummary = _FlextTapOracleOicExecutionSummary
 
 
 # Short alias

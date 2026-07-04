@@ -1,4 +1,4 @@
-"""OracleOic.OICResourceMetadata entity model.
+"""OracleOic.FlextTapOracleOicResourceMetadata entity model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -13,7 +13,7 @@ from flext_oracle_oic import m
 from flext_tap_oracle_oic import c, t, u
 
 
-class OICResourceMetadata(m):
+class FlextTapOracleOicResourceMetadata(m):
     """OIC resource metadata value object."""
 
     resource_type: Annotated[
@@ -36,4 +36,4 @@ class OICResourceMetadata(m):
     ]
 
 
-__all__: list[str] = ["OICResourceMetadata"]
+__all__: list[str] = ["FlextTapOracleOicResourceMetadata"]

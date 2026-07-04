@@ -1,4 +1,4 @@
-"""OracleOic.OICMonitoringRecord entity model.
+"""OracleOic.FlextTapOracleOicMonitoringRecord entity model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -13,7 +13,7 @@ from flext_oracle_oic import m
 from flext_tap_oracle_oic import c, t, u
 
 
-class OICMonitoringRecord(m):
+class FlextTapOracleOicMonitoringRecord(m):
     """OIC monitoring record domain entity using flext-core patterns."""
 
     instance_id: Annotated[
@@ -87,4 +87,4 @@ class OICMonitoringRecord(m):
         }
 
 
-__all__: list[str] = ["OICMonitoringRecord"]
+__all__: list[str] = ["FlextTapOracleOicMonitoringRecord"]
