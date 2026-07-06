@@ -18,20 +18,43 @@ from flext_tap_oracle_oic.__version__ import (
 )
 
 if TYPE_CHECKING:
-    from flext_oracle_oic import d, e, h, r, s, x
-    from flext_tap_oracle_oic.api import FlextTapOracleOicService, tap_oracle_oic
-    from flext_tap_oracle_oic.cli import FlextTapOracleOicCli, main
-    from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
-    from flext_tap_oracle_oic.models import FlextTapOracleOicModels, m
-    from flext_tap_oracle_oic.protocols import FlextTapOracleOicProtocols, p
-    from flext_tap_oracle_oic.settings import FlextTapOracleOicSettings
-    from flext_tap_oracle_oic.tap import (
-        FlextOracleOicAuthenticator,
-        FlextTapOracleOic,
-        FlextTapOracleOicClient,
+    from flext_oracle_oic import d as d, e as e, h as h, r as r, s as s, x as x
+    from flext_tap_oracle_oic.api import (
+        FlextTapOracleOicService as FlextTapOracleOicService,
+        tap_oracle_oic as tap_oracle_oic,
     )
-    from flext_tap_oracle_oic.typings import FlextTapOracleOicTypes, t
-    from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities, u
+    from flext_tap_oracle_oic.cli import (
+        FlextTapOracleOicCli as FlextTapOracleOicCli,
+        main as main,
+    )
+    from flext_tap_oracle_oic.constants import (
+        FlextTapOracleOicConstants as FlextTapOracleOicConstants,
+        c as c,
+    )
+    from flext_tap_oracle_oic.models import (
+        FlextTapOracleOicModels as FlextTapOracleOicModels,
+        m as m,
+    )
+    from flext_tap_oracle_oic.protocols import (
+        FlextTapOracleOicProtocols as FlextTapOracleOicProtocols,
+        p as p,
+    )
+    from flext_tap_oracle_oic.settings import (
+        FlextTapOracleOicSettings as FlextTapOracleOicSettings,
+    )
+    from flext_tap_oracle_oic.tap import (
+        FlextOracleOicAuthenticator as FlextOracleOicAuthenticator,
+        FlextTapOracleOic as FlextTapOracleOic,
+        FlextTapOracleOicClient as FlextTapOracleOicClient,
+    )
+    from flext_tap_oracle_oic.typings import (
+        FlextTapOracleOicTypes as FlextTapOracleOicTypes,
+        t as t,
+    )
+    from flext_tap_oracle_oic.utilities import (
+        FlextTapOracleOicUtilities as FlextTapOracleOicUtilities,
+        u as u,
+    )
 _LAZY_IMPORTS = build_lazy_import_map(
     {
         ".api": (
