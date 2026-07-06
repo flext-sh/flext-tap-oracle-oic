@@ -309,8 +309,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
                     entry_result.error
                     or f"Failed to build Singer catalog entry for {stream_name}",
                 )
-            if entry_result.value is not None:
-                catalog_entries.append(entry_result.value)
+            catalog_entries.append(entry_result.value)
         catalog: t.JsonMapping = t.json_mapping_adapter().validate_python(
             m.Meltano.SingerCatalog(streams=catalog_entries).model_dump(
                 by_alias=True,

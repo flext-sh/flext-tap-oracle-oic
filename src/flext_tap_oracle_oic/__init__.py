@@ -19,7 +19,7 @@ from flext_tap_oracle_oic.__version__ import (
 from flext_tap_oracle_oic._exports import FLEXT_TAP_ORACLE_OIC_LAZY_IMPORTS
 
 if TYPE_CHECKING:
-    from flext_core._root_typing_parts import (
+    from flext_core._root_typing_parts.facades import (
         d as d,
         e as e,
         h as h,
