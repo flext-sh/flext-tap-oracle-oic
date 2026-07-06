@@ -19,7 +19,7 @@ from flext_tap_oracle_oic.__version__ import (
 
 if TYPE_CHECKING:
     from flext_oracle_oic import d, e, h, r, s, x
-    from flext_tap_oracle_oic.api import FlextTapOracleOicService
+    from flext_tap_oracle_oic.api import FlextTapOracleOicService, tap_oracle_oic
     from flext_tap_oracle_oic.cli import FlextTapOracleOicCli, main
     from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
     from flext_tap_oracle_oic.models import FlextTapOracleOicModels, m

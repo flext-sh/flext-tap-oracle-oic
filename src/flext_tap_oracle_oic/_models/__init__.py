@@ -15,6 +15,11 @@ if TYPE_CHECKING:
     from flext_tap_oracle_oic._models._connection import OicConnectionEntity
     from flext_tap_oracle_oic._models._envelope import OicEnvelope
     from flext_tap_oracle_oic._models._error_context import OicErrorContext
+    from flext_tap_oracle_oic._models._helpers import (
+        require_entity_value,
+        validate_entity_identity_and_port,
+        validate_optional_port,
+    )
     from flext_tap_oracle_oic._models._integration import OicIntegrationEntity
     from flext_tap_oracle_oic._models._metrics import OicMetricsRecord
     from flext_tap_oracle_oic._models._oic_connection import FlextTapOracleOicConnection
@@ -37,6 +42,7 @@ if TYPE_CHECKING:
     from flext_tap_oracle_oic._models.streams import (
         ALL_STREAMS,
         FlextTapOracleOicModelsStreams,
+        th,
     )
 _LAZY_IMPORTS = build_lazy_import_map(
     {
