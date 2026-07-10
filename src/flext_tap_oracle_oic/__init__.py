@@ -19,6 +19,10 @@ from flext_tap_oracle_oic.__version__ import (
 
 if TYPE_CHECKING:
     from flext_oracle_oic import d as d, e as e, h as h, r as r, s as s, x as x
+    from flext_tap_oracle_oic._settings import (
+        FlextTapOracleOicSettings as FlextTapOracleOicSettings,
+        settings as settings,
+    )
     from flext_tap_oracle_oic.api import (
         FlextTapOracleOicService as FlextTapOracleOicService,
         tap_oracle_oic as tap_oracle_oic,
