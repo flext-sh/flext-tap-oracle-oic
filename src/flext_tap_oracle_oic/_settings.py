@@ -1,134 +1,63 @@
-"""FLEXT Tap Oracle OIC Configuration - Enhanced FlextSettings Implementation.
+"""FLEXT Tap Oracle OIC settings — namespaced under ``settings.TapOracleOic``.
 
-Single unified configuration class for Oracle Integration Cloud Singer tap
-operations following FLEXT 1.0.0 patterns with enhanced singleton, SecretStr,
-and Pydantic 2.11+ features.
+Universal fields via MRO; project fields in the ``TapOracleOic`` group with
+simple scalar types (env-settable). URL/header/token construction lives in
+consumers (tap.py), not in settings.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
-
 """
 
 from __future__ import annotations
 
-from typing import Annotated, ClassVar
+from typing import TYPE_CHECKING, Annotated
 
-from flext_oracle_oic import FlextOracleOicSettings
-from flext_tap_oracle_oic import c, m, p, r, t, u
+from pydantic import BaseModel, Field
+from pydantic_settings import SettingsConfigDict
+
+from flext_core import FlextSettings
+
+_DEFAULT_BASE_URL = "https://localhost.integration.ocp.oraclecloud.com"
 
 
-class FlextTapOracleOicSettings(FlextOracleOicSettings):
-    """Tap-specific OIC settings contract."""
+class FlextTapOracleOicSettings(FlextSettings):
+    """Oracle OIC Singer tap settings; fields under ``settings.TapOracleOic.*``."""
 
-    model_config: ClassVar[m.SettingsConfigDict] = m.SettingsConfigDict(
+    model_config = SettingsConfigDict(
         env_prefix="FLEXT_TAP_ORACLE_OIC_",
+        env_nested_delimiter="__",
         extra="ignore",
     )
 
-    oauth_client_id: Annotated[str, u.Field(default="")]
-    oauth_client_secret: Annotated[t.SecretStr, u.Field(default=t.SecretStr(""))]
-    oauth_token_url: Annotated[
-        str,
-        u.Field(default=f"{c.OracleOic.DEFAULT_BASE_URL}/oauth/token"),
-    ]
-    oauth_audience: Annotated[str, u.Field(default="")]
-    base_url: Annotated[str, u.Field(default=c.OracleOic.DEFAULT_BASE_URL)]
-    timeout: Annotated[t.PositiveInt, u.Field(default=c.DEFAULT_TIMEOUT_SECONDS)]
-    max_retries: Annotated[
-        t.NonNegativeInt,
-        u.Field(default=c.TapOracleOic.DEFAULT_MAX_RETRIES),
-    ]
-    page_size: Annotated[
-        t.PositiveInt,
-        u.Field(default=c.DEFAULT_PAGE_SIZE),
-    ]
-    include_extended: Annotated[
-        bool,
-        u.Field(
-            default=False,
-            description="Include extended entity metadata streams",
-        ),
-    ]
-    include_monitoring: Annotated[
-        bool,
-        u.Field(default=False, description="Include monitoring data streams"),
-    ]
-    include_logs: Annotated[
-        bool,
-        u.Field(default=False, description="Include log data streams"),
-    ]
-    include_artifacts: Annotated[
-        bool,
-        u.Field(default=False, description="Include artifact data streams"),
-    ]
+    class _TapOracleOic(BaseModel):
+        """Namespaced Oracle OIC tap settings."""
 
-    def get_api_base_url(self) -> str:
-        """Return base URL without trailing slash."""
-        return self.base_url.rstrip("/")
-
-    def get_headers(self) -> t.StrMapping:
-        """Return default headers for OIC requests."""
-        return {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-
-    def get_token_request_data(self) -> t.StrMapping:
-        """Return OAuth2 client credentials payload."""
-        return {
-            "grant_type": "client_credentials",
-            "client_id": self.oauth_client_id,
-            "client_secret": self.oauth_client_secret.get_secret_value(),
-            "audience": self.oauth_audience,
-        }
-
-    @classmethod
-    def create_config(
-        cls,
-        oauth_params: t.JsonMapping,
-        connection_params: t.JsonMapping,
-        tap_params: t.JsonMapping | None = None,
-    ) -> p.Result[FlextTapOracleOicSettings]:
-        """Create a validated tap configuration from grouped parameter blocks."""
-        try:
-            tap_config: t.MutableJsonMapping = (
-                dict(tap_params) if tap_params is not None else {}
-            )
-            tap_config.setdefault(
-                "batch_size",
-                c.DEFAULT_SIZE,
-            )
-            tap_config.setdefault("stream_prefix", "oic")
-            config_data = {**oauth_params, **connection_params, **tap_config}
-            config_instance = FlextTapOracleOicSettings.model_validate(config_data)
-            return r[FlextTapOracleOicSettings].ok(config_instance)
-        except c.Meltano.SINGER_SAFE_EXCEPTIONS as exc:
-            return r[FlextTapOracleOicSettings].fail_op(
-                "Oracle OIC tap configuration creation",
-                exc,
-            )
-
-    def validate_configuration(self) -> p.Result[bool]:
-        """Validate the current settings instance."""
-        required_fields = [
-            (self.oauth_client_id, "OAuth client ID is required"),
-            (
-                self.oauth_client_secret.get_secret_value(),
-                "OAuth client secret is required",
-            ),
-            (self.oauth_audience, "OAuth audience is required"),
+        oauth_client_id: Annotated[str, Field(default="", description="OAuth client id")]
+        oauth_client_secret: Annotated[str, Field(default="", description="OAuth client secret")]
+        oauth_token_url: Annotated[
+            str,
+            Field(default=f"{_DEFAULT_BASE_URL}/oauth/token", description="OAuth token URL"),
         ]
-        for field_value, error_message in required_fields:
-            if not (field_value and field_value.strip()):
-                return r[bool].fail(error_message)
-        if self.timeout <= 0:
-            return r[bool].fail("Timeout must be positive")
-        if self.max_retries < 0:
-            return r[bool].fail("Max retries cannot be negative")
-        if self.page_size <= 0:
-            return r[bool].fail("Page size must be positive")
-        return r[bool].ok(value=True)
+        oauth_audience: Annotated[str, Field(default="", description="OAuth audience")]
+        base_url: Annotated[str, Field(default=_DEFAULT_BASE_URL, description="OIC base URL")]
+        timeout: Annotated[int, Field(default=30, ge=1, description="HTTP timeout (s)")]
+        max_retries: Annotated[int, Field(default=3, ge=0, description="Max retries")]
+        page_size: Annotated[int, Field(default=10, ge=1, description="Page size")]
+        include_extended: Annotated[bool, Field(default=False, description="Extended metadata streams")]
+        include_monitoring: Annotated[bool, Field(default=False, description="Monitoring streams")]
+        include_logs: Annotated[bool, Field(default=False, description="Log streams")]
+        include_artifacts: Annotated[bool, Field(default=False, description="Artifact streams")]
+
+    if TYPE_CHECKING:
+        TapOracleOic: _TapOracleOic
+    else:
+        TapOracleOic: _TapOracleOic = Field(
+            default_factory=_TapOracleOic,
+            description="Namespaced Oracle OIC tap settings.",
+        )
 
 
 settings: FlextTapOracleOicSettings = FlextTapOracleOicSettings.fetch_global()
 """Pre-instantiated project settings singleton — ``from flext_tap_oracle_oic import settings``."""
+
+__all__: list[str] = ["FlextTapOracleOicSettings", "settings"]
