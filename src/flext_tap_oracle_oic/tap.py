@@ -35,7 +35,6 @@ class FlextOracleOicAuthenticator:
 
     def __init__(self, settings: FlextTapOracleOicSettings) -> None:
         """Initialize authenticator with OAuth2 configuration."""
-        self.settings = settings
         self._access_token: str | None = None
         api_config = FlextApiSettings.model_validate({})
         self._api_client = FlextApi(settings=api_config)
@@ -46,10 +45,10 @@ class FlextOracleOicAuthenticator:
         def _run_get_access_token() -> p.Result[str]:
             token_request_data = "&".join(
                 f"{key}={value}"
-                for key, value in self.settings.get_token_request_data().items()
+                for key, value in settings.get_token_request_data().items()
             )
             response_result = self._api_client.post(
-                self.settings.oauth_token_url,
+                settings.oauth_token_url,
                 data=token_request_data,
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
             )
@@ -92,7 +91,6 @@ class FlextTapOracleOicClient:
         authenticator: FlextOracleOicAuthenticator,
     ) -> None:
         """Initialize OIC API client."""
-        self.settings = settings
         self.authenticator = authenticator
         api_config = FlextApiSettings.model_validate({
             "base_url": settings.get_api_base_url(),
@@ -103,7 +101,7 @@ class FlextTapOracleOicClient:
 
     def get(self, endpoint: str) -> p.Result[FlextApiModels.Api.HttpResponse]:
         """Make authenticated GET request to OIC API."""
-        url = f"{self.settings.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
+        url = f"{settings.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
         headers_result = self._get_auth_headers()
         if headers_result.failure:
             return r[FlextApiModels.Api.HttpResponse].fail(
@@ -131,7 +129,7 @@ class FlextTapOracleOicClient:
         data: t.MappingKV[str, t.JsonMapping] | None = None,
     ) -> p.Result[FlextApiModels.Api.HttpResponse]:
         """Make authenticated POST request to OIC API."""
-        url = f"{self.settings.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
+        url = f"{settings.get_api_base_url().rstrip('/')}/{endpoint.lstrip('/')}"
         headers_result = self._get_auth_headers()
         if headers_result.failure:
             return r[FlextApiModels.Api.HttpResponse].fail(
@@ -174,7 +172,7 @@ class FlextTapOracleOicClient:
             return r[t.StrMapping].fail(
                 f"Failed to get access token: {token_result.error}",
             )
-        headers: t.MutableStrMapping = dict(self.settings.get_headers())
+        headers: t.MutableStrMapping = dict(settings.get_headers())
         headers["Authorization"] = f"Bearer {token_result.value}"
         return r[t.StrMapping].ok(headers)
 

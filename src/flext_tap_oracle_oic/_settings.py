@@ -128,3 +128,7 @@ class FlextTapOracleOicSettings(FlextOracleOicSettings):
         if self.page_size <= 0:
             return r[bool].fail("Page size must be positive")
         return r[bool].ok(value=True)
+
+
+settings: FlextTapOracleOicSettings = FlextTapOracleOicSettings.fetch_global()
+"""Pre-instantiated project settings singleton — ``from flext_tap_oracle_oic import settings``."""

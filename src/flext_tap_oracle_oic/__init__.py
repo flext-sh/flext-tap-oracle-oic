@@ -39,9 +39,6 @@ if TYPE_CHECKING:
         FlextTapOracleOicProtocols as FlextTapOracleOicProtocols,
         p as p,
     )
-    from flext_tap_oracle_oic.settings import (
-        FlextTapOracleOicSettings as FlextTapOracleOicSettings,
-    )
     from flext_tap_oracle_oic.tap import (
         FlextOracleOicAuthenticator as FlextOracleOicAuthenticator,
         FlextTapOracleOic as FlextTapOracleOic,
@@ -57,6 +54,7 @@ if TYPE_CHECKING:
     )
 _LAZY_IMPORTS = build_lazy_import_map(
     {
+        "._settings": ("FlextTapOracleOicSettings", "settings"),
         ".api": (
             "FlextTapOracleOicService",
             "tap_oracle_oic",
@@ -77,7 +75,6 @@ _LAZY_IMPORTS = build_lazy_import_map(
             "FlextTapOracleOicProtocols",
             "p",
         ),
-        ".settings": ("FlextTapOracleOicSettings",),
         ".tap": (
             "FlextOracleOicAuthenticator",
             "FlextTapOracleOic",
@@ -104,6 +101,8 @@ _LAZY_IMPORTS = build_lazy_import_map(
 
 
 __all__: tuple[str, ...] = (
+    "FlextTapOracleOicSettings",
+    "settings",
     "FlextOracleOicAuthenticator",
     "FlextTapOracleOic",
     "FlextTapOracleOicCli",
@@ -112,7 +111,6 @@ __all__: tuple[str, ...] = (
     "FlextTapOracleOicModels",
     "FlextTapOracleOicProtocols",
     "FlextTapOracleOicService",
-    "FlextTapOracleOicSettings",
     "FlextTapOracleOicTypes",
     "FlextTapOracleOicUtilities",
     "__author__",
