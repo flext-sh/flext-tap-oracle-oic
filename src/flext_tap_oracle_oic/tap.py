@@ -35,6 +35,9 @@ class FlextOracleOicAuthenticator:
 
     def __init__(self, settings: FlextTapOracleOicSettings) -> None:
         """Initialize authenticator with OAuth2 configuration."""
+        # NOTE (multi-agent): settings live on self; methods read
+        # self.settings.TapOracleOic.* (namespaced SSOT, ADR-005).
+        self.settings = settings
         self._access_token: str | None = None
         api_config = FlextApiSettings.model_validate({})
         self._api_client = FlextApi(settings=api_config)
@@ -47,13 +50,13 @@ class FlextOracleOicAuthenticator:
                 f"{key}={value}"
                 for key, value in {
                     "grant_type": "client_credentials",
-                    "client_id": settings.TapOracleOic.oauth_client_id,
-                    "client_secret": settings.TapOracleOic.oauth_client_secret,
-                    "audience": settings.TapOracleOic.oauth_audience,
+                    "client_id": self.settings.TapOracleOic.oauth_client_id,
+                    "client_secret": self.settings.TapOracleOic.oauth_client_secret,
+                    "audience": self.settings.TapOracleOic.oauth_audience,
                 }.items()
             )
             response_result = self._api_client.post(
-                settings.TapOracleOic.oauth_token_url,
+                self.settings.TapOracleOic.oauth_token_url,
                 data=token_request_data,
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
             )
@@ -96,17 +99,19 @@ class FlextTapOracleOicClient:
         authenticator: FlextOracleOicAuthenticator,
     ) -> None:
         """Initialize OIC API client."""
+        # NOTE (multi-agent): settings live on self; get/post read
+        # self.settings.TapOracleOic.base_url (namespaced SSOT, ADR-005).
+        self.settings = settings
         self.authenticator = authenticator
         api_config = FlextApiSettings.model_validate({
             "base_url": settings.TapOracleOic.base_url.rstrip("/"),
             "timeout": settings.TapOracleOic.timeout,
         })
         self._api_client = FlextApi(settings=api_config)
-        self._utilities = u()
 
     def get(self, endpoint: str) -> p.Result[FlextApiModels.Api.HttpResponse]:
         """Make authenticated GET request to OIC API."""
-        url = f"{settings.TapOracleOic.base_url.rstrip('/')}/{endpoint.lstrip('/')}"
+        url = f"{self.settings.TapOracleOic.base_url.rstrip('/')}/{endpoint.lstrip('/')}"
         headers_result = self._get_auth_headers()
         if headers_result.failure:
             return r[FlextApiModels.Api.HttpResponse].fail(
@@ -134,7 +139,7 @@ class FlextTapOracleOicClient:
         data: t.MappingKV[str, t.JsonMapping] | None = None,
     ) -> p.Result[FlextApiModels.Api.HttpResponse]:
         """Make authenticated POST request to OIC API."""
-        url = f"{settings.TapOracleOic.base_url.rstrip('/')}/{endpoint.lstrip('/')}"
+        url = f"{self.settings.TapOracleOic.base_url.rstrip('/')}/{endpoint.lstrip('/')}"
         headers_result = self._get_auth_headers()
         if headers_result.failure:
             return r[FlextApiModels.Api.HttpResponse].fail(
@@ -224,12 +229,13 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         """Initialize Oracle OIC tap with library composition."""
         super().__init__()
         self._tap_config = t.json_dict_adapter().validate_python(settings or {})
+        # NOTE (multi-agent): flat Singer config maps into the namespaced
+        # settings SSOT (settings.TapOracleOic.*, ADR-005); unknown keys ignored.
         self._oic_settings = FlextTapOracleOicSettings.model_validate(
-            self._tap_config,
+            {"TapOracleOic": self._tap_config},
             strict=validate_config,
         )
         self._client: FlextTapOracleOicClient | None = None
-        self._utilities = u()
 
     @property
     def oic_settings(self) -> FlextTapOracleOicSettings:
@@ -258,7 +264,9 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
                     default=3,
                 ),
             }
-            oic_config = FlextTapOracleOicSettings.model_validate(oic_config_data)
+            oic_config = FlextTapOracleOicSettings.model_validate({
+                "TapOracleOic": oic_config_data,
+            })
             authenticator = FlextOracleOicAuthenticator(settings=oic_config)
             self._client = FlextTapOracleOicClient(
                 settings=oic_config,
