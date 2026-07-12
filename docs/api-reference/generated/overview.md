@@ -11,7 +11,7 @@
 - Keywords: `data-extraction`, `enterprise`, `etl`, `flext`, `singer`, `tap`, `typed`
 - Main facades: _none_
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
-- Public symbol exports: `tap_oracle_oic`, `FlextTapOracleOicSettings`, `FlextTapOracleOicService`, `FlextTapOracleOicClient`, `main`, `FlextTapOracleOicProtocols`, `FlextOracleOicAuthenticator`, `FlextTapOracleOicModels`, `settings`, `FlextTapOracleOic` (+4 more)
+- Public symbol exports: `FlextTapOracleOicService`, `FlextTapOracleOicTypes`, `FlextTapOracleOicClient`, `FlextTapOracleOicCli`, `FlextTapOracleOicModels`, `FlextTapOracleOicProtocols`, `FlextTapOracleOicSettings`, `FlextTapOracleOic`, `settings`, `tap_oracle_oic` (+4 more)
 - Exported module shortcuts: _none_
 - Generated module pages: `8`
 

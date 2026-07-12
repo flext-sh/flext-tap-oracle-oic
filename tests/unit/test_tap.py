@@ -60,7 +60,9 @@ class TestsFlextTapOracleOicTap:
             msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
         assert tap.oic_settings.TapOracleOic.base_url == settings["base_url"]
-        assert tap.oic_settings.TapOracleOic.oauth_client_id == settings["oauth_client_id"]
+        assert (
+            tap.oic_settings.TapOracleOic.oauth_client_id == settings["oauth_client_id"]
+        )
 
     def test_discover_streams(self) -> None:
         """Test method."""

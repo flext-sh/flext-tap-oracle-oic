@@ -111,7 +111,9 @@ class FlextTapOracleOicClient:
 
     def get(self, endpoint: str) -> p.Result[FlextApiModels.Api.HttpResponse]:
         """Make authenticated GET request to OIC API."""
-        url = f"{self.settings.TapOracleOic.base_url.rstrip('/')}/{endpoint.lstrip('/')}"
+        url = (
+            f"{self.settings.TapOracleOic.base_url.rstrip('/')}/{endpoint.lstrip('/')}"
+        )
         headers_result = self._get_auth_headers()
         if headers_result.failure:
             return r[FlextApiModels.Api.HttpResponse].fail(
@@ -139,7 +141,9 @@ class FlextTapOracleOicClient:
         data: t.MappingKV[str, t.JsonMapping] | None = None,
     ) -> p.Result[FlextApiModels.Api.HttpResponse]:
         """Make authenticated POST request to OIC API."""
-        url = f"{self.settings.TapOracleOic.base_url.rstrip('/')}/{endpoint.lstrip('/')}"
+        url = (
+            f"{self.settings.TapOracleOic.base_url.rstrip('/')}/{endpoint.lstrip('/')}"
+        )
         headers_result = self._get_auth_headers()
         if headers_result.failure:
             return r[FlextApiModels.Api.HttpResponse].fail(
