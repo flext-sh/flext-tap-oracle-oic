@@ -222,7 +222,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 self,
                 context: t.JsonMapping | None = None,
             ) -> Iterator[t.JsonMapping]:
-                """The records from OIC API.
+                """Yield the records from OIC API.
 
                 Args:
                     context: Optional context for record extraction.
@@ -404,7 +404,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 self,
                 response: m.Api.HttpResponse,
             ) -> str:
-                """A stable identifier for response logging."""
+                """Return a stable identifier for response logging."""
                 request_id_raw: p.AttributeProbe = response.request_id
                 if isinstance(request_id_raw, str) and request_id_raw:
                     return request_id_raw
