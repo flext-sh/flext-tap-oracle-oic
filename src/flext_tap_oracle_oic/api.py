@@ -1,6 +1,6 @@
 """FLEXT service orchestrator for tap-oracle-oic.
 
-from flext_tap_oracle_oic.utilities import u
+from flext_tap_oracle_oic import u
 Thin facade — all infrastructure from ``FlextMeltanoTapServiceBase`` via MRO.
 The tap uses FlextMeltanoAbstractions (CLI dispatch), not singer_sdk.Tap.
 
