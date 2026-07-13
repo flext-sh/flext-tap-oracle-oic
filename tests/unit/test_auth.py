@@ -15,7 +15,7 @@ from typing import cast
 from unittest.mock import MagicMock
 
 import pytest
-from flext_tests import r
+from flext_tests import r, tm
 
 from flext_cli import u as cli_u
 from flext_tap_oracle_oic.tap import FlextOracleOicAuthenticator
@@ -62,7 +62,7 @@ class TestsFlextTapOracleOicAuth:
     ) -> None:
         """Test authenticator stores settings."""
         assert authenticator.settings is mock_config
-        assert authenticator._access_token is None
+        tm.that(authenticator._access_token, none=True)
 
     def test_get_access_token_success(
         self,
@@ -82,9 +82,9 @@ class TestsFlextTapOracleOicAuth:
             mock_response,
         )
         result = authenticator.get_access_token()
-        assert result.success
-        assert result.value == "test_token_123"
-        assert authenticator._access_token == "test_token_123"
+        tm.ok(result)
+        tm.that(result.value, eq="test_token_123")
+        tm.that(authenticator._access_token, eq="test_token_123")
 
     def test_get_access_token_http_failure(
         self,
@@ -95,9 +95,9 @@ class TestsFlextTapOracleOicAuth:
             "Connection refused",
         )
         result = authenticator.get_access_token()
-        assert result.failure
-        assert result.error is not None
-        assert "OAuth2 request failed" in result.error
+        tm.fail(result)
+        tm.that(result.error, none=False)
+        tm.that(result.error, has="OAuth2 request failed")
 
     def test_get_access_token_bad_status_code(
         self,
@@ -113,9 +113,9 @@ class TestsFlextTapOracleOicAuth:
             mock_response,
         )
         result = authenticator.get_access_token()
-        assert result.failure
-        assert result.error is not None
-        assert "status" in result.error
+        tm.fail(result)
+        tm.that(result.error, none=False)
+        tm.that(result.error, has="status")
 
     def test_get_access_token_empty_body(
         self,
@@ -131,8 +131,8 @@ class TestsFlextTapOracleOicAuth:
             mock_response,
         )
         result = authenticator.get_access_token()
-        assert result.failure
-        assert result.error is not None
+        tm.fail(result)
+        tm.that(result.error, none=False)
 
     def test_get_access_token_missing_token_in_response(
         self,
@@ -148,8 +148,8 @@ class TestsFlextTapOracleOicAuth:
             mock_response,
         )
         result = authenticator.get_access_token()
-        assert result.failure
-        assert result.error is not None
+        tm.fail(result)
+        tm.that(result.error, none=False)
 
     def test_get_access_token_string_body(
         self,
@@ -168,8 +168,8 @@ class TestsFlextTapOracleOicAuth:
             mock_response,
         )
         result = authenticator.get_access_token()
-        assert result.success
-        assert result.value == "string_body_token"
+        tm.ok(result)
+        tm.that(result.value, eq="string_body_token")
 
     def test_get_access_token_exception_handling(
         self,
@@ -180,17 +180,17 @@ class TestsFlextTapOracleOicAuth:
             "Unexpected error",
         )
         result = authenticator.get_access_token()
-        assert result.failure
-        assert result.error is not None
-        assert "OAuth2 authentication failed" in result.error
+        tm.fail(result)
+        tm.that(result.error, none=False)
+        tm.that(result.error, has="OAuth2 authentication failed")
 
     def test_token_request_data_structure(self, mock_config: MagicMock) -> None:
         """Test token request data has correct structure."""
         data = mock_config.get_token_request_data()
-        assert data["grant_type"] == "client_credentials"
-        assert data["client_id"] == "test_client_id"
-        assert data["client_secret"] == "test_client_secret"
-        assert data["audience"] == "urn:opc:resource:consumer:all"
+        tm.that(data["grant_type"], eq="client_credentials")
+        tm.that(data["client_id"], eq="test_client_id")
+        tm.that(data["client_secret"], eq="test_client_secret")
+        tm.that(data["audience"], eq="urn:opc:resource:consumer:all")
 
     def test_client_credentials_encoding(self) -> None:
         """Test client credentials base64 encoding logic."""
@@ -198,7 +198,7 @@ class TestsFlextTapOracleOicAuth:
         client_secret = "test_client_secret"
         expected = base64.b64encode(f"{client_id}:{client_secret}".encode()).decode()
         actual = base64.b64encode(f"{client_id}:{client_secret}".encode()).decode()
-        assert actual == expected
+        tm.that(actual, eq=expected)
 
 
 if __name__ == "__main__":

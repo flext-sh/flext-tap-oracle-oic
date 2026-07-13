@@ -15,11 +15,10 @@ from collections.abc import (
 )
 
 import pytest
+from flext_tests import tm
 
 from flext_tap_oracle_oic.tap import FlextTapOracleOic
-from tests.constants import c
-from tests.models import m
-from tests.typings import t
+from tests import c, m, t
 
 
 def _build_tap_instance() -> m.Meltano.TapInstance:
@@ -37,9 +36,9 @@ def _build_tap_instance() -> m.Meltano.TapInstance:
 
 def _discover_stream_names(tap: FlextTapOracleOic) -> t.StrSequence:
     result = tap.discover_streams(tap_instance=_build_tap_instance())
-    assert result.success
+    tm.ok(result)
     value = result.value
-    assert isinstance(value, Mapping)
+    tm.that(value, is_=Mapping)
     streams = value["streams"]
     assert isinstance(streams, Sequence) and not isinstance(streams, str)
     return [str(s["tap_stream_id"]) for s in streams if isinstance(s, Mapping)]
@@ -60,7 +59,7 @@ class TestsFlextTapOracleOicTapCore:
         if tap.name != "tap-oracle-oic":
             msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
-        assert tap.oic_settings.TapOracleOic.base_url == settings["base_url"]
+        tm.that(tap.oic_settings.TapOracleOic.base_url, eq=settings["base_url"])
         assert (
             tap.oic_settings.TapOracleOic.oauth_client_id == settings["oauth_client_id"]
         )
