@@ -243,12 +243,12 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
 
     @property
     def oic_settings(self) -> FlextTapOracleOicSettings:
-        """Return typed OIC settings."""
+        """The typed OIC settings."""
         return self._oic_settings
 
     @property
     def client(self) -> FlextTapOracleOicClient:
-        """Get Oracle OIC client instance using flext-oracle-oic."""
+        """Oracle OIC client instance using flext-oracle-oic."""
         if self._client is None:
             config_dict = self._tap_config
             oic_config_data: t.JsonMapping = {
