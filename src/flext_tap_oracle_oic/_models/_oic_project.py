@@ -6,14 +6,12 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated
+from collections.abc import MutableSequence
+from datetime import datetime
+from typing import Annotated
 
 from flext_oracle_oic import m
 from flext_tap_oracle_oic import t, u
-
-if TYPE_CHECKING:
-    from collections.abc import MutableSequence
-    from datetime import datetime
 
 
 class FlextTapOracleOicProject(m):

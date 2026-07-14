@@ -6,12 +6,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from flext_api import FlextApiModels
 
 from flext_tap_oracle_oic import c, m, t, u
-
-if TYPE_CHECKING:
-    from flext_api import FlextApiModels
 
 
 def _as_oic_envelope(

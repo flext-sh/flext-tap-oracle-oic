@@ -11,13 +11,13 @@ from collections.abc import (
     Iterator,
     Mapping,
 )
-from typing import TYPE_CHECKING, Annotated, ClassVar
+from typing import Annotated, ClassVar
 
 from flext_api import FlextApi, FlextApiSettings
 
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import m
-from flext_tap_oracle_oic import c, e, t, u
+from flext_tap_oracle_oic import c, e, p, settings, t, u
 from flext_tap_oracle_oic._models._activity import (
     OicActivityRecord as _OicActivityRecord,
 )
@@ -63,9 +63,6 @@ from flext_tap_oracle_oic._models._stream_config import (
     OicStreamConfiguration as _OicStreamConfiguration,
 )
 from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator
-
-if TYPE_CHECKING:
-    from flext_tap_oracle_oic import p
 
 
 class FlextTapOracleOicModels(FlextMeltanoModels, m):
@@ -167,7 +164,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 Base URL with appropriate OIC API endpoint for stream type.
 
                 """
-                base_url_raw = self.settings.get("base_url") or self.settings.get(
+                base_url_raw = settings.get("base_url") or settings.get(
                     "oic_url",
                     "",
                 )
@@ -179,7 +176,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 if validation_result.failure:
                     msg = f"Invalid OIC endpoint: {validation_result.error}"
                     raise ValueError(msg)
-                region = self.settings.get("region")
+                region = settings.get("region")
                 if not region and "integration.ocp.oraclecloud.com" in base_url:
                     region_match = c.TapOracleOic.OCI_REGION_RE.search(base_url)
                     region = region_match.group(1) if region_match else "us-ashburn-1"
@@ -214,7 +211,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 Paginator instance configured with settings from tap settings.
 
                 """
-                page_size_val = self.settings.get("page_size", 100)
+                page_size_val = settings.get("page_size", 100)
                 page_size = page_size_val if isinstance(page_size_val, int) else 100
                 return FlextTapOracleOicPaginator(start_value=0, page_size=page_size)
 
@@ -250,22 +247,22 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
                 """
                 params: t.MutableJsonMapping = {}
-                page_size_val = self.settings.get("page_size", 100)
+                page_size_val = settings.get("page_size", 100)
                 page_size = page_size_val if isinstance(page_size_val, int) else 100
                 params["limit"] = min(page_size, 1000)
                 params["offset"] = next_page_token or 0
-                instance_id = self.settings.get("instance_id")
+                instance_id = settings.get("instance_id")
                 if instance_id:
                     params["integrationInstance"] = instance_id
-                sort_field = self.settings.get("sort_field")
+                sort_field = settings.get("sort_field")
                 if sort_field:
                     sort_direction = (
-                        "desc" if self.settings.get("sort_desc", False) else "asc"
+                        "desc" if settings.get("sort_desc", False) else "asc"
                     )
                     params["orderBy"] = f"{sort_field}:{sort_direction}"
                 elif self.default_sort is not None:
                     params["orderBy"] = self.default_sort
-                custom_filter = self.settings.get("custom_filter")
+                custom_filter = settings.get("custom_filter")
                 if custom_filter:
                     params["q"] = custom_filter
                 if (
@@ -275,7 +272,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 ):
                     start_date = context["starting_replication_value"]
                     params[f"{self.replication_key}>="] = start_date
-                select_fields = self.settings.get("select_fields")
+                select_fields = settings.get("select_fields")
                 if select_fields:
                     try:
                         field_list = t.strict_str_sequence_adapter().validate_python(
@@ -313,7 +310,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                         "Error parsing response from %s",
                         response_url_err,
                     )
-                    if self.settings.get("fail_on_parsing_errors", True):
+                    if settings.get("fail_on_parsing_errors", True):
                         raise
                     return
                 yield from records

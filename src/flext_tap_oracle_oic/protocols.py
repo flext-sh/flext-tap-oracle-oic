@@ -12,15 +12,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
+
+from flext_api import FlextApiModels
 
 from flext_meltano import p as meltano_p
 from flext_oracle_oic import FlextOracleOicProtocols
-
-if TYPE_CHECKING:
-    from flext_api import FlextApiModels
-
-    from flext_tap_oracle_oic import t
+from flext_tap_oracle_oic import t
 
 
 class FlextTapOracleOicProtocols(meltano_p, FlextOracleOicProtocols):
