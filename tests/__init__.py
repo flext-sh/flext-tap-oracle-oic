@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     )
     from tests.protocols import (
         TestsFlextTapOracleOicProtocols as TestsFlextTapOracleOicProtocols,
-        p as p,
+        p,
     )
     from tests.typings import (
         TestsFlextTapOracleOicTypes as TestsFlextTapOracleOicTypes,
@@ -30,7 +30,7 @@ if TYPE_CHECKING:
     )
     from tests.utilities import (
         TestsFlextTapOracleOicUtilities as TestsFlextTapOracleOicUtilities,
-        u as u,
+        u,
     )
 
 _LAZY_IMPORTS = build_lazy_import_map(
