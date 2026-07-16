@@ -911,7 +911,7 @@ class FlextTapOracleOicModelsStreams:
 
 
 # Stream registry - maps stream names to their classes
-ALL_STREAMS: t.MappingKV[str, type[m.TapOracleOic.OICBaseStream]] = {
+ALL_STREAMS: t.MappingKV[str, type[p.TapOracleOic.OICBaseStream]] = {
     "integrations": FlextTapOracleOicModelsStreams.IntegrationsStream,
     "connections": FlextTapOracleOicModelsStreams.ConnectionsStream,
     "packages": FlextTapOracleOicModelsStreams.PackagesStream,

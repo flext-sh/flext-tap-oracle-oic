@@ -19,7 +19,7 @@ from flext_tap_oracle_oic.tap import FlextTapOracleOic as TapOracleOic
 from tests import c, m, t
 
 
-def _build_tap_instance() -> m.Meltano.TapInstance:
+def _build_tap_instance() -> p.Meltano.TapInstance:
     return m.Meltano.TapInstance(
         tap_type="oracle-oic",
         settings=m.Meltano.TapConfig(

@@ -13,7 +13,7 @@ from flext_tap_oracle_oic import c, m, t, u
 
 def _as_oic_envelope(
     value: t.JsonMapping,
-) -> m.TapOracleOic.OicEnvelope | None:
+) -> p.TapOracleOic.OicEnvelope | None:
     try:
         return m.TapOracleOic.OicEnvelope.model_validate(value, strict=True)
     except c.ValidationError:

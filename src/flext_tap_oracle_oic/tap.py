@@ -271,7 +271,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             )
         return self._client
 
-    def discover_oic_streams(self) -> t.SequenceOf[m.TapOracleOic.OICBaseStream]:
+    def discover_oic_streams(self) -> t.SequenceOf[p.TapOracleOic.OICBaseStream]:
         """Discover OIC stream class instances for this tap."""
         logger.info("Discovering Oracle OIC streams using consolidated streams")
         stream_names = list(c.TapOracleOic.CORE_STREAMS)
@@ -293,7 +293,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         """Discover stream catalog matching FlextMeltanoAbstractions contract."""
         _ = tap_instance
         streams = self.discover_oic_streams()
-        catalog_entries: list[m.Meltano.SingerCatalogEntry] = []
+        catalog_entries: list[p.Meltano.SingerCatalogEntry] = []
         for stream in streams:
             stream_name = str(getattr(stream, "name", c.IDENTIFIER_UNKNOWN))
             stream_schema_raw: p.AttributeProbe = getattr(stream, "stream_schema", {})
