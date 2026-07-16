@@ -18,7 +18,7 @@ import pytest
 from flext_tests import tm
 
 from flext_tap_oracle_oic.tap import FlextTapOracleOic
-from tests import c, m, t
+from tests import c, m, p, t
 
 
 def _build_tap_instance() -> p.Meltano.TapInstance:
