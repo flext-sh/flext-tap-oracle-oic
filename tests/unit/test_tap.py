@@ -86,7 +86,7 @@ class TestsFlextTapOracleOicTap:
         """Test method."""
         "Test settings validation rejects invalid field types."
 
-        adapter: m.TypeAdapter[t.PositiveInt] = m.TypeAdapter(t.PositiveInt)
+        adapter: p.TypeAdapter[t.PositiveInt] = m.TypeAdapter(t.PositiveInt)
         with pytest.raises(c.ValidationError):
             adapter.validate_python(-1)
 

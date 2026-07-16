@@ -173,7 +173,7 @@ class TestsFlextTapOracleOicTapCore:
 
     def test_missing_required_fields_warning(self) -> None:
         """Test that validation rejects invalid field types."""
-        adapter: m.TypeAdapter[t.PositiveInt] = m.TypeAdapter(t.PositiveInt)
+        adapter: p.TypeAdapter[t.PositiveInt] = m.TypeAdapter(t.PositiveInt)
         with pytest.raises(c.ValidationError):
             adapter.validate_python(-1)
 

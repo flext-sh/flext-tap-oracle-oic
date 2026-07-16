@@ -291,7 +291,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
             def parse_response(
                 self,
-                response: m.Api.HttpResponse,
+                response: p.Api.HttpResponse,
             ) -> Iterator[t.JsonMapping]:
                 """Parse Oracle OIC API response and yield records with validation.
 
@@ -317,7 +317,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
             def _parse_response_records(
                 self,
-                response: m.Api.HttpResponse,
+                response: p.Api.HttpResponse,
             ) -> t.SequenceOf[t.JsonMapping]:
                 """Parse one response into enriched records."""
                 if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
@@ -383,7 +383,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
             def _get_response_data(
                 self,
-                response: m.Api.HttpResponse,
+                response: p.Api.HttpResponse,
             ) -> t.JsonMapping | t.JsonList:
                 """Normalize flext-api response bodies to OIC payload structures."""
                 match response.body:
@@ -399,7 +399,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
             def _get_response_identifier(
                 self,
-                response: m.Api.HttpResponse,
+                response: p.Api.HttpResponse,
             ) -> str:
                 """Return a stable identifier for response logging."""
                 request_id_raw: p.AttributeProbe = response.request_id
@@ -424,7 +424,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
             def _handle_response_error(
                 self,
-                response: m.Api.HttpResponse,
+                response: p.Api.HttpResponse,
             ) -> None:
                 """Handle Oracle OIC API response errors with proper categorization."""
                 error_message: t.JsonValue | None = None
@@ -518,7 +518,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
             def _track_response_metrics(
                 self,
-                response: m.Api.HttpResponse,
+                response: p.Api.HttpResponse,
                 data: t.JsonMapping | t.JsonList,
             ) -> None:
                 """Track response metrics for monitoring and optimization."""

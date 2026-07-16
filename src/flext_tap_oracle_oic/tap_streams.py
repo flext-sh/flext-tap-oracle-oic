@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from flext_api import FlextApiModels
 
-from flext_tap_oracle_oic import c, m, t, u
+from flext_tap_oracle_oic import c, m, p, t, u
 
 
 def _as_oic_envelope(
