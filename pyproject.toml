@@ -21,15 +21,15 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-    "flext-api @ git+https://github.com/flext-sh/flext-api.git@0.12.0-dev",
-    "flext-cli @ git+https://github.com/flext-sh/flext-cli.git@0.12.0-dev",
-    "flext-core @ git+https://github.com/flext-sh/flext-core.git@0.12.0-dev",
-    "flext-meltano @ git+https://github.com/flext-sh/flext-meltano.git@0.12.0-dev",
-    "flext-oracle-oic @ git+https://github.com/flext-sh/flext-oracle-oic.git@0.12.0-dev",
-    "pydantic-core>=2.46.3",
-    "pydantic-settings>=2.14.0",
-    "pydantic>=2.13.3",
-    "requests>=2.33.1",
+  "flext-api @ git+https://github.com/flext-sh/flext-api.git@0.12.0-dev",
+  "flext-cli @ git+https://github.com/flext-sh/flext-cli.git@0.12.0-dev",
+  "flext-core @ git+https://github.com/flext-sh/flext-core.git@0.12.0-dev",
+  "flext-meltano @ git+https://github.com/flext-sh/flext-meltano.git@0.12.0-dev",
+  "flext-oracle-oic @ git+https://github.com/flext-sh/flext-oracle-oic.git@0.12.0-dev",
+  "pydantic-core>=2.46.3",
+  "pydantic-settings>=2.14.0",
+  "pydantic>=2.13.3",
+  "requests>=2.33.1",
 ]
 description = "FLEXT Tap Oracle OIC - Singer Tap for Oracle Integration Cloud"
 keywords = [ "data-extraction", "enterprise", "etl", "flext", "singer", "tap", "typed" ]
@@ -220,27 +220,28 @@ project-excludes = [
   "**/typings/**",
   "**/vendor/**",
   "**/venv/**",
-  ".flext-deps/**",
   ".venv/**",
   "typings/**",
   "vendor/**",
 ]
-project-includes = [ "src/**/*.py*", "tests/**/*.py*" ]
+project-includes = [
+  "examples/**/*.py*",
+  "src/**/*.py*",
+  "tests/**/*.py*",
+]
 python-interpreter-path = "../.venv/bin/python"
 python-version = "3.13"
 search-path = [
   ".",
-  "../flext-cli/examples",
+  "../flext-api/src",
+  "../flext-auth/src",
   "../flext-cli/src",
-  "../flext-core/examples",
-  "../flext-core/scripts",
   "../flext-core/src",
   "../flext-infra/src",
-  "../flext-infra/tmp_flow_test",
-  "../flext-meltano/examples",
   "../flext-meltano/src",
   "../flext-oracle-oic/src",
   "../flext-tests/src",
+  "../flext-web/src",
   "src",
 ]
 use-ignore-files = false
