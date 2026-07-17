@@ -11,11 +11,13 @@ from __future__ import annotations
 
 import re
 from enum import StrEnum, unique
-from typing import ClassVar, Final
+from typing import TYPE_CHECKING, ClassVar, Final
 
 from flext_meltano import c
 from flext_oracle_oic import FlextOracleOicConstants
-from flext_tap_oracle_oic import t
+
+if TYPE_CHECKING:
+    from flext_tap_oracle_oic import t
 
 
 class FlextTapOracleOicConstants(c, FlextOracleOicConstants):

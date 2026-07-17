@@ -6,12 +6,14 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Annotated, ClassVar, Self
+from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
 from flext_meltano import FlextMeltanoModels
 from flext_tap_oracle_oic import c, t, u
 from flext_tap_oracle_oic._models._helpers import validate_entity_identity_and_port
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 class OicConnectionEntity(FlextMeltanoModels.Entity):

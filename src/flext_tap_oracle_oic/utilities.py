@@ -7,15 +7,18 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    MutableMapping,
-)
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 from urllib.parse import urljoin, urlparse
 
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_oic import u
 from flext_tap_oracle_oic import c, p, r, t
+
+if TYPE_CHECKING:
+    from collections.abc import (
+        MutableMapping,
+    )
 
 
 class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
