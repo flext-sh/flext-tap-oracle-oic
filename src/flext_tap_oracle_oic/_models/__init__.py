@@ -1,6 +1,7 @@
-# AUTO-GENERATED FILE — Regenerate with: make gen
-"""Models package."""
+"""flext-tap-oracle-oic private config/setting models package."""
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ()
+from .config import FlextTapOracleOicConfigModels
+
+__all__: tuple[str, ...] = ("FlextTapOracleOicConfigModels",)

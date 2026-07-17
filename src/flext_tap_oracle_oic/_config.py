@@ -1,8 +1,10 @@
-"""FlextTapOracleOicConfig — frozen config singleton for flext-tap-oracle-oic (ADR-005 §7).
+"""FlextTapOracleOicConfig — frozen, validated config singleton for flext-tap-oracle-oic.
 
-Model-less: business rules live in ``config/*.yaml`` under the ``TapOracleOic:`` key and
-are exposed through the open ``config.TapOracleOic`` namespace (``extra="allow"``), with
-no per-domain model. Access is ``config.TapOracleOic.<domain>[<key>...]``.
+Every ``config/*.yaml`` file is auto-discovered and deep-merged at first
+``fetch_global`` call (model-less, ``extra="allow"`` at the FlextMeltanoConfig base).
+The flat YAML is then validated into the pure-Pydantic ``_models.config``
+shapes and exposed as typed domain objects under ``config.TapOracleOic`` — never a
+model-less dict subscript.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -10,21 +12,28 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict
+from functools import cached_property
+from pathlib import Path
+from typing import ClassVar
 
 from flext_meltano import FlextMeltanoConfig
-
-
-class _TapOracleOicNamespace(BaseModel):
-    """Open, frozen namespace exposing every ``config/*.yaml`` domain model-less."""
-
-    model_config = ConfigDict(extra="allow", frozen=True)
+from flext_tap_oracle_oic._models.config import FlextTapOracleOicConfigModels
 
 
 class FlextTapOracleOicConfig(FlextMeltanoConfig):
-    """TapOracleOic config auto-loaded model-less from ``config/*.yaml``."""
+    """TapOracleOic config auto-loaded from ``config/*.yaml`` and validated via models."""
 
-    TapOracleOic: _TapOracleOicNamespace = _TapOracleOicNamespace()
+    CONFIG_DIR: ClassVar[str] = str(
+        Path(__file__).resolve().parents[2] / "config",
+    )
+
+    @cached_property
+    def TapOracleOic(self) -> FlextTapOracleOicConfigModels.TapOracleOic:  # noqa: N802
+        """Validated ``TapOracleOic`` business-rule config namespace."""
+        root = FlextTapOracleOicConfigModels.Root.model_validate(
+            dict(self.model_extra or {}),
+        )
+        return root.TapOracleOic
 
 
 config: FlextTapOracleOicConfig = FlextTapOracleOicConfig.fetch_global()

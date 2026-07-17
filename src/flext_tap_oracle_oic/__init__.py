@@ -19,6 +19,10 @@ from flext_tap_oracle_oic.__version__ import (
 
 if TYPE_CHECKING:
     from flext_oracle_oic import d as d, e as e, h as h, r as r, s as s, x as x
+    from flext_tap_oracle_oic._config import (
+        FlextTapOracleOicConfig as FlextTapOracleOicConfig,
+        config as config,
+    )
     from flext_tap_oracle_oic._settings import (
         FlextTapOracleOicSettings as FlextTapOracleOicSettings,
         settings as settings,
@@ -58,6 +62,7 @@ if TYPE_CHECKING:
     )
 _LAZY_IMPORTS = build_lazy_import_map(
     {
+        "._config": ("FlextTapOracleOicConfig", "config"),
         "._settings": ("FlextTapOracleOicSettings", "settings"),
         ".api": (
             "FlextTapOracleOicService",
@@ -109,6 +114,7 @@ __all__: tuple[str, ...] = (
     "FlextTapOracleOic",
     "FlextTapOracleOicCli",
     "FlextTapOracleOicClient",
+    "FlextTapOracleOicConfig",
     "FlextTapOracleOicConstants",
     "FlextTapOracleOicModels",
     "FlextTapOracleOicProtocols",
@@ -125,6 +131,7 @@ __all__: tuple[str, ...] = (
     "__version__",
     "__version_info__",
     "c",
+    "config",
     "d",
     "e",
     "h",

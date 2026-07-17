@@ -1,0 +1,31 @@
+TapOracleOic:
+  api:
+    base_url: "https://localhost.integration.ocp.oraclecloud.com"
+    request_timeout: 30
+    max_retries: 3
+    page_size: 50
+    verify_ssl: true
+    http_error_status_threshold: 400
+  streams:
+    core:
+      - integrations
+      - connections
+      - packages
+      - lookups
+      - libraries
+    infrastructure:
+      - certificates
+      - adapters
+  pagination:
+    max_page_size: 1000
+    min_page_size: 10
+    default_start: 0
+    default_page_size: 100
+  thresholds:
+    min_token_expiry_buffer: 60
+    slow_response_threshold: 5.0
+    response_time_history_size: 10
+    min_response_samples: 5
+  percentages:
+    min: 0.0
+    max: 100.0
