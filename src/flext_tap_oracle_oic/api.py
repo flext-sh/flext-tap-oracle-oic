@@ -15,7 +15,7 @@ from typing import Annotated, Never, override
 from flext_meltano.services.consumer_bases.tap_service_base import (
     FlextMeltanoTapServiceBase,
 )
-from flext_tap_oracle_oic import t, u
+from flext_tap_oracle_oic import p, t, u
 
 
 class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
@@ -29,7 +29,7 @@ class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
     @override
     def create_tap_instance(
         self,
-        settings: t.JsonMapping | None = None,
+        settings: p.Settings | t.JsonMapping | None = None,
     ) -> Never:
         """Not supported — use FlextTapOracleOic directly."""
         msg = "tap-oracle-oic uses CLI dispatch, not singer_sdk.Tap"
