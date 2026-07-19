@@ -83,9 +83,11 @@ class FlextTapOracleOicPaginator:
         if envelope is None:
             return None
         if envelope.items is not None:
-            return envelope.items
+            items: t.SequenceOf[t.JsonMapping] = envelope.items
+            return items
         if envelope.data is not None:
-            return envelope.data
+            payload: t.SequenceOf[t.JsonMapping] = envelope.data
+            return payload
         return None
 
     def _track_response_time(self, response_time: float) -> None:
