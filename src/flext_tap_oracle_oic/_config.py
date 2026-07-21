@@ -28,7 +28,7 @@ class FlextTapOracleOicConfig(FlextMeltanoConfig):
     )
 
     @cached_property
-    def TapOracleOic(self) -> FlextTapOracleOicConfigModels.TapOracleOic:  # noqa: N802
+    def TapOracleOic(self) -> FlextTapOracleOicConfigModels.TapOracleOic:
         """Validated ``TapOracleOic`` business-rule config namespace."""
         root = FlextTapOracleOicConfigModels.Root.model_validate(
             dict(self.model_extra or {}),

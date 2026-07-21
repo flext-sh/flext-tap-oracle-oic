@@ -7,25 +7,13 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import sys
-from collections.abc import (
-    Mapping,
-)
+from collections.abc import Mapping
 from typing import ClassVar, override
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
-
 from flext_cli import cli
 from flext_meltano.services.abstractions import FlextMeltanoAbstractions
-from flext_tap_oracle_oic import (
-    FlextTapOracleOicSettings,
-    c,
-    m,
-    p,
-    r,
-    settings,
-    t,
-    u,
-)
+from flext_tap_oracle_oic import FlextTapOracleOicSettings, c, m, p, r, settings, t, u
 from flext_tap_oracle_oic._models.streams import ALL_STREAMS
 
 logger = u.fetch_logger(__name__)

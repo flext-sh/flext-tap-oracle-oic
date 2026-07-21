@@ -16,9 +16,7 @@ from flext_oracle_oic import u
 from flext_tap_oracle_oic import c, p, r, t
 
 if TYPE_CHECKING:
-    from collections.abc import (
-        MutableMapping,
-    )
+    from collections.abc import MutableMapping
 
 
 class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):

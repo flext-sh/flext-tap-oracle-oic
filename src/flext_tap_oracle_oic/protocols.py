@@ -19,7 +19,6 @@ from flext_oracle_oic import FlextOracleOicProtocols
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels
-
     from flext_tap_oracle_oic import t
 
 

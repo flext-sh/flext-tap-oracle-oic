@@ -7,14 +7,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Iterator,
-    Mapping,
-)
+from collections.abc import Iterator, Mapping
 from typing import Annotated, ClassVar
 
 from flext_api import FlextApi, FlextApiSettings
-
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import m
 from flext_tap_oracle_oic import c, e, p, settings, t, u
