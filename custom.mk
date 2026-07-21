@@ -1,25 +1,13 @@
-# SINGER TAP CONFIGURATION
-TAP_CONFIG ?= config.json
-TAP_CATALOG ?= catalog.json
-TAP_STATE ?= state.json
-# SINGER TAP OPERATIONS
-.PHONY: discover run catalog sync validate-config test-singer
-discover: ## Run tap discovery mode
-	$(POETRY) run tap-oracle-oic --config $(TAP_CONFIG) --discover > $(TAP_CATALOG)
-run: ## Run tap extraction
-	$(POETRY) run tap-oracle-oic --config $(TAP_CONFIG) --catalog $(TAP_CATALOG) --state $(TAP_STATE)
-catalog: discover ## Alias for discover
-sync: run ## Alias for run
-validate-config: ## Validate tap configuration
-	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "import json; json.load(open('$(TAP_CONFIG)'))"
-# OIC-SPECIFIC TARGETS
-.PHONY: oic-test oic-endpoints oic-auth
-oic-test: ## Test Oracle OIC API connectivity
-	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_tap_oracle_oic.client import test_connection; test_connection()"
-oic-endpoints: ## List available Oracle OIC endpoints
-	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_tap_oracle_oic.client import list_endpoints; list_endpoints()"
-oic-auth: ## Test Oracle OIC OAuth2 authentication
-	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_tap_oracle_oic.auth import test_auth; test_auth()"
-# PROJECT-SPECIFIC TEST TARGETS
-test-singer: ## Run Singer protocol tests
-	$(POETRY) run pytest $(TESTS_DIR) -m singer -v
+# Private project handlers for flext-tap-oracle-oic.
+# Strict extension: only `_custom_<verb>_<what>` handlers and `(pre|post)-<verb>[-<what>]`
+# hooks. Public targets, toolchain vars, .DEFAULT_GOAL, includes, and help are
+# invalid (base.mk owns those). Each handler maps to `make <verb> WHAT=<what>`.
+.PHONY: _custom_run_discover _custom_run_tap _custom_run_oic-test _custom_test_singer
+_custom_run_discover: ## make run WHAT=discover — tap discovery -> catalog.json
+	$(Q)$(POETRY) run tap-oracle-oic --config config.json --discover > catalog.json
+_custom_run_tap: ## make run WHAT=tap — tap extraction
+	$(Q)$(POETRY) run tap-oracle-oic --config config.json --catalog catalog.json --state state.json
+_custom_run_oic-test: ## make run WHAT=oic-test — test Oracle OIC connectivity
+	$(Q)PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_tap_oracle_oic.client import test_connection; test_connection()"
+_custom_test_singer: ## make test WHAT=singer — Singer protocol tests
+	$(Q)$(POETRY) run pytest $(TESTS_DIR) -m singer -v
