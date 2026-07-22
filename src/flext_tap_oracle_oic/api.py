@@ -22,14 +22,12 @@ class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
     """Orchestrator for tap-oracle-oic. CLI dispatch, not Singer SDK."""
 
     tap_name: Annotated[
-        t.NonEmptyStr,
-        u.Field(description="Canonical Singer tap identifier."),
+        t.NonEmptyStr, u.Field(description="Canonical Singer tap identifier.")
     ] = "tap-oracle-oic"
 
     @override
     def create_tap_instance(
-        self,
-        settings: p.Settings | t.JsonMapping | None = None,
+        self, settings: p.Settings | t.JsonMapping | None = None
     ) -> Never:
         """Not supported — use FlextTapOracleOic directly."""
         msg = "tap-oracle-oic uses CLI dispatch, not singer_sdk.Tap"

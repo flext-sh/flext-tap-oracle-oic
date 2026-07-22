@@ -29,97 +29,57 @@ class OicIntegrationEntity(FlextMeltanoModels.Entity):
                         "name": "Customer Synchronization",
                         "status": "ACTIVE",
                         "version": "01.00.0000",
-                    },
+                    }
                 ],
-            },
+            }
         )
     )
 
-    integration_id: Annotated[
-        str,
-        u.Field(
-            description="Unique integration identifier",
-        ),
-    ]
+    integration_id: Annotated[str, u.Field(description="Unique integration identifier")]
     name: Annotated[str, u.Field(..., description="Integration name")]
     description: Annotated[
-        str | None,
-        u.Field(None, description="Integration description"),
+        str | None, u.Field(None, description="Integration description")
     ]
     api_version: Annotated[
-        str,
-        u.Field(
-            ...,
-            description="Integration version from OIC API",
-        ),
+        str, u.Field(..., description="Integration version from OIC API")
     ]
     status: Annotated[
         c.TapOracleOic.OicIntegrationStatus,
-        u.Field(
-            ...,
-            description="Integration status",
-        ),
+        u.Field(..., description="Integration status"),
     ]
 
     # Temporal information
     created_date: Annotated[
-        datetime | None,
-        u.Field(
-            None,
-            description="Integration creation date",
-        ),
+        datetime | None, u.Field(None, description="Integration creation date")
     ]
     last_updated: Annotated[
-        datetime | None,
-        u.Field(
-            None,
-            description="Last update timestamp",
-        ),
+        datetime | None, u.Field(None, description="Last update timestamp")
     ]
     last_activated: Annotated[
-        datetime | None,
-        u.Field(
-            None,
-            description="Last activation timestamp",
-        ),
+        datetime | None, u.Field(None, description="Last activation timestamp")
     ]
 
     # Metadata
     package_id: Annotated[
-        str | None,
-        u.Field(None, description="Associated package ID"),
+        str | None, u.Field(None, description="Associated package ID")
     ]
     pattern: Annotated[
-        str | None,
-        u.Field(None, description="Integration pattern type"),
+        str | None, u.Field(None, description="Integration pattern type")
     ]
     style: Annotated[str | None, u.Field(None, description="Integration style")]
 
     # Runtime information
     execution_count: Annotated[
-        int | None,
-        u.Field(
-            None,
-            description="Total execution count",
-        ),
+        int | None, u.Field(None, description="Total execution count")
     ]
-    error_count: Annotated[
-        int | None,
-        u.Field(None, description="Total error count"),
-    ]
+    error_count: Annotated[int | None, u.Field(None, description="Total error count")]
     last_execution_time: Annotated[
-        datetime | None,
-        u.Field(
-            None,
-            description="Last execution timestamp",
-        ),
+        datetime | None, u.Field(None, description="Last execution timestamp")
     ]
 
     @u.computed_field()
     @property
-    def integration_health_summary(
-        self,
-    ) -> t.TapOracleOic.SectionedSummary:
+    def integration_health_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC integration health and performance summary."""
         error_rate = 0.0
         if self.execution_count and self.execution_count > 0:

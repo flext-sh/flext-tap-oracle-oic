@@ -9,15 +9,12 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Mapping,
-    Sequence,
-)
+from collections.abc import Mapping, Sequence
 
 import pytest
-from flext_tests import tm
 
 from flext_tap_oracle_oic.tap import FlextTapOracleOic
+from flext_tests import tm
 from tests import c, m, t
 
 
@@ -27,7 +24,7 @@ def _build_tap_instance() -> m.Meltano.TapInstance:
         settings=m.Meltano.TapConfig(
             tap_type="oracle-oic",
             connection_config={
-                "base_url": "https://test.integration.ocp.oraclecloud.com",
+                "base_url": "https://test.integration.ocp.oraclecloud.com"
             },
             stream_config={},
         ),
@@ -40,7 +37,8 @@ def _discover_stream_names(tap: FlextTapOracleOic) -> t.StrSequence:
     value = result.value
     tm.that(value, is_=Mapping)
     streams = value["streams"]
-    assert isinstance(streams, Sequence) and not isinstance(streams, str)
+    assert isinstance(streams, Sequence)
+    assert not isinstance(streams, str)
     return [str(s["tap_stream_id"]) for s in streams if isinstance(s, Mapping)]
 
 
@@ -233,8 +231,7 @@ class TestsFlextTapOracleOicTapCore:
             "include_artifacts": True,
         }
         tap = FlextTapOracleOic(
-            settings=sample_config_with_extended,
-            validate_config=False,
+            settings=sample_config_with_extended, validate_config=False
         )
         stream_names = _discover_stream_names(tap)
         if len(stream_names) != 5:

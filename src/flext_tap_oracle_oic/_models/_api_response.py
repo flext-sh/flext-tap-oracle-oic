@@ -29,80 +29,44 @@ class OicApiResponse(FlextMeltanoModels.Entity):
                         "total_count": 150,
                         "page_size": 50,
                         "page_number": 1,
-                    },
+                    }
                 ],
-            },
+            }
         )
     )
 
-    success: Annotated[
-        bool,
-        u.Field(..., description="Response success indicator"),
-    ]
+    success: Annotated[bool, u.Field(..., description="Response success indicator")]
     data: Annotated[
-        t.JsonMapping | None,
-        u.Field(
-            None,
-            description="Response data payload",
-        ),
+        t.JsonMapping | None, u.Field(None, description="Response data payload")
     ]
     total_count: Annotated[
-        int | None,
-        u.Field(
-            None,
-            description="Total entity count (for pagination)",
-        ),
+        int | None, u.Field(None, description="Total entity count (for pagination)")
     ]
-    page_size: Annotated[
-        int | None,
-        u.Field(None, description="Current page size"),
-    ]
-    page_number: Annotated[
-        int | None,
-        u.Field(None, description="Current page number"),
-    ]
+    page_size: Annotated[int | None, u.Field(None, description="Current page size")]
+    page_number: Annotated[int | None, u.Field(None, description="Current page number")]
 
     # Error information
-    error_code: Annotated[
-        str | None,
-        u.Field(None, description="Error code if failed"),
-    ]
+    error_code: Annotated[str | None, u.Field(None, description="Error code if failed")]
     error_message: Annotated[
-        str | None,
-        u.Field(
-            None,
-            description="Error message if failed",
-        ),
+        str | None, u.Field(None, description="Error message if failed")
     ]
     error_details: Annotated[
         t.MappingKV[str, t.JsonMapping] | None,
-        u.Field(
-            None,
-            description="Detailed error information",
-        ),
+        u.Field(None, description="Detailed error information"),
     ]
 
     # Metadata
-    timestamp: Annotated[
-        datetime,
-        u.Field(
-            description="Response timestamp",
-        ),
-    ] = u.Field(default_factory=u.now)
-    api_version: Annotated[
-        str | None,
-        u.Field(None, description="OIC API version"),
-    ]
+    timestamp: Annotated[datetime, u.Field(description="Response timestamp")] = u.Field(
+        default_factory=u.now
+    )
+    api_version: Annotated[str | None, u.Field(None, description="OIC API version")]
     request_id: Annotated[
-        str | None,
-        u.Field(None, description="Request correlation ID"),
+        str | None, u.Field(None, description="Request correlation ID")
     ]
 
     @u.computed_field()
     @property
-    def api_response_summary(
-        self,
-    ) -> t.TapOracleOic.SectionedSummary:
+    def api_response_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC API response summary."""
         return {
             "response_status": {

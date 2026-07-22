@@ -68,43 +68,32 @@ if TYPE_CHECKING:
         FlextTapOracleOicModelsStreams as FlextTapOracleOicModelsStreams,
         th as th,
     )
-_LAZY_IMPORTS = build_lazy_import_map(
-    {
-        "._activity": ("OicActivityRecord",),
-        "._agent": ("OicAgentEntity",),
-        "._api_response": ("OicApiResponse",),
-        "._auth_config": ("OicAuthenticationConfig",),
-        "._connection": ("OicConnectionEntity",),
-        "._envelope": ("OicEnvelope",),
-        "._error_context": ("OicErrorContext",),
-        "._helpers": (
-            "require_entity_value",
-            "validate_entity_identity_and_port",
-            "validate_optional_port",
-        ),
-        "._integration": ("OicIntegrationEntity",),
-        "._metrics": ("OicMetricsRecord",),
-        "._oic_connection": ("FlextTapOracleOicConnection",),
-        "._oic_execution_summary": ("FlextTapOracleOicExecutionSummary",),
-        "._oic_integration": ("FlextTapOracleOicIntegration",),
-        "._oic_lookup": ("FlextTapOracleOicLookup",),
-        "._oic_monitoring": ("FlextTapOracleOicMonitoringRecord",),
-        "._oic_project": ("FlextTapOracleOicProject",),
-        "._oic_resource_metadata": ("FlextTapOracleOicResourceMetadata",),
-        "._package": ("OicPackageEntity",),
-        "._stream_config": ("OicStreamConfiguration",),
-        ".streams": (
-            "ALL_STREAMS",
-            "FlextTapOracleOicModelsStreams",
-            "th",
-        ),
-    },
-)
+_LAZY_IMPORTS = build_lazy_import_map({
+    "._activity": ("OicActivityRecord",),
+    "._agent": ("OicAgentEntity",),
+    "._api_response": ("OicApiResponse",),
+    "._auth_config": ("OicAuthenticationConfig",),
+    "._connection": ("OicConnectionEntity",),
+    "._envelope": ("OicEnvelope",),
+    "._error_context": ("OicErrorContext",),
+    "._helpers": (
+        "require_entity_value",
+        "validate_entity_identity_and_port",
+        "validate_optional_port",
+    ),
+    "._integration": ("OicIntegrationEntity",),
+    "._metrics": ("OicMetricsRecord",),
+    "._oic_connection": ("FlextTapOracleOicConnection",),
+    "._oic_execution_summary": ("FlextTapOracleOicExecutionSummary",),
+    "._oic_integration": ("FlextTapOracleOicIntegration",),
+    "._oic_lookup": ("FlextTapOracleOicLookup",),
+    "._oic_monitoring": ("FlextTapOracleOicMonitoringRecord",),
+    "._oic_project": ("FlextTapOracleOicProject",),
+    "._oic_resource_metadata": ("FlextTapOracleOicResourceMetadata",),
+    "._package": ("OicPackageEntity",),
+    "._stream_config": ("OicStreamConfiguration",),
+    ".streams": ("ALL_STREAMS", "FlextTapOracleOicModelsStreams", "th"),
+})
 
 
-install_lazy_exports(
-    __name__,
-    globals(),
-    _LAZY_IMPORTS,
-    publish_all=False,
-)
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, publish_all=False)

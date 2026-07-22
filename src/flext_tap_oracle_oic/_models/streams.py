@@ -17,9 +17,7 @@ from flext_tap_oracle_oic import m, p, t
 th = m
 
 
-def _properties_to_dict(
-    properties: p.TapOracleOic.PropertiesListLike,
-) -> t.JsonMapping:
+def _properties_to_dict(properties: p.TapOracleOic.PropertiesListLike) -> t.JsonMapping:
     return t.json_mapping_adapter().validate_python(properties.to_dict())
 
 
@@ -105,23 +103,17 @@ class FlextTapOracleOicModelsStreams:
                     ),
                     th.Meltano.SingerProperty(
                         "connections",
-                        th.Meltano.SingerArrayType(
-                            th.Meltano.SingerObjectType(),
-                        ),
+                        th.Meltano.SingerArrayType(th.Meltano.SingerObjectType()),
                         description="Used connections",
                     ),
                     th.Meltano.SingerProperty(
                         "endpoints",
-                        th.Meltano.SingerArrayType(
-                            th.Meltano.SingerObjectType(),
-                        ),
+                        th.Meltano.SingerArrayType(th.Meltano.SingerObjectType()),
                         description="Integration endpoints",
                     ),
                     th.Meltano.SingerProperty(
                         "trackingu.Fields",
-                        th.Meltano.SingerArrayType(
-                            th.Meltano.SingerStringType(),
-                        ),
+                        th.Meltano.SingerArrayType(th.Meltano.SingerStringType()),
                         description="Tracking fields",
                     ),
                     th.Meltano.SingerProperty(
@@ -154,8 +146,8 @@ class FlextTapOracleOicModelsStreams:
                         th.Meltano.SingerStringType(),
                         description="Folder ID",
                     ),
-                ),
-            ),
+                )
+            )
         )
 
     class ConnectionsStream(m.TapOracleOic.OICBaseStream):
@@ -176,9 +168,7 @@ class FlextTapOracleOicModelsStreams:
             _properties_to_dict(
                 th.Meltano.SingerPropertiesList(
                     th.Meltano.SingerProperty(
-                        "id",
-                        th.Meltano.SingerStringType(),
-                        description="Connection ID",
+                        "id", th.Meltano.SingerStringType(), description="Connection ID"
                     ),
                     th.Meltano.SingerProperty(
                         "name",
@@ -265,8 +255,8 @@ class FlextTapOracleOicModelsStreams:
                         th.Meltano.SingerBooleanType(),
                         description="Is locked",
                     ),
-                ),
-            ),
+                )
+            )
         )
 
     class PackagesStream(m.TapOracleOic.OICBaseStream):
@@ -286,9 +276,7 @@ class FlextTapOracleOicModelsStreams:
             _properties_to_dict(
                 th.Meltano.SingerPropertiesList(
                     th.Meltano.SingerProperty(
-                        "id",
-                        th.Meltano.SingerStringType(),
-                        description="Package ID",
+                        "id", th.Meltano.SingerStringType(), description="Package ID"
                     ),
                     th.Meltano.SingerProperty(
                         "name",
@@ -332,16 +320,12 @@ class FlextTapOracleOicModelsStreams:
                     ),
                     th.Meltano.SingerProperty(
                         "integrations",
-                        th.Meltano.SingerArrayType(
-                            th.Meltano.SingerObjectType(),
-                        ),
+                        th.Meltano.SingerArrayType(th.Meltano.SingerObjectType()),
                         description="Included integrations",
                     ),
                     th.Meltano.SingerProperty(
                         "connections",
-                        th.Meltano.SingerArrayType(
-                            th.Meltano.SingerObjectType(),
-                        ),
+                        th.Meltano.SingerArrayType(th.Meltano.SingerObjectType()),
                         description="Included connections",
                     ),
                     th.Meltano.SingerProperty(
@@ -354,8 +338,8 @@ class FlextTapOracleOicModelsStreams:
                         th.Meltano.SingerStringType(),
                         description="Project ID",
                     ),
-                ),
-            ),
+                )
+            )
         )
 
     class LookupsStream(m.TapOracleOic.OICBaseStream):
@@ -374,9 +358,7 @@ class FlextTapOracleOicModelsStreams:
             _properties_to_dict(
                 th.Meltano.SingerPropertiesList(
                     th.Meltano.SingerProperty(
-                        "name",
-                        th.Meltano.SingerStringType(),
-                        description="Lookup name",
+                        "name", th.Meltano.SingerStringType(), description="Lookup name"
                     ),
                     th.Meltano.SingerProperty(
                         "description",
@@ -384,9 +366,7 @@ class FlextTapOracleOicModelsStreams:
                         description="Lookup description",
                     ),
                     th.Meltano.SingerProperty(
-                        "type",
-                        th.Meltano.SingerStringType(),
-                        description="Lookup type",
+                        "type", th.Meltano.SingerStringType(), description="Lookup type"
                     ),
                     th.Meltano.SingerProperty(
                         "status",
@@ -433,8 +413,8 @@ class FlextTapOracleOicModelsStreams:
                         th.Meltano.SingerIntegerType(),
                         description="Usage count",
                     ),
-                ),
-            ),
+                )
+            )
         )
 
     class LibrariesStream(m.TapOracleOic.OICBaseStream):
@@ -453,9 +433,7 @@ class FlextTapOracleOicModelsStreams:
             _properties_to_dict(
                 th.Meltano.SingerPropertiesList(
                     th.Meltano.SingerProperty(
-                        "id",
-                        th.Meltano.SingerStringType(),
-                        description="Library ID",
+                        "id", th.Meltano.SingerStringType(), description="Library ID"
                     ),
                     th.Meltano.SingerProperty(
                         "name",
@@ -514,13 +492,11 @@ class FlextTapOracleOicModelsStreams:
                     ),
                     th.Meltano.SingerProperty(
                         "functions",
-                        th.Meltano.SingerArrayType(
-                            th.Meltano.SingerStringType(),
-                        ),
+                        th.Meltano.SingerArrayType(th.Meltano.SingerStringType()),
                         description="Available functions",
                     ),
-                ),
-            ),
+                )
+            )
         )
 
     class CertificatesStream(m.TapOracleOic.OICBaseStream):
@@ -603,8 +579,8 @@ class FlextTapOracleOicModelsStreams:
                         th.Meltano.SingerIntegerType(),
                         description="Usage count",
                     ),
-                ),
-            ),
+                )
+            )
         )
 
     class AdaptersStream(m.TapOracleOic.OICBaseStream):
@@ -623,9 +599,7 @@ class FlextTapOracleOicModelsStreams:
             _properties_to_dict(
                 th.Meltano.SingerPropertiesList(
                     th.Meltano.SingerProperty(
-                        "id",
-                        th.Meltano.SingerStringType(),
-                        description="Adapter ID",
+                        "id", th.Meltano.SingerStringType(), description="Adapter ID"
                     ),
                     th.Meltano.SingerProperty(
                         "name",
@@ -659,16 +633,12 @@ class FlextTapOracleOicModelsStreams:
                     ),
                     th.Meltano.SingerProperty(
                         "capabilities",
-                        th.Meltano.SingerArrayType(
-                            th.Meltano.SingerStringType(),
-                        ),
+                        th.Meltano.SingerArrayType(th.Meltano.SingerStringType()),
                         description="Adapter capabilities",
                     ),
                     th.Meltano.SingerProperty(
                         "connectionTypes",
-                        th.Meltano.SingerArrayType(
-                            th.Meltano.SingerStringType(),
-                        ),
+                        th.Meltano.SingerArrayType(th.Meltano.SingerStringType()),
                         description="Connection types",
                     ),
                     th.Meltano.SingerProperty(
@@ -686,8 +656,8 @@ class FlextTapOracleOicModelsStreams:
                         th.Meltano.SingerStringType(),
                         description="Documentation URL",
                     ),
-                ),
-            ),
+                )
+            )
         )
 
     class ProjectsStream(m.TapOracleOic.OICBaseStream):
@@ -707,9 +677,7 @@ class FlextTapOracleOicModelsStreams:
             _properties_to_dict(
                 th.Meltano.SingerPropertiesList(
                     th.Meltano.SingerProperty(
-                        "id",
-                        th.Meltano.SingerStringType(),
-                        description="Project ID",
+                        "id", th.Meltano.SingerStringType(), description="Project ID"
                     ),
                     th.Meltano.SingerProperty(
                         "name",
@@ -748,9 +716,7 @@ class FlextTapOracleOicModelsStreams:
                     ),
                     th.Meltano.SingerProperty(
                         "folders",
-                        th.Meltano.SingerArrayType(
-                            th.Meltano.SingerObjectType(),
-                        ),
+                        th.Meltano.SingerArrayType(th.Meltano.SingerObjectType()),
                         description="Project folders",
                     ),
                     th.Meltano.SingerProperty(
@@ -765,13 +731,11 @@ class FlextTapOracleOicModelsStreams:
                     ),
                     th.Meltano.SingerProperty(
                         "permissions",
-                        th.Meltano.SingerArrayType(
-                            th.Meltano.SingerObjectType(),
-                        ),
+                        th.Meltano.SingerArrayType(th.Meltano.SingerObjectType()),
                         description="Project permissions",
                     ),
-                ),
-            ),
+                )
+            )
         )
 
     class ExecutionsStream(m.TapOracleOic.OICBaseStream):
@@ -845,8 +809,8 @@ class FlextTapOracleOicModelsStreams:
                         th.Meltano.SingerIntegerType(),
                         description="Processed record count",
                     ),
-                ),
-            ),
+                )
+            )
         )
 
     class MetricsStream(m.TapOracleOic.OICBaseStream):
@@ -886,14 +850,10 @@ class FlextTapOracleOicModelsStreams:
                         description="Metric value",
                     ),
                     th.Meltano.SingerProperty(
-                        "unit",
-                        th.Meltano.SingerStringType(),
-                        description="Metric unit",
+                        "unit", th.Meltano.SingerStringType(), description="Metric unit"
                     ),
                     th.Meltano.SingerProperty(
-                        "tags",
-                        th.Meltano.SingerObjectType(),
-                        description="Metric tags",
+                        "tags", th.Meltano.SingerObjectType(), description="Metric tags"
                     ),
                     th.Meltano.SingerProperty(
                         "integrationName",
@@ -905,8 +865,8 @@ class FlextTapOracleOicModelsStreams:
                         th.Meltano.SingerStringType(),
                         description="Related connection",
                     ),
-                ),
-            ),
+                )
+            )
         )
 
 
@@ -924,8 +884,4 @@ ALL_STREAMS: t.MappingKV[str, type[m.TapOracleOic.OICBaseStream]] = {
     "metrics": FlextTapOracleOicModelsStreams.MetricsStream,
 }
 
-__all__: list[str] = [
-    "ALL_STREAMS",
-    "FlextTapOracleOicModelsStreams",
-    "th",
-]
+__all__: list[str] = ["ALL_STREAMS", "FlextTapOracleOicModelsStreams", "th"]

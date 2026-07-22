@@ -56,52 +56,22 @@ if TYPE_CHECKING:
         FlextTapOracleOicUtilities as FlextTapOracleOicUtilities,
         u,
     )
-_LAZY_IMPORTS = build_lazy_import_map(
-    {
-        "._settings": ("FlextTapOracleOicSettings", "settings"),
-        ".api": (
-            "FlextTapOracleOicService",
-            "tap_oracle_oic",
-        ),
-        ".cli": (
-            "FlextTapOracleOicCli",
-            "main",
-        ),
-        ".constants": (
-            "FlextTapOracleOicConstants",
-            "c",
-        ),
-        ".models": (
-            "FlextTapOracleOicModels",
-            "m",
-        ),
-        ".protocols": (
-            "FlextTapOracleOicProtocols",
-            "p",
-        ),
-        ".tap": (
-            "FlextOracleOicAuthenticator",
-            "FlextTapOracleOic",
-            "FlextTapOracleOicClient",
-        ),
-        ".typings": (
-            "FlextTapOracleOicTypes",
-            "t",
-        ),
-        ".utilities": (
-            "FlextTapOracleOicUtilities",
-            "u",
-        ),
-        "flext_oracle_oic": (
-            "d",
-            "e",
-            "h",
-            "r",
-            "s",
-            "x",
-        ),
-    },
-)
+_LAZY_IMPORTS = build_lazy_import_map({
+    "._settings": ("FlextTapOracleOicSettings", "settings"),
+    ".api": ("FlextTapOracleOicService", "tap_oracle_oic"),
+    ".cli": ("FlextTapOracleOicCli", "main"),
+    ".constants": ("FlextTapOracleOicConstants", "c"),
+    ".models": ("FlextTapOracleOicModels", "m"),
+    ".protocols": ("FlextTapOracleOicProtocols", "p"),
+    ".tap": (
+        "FlextOracleOicAuthenticator",
+        "FlextTapOracleOic",
+        "FlextTapOracleOicClient",
+    ),
+    ".typings": ("FlextTapOracleOicTypes", "t"),
+    ".utilities": ("FlextTapOracleOicUtilities", "u"),
+    "flext_oracle_oic": ("d", "e", "h", "r", "s", "x"),
+})
 
 
 __all__: tuple[str, ...] = (
@@ -141,9 +111,4 @@ __all__: tuple[str, ...] = (
 )
 
 
-install_lazy_exports(
-    __name__,
-    globals(),
-    _LAZY_IMPORTS,
-    public_exports=__all__,
-)
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)

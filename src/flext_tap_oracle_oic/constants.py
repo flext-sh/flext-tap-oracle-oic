@@ -34,10 +34,10 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
         NORMALIZE_NON_ALNUM_RE: ClassVar[t.RegexPattern] = re.compile(r"[^a-zA-Z0-9]")
         NORMALIZE_REPEATED_UNDERSCORE_RE: ClassVar[t.RegexPattern] = re.compile(r"_+")
         SANITIZE_CAMEL_BOUNDARY_RE: ClassVar[t.RegexPattern] = re.compile(
-            r"(?<!^)(?=[A-Z])",
+            r"(?<!^)(?=[A-Z])"
         )
         SANITIZE_NON_IDENTIFIER_RE: ClassVar[t.RegexPattern] = re.compile(
-            r"[^a-zA-Z0-9_]",
+            r"[^a-zA-Z0-9_]"
         )
 
         DEFAULT_BATCH_SIZE: ClassVar[int] = 100

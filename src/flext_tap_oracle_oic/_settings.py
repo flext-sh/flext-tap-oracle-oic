@@ -24,9 +24,7 @@ class FlextTapOracleOicSettings(FlextSettings):
     """Oracle OIC Singer tap settings; fields under ``settings.TapOracleOic.*``."""
 
     model_config = SettingsConfigDict(
-        env_prefix="FLEXT_TAP_ORACLE_OIC_",
-        env_nested_delimiter="__",
-        extra="ignore",
+        env_prefix="FLEXT_TAP_ORACLE_OIC_", env_nested_delimiter="__", extra="ignore"
     )
 
     class _TapOracleOic(BaseModel):

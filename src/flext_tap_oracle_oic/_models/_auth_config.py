@@ -25,61 +25,38 @@ class OicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
                         "oauth_client_id": "my-client-id",
                         "oauth_token_url": "https://idcs-instance.identity.oraclecloud.com/oauth2/v1/token",
                         "base_url": "https://mycompany-oic.integration.ocp.oraclecloud.com",
-                    },
+                    }
                 ],
-            },
+            }
         )
     )
 
     oauth_client_id: Annotated[
-        str,
-        u.Field(
-            ...,
-            description="OAuth2 client ID for OIC API",
-        ),
+        str, u.Field(..., description="OAuth2 client ID for OIC API")
     ]
     oauth_client_secret: Annotated[
-        str,
-        u.Field(..., description="OAuth2 client secret"),
+        str, u.Field(..., description="OAuth2 client secret")
     ]
     oauth_token_url: Annotated[
-        str,
-        u.Field(
-            ...,
-            description="IDCS OAuth2 token endpoint URL",
-        ),
+        str, u.Field(..., description="IDCS OAuth2 token endpoint URL")
     ]
     oauth_client_aud: Annotated[
-        str,
-        u.Field(..., description="OAuth2 audience parameter"),
+        str, u.Field(..., description="OAuth2 audience parameter")
     ]
     base_url: Annotated[str, u.Field(..., description="OIC instance base URL")]
 
     # Optional authentication settings
     token_expiry_buffer: Annotated[
-        int,
-        u.Field(
-            description="Token refresh buffer in seconds",
-        ),
+        int, u.Field(description="Token refresh buffer in seconds")
     ] = 300
     max_retry_attempts: Annotated[
-        int,
-        u.Field(
-            description="Maximum authentication retry attempts",
-        ),
+        int, u.Field(description="Maximum authentication retry attempts")
     ] = 3
-    timeout_seconds: Annotated[
-        int,
-        u.Field(
-            description="Authentication timeout",
-        ),
-    ] = 30
+    timeout_seconds: Annotated[int, u.Field(description="Authentication timeout")] = 30
 
     @u.computed_field()
     @property
-    def auth_config_summary(
-        self,
-    ) -> t.TapOracleOic.SectionedSummary:
+    def auth_config_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OAuth2 authentication configuration summary."""
         min_name_length: int = 2
         return {

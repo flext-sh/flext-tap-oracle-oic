@@ -7,24 +7,13 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import sys
-from collections.abc import (
-    Mapping,
-)
+from collections.abc import Mapping
 from typing import ClassVar, override
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
-
 from flext_cli import cli
 from flext_meltano.services.abstractions import FlextMeltanoAbstractions
-from flext_tap_oracle_oic import (
-    FlextTapOracleOicSettings,
-    c,
-    m,
-    p,
-    r,
-    t,
-    u,
-)
+from flext_tap_oracle_oic import FlextTapOracleOicSettings, c, m, p, r, t, u
 from flext_tap_oracle_oic._models.streams import ALL_STREAMS
 
 logger = u.fetch_logger(__name__)
@@ -65,7 +54,7 @@ class FlextOracleOicAuthenticator:
             response = response_result.value
             if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
                 return r[str].fail(
-                    f"OAuth2 request failed with status {response.status_code}",
+                    f"OAuth2 request failed with status {response.status_code}"
                 )
             token_data: t.JsonMapping
             match response.body:
@@ -117,28 +106,25 @@ class FlextTapOracleOicClient:
         headers_result = self._get_auth_headers()
         if headers_result.failure:
             return r[FlextApiModels.Api.HttpResponse].fail(
-                f"Failed to get auth headers: {headers_result.error}",
+                f"Failed to get auth headers: {headers_result.error}"
             )
         try:
             response_result = self._api_client.get(url, headers=headers_result.value)
             if response_result.failure:
                 return r[FlextApiModels.Api.HttpResponse].fail_op(
-                    "OIC API request",
-                    response_result.error,
+                    "OIC API request", response_result.error
                 )
             response = response_result.value
             if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
                 return r[FlextApiModels.Api.HttpResponse].fail(
-                    f"OIC API request failed with status {response.status_code}",
+                    f"OIC API request failed with status {response.status_code}"
                 )
             return r[FlextApiModels.Api.HttpResponse].ok(response)
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             return r[FlextApiModels.Api.HttpResponse].fail_op("OIC API request", e)
 
     def post(
-        self,
-        endpoint: str,
-        data: t.MappingKV[str, t.JsonMapping] | None = None,
+        self, endpoint: str, data: t.MappingKV[str, t.JsonMapping] | None = None
     ) -> p.Result[FlextApiModels.Api.HttpResponse]:
         """Make authenticated POST request to OIC API."""
         url = (
@@ -147,33 +133,28 @@ class FlextTapOracleOicClient:
         headers_result = self._get_auth_headers()
         if headers_result.failure:
             return r[FlextApiModels.Api.HttpResponse].fail(
-                f"Failed to get auth headers: {headers_result.error}",
+                f"Failed to get auth headers: {headers_result.error}"
             )
         try:
             json_body = (
                 t
                 .json_mapping_adapter()
-                .dump_json(
-                    t.json_mapping_adapter().validate_python(data),
-                )
+                .dump_json(t.json_mapping_adapter().validate_python(data))
                 .decode(c.DEFAULT_ENCODING)
                 if data
                 else None
             )
             response_result = self._api_client.post(
-                url,
-                data=json_body,
-                headers=headers_result.value,
+                url, data=json_body, headers=headers_result.value
             )
             if response_result.failure:
                 return r[FlextApiModels.Api.HttpResponse].fail_op(
-                    "OIC API request",
-                    response_result.error,
+                    "OIC API request", response_result.error
                 )
             response = response_result.value
             if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
                 return r[FlextApiModels.Api.HttpResponse].fail(
-                    f"OIC API request failed with status {response.status_code}",
+                    f"OIC API request failed with status {response.status_code}"
                 )
             return r[FlextApiModels.Api.HttpResponse].ok(response)
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
@@ -184,7 +165,7 @@ class FlextTapOracleOicClient:
         token_result = self.authenticator.get_access_token()
         if token_result.failure:
             return r[t.StrMapping].fail(
-                f"Failed to get access token: {token_result.error}",
+                f"Failed to get access token: {token_result.error}"
             )
         headers: t.MutableStrMapping = {
             "Accept": "application/json",
@@ -225,10 +206,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
     }
 
     def __init__(
-        self,
-        *,
-        settings: t.JsonMapping | None = None,
-        validate_config: bool = True,
+        self, *, settings: t.JsonMapping | None = None, validate_config: bool = True
     ) -> None:
         """Initialize Oracle OIC tap with library composition."""
         super().__init__()
@@ -236,8 +214,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         # NOTE (multi-agent): flat Singer config maps into the namespaced
         # settings SSOT (settings.TapOracleOic.*, ADR-005); unknown keys ignored.
         self._oic_settings = FlextTapOracleOicSettings.model_validate(
-            {"TapOracleOic": self._tap_config},
-            strict=validate_config,
+            {"TapOracleOic": self._tap_config}, strict=validate_config
         )
         self._client: FlextTapOracleOicClient | None = None
 
@@ -256,25 +233,22 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
                 "oauth_client_secret": str(config_dict["oauth_client_secret"]),
                 "oauth_token_url": str(config_dict["oauth_token_url"]),
                 "oauth_audience": str(
-                    config_dict.get("oauth_scope", "urn:opc:resource:consumer:all"),
+                    config_dict.get("oauth_scope", "urn:opc:resource:consumer:all")
                 ),
                 "base_url": str(config_dict["oic_url"]),
                 "timeout": u.to_positive_int(
-                    config_dict.get("request_timeout"),
-                    default=30,
+                    config_dict.get("request_timeout"), default=30
                 ),
                 "max_retries": u.to_positive_int(
-                    config_dict.get("max_retries"),
-                    default=3,
+                    config_dict.get("max_retries"), default=3
                 ),
             }
             oic_config = FlextTapOracleOicSettings.model_validate({
-                "TapOracleOic": oic_config_data,
+                "TapOracleOic": oic_config_data
             })
             authenticator = FlextOracleOicAuthenticator(settings=oic_config)
             self._client = FlextTapOracleOicClient(
-                settings=oic_config,
-                authenticator=authenticator,
+                settings=oic_config, authenticator=authenticator
             )
         return self._client
 
@@ -294,8 +268,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
 
     @override
     def discover_streams(
-        self,
-        tap_instance: m.Meltano.TapInstance,
+        self, tap_instance: m.Meltano.TapInstance
     ) -> p.Result[t.JsonMapping]:
         """Discover stream catalog matching FlextMeltanoAbstractions contract."""
         _ = tap_instance
@@ -305,9 +278,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             stream_name = str(getattr(stream, "name", c.IDENTIFIER_UNKNOWN))
             stream_schema_raw: p.AttributeProbe = getattr(stream, "stream_schema", {})
             stream_schema: t.JsonMapping = (
-                t.json_mapping_adapter().validate_python(
-                    stream_schema_raw,
-                )
+                t.json_mapping_adapter().validate_python(stream_schema_raw)
                 if isinstance(stream_schema_raw, Mapping)
                 else {}
             )
@@ -325,21 +296,18 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             if entry_result.failure:
                 return r[t.JsonMapping].fail(
                     entry_result.error
-                    or f"Failed to build Singer catalog entry for {stream_name}",
+                    or f"Failed to build Singer catalog entry for {stream_name}"
                 )
             catalog_entries.append(entry_result.value)
         catalog: t.JsonMapping = t.json_mapping_adapter().validate_python(
             m.Meltano.SingerCatalog(streams=catalog_entries).model_dump(
-                by_alias=True,
-                exclude_defaults=True,
-                exclude_none=True,
-                mode="json",
-            ),
+                by_alias=True, exclude_defaults=True, exclude_none=True, mode="json"
+            )
         )
         return r[t.JsonMapping].ok(
             t.json_mapping_adapter().validate_python({
-                "streams": catalog.get("streams", []),
-            }),
+                "streams": catalog.get("streams", [])
+            })
         )
 
     def test_connection(self) -> p.Result[bool]:
@@ -432,11 +400,7 @@ def _execute_discover_command(tap: FlextTapOracleOic) -> int:
     catalog = {
         "streams": [
             {
-                "tap_stream_id": getattr(
-                    stream,
-                    "name",
-                    c.IDENTIFIER_UNKNOWN,
-                ),
+                "tap_stream_id": getattr(stream, "name", c.IDENTIFIER_UNKNOWN),
                 "schema": getattr(stream, "schema", {}),
                 "key_properties": getattr(stream, "primary_keys", []),
                 "replication_method": "INCREMENTAL"
@@ -445,7 +409,7 @@ def _execute_discover_command(tap: FlextTapOracleOic) -> int:
                 "replication_key": getattr(stream, "replication_key", None),
             }
             for stream in streams
-        ],
+        ]
     }
     logger.info("Generated catalog with %s streams", len(catalog["streams"]))
     return 0
