@@ -22,14 +22,29 @@ logger = u.fetch_logger(__name__)
 class FlextOracleOicAuthenticator:
     """Real Oracle OIC OAuth2 authenticator implementation."""
 
-    def __init__(self, settings: FlextTapOracleOicSettings) -> None:
+    def __init__(
+        self, settings: FlextTapOracleOicSettings, api_client: FlextApi | None = None
+    ) -> None:
         """Initialize authenticator with OAuth2 configuration."""
         # NOTE (multi-agent): settings live on self; methods read
         # self.settings.TapOracleOic.* (namespaced SSOT, ADR-005).
         self.settings = settings
         self._access_token: str | None = None
-        api_config = FlextApiSettings.model_validate({})
-        self._api_client = FlextApi(settings=api_config)
+        if api_client is None:
+            api_config = FlextApiSettings.model_validate({})
+            self._api_client: FlextApi = FlextApi(settings=api_config)
+        else:
+            self._api_client = api_client
+
+    @property
+    def access_token(self) -> str | None:
+        """Stored OAuth2 access token."""
+        return self._access_token
+
+    @property
+    def api_client(self) -> FlextApi:
+        """HTTP client used for token requests."""
+        return self._api_client
 
     def get_access_token(self) -> p.Result[str]:
         """Get OAuth2 access token using client credentials flow."""

@@ -217,25 +217,28 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
             """
             if not timestamp_str:
                 return r[str].fail("Timestamp string cannot be empty")
-            formats = [
+            naive_formats = [
                 "%Y-%m-%dT%H:%M:%S.%fZ",
                 "%Y-%m-%dT%H:%M:%SZ",
-                "%Y-%m-%dT%H:%M:%S%z",
-                "%Y-%m-%dT%H:%M:%S.%f%z",
                 "%Y-%m-%dT%H:%M:%S",
                 "%Y-%m-%d %H:%M:%S",
             ]
-            for fmt in formats:
+            for fmt in naive_formats:
                 try:
-                    dt_naive = datetime.strptime(timestamp_str, fmt)
-                    dt = (
-                        dt_naive.replace(tzinfo=UTC)
-                        if dt_naive.tzinfo is None
-                        else dt_naive
-                    )
+                    dt = datetime.strptime(timestamp_str, fmt).replace(tzinfo=UTC)
                     return r[str].ok(dt.isoformat())
                 except ValueError:
                     continue
+            try:
+                dt = datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M:%S%z")
+                return r[str].ok(dt.isoformat())
+            except ValueError:
+                pass
+            try:
+                dt = datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M:%S.%f%z")
+                return r[str].ok(dt.isoformat())
+            except ValueError:
+                pass
             return r[str].fail(f"Unsupported timestamp format: {timestamp_str}")
 
         @staticmethod

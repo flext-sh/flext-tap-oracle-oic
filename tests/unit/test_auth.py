@@ -21,6 +21,14 @@ from flext_tap_oracle_oic.tap import FlextOracleOicAuthenticator
 from flext_tests import r, tm
 
 
+def _test_oauth_token_url() -> str:
+    return "https://test.identity.oraclecloud.com/oauth2/v1/token"
+
+
+def _test_client_secret() -> str:
+    return "test_client_secret"
+
+
 class TestsFlextTapOracleOicAuth:
     """Test OIC OAuth2 authenticator with mocked dependencies."""
 
@@ -33,9 +41,7 @@ class TestsFlextTapOracleOicAuth:
         settings.oauth_client_secret.get_secret_value.return_value = (
             "test_client_secret"
         )
-        settings.oauth_token_url = (
-            "https://test.identity.oraclecloud.com/oauth2/v1/token"
-        )
+        settings.oauth_token_url = _test_oauth_token_url()
         settings.oauth_audience = "urn:opc:resource:consumer:all"
         settings.base_url = "https://oic.example.com"
         settings.get_token_request_data.return_value = {
@@ -48,19 +54,15 @@ class TestsFlextTapOracleOicAuth:
 
     @pytest.fixture
     def authenticator(self, mock_config: MagicMock) -> FlextOracleOicAuthenticator:
-        """Create authenticator bypassing __init__ to avoid global state."""
-        auth = FlextOracleOicAuthenticator.__new__(FlextOracleOicAuthenticator)
-        auth.settings = mock_config
-        auth._access_token = None
-        auth._api_client = MagicMock()
-        return auth
+        """Create authenticator with a mocked HTTP client for testing."""
+        return FlextOracleOicAuthenticator(settings=mock_config, api_client=MagicMock())
 
     def test_authenticator_initialization(
         self, authenticator: FlextOracleOicAuthenticator, mock_config: MagicMock
     ) -> None:
         """Test authenticator stores settings."""
         assert authenticator.settings is mock_config
-        tm.that(authenticator._access_token, none=True)
+        tm.that(authenticator.access_token, none=True)
 
     def test_get_access_token_success(
         self, authenticator: FlextOracleOicAuthenticator
@@ -73,19 +75,19 @@ class TestsFlextTapOracleOicAuth:
             "token_type": "Bearer",
             "expires_in": 3600,
         }
-        cast("MagicMock", authenticator._api_client).post.return_value = r[
-            MagicMock
-        ].ok(mock_response)
+        cast("MagicMock", authenticator.api_client).post.return_value = r[MagicMock].ok(
+            mock_response
+        )
         result = authenticator.get_access_token()
         tm.ok(result)
         tm.that(result.value, eq="test_token_123")
-        tm.that(authenticator._access_token, eq="test_token_123")
+        tm.that(authenticator.access_token, eq="test_token_123")
 
     def test_get_access_token_http_failure(
         self, authenticator: FlextOracleOicAuthenticator
     ) -> None:
         """Test token retrieval with HTTP failure."""
-        cast("MagicMock", authenticator._api_client).post.return_value = r.fail(
+        cast("MagicMock", authenticator.api_client).post.return_value = r.fail(
             "Connection refused"
         )
         result = authenticator.get_access_token()
@@ -100,9 +102,9 @@ class TestsFlextTapOracleOicAuth:
         mock_response = MagicMock()
         mock_response.status_code = 401
         mock_response.body = {"error": "invalid_client"}
-        cast("MagicMock", authenticator._api_client).post.return_value = r[
-            MagicMock
-        ].ok(mock_response)
+        cast("MagicMock", authenticator.api_client).post.return_value = r[MagicMock].ok(
+            mock_response
+        )
         result = authenticator.get_access_token()
         tm.fail(result)
         tm.that(result.error, none=False)
@@ -115,9 +117,9 @@ class TestsFlextTapOracleOicAuth:
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.body = None
-        cast("MagicMock", authenticator._api_client).post.return_value = r[
-            MagicMock
-        ].ok(mock_response)
+        cast("MagicMock", authenticator.api_client).post.return_value = r[MagicMock].ok(
+            mock_response
+        )
         result = authenticator.get_access_token()
         tm.fail(result)
         tm.that(result.error, none=False)
@@ -129,9 +131,9 @@ class TestsFlextTapOracleOicAuth:
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.body = {"token_type": "Bearer", "expires_in": 3600}
-        cast("MagicMock", authenticator._api_client).post.return_value = r[
-            MagicMock
-        ].ok(mock_response)
+        cast("MagicMock", authenticator.api_client).post.return_value = r[MagicMock].ok(
+            mock_response
+        )
         result = authenticator.get_access_token()
         tm.fail(result)
         tm.that(result.error, none=False)
@@ -146,9 +148,9 @@ class TestsFlextTapOracleOicAuth:
             "access_token": "string_body_token",
             "token_type": "Bearer",
         }).unwrap()
-        cast("MagicMock", authenticator._api_client).post.return_value = r[
-            MagicMock
-        ].ok(mock_response)
+        cast("MagicMock", authenticator.api_client).post.return_value = r[MagicMock].ok(
+            mock_response
+        )
         result = authenticator.get_access_token()
         tm.ok(result)
         tm.that(result.value, eq="string_body_token")
@@ -157,7 +159,7 @@ class TestsFlextTapOracleOicAuth:
         self, authenticator: FlextOracleOicAuthenticator
     ) -> None:
         """Test token retrieval handles unexpected exceptions."""
-        cast("MagicMock", authenticator._api_client).post.side_effect = RuntimeError(
+        cast("MagicMock", authenticator.api_client).post.side_effect = RuntimeError(
             "Unexpected error"
         )
         result = authenticator.get_access_token()
@@ -176,7 +178,7 @@ class TestsFlextTapOracleOicAuth:
     def test_client_credentials_encoding(self) -> None:
         """Test client credentials base64 encoding logic."""
         client_id = "test_client_id"
-        client_secret = "test_client_secret"
+        client_secret = _test_client_secret()
         expected = base64.b64encode(f"{client_id}:{client_secret}".encode()).decode()
         actual = base64.b64encode(f"{client_id}:{client_secret}".encode()).decode()
         tm.that(actual, eq=expected)
