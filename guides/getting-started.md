@@ -133,23 +133,13 @@ else:
 ```python
 from __future__ import annotations
 from flext_cli import u
-from flext_core import FlextSettings
+from flext_core import r, p
+from flext_ldif import ldif
 
 
-def process_ldif_data(content: str) -> p.Result[str, Exception]:
-    # Parse LDIF
-    parse_result = ldif.parse(content)
-    if parse_result.failure:
-        return r.failure(parse_result.failure())
-
-    entries = parse_result.unwrap()
-
-    # Process entries
-    try:
-        processed_data = process_entries(entries)
-        return r.success(processed_data)
-    except Exception as e:
-        return r.failure(e)
+ldif_content = """dn: cn=test,dc=example,dc=com
+cn: test
+objectClass: inetOrgPerson"""
 
 
 def process_entries(entries: list) -> str:
@@ -157,21 +147,39 @@ def process_entries(entries: list) -> str:
     return f"Processed {len(entries)} entries"
 
 
+def process_ldif_data(content: str) -> p.Result[str]:
+    # Parse LDIF
+    parse_result = ldif.parse_string(content)
+    if parse_result.failure:
+        return r.fail(str(parse_result.failure()))
+
+    entries = parse_result.unwrap().entries
+
+    # Process entries
+    try:
+        processed_data = process_entries(entries)
+        return r.ok(processed_data)
+    except Exception as e:
+        return r.fail(str(e))
+
+
 # Usage
 result = process_ldif_data(ldif_content)
 if result.success:
-    u.Cli.print(f"Success: {result.unwrap()}")
+    u.Cli.info(f"Success: {result.unwrap()}")
 else:
-    u.Cli.print(f"Error: {result.failure()}")
+    u.Cli.info(f"Error: {result.failure()}")
 ```
 
 ### 4. CQRS Pattern with Commands and Queries
 
 ```python
 from __future__ import annotations
-from flext_cli import u
-from flext_core import FlextSettings
 from dataclasses import dataclass
+from typing import Callable
+
+from flext_cli import u
+from flext_core import r, p
 
 
 @dataclass
@@ -186,25 +194,40 @@ class GetUserQuery:
 
 
 class UserService:
-    def create_user(self, cmd: CreateUserCommand) -> p.Result[str, Exception]:
+    def create_user(self, cmd: CreateUserCommand) -> p.Result[str]:
         # Create user logic
-        return r.success(f"User {cmd.username} created")
+        return r.ok(f"User {cmd.username} created")
 
-    def get_user(self, query: GetUserQuery) -> p.Result[str, Exception]:
+    def get_user(self, query: GetUserQuery) -> p.Result[str]:
         # Get user logic
-        return r.success(f"User {query.user_id} data")
+        return r.ok(f"User {query.user_id} data")
 
 
-# Setup dispatcher
-dispatcher = FlextDispatcher()
+# Simple dispatcher mapping messages to handlers
+Dispatcher = dict[type, Callable[..., p.Result[str]]]
+
+
+def dispatch(
+    dispatcher: Dispatcher, message: object
+) -> p.Result[str]:
+    handler = dispatcher.get(type(message))
+    if handler is None:
+        return r.fail(f"No handler for {type(message).__name__}")
+    return handler(message)
+
+
 user_service = UserService()
-
-dispatcher.register_handler(CreateUserCommand, user_service.create_user)
-dispatcher.register_handler(GetUserQuery, user_service.get_user)
+dispatcher: Dispatcher = {
+    CreateUserCommand: user_service.create_user,
+    GetUserQuery: user_service.get_user,
+}
 
 # Use the dispatcher
-create_result = dispatcher.dispatch(CreateUserCommand("john", "john@example.com"))
-get_result = dispatcher.dispatch(GetUserQuery("user123"))
+create_result = dispatch(dispatcher, CreateUserCommand("john", "john@example.com"))
+get_result = dispatch(dispatcher, GetUserQuery("user123"))
+
+u.Cli.info(f"Create: {create_result.unwrap()}")
+u.Cli.info(f"Get: {get_result.unwrap()}")
 ```
 
 ## Configuration
@@ -223,6 +246,7 @@ export FLEXT_LDIF_STRICT_VALIDATION=true
 ### Programmatic Configuration
 
 ```python
+from flext_cli import u
 from flext_ldif import FlextLdifSettings
 
 # Create custom configuration
@@ -231,11 +255,10 @@ settings = FlextLdifSettings(
     strict_validation=True,
     servers_enabled=True,
     batch_size=1000,
-    batch_size=1000,
 )
 
 # Use configuration
-ldif = ldif(settings=settings)
+u.Cli.info(f"LDIF settings: {settings.model_dump()}")
 ```
 
 ## Next Steps
