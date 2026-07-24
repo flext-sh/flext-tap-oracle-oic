@@ -102,21 +102,17 @@ docker run -v $(pwd)/data:/app/data flext:latest
 from flext_cli import u
 from flext_core import FlextSettings
 
-# Create dependency injection container
-container = FlextContainer()
+# Create application settings
+settings = FlextSettings(log_level="INFO")
 
-# Register services (example)
-# container.bind(IService, ServiceImplementation())
-
-u.Cli.print("FLEXT application initialized!")
+u.Cli.info("FLEXT application initialized!")
 ```
 
 ### 2. Using flext-ldif for LDIF Processing
 
 ```python
+from flext_cli import u
 from flext_ldif import ldif
-
-# Initialize LDIF API
 
 # Parse LDIF content
 ldif_content = """dn: cn=test,dc=example,dc=com
@@ -124,12 +120,12 @@ cn: test
 sn: user
 objectClass: inetOrgPerson"""
 
-result = ldif.parse(ldif_content)
+result = ldif.parse_string(ldif_content)
 if result.success:
-    entries = result.unwrap()
-    u.Cli.print(f"Successfully parsed {len(entries)} LDIF entries")
+    entries = result.unwrap().entries
+    u.Cli.info(f"Successfully parsed {len(entries)} LDIF entries")
 else:
-    u.Cli.print(f"Failed to parse LDIF: {result.failure()}")
+    u.Cli.info(f"Failed to parse LDIF: {result.failure()}")
 ```
 
 ### 3. Railway-Oriented Error Handling
