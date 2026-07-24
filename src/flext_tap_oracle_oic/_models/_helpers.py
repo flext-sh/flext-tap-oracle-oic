@@ -9,11 +9,7 @@ from __future__ import annotations
 from flext_tap_oracle_oic import c
 
 
-def require_entity_value(
-    value: str,
-    *,
-    label: str,
-) -> None:
+def require_entity_value(value: str, *, label: str) -> None:
     """Require one non-empty entity identifier/name value."""
     if not value:
         msg = f"{label} is required"

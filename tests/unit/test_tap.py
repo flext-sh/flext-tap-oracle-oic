@@ -22,7 +22,7 @@ def _build_tap_instance() -> p.Meltano.TapInstance:
         settings=m.Meltano.TapConfig(
             tap_type="oracle-oic",
             connection_config={
-                "base_url": "https://test.integration.ocp.oraclecloud.com",
+                "base_url": "https://test.integration.ocp.oraclecloud.com"
             },
             stream_config={},
         ),

@@ -7,10 +7,7 @@ from flext_tests import FlextTestsSettings
 from flext_tap_oracle_oic import FlextTapOracleOicSettings
 
 
-class TestsFlextTapOracleOicSettings(
-    FlextTapOracleOicSettings,
-    FlextTestsSettings,
-):
+class TestsFlextTapOracleOicSettings(FlextTapOracleOicSettings, FlextTestsSettings):
     """Tap Oracle OIC settings extended with the shared test namespace."""
 
 

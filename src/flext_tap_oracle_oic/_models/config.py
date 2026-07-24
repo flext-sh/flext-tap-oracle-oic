@@ -21,23 +21,18 @@ class FlextTapOracleOicConfigModels:
 
         model_config = ConfigDict(frozen=True, extra="forbid")
 
-        base_url: str = Field(
-            description="Default Oracle Integration Cloud base URL.",
-        )
+        base_url: str = Field(description="Default Oracle Integration Cloud base URL.")
         request_timeout: int = Field(
-            ge=1,
-            description="Default request timeout in seconds.",
+            ge=1, description="Default request timeout in seconds."
         )
         max_retries: int = Field(
-            ge=0,
-            description="Maximum retry attempts for idempotent requests.",
+            ge=0, description="Maximum retry attempts for idempotent requests."
         )
         page_size: int = Field(
-            ge=1,
-            description="Default page size for paginated list endpoints.",
+            ge=1, description="Default page size for paginated list endpoints."
         )
         verify_ssl: bool = Field(
-            description="Whether to verify TLS certificates by default.",
+            description="Whether to verify TLS certificates by default."
         )
         http_error_status_threshold: int = Field(
             ge=100,
@@ -50,11 +45,9 @@ class FlextTapOracleOicConfigModels:
 
         model_config = ConfigDict(frozen=True, extra="forbid")
 
-        core: tuple[str, ...] = Field(
-            description="Core OIC entity streams.",
-        )
+        core: tuple[str, ...] = Field(description="Core OIC entity streams.")
         infrastructure: tuple[str, ...] = Field(
-            description="Infrastructure OIC streams.",
+            description="Infrastructure OIC streams."
         )
 
     class Pagination(BaseModel):
@@ -63,20 +56,16 @@ class FlextTapOracleOicConfigModels:
         model_config = ConfigDict(frozen=True, extra="forbid")
 
         max_page_size: int = Field(
-            ge=1,
-            description="Maximum page size accepted by the API.",
+            ge=1, description="Maximum page size accepted by the API."
         )
         min_page_size: int = Field(
-            ge=1,
-            description="Minimum page size accepted by the API.",
+            ge=1, description="Minimum page size accepted by the API."
         )
         default_start: int = Field(
-            ge=0,
-            description="Default start offset for paginated requests.",
+            ge=0, description="Default start offset for paginated requests."
         )
         default_page_size: int = Field(
-            ge=1,
-            description="Default page size for paginated requests.",
+            ge=1, description="Default page size for paginated requests."
         )
 
     class Thresholds(BaseModel):
@@ -85,20 +74,16 @@ class FlextTapOracleOicConfigModels:
         model_config = ConfigDict(frozen=True, extra="forbid")
 
         min_token_expiry_buffer: int = Field(
-            ge=0,
-            description="Minimum seconds before token expiry to trigger refresh.",
+            ge=0, description="Minimum seconds before token expiry to trigger refresh."
         )
         slow_response_threshold: float = Field(
-            ge=0,
-            description="Response time in seconds considered slow.",
+            ge=0, description="Response time in seconds considered slow."
         )
         response_time_history_size: int = Field(
-            ge=1,
-            description="Number of response samples kept for rolling metrics.",
+            ge=1, description="Number of response samples kept for rolling metrics."
         )
         min_response_samples: int = Field(
-            ge=1,
-            description="Minimum response samples before slow-response alerting.",
+            ge=1, description="Minimum response samples before slow-response alerting."
         )
 
     class Percentages(BaseModel):
@@ -106,16 +91,8 @@ class FlextTapOracleOicConfigModels:
 
         model_config = ConfigDict(frozen=True, extra="forbid")
 
-        min: float = Field(
-            ge=0,
-            le=100,
-            description="Minimum percentage value.",
-        )
-        max: float = Field(
-            ge=0,
-            le=100,
-            description="Maximum percentage value.",
-        )
+        min: float = Field(ge=0, le=100, description="Minimum percentage value.")
+        max: float = Field(ge=0, le=100, description="Maximum percentage value.")
 
     class TapOracleOic(BaseModel):
         """Root Oracle OIC tap business-rule namespace."""
@@ -123,19 +100,19 @@ class FlextTapOracleOicConfigModels:
         model_config = ConfigDict(frozen=True, extra="forbid")
 
         api: FlextTapOracleOicConfigModels.Api = Field(
-            description="Oracle OIC tap API defaults and connection policy.",
+            description="Oracle OIC tap API defaults and connection policy."
         )
         streams: FlextTapOracleOicConfigModels.Streams = Field(
-            description="Oracle OIC tap stream catalog defaults.",
+            description="Oracle OIC tap stream catalog defaults."
         )
         pagination: FlextTapOracleOicConfigModels.Pagination = Field(
-            description="Oracle OIC tap pagination policy defaults.",
+            description="Oracle OIC tap pagination policy defaults."
         )
         thresholds: FlextTapOracleOicConfigModels.Thresholds = Field(
-            description="Oracle OIC tap runtime threshold defaults.",
+            description="Oracle OIC tap runtime threshold defaults."
         )
         percentages: FlextTapOracleOicConfigModels.Percentages = Field(
-            description="Oracle OIC tap percentage range defaults.",
+            description="Oracle OIC tap percentage range defaults."
         )
 
     class Root(BaseModel):
@@ -144,7 +121,7 @@ class FlextTapOracleOicConfigModels:
         model_config = ConfigDict(frozen=True, extra="ignore")
 
         TapOracleOic: FlextTapOracleOicConfigModels.TapOracleOic = Field(
-            description="Oracle OIC tap business-rule config namespace.",
+            description="Oracle OIC tap business-rule config namespace."
         )
 
 

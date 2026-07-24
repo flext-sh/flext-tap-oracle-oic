@@ -20,24 +20,20 @@ class FlextTapOracleOicExecutionSummary(m):
 
     integration_id: Annotated[str, u.Field(..., description="Integration ID")]
     total_executions: Annotated[
-        t.NonNegativeInt,
-        u.Field(description="Total number of executions"),
+        t.NonNegativeInt, u.Field(description="Total number of executions")
     ] = 0
     successful_executions: Annotated[
-        t.NonNegativeInt,
-        u.Field(description="Successful executions"),
+        t.NonNegativeInt, u.Field(description="Successful executions")
     ] = 0
     failed_executions: Annotated[
-        t.NonNegativeInt,
-        u.Field(description="Failed executions"),
+        t.NonNegativeInt, u.Field(description="Failed executions")
     ] = 0
     average_duration_ms: Annotated[
         t.NonNegativeFloat | None,
         u.Field(None, description="Average execution duration"),
     ]
     last_execution_at: Annotated[
-        datetime | None,
-        u.Field(None, description="Last execution timestamp"),
+        datetime | None, u.Field(None, description="Last execution timestamp")
     ]
 
     @property

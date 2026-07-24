@@ -30,87 +30,48 @@ class OicAgentEntity(FlextMeltanoModels.Entity):
                         "agent_name": "On-Premises Agent 01",
                         "agent_type": "CONNECTIVITY_AGENT",
                         "status": "ONLINE",
-                    },
+                    }
                 ],
-            },
+            }
         )
     )
 
     agent_id: Annotated[str, u.Field(..., description="Unique agent identifier")]
     agent_name: Annotated[str, u.Field(..., description="Agent display name")]
     agent_type: Annotated[
-        c.TapOracleOic.OicAgentType,
-        u.Field(
-            ...,
-            description="Agent type",
-        ),
+        c.TapOracleOic.OicAgentType, u.Field(..., description="Agent type")
     ]
 
     # Agent status and health
     status: Annotated[
-        c.TapOracleOic.OicAgentStatus,
-        u.Field(
-            ...,
-            description="Agent status",
-        ),
+        c.TapOracleOic.OicAgentStatus, u.Field(..., description="Agent status")
     ]
     last_heartbeat: Annotated[
-        datetime | None,
-        u.Field(
-            None,
-            description="Last heartbeat timestamp",
-        ),
+        datetime | None, u.Field(None, description="Last heartbeat timestamp")
     ]
     api_version: Annotated[
-        str | None,
-        u.Field(
-            None,
-            description="Agent version from OIC API",
-        ),
+        str | None, u.Field(None, description="Agent version from OIC API")
     ]
 
     # Configuration
-    host_machine: Annotated[
-        str | None,
-        u.Field(None, description="Host machine name"),
-    ]
+    host_machine: Annotated[str | None, u.Field(None, description="Host machine name")]
     installation_path: Annotated[
-        str | None,
-        u.Field(
-            None,
-            description="Agent installation path",
-        ),
+        str | None, u.Field(None, description="Agent installation path")
     ]
-    port: Annotated[
-        int | None,
-        u.Field(None, description="Agent communication port"),
-    ]
+    port: Annotated[int | None, u.Field(None, description="Agent communication port")]
 
     # Health metrics
     uptime_hours: Annotated[
-        float | None,
-        u.Field(
-            None,
-            description="Agent uptime in hours",
-        ),
+        float | None, u.Field(None, description="Agent uptime in hours")
     ]
     connection_count: Annotated[
-        int | None,
-        u.Field(
-            None,
-            description="Active connection count",
-        ),
+        int | None, u.Field(None, description="Active connection count")
     ]
-    last_error: Annotated[
-        str | None,
-        u.Field(None, description="Last error message"),
-    ]
+    last_error: Annotated[str | None, u.Field(None, description="Last error message")]
 
     @u.computed_field()
     @property
-    def agent_health_summary(
-        self,
-    ) -> t.TapOracleOic.SectionedSummary:
+    def agent_health_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC agent health and connectivity summary."""
         health_status = c.TapOracleOic.OicHealthStatus.HEALTHY.value
         if self.status in {"ERROR", "OFFLINE"}:

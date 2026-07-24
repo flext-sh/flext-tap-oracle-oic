@@ -29,90 +29,52 @@ class OicActivityRecord(FlextMeltanoModels.Entity):
                         "integration_id": "CUSTOMER_SYNC_01.00.0000",
                         "status": "COMPLETED",
                         "messages_processed": 1500,
-                    },
+                    }
                 ],
-            },
+            }
         )
     )
 
     activity_id: Annotated[
-        str,
-        u.Field(
-            ...,
-            description="Unique activity record identifier",
-        ),
+        str, u.Field(..., description="Unique activity record identifier")
     ]
     integration_id: Annotated[
-        str,
-        u.Field(..., description="Associated integration ID"),
+        str, u.Field(..., description="Associated integration ID")
     ]
-    instance_id: Annotated[
-        str,
-        u.Field(..., description="Integration instance ID"),
-    ]
+    instance_id: Annotated[str, u.Field(..., description="Integration instance ID")]
 
     # Temporal information (for incremental replication)
     start_time: Annotated[
-        datetime,
-        u.Field(..., description="Activity start timestamp"),
+        datetime, u.Field(..., description="Activity start timestamp")
     ]
     end_time: Annotated[
-        datetime | None,
-        u.Field(
-            None,
-            description="Activity end timestamp",
-        ),
+        datetime | None, u.Field(None, description="Activity end timestamp")
     ]
     duration_ms: Annotated[
-        int | None,
-        u.Field(
-            None,
-            description="Activity duration in milliseconds",
-        ),
+        int | None, u.Field(None, description="Activity duration in milliseconds")
     ]
 
     # Status and results
     status: Annotated[
-        c.TapOracleOic.OicJobStatus,
-        u.Field(
-            ...,
-            description="Activity status",
-        ),
+        c.TapOracleOic.OicJobStatus, u.Field(..., description="Activity status")
     ]
     result: Annotated[str | None, u.Field(None, description="Activity result")]
     error_message: Annotated[
-        str | None,
-        u.Field(
-            None,
-            description="Error message if failed",
-        ),
+        str | None, u.Field(None, description="Error message if failed")
     ]
 
     # Metrics
     messages_processed: Annotated[
-        int | None,
-        u.Field(
-            None,
-            description="Number of messages processed",
-        ),
+        int | None, u.Field(None, description="Number of messages processed")
     ]
-    bytes_processed: Annotated[
-        int | None,
-        u.Field(None, description="Bytes processed"),
-    ]
+    bytes_processed: Annotated[int | None, u.Field(None, description="Bytes processed")]
     throughput_mps: Annotated[
-        float | None,
-        u.Field(
-            None,
-            description="Messages per second throughput",
-        ),
+        float | None, u.Field(None, description="Messages per second throughput")
     ]
 
     @u.computed_field()
     @property
-    def activity_performance_summary(
-        self,
-    ) -> t.TapOracleOic.SectionedSummary:
+    def activity_performance_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC activity performance summary."""
         duration_seconds = 0.0
         if self.duration_ms:

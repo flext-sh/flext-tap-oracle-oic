@@ -25,7 +25,4 @@ class TestsFlextTapOracleOicModels(FlextTestsModels, FlextTapOracleOicModels):
 
 m = TestsFlextTapOracleOicModels
 
-__all__: list[str] = [
-    "TestsFlextTapOracleOicModels",
-    "m",
-]
+__all__: list[str] = ["TestsFlextTapOracleOicModels", "m"]

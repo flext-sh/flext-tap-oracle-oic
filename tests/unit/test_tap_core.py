@@ -24,7 +24,7 @@ def _build_tap_instance() -> p.Meltano.TapInstance:
         settings=m.Meltano.TapConfig(
             tap_type="oracle-oic",
             connection_config={
-                "base_url": "https://test.integration.ocp.oraclecloud.com",
+                "base_url": "https://test.integration.ocp.oraclecloud.com"
             },
             stream_config={},
         ),
@@ -230,8 +230,7 @@ class TestsFlextTapOracleOicTapCore:
             "include_artifacts": True,
         }
         tap = FlextTapOracleOic(
-            settings=sample_config_with_extended,
-            validate_config=False,
+            settings=sample_config_with_extended, validate_config=False
         )
         stream_names = _discover_stream_names(tap)
         if len(stream_names) != 5:

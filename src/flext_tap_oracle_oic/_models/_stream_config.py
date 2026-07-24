@@ -26,78 +26,49 @@ class OicStreamConfiguration(FlextMeltanoModels.ArbitraryTypesModel):
                         "replication_method": "INCREMENTAL",
                         "replication_key": "last_updated",
                         "page_size": 100,
-                    },
+                    }
                 ],
-            },
+            }
         )
     )
 
     stream_name: Annotated[str, u.Field(..., description="Singer stream name")]
     replication_method: Annotated[
-        c.TapOracleOic.OicReplicationMethod,
-        u.Field(
-            description="Replication method",
-        ),
+        c.TapOracleOic.OicReplicationMethod, u.Field(description="Replication method")
     ] = c.TapOracleOic.OicReplicationMethod.FULL_TABLE
     replication_key: Annotated[
-        str | None,
-        u.Field(
-            None,
-            description="Replication key field name",
-        ),
+        str | None, u.Field(None, description="Replication key field name")
     ]
 
     # Pagination and performance
     page_size: Annotated[
-        int,
-        u.Field(
-            ge=1,
-            le=1000,
-            description="API pagination size",
-        ),
+        int, u.Field(ge=1, le=1000, description="API pagination size")
     ] = 100
     include_extended: Annotated[
-        bool,
-        u.Field(
-            description="Include extended entity metadata",
-        ),
+        bool, u.Field(description="Include extended entity metadata")
     ] = False
 
     # Filtering
     status_filter: Annotated[
         t.StrSequence | None,
-        u.Field(
-            None,
-            description="Filter by entity status values",
-        ),
+        u.Field(None, description="Filter by entity status values"),
     ]
     date_range_filter: Annotated[
         str | None,
-        u.Field(
-            None,
-            description="Date range filter for incremental streams",
-        ),
+        u.Field(None, description="Date range filter for incremental streams"),
     ]
 
     # Security
     sanitize_sensitive_data: Annotated[
-        bool,
-        u.Field(
-            description="Enable data sanitization",
-        ),
+        bool, u.Field(description="Enable data sanitization")
     ] = True
     exclude_test_entities: Annotated[
-        bool,
-        u.Field(
-            description="Exclude test/demo entities",
-        ),
+        bool, u.Field(description="Exclude test/demo entities")
     ] = True
 
     @u.computed_field()
     @property
-    def stream_config_summary(
-        self,
-    ) -> t.TapOracleOic.SectionedSummary:
+    def stream_config_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC stream configuration summary."""
         return {
             "stream_identity": {
@@ -115,9 +86,7 @@ class OicStreamConfiguration(FlextMeltanoModels.ArbitraryTypesModel):
                 "date_range_filter": bool(self.date_range_filter),
                 "exclude_test_entities": self.exclude_test_entities,
             },
-            "security": {
-                "sanitize_sensitive_data": self.sanitize_sensitive_data,
-            },
+            "security": {"sanitize_sensitive_data": self.sanitize_sensitive_data},
         }
 
     @u.model_validator(mode="after")

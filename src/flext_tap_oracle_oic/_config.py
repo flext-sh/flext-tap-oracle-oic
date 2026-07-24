@@ -23,15 +23,13 @@ from flext_tap_oracle_oic._models.config import FlextTapOracleOicConfigModels
 class FlextTapOracleOicConfig(FlextMeltanoConfig):
     """TapOracleOic config auto-loaded from ``config/*.yaml`` and validated via models."""
 
-    CONFIG_DIR: ClassVar[str] = str(
-        Path(__file__).resolve().parents[2] / "config",
-    )
+    CONFIG_DIR: ClassVar[str] = str(Path(__file__).resolve().parents[2] / "config")
 
     @cached_property
     def TapOracleOic(self) -> FlextTapOracleOicConfigModels.TapOracleOic:
         """Validated ``TapOracleOic`` business-rule config namespace."""
         root = FlextTapOracleOicConfigModels.Root.model_validate(
-            dict(self.model_extra or {}),
+            dict(self.model_extra or {})
         )
         return root.TapOracleOic
 

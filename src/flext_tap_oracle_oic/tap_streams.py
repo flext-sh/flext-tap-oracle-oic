@@ -14,9 +14,7 @@ if TYPE_CHECKING:
     from flext_api import FlextApiModels
 
 
-def _as_oic_envelope(
-    value: t.JsonMapping,
-) -> p.TapOracleOic.OicEnvelope | None:
+def _as_oic_envelope(value: t.JsonMapping) -> p.TapOracleOic.OicEnvelope | None:
     try:
         return m.TapOracleOic.OicEnvelope.model_validate(value, strict=True)
     except c.ValidationError:
@@ -53,8 +51,7 @@ class FlextTapOracleOicPaginator:
             return None
 
     def _normalize_response_payload(
-        self,
-        response: FlextApiModels.Api.HttpResponse,
+        self, response: FlextApiModels.Api.HttpResponse
     ) -> t.JsonMapping:
         """Normalize flext-api response bodies to OIC pagination payloads."""
         match response.body:
@@ -64,10 +61,7 @@ class FlextTapOracleOicPaginator:
                 msg = "Pagination requires a JSON object response body"
                 raise TypeError(msg)
 
-    def _calculate_next_offset(
-        self,
-        data: t.JsonMapping,
-    ) -> int | None:
+    def _calculate_next_offset(self, data: t.JsonMapping) -> int | None:
         """Calculate next offset based on OIC response format."""
         items = self._extract_items_from_response(data)
         if items is None or not items or len(items) < self._page_size:
@@ -75,8 +69,7 @@ class FlextTapOracleOicPaginator:
         return self.current_value + len(items)
 
     def _extract_items_from_response(
-        self,
-        data: t.JsonMapping,
+        self, data: t.JsonMapping
     ) -> t.SequenceOf[t.JsonMapping] | None:
         """Extract items from various OIC response formats."""
         envelope = _as_oic_envelope(data)

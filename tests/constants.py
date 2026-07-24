@@ -13,10 +13,7 @@ from flext_tests import FlextTestsConstants
 from flext_tap_oracle_oic import FlextTapOracleOicConstants
 
 
-class TestsFlextTapOracleOicConstants(
-    FlextTestsConstants,
-    FlextTapOracleOicConstants,
-):
+class TestsFlextTapOracleOicConstants(FlextTestsConstants, FlextTapOracleOicConstants):
     """Test constants for flext-tap-oracle-oic."""
 
 
