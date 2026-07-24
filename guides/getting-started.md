@@ -207,9 +207,7 @@ class UserService:
 Dispatcher = dict[type, Callable[..., p.Result[str]]]
 
 
-def dispatch(
-    dispatcher: Dispatcher, message: object
-) -> p.Result[str]:
+def dispatch(dispatcher: Dispatcher, message: object) -> p.Result[str]:
     handler = dispatcher.get(type(message))
     if handler is None:
         return r.fail(f"No handler for {type(message).__name__}")
