@@ -73,7 +73,7 @@ class OicMetricsRecord(FlextMeltanoModels.Entity):
     ]
     queue_depth: Annotated[int | None, u.Field(None, description="Message queue depth")]
 
-    @u.computed_field()
+    @u.computed_field
     @property
     def metrics_analysis_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC metrics complete analysis summary."""

@@ -66,7 +66,7 @@ class OicStreamConfiguration(FlextMeltanoModels.ArbitraryTypesModel):
         bool, u.Field(description="Exclude test/demo entities")
     ] = True
 
-    @u.computed_field()
+    @u.computed_field
     @property
     def stream_config_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC stream configuration summary."""

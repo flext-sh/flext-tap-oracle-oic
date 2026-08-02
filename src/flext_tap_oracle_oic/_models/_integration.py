@@ -77,7 +77,7 @@ class OicIntegrationEntity(FlextMeltanoModels.Entity):
         datetime | None, u.Field(None, description="Last execution timestamp")
     ]
 
-    @u.computed_field()
+    @u.computed_field
     @property
     def integration_health_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC integration health and performance summary."""

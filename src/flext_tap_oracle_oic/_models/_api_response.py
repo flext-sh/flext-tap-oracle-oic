@@ -64,7 +64,7 @@ class OicApiResponse(FlextMeltanoModels.Entity):
         str | None, u.Field(None, description="Request correlation ID")
     ]
 
-    @u.computed_field()
+    @u.computed_field
     @property
     def api_response_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC API response summary."""

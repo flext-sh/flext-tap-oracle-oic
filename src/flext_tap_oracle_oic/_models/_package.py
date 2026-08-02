@@ -67,7 +67,7 @@ class OicPackageEntity(FlextMeltanoModels.Entity):
         int | None, u.Field(None, description="Package download count")
     ]
 
-    @u.computed_field()
+    @u.computed_field
     @property
     def package_composition_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC package composition and usage summary."""

@@ -69,7 +69,7 @@ class OicAgentEntity(FlextMeltanoModels.Entity):
     ]
     last_error: Annotated[str | None, u.Field(None, description="Last error message")]
 
-    @u.computed_field()
+    @u.computed_field
     @property
     def agent_health_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC agent health and connectivity summary."""

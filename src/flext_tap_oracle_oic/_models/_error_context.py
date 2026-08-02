@@ -63,7 +63,7 @@ class OicErrorContext(FlextMeltanoModels.Entity):
         int | None, u.Field(None, description="Maximum retry attempts for this error")
     ]
 
-    @u.computed_field()
+    @u.computed_field
     @property
     def error_context_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC error context summary."""

@@ -72,7 +72,7 @@ class OicActivityRecord(FlextMeltanoModels.Entity):
         float | None, u.Field(None, description="Messages per second throughput")
     ]
 
-    @u.computed_field()
+    @u.computed_field
     @property
     def activity_performance_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC activity performance summary."""

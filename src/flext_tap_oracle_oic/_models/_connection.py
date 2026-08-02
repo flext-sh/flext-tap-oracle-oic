@@ -81,7 +81,7 @@ class OicConnectionEntity(FlextMeltanoModels.Entity):
         datetime | None, u.Field(description="When sanitization occurred")
     ] = u.Field(default_factory=u.now)
 
-    @u.computed_field()
+    @u.computed_field
     @property
     def connection_security_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC connection security and health summary."""

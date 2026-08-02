@@ -54,7 +54,7 @@ class OicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
     ] = 3
     timeout_seconds: Annotated[int, u.Field(description="Authentication timeout")] = 30
 
-    @u.computed_field()
+    @u.computed_field
     @property
     def auth_config_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OAuth2 authentication configuration summary."""
