@@ -1,4 +1,4 @@
-"""OracleOic.OICProject entity model.
+"""OracleOic.FlextTapOracleOicProject entity model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -6,62 +6,50 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import MutableSequence
-from datetime import datetime
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 from flext_oracle_oic import m
 from flext_tap_oracle_oic import t, u
 
+if TYPE_CHECKING:
+    from collections.abc import MutableSequence
+    from datetime import datetime
 
-class OICProject(m):
+
+class FlextTapOracleOicProject(m):
     """OIC project domain entity using flext-core patterns."""
 
     project_id: Annotated[
-        t.NonEmptyStr,
-        u.Field(..., description="OIC project identifier"),
+        t.NonEmptyStr, u.Field(..., description="OIC project identifier")
     ]
-    project_code: Annotated[
-        t.NonEmptyStr,
-        u.Field(..., description="Project code"),
-    ]
+    project_code: Annotated[t.NonEmptyStr, u.Field(..., description="Project code")]
     name: Annotated[t.NonEmptyStr, u.Field(..., description="Project name")]
     integration_ids: Annotated[
-        MutableSequence[str],
-        u.Field(description="Integration IDs in project"),
+        MutableSequence[str], u.Field(description="Integration IDs in project")
     ] = u.Field(default_factory=list)
     connection_ids: Annotated[
-        t.StrSequence,
-        u.Field(description="Connection IDs in project"),
+        t.StrSequence, u.Field(description="Connection IDs in project")
     ] = u.Field(default_factory=tuple)
     lookup_ids: Annotated[
-        t.StrSequence,
-        u.Field(description="Lookup IDs in project"),
+        t.StrSequence, u.Field(description="Lookup IDs in project")
     ] = u.Field(default_factory=tuple)
     deployment_status: Annotated[
-        str | None,
-        u.Field(None, description="Deployment status"),
+        str | None, u.Field(None, description="Deployment status")
     ]
     deployed_at: Annotated[
-        datetime | None,
-        u.Field(None, description="Deployment timestamp"),
+        datetime | None, u.Field(None, description="Deployment timestamp")
     ]
-    deployed_by: Annotated[
-        str | None,
-        u.Field(None, description="User who deployed"),
-    ]
+    deployed_by: Annotated[str | None, u.Field(None, description="User who deployed")]
     created_at: Annotated[
-        datetime | None,
-        u.Field(None, description="Creation timestamp"),
+        datetime | None, u.Field(None, description="Creation timestamp")
     ]
     updated_at: Annotated[
-        datetime | None,
-        u.Field(None, description="Last update timestamp"),
+        datetime | None, u.Field(None, description="Last update timestamp")
     ]
 
     @property
     def total_resources(self) -> int:
-        """Get total number of resources in project."""
+        """The total number of resources in project."""
         return (
             len(self.integration_ids) + len(self.connection_ids) + len(self.lookup_ids)
         )
@@ -83,4 +71,4 @@ class OICProject(m):
             self.integration_ids.remove(integration_id)
 
 
-__all__: list[str] = ["OICProject"]
+__all__: list[str] = ["FlextTapOracleOicProject"]

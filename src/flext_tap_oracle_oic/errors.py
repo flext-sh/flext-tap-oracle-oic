@@ -19,7 +19,7 @@ class FlextTapOracleOicAuthenticationError(e.AuthenticationError):
     """Oracle OIC authentication error."""
 
 
-class FlextTapOracleOicConnectionError(e.ConnectionError):
+class FlextTapOracleOicConnectionError(e.FlextConnectionError):
     """Oracle OIC connection error."""
 
 

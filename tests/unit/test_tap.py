@@ -7,17 +7,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Mapping,
-    Sequence,
-)
+from collections.abc import Mapping, Sequence
 
 import pytest
 
 from flext_tap_oracle_oic.tap import FlextTapOracleOic as TapOracleOic
-from tests.constants import c
-from tests.models import m
-from tests.typings import t
+from flext_tests import tm
+from tests import c, m, t
 
 
 def _build_tap_instance() -> m.Meltano.TapInstance:
@@ -26,7 +22,7 @@ def _build_tap_instance() -> m.Meltano.TapInstance:
         settings=m.Meltano.TapConfig(
             tap_type="oracle-oic",
             connection_config={
-                "base_url": "https://test.integration.ocp.oraclecloud.com",
+                "base_url": "https://test.integration.ocp.oraclecloud.com"
             },
             stream_config={},
         ),
@@ -35,11 +31,12 @@ def _build_tap_instance() -> m.Meltano.TapInstance:
 
 def _discover_stream_names(tap: TapOracleOic) -> t.StrSequence:
     result = tap.discover_streams(tap_instance=_build_tap_instance())
-    assert result.success
+    tm.ok(result)
     value = result.value
-    assert isinstance(value, Mapping)
+    tm.that(value, is_=Mapping)
     streams = value["streams"]
-    assert isinstance(streams, Sequence) and not isinstance(streams, str)
+    assert isinstance(streams, Sequence)
+    assert not isinstance(streams, str)
     return [str(s["tap_stream_id"]) for s in streams if isinstance(s, Mapping)]
 
 
@@ -59,8 +56,10 @@ class TestsFlextTapOracleOicTap:
         if tap.name != "tap-oracle-oic":
             msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
             raise AssertionError(msg)
-        assert tap.oic_settings.base_url == settings["base_url"]
-        assert tap.oic_settings.oauth_client_id == settings["oauth_client_id"]
+        tm.that(tap.oic_settings.TapOracleOic.base_url, eq=settings["base_url"])
+        assert (
+            tap.oic_settings.TapOracleOic.oauth_client_id == settings["oauth_client_id"]
+        )
 
     def test_discover_streams(self) -> None:
         """Test method."""
@@ -79,7 +78,7 @@ class TestsFlextTapOracleOicTap:
         if "integrations" not in stream_names:
             msg = f"Expected {'integrations'} in {stream_names}"
             raise AssertionError(msg)
-        assert "connections" in stream_names
+        tm.that(stream_names, has="connections")
 
     def test_config_validation(self) -> None:
         """Test method."""
@@ -104,11 +103,11 @@ class TestsFlextTapOracleOicTap:
         if "integrations" not in stream_names:
             msg = f"Expected {'integrations'} in {stream_names}"
             raise AssertionError(msg)
-        assert "connections" in stream_names
+        tm.that(stream_names, has="connections")
         if "packages" not in stream_names:
             msg = f"Expected {'packages'} in {stream_names}"
             raise AssertionError(msg)
-        assert "libraries" in stream_names
+        tm.that(stream_names, has="libraries")
         if "lookups" not in stream_names:
             msg = f"Expected {'lookups'} in {stream_names}"
             raise AssertionError(msg)

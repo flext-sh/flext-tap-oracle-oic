@@ -6,14 +6,15 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_api import FlextApiModels
+from typing import TYPE_CHECKING
 
 from flext_tap_oracle_oic import c, m, t, u
 
+if TYPE_CHECKING:
+    from flext_api import FlextApiModels
 
-def _as_oic_envelope(
-    value: t.JsonMapping,
-) -> m.TapOracleOic.OicEnvelope | None:
+
+def _as_oic_envelope(value: t.JsonMapping) -> m.TapOracleOic.OicEnvelope | None:
     try:
         return m.TapOracleOic.OicEnvelope.model_validate(value, strict=True)
     except c.ValidationError:
@@ -50,8 +51,7 @@ class FlextTapOracleOicPaginator:
             return None
 
     def _normalize_response_payload(
-        self,
-        response: FlextApiModels.Api.HttpResponse,
+        self, response: FlextApiModels.Api.HttpResponse
     ) -> t.JsonMapping:
         """Normalize flext-api response bodies to OIC pagination payloads."""
         match response.body:
@@ -61,10 +61,7 @@ class FlextTapOracleOicPaginator:
                 msg = "Pagination requires a JSON object response body"
                 raise TypeError(msg)
 
-    def _calculate_next_offset(
-        self,
-        data: t.JsonMapping,
-    ) -> int | None:
+    def _calculate_next_offset(self, data: t.JsonMapping) -> int | None:
         """Calculate next offset based on OIC response format."""
         items = self._extract_items_from_response(data)
         if items is None or not items or len(items) < self._page_size:
@@ -72,17 +69,18 @@ class FlextTapOracleOicPaginator:
         return self.current_value + len(items)
 
     def _extract_items_from_response(
-        self,
-        data: t.JsonMapping,
+        self, data: t.JsonMapping
     ) -> t.SequenceOf[t.JsonMapping] | None:
         """Extract items from various OIC response formats."""
         envelope = _as_oic_envelope(data)
         if envelope is None:
             return None
         if envelope.items is not None:
-            return envelope.items
+            items: t.SequenceOf[t.JsonMapping] = envelope.items
+            return items
         if envelope.data is not None:
-            return envelope.data
+            payload: t.SequenceOf[t.JsonMapping] = envelope.data
+            return payload
         return None
 
     def _track_response_time(self, response_time: float) -> None:

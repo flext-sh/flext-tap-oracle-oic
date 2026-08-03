@@ -1,4 +1,4 @@
-"""OracleOic.OICExecutionSummary entity model.
+"""OracleOic.FlextTapOracleOicExecutionSummary entity model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -6,14 +6,16 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Annotated
+from typing import TYPE_CHECKING, Annotated
 
 from flext_oracle_oic import m
 from flext_tap_oracle_oic import t, u
 
+if TYPE_CHECKING:
+    from datetime import datetime
 
-class OICExecutionSummary(m):
+
+class FlextTapOracleOicExecutionSummary(m):
     """OIC execution summary value object."""
 
     integration_id: Annotated[str, u.Field(..., description="Integration ID")]
@@ -31,8 +33,7 @@ class OICExecutionSummary(m):
         u.Field(None, description="Average execution duration"),
     ]
     last_execution_at: Annotated[
-        datetime | None,
-        u.Field(None, description="Last execution timestamp"),
+        datetime | None, u.Field(None, description="Last execution timestamp")
     ]
 
     @property
@@ -49,4 +50,4 @@ class OICExecutionSummary(m):
         return success_rate
 
 
-__all__: list[str] = ["OICExecutionSummary"]
+__all__: list[str] = ["FlextTapOracleOicExecutionSummary"]

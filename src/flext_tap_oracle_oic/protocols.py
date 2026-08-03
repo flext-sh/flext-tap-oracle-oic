@@ -12,13 +12,14 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Protocol, runtime_checkable
-
-from flext_api import FlextApiModels
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from flext_meltano import p as meltano_p
 from flext_oracle_oic import FlextOracleOicProtocols
-from flext_tap_oracle_oic import t
+
+if TYPE_CHECKING:
+    from flext_api import FlextApiModels
+    from flext_tap_oracle_oic import t
 
 
 class FlextTapOracleOicProtocols(meltano_p, FlextOracleOicProtocols):
@@ -33,10 +34,7 @@ class FlextTapOracleOicProtocols(meltano_p, FlextOracleOicProtocols):
 
             current_value: int
 
-            def get_next(
-                self,
-                response: FlextApiModels.Api.HttpResponse,
-            ) -> int | None:
+            def get_next(self, response: FlextApiModels.Api.HttpResponse) -> int | None:
                 """Return the next pagination token for a response."""
                 ...
 

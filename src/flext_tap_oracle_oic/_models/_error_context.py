@@ -26,72 +26,46 @@ class OicErrorContext(FlextMeltanoModels.Entity):
                         "http_status_code": 429,
                         "retry_after_seconds": 60,
                         "is_retryable": True,
-                    },
+                    }
                 ],
-            },
+            }
         )
     )
 
     error_type: Annotated[
-        c.TapOracleOic.OicErrorType,
-        u.Field(..., description="Error category"),
+        c.TapOracleOic.OicErrorType, u.Field(..., description="Error category")
     ]
     http_status_code: Annotated[
-        int | None,
-        u.Field(None, description="HTTP status code"),
+        int | None, u.Field(None, description="HTTP status code")
     ]
     retry_after_seconds: Annotated[
-        int | None,
-        u.Field(
-            None,
-            description="Retry after duration",
-        ),
+        int | None, u.Field(None, description="Retry after duration")
     ]
 
     # Context information
     endpoint: Annotated[
-        str | None,
-        u.Field(None, description="API endpoint that failed"),
+        str | None, u.Field(None, description="API endpoint that failed")
     ]
-    request_method: Annotated[
-        str | None,
-        u.Field(None, description="HTTP method used"),
-    ]
+    request_method: Annotated[str | None, u.Field(None, description="HTTP method used")]
     request_params: Annotated[
         t.MappingKV[str, t.JsonMapping] | None,
-        u.Field(
-            None,
-            description="Request parameters",
-        ),
+        u.Field(None, description="Request parameters"),
     ]
 
     # Recovery information
-    is_retryable: Annotated[
-        bool,
-        u.Field(
-            description="Whether error is retryable",
-        ),
-    ] = False
+    is_retryable: Annotated[bool, u.Field(description="Whether error is retryable")] = (
+        False
+    )
     suggested_action: Annotated[
-        str | None,
-        u.Field(
-            None,
-            description="Suggested recovery action",
-        ),
+        str | None, u.Field(None, description="Suggested recovery action")
     ]
     max_retry_attempts: Annotated[
-        int | None,
-        u.Field(
-            None,
-            description="Maximum retry attempts for this error",
-        ),
+        int | None, u.Field(None, description="Maximum retry attempts for this error")
     ]
 
-    @u.computed_field()
+    @u.computed_field
     @property
-    def error_context_summary(
-        self,
-    ) -> t.TapOracleOic.SectionedSummary:
+    def error_context_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC error context summary."""
         return {
             "error_classification": {

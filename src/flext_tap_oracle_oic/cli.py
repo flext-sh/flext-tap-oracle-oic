@@ -57,10 +57,7 @@ def main(args: t.StrSequence | None = None) -> int:
     Integration:
         Compatible with flext-meltano Singer CLI translation for orchestration:
 
-        >>> from flext_meltano import (
-        ...     FlextMeltanoSingerCliTranslator,
-        ...     m,
-        ... )
+        >>> from flext_meltano import FlextMeltanoSingerCliTranslator, m
         >>> params = m.Meltano.TapRunParams(
         ...     tap_name="tap-oracle-oic", config_file="settings.json", discover=True
         ... )
