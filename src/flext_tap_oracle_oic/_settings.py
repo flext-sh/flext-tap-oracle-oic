@@ -12,10 +12,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated
 
-from pydantic import BaseModel, Field
 from pydantic_settings import SettingsConfigDict
 
-from flext_core import FlextSettings
+from flext_core import FlextSettings, m
 
 _DEFAULT_BASE_URL = "https://localhost.integration.ocp.oraclecloud.com"
 
@@ -27,44 +26,44 @@ class FlextTapOracleOicSettings(FlextSettings):
         env_prefix="FLEXT_TAP_ORACLE_OIC_", env_nested_delimiter="__", extra="ignore"
     )
 
-    class _TapOracleOic(BaseModel):
+    class _TapOracleOic(m.BaseModel):
         """Namespaced Oracle OIC tap settings."""
 
         oauth_client_id: Annotated[
-            str, Field(default="", description="OAuth client id")
+            str, m.Field(default="", description="OAuth client id")
         ]
         oauth_client_secret: Annotated[
-            str, Field(default="", description="OAuth client secret")
+            str, m.Field(default="", description="OAuth client secret")
         ]
         oauth_token_url: Annotated[
             str,
-            Field(
+            m.Field(
                 default=f"{_DEFAULT_BASE_URL}/oauth/token",
                 description="OAuth token URL",
             ),
         ]
-        oauth_audience: Annotated[str, Field(default="", description="OAuth audience")]
+        oauth_audience: Annotated[str, m.Field(default="", description="OAuth audience")]
         base_url: Annotated[
-            str, Field(default=_DEFAULT_BASE_URL, description="OIC base URL")
+            str, m.Field(default=_DEFAULT_BASE_URL, description="OIC base URL")
         ]
-        timeout: Annotated[int, Field(default=30, ge=1, description="HTTP timeout (s)")]
-        max_retries: Annotated[int, Field(default=3, ge=0, description="Max retries")]
-        page_size: Annotated[int, Field(default=10, ge=1, description="Page size")]
+        timeout: Annotated[int, m.Field(default=30, ge=1, description="HTTP timeout (s)")]
+        max_retries: Annotated[int, m.Field(default=3, ge=0, description="Max retries")]
+        page_size: Annotated[int, m.Field(default=10, ge=1, description="Page size")]
         include_extended: Annotated[
-            bool, Field(default=False, description="Extended metadata streams")
+            bool, m.Field(default=False, description="Extended metadata streams")
         ]
         include_monitoring: Annotated[
-            bool, Field(default=False, description="Monitoring streams")
+            bool, m.Field(default=False, description="Monitoring streams")
         ]
-        include_logs: Annotated[bool, Field(default=False, description="Log streams")]
+        include_logs: Annotated[bool, m.Field(default=False, description="Log streams")]
         include_artifacts: Annotated[
-            bool, Field(default=False, description="Artifact streams")
+            bool, m.Field(default=False, description="Artifact streams")
         ]
 
     if TYPE_CHECKING:
         TapOracleOic: _TapOracleOic
     else:
-        TapOracleOic: _TapOracleOic = Field(
+        TapOracleOic: _TapOracleOic = m.Field(
             default_factory=_TapOracleOic,
             description="Namespaced Oracle OIC tap settings.",
         )
