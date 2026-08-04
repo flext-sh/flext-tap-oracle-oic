@@ -42,11 +42,15 @@ class FlextTapOracleOicSettings(FlextSettings):
                 description="OAuth token URL",
             ),
         ]
-        oauth_audience: Annotated[str, m.Field(default="", description="OAuth audience")]
+        oauth_audience: Annotated[
+            str, m.Field(default="", description="OAuth audience")
+        ]
         base_url: Annotated[
             str, m.Field(default=_DEFAULT_BASE_URL, description="OIC base URL")
         ]
-        timeout: Annotated[int, m.Field(default=30, ge=1, description="HTTP timeout (s)")]
+        timeout: Annotated[
+            int, m.Field(default=30, ge=1, description="HTTP timeout (s)")
+        ]
         max_retries: Annotated[int, m.Field(default=3, ge=0, description="Max retries")]
         page_size: Annotated[int, m.Field(default=10, ge=1, description="Page size")]
         include_extended: Annotated[
