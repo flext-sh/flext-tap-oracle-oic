@@ -546,7 +546,7 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
                 default_page_size: int = c.DEFAULT_PAGE_SIZE
                 return default_page_size
             calculated_size: int = max(1, total_records // target_requests)
-            return calculated_size if calculated_size <= 1000 else 1000
+            return min(calculated_size, 1000)
 
         @staticmethod
         def estimate_extraction_time(
