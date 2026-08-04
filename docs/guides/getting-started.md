@@ -105,9 +105,7 @@ from flext_core import FlextSettings
 # Create application settings
 settings = FlextSettings(log_level="INFO")
 
-u.Cli.info("FLEXT application initialized!")
-```
-
+u.Cli.info("FLEXT application initialized!")```
 ### 2. Using flext-ldif for LDIF Processing
 
 ```python
@@ -125,9 +123,7 @@ if result.success:
     entries = result.unwrap().entries
     u.Cli.info(f"Successfully parsed {len(entries)} LDIF entries")
 else:
-    u.Cli.info(f"Failed to parse LDIF: {result.failure()}")
-```
-
+    u.Cli.info(f"Failed to parse LDIF: {result.failure()}")```
 ### 3. Railway-Oriented Error Handling
 
 ```python
@@ -168,15 +164,13 @@ result = process_ldif_data(ldif_content)
 if result.success:
     u.Cli.info(f"Success: {result.unwrap()}")
 else:
-    u.Cli.info(f"Error: {result.failure()}")
-```
-
+    u.Cli.info(f"Error: {result.failure()}")```
 ### 4. CQRS Pattern with Commands and Queries
 
 ```python
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Callable
+from collections.abc import Callable
 
 from flext_cli import u
 from flext_core import r, p
@@ -225,9 +219,7 @@ create_result = dispatch(dispatcher, CreateUserCommand("john", "john@example.com
 get_result = dispatch(dispatcher, GetUserQuery("user123"))
 
 u.Cli.info(f"Create: {create_result.unwrap()}")
-u.Cli.info(f"Get: {get_result.unwrap()}")
-```
-
+u.Cli.info(f"Get: {get_result.unwrap()}")```
 ## Configuration
 
 ### Basic Configuration
@@ -256,9 +248,7 @@ settings = FlextLdifSettings(
 )
 
 # Use configuration
-u.Cli.info(f"LDIF settings: {settings.model_dump()}")
-```
-
+u.Cli.info(f"LDIF settings: {settings.model_dump()}")```
 ## Next Steps
 
 ### Explore the Ecosystem

@@ -2,6 +2,10 @@
 
 # flext_tap_oracle_oic.tap
 
+<!-- TOC START -->
+- No sections found
+<!-- TOC END -->
+
 ::: flext_tap_oracle_oic.tap
     options:
       show_root_heading: true
