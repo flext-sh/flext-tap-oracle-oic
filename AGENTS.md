@@ -33,6 +33,8 @@ src/flext_tap_oracle_oic/
 ## Conventions (specific to this package)
 
 - Settings use `settings.TapOracleOic.*`.
+- Config/settings canonical pattern: ADR-012.
+- Codemod governance (ast-grep + make mod): ADR-014.
 
 ## Anti-Patterns / Gotchas
 
