@@ -367,6 +367,10 @@ def _build_config_from_env() -> t.StrMapping:
     """Build configuration from environment variables using pydantic-settings."""
     try:
         settings = FlextTapOracleOicSettings.model_validate({})
+    except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
+        logger.debug("Configuration loading failed: %s", e)
+        return {}
+    else:
         return {
             "oauth_client_id": settings.TapOracleOic.oauth_client_id,
             "oauth_client_secret": settings.TapOracleOic.oauth_client_secret,
@@ -374,9 +378,6 @@ def _build_config_from_env() -> t.StrMapping:
             "oic_url": settings.TapOracleOic.base_url,
             "oauth_scope": settings.TapOracleOic.oauth_audience,
         }
-    except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-        logger.debug("Configuration loading failed: %s", e)
-        return {}
 
 
 def _validate_and_setup_config() -> int:
