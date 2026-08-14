@@ -64,9 +64,6 @@ def main(args: t.StrSequence | None = None) -> int:
         >>> command = FlextMeltanoSingerCliTranslator.translate_tap_run(params)
         >>> # Executes: ["tap-oracle-oic", "--config", "settings.json", "--discover"]
 
-    Raises:
-        SystemExit: On configuration errors or execution failures
-
     """
     return FlextTapOracleOicCli.run(args)
 
