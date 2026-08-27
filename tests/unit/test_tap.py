@@ -17,16 +17,17 @@ from tests import c, m, t
 
 
 def _build_tap_instance() -> m.Meltano.TapInstance:
-    return m.Meltano.TapInstance(
-        tap_type="oracle-oic",
-        settings=m.Meltano.TapConfig(
+    instance: m.Meltano.TapInstance = m.Meltano.TapInstance.model_validate({
+        "tap_type": "oracle-oic",
+        "config": m.Meltano.TapConfig(
             tap_type="oracle-oic",
             connection_config={
                 "base_url": "https://test.integration.ocp.oraclecloud.com"
             },
             stream_config={},
         ),
-    )
+    })
+    return instance
 
 
 def _discover_stream_names(tap: TapOracleOic) -> t.StrSequence:
