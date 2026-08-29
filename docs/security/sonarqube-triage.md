@@ -45,7 +45,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        91                          th.Meltano.SingerDateTimeType(),
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 2 · 🟠 CRITICAL · CODE_SMELL · `python:S1192`
 **Local**: `src/flext_tap_oracle_oic/_models/streams.py:92` · **Effort**: 14min
@@ -64,7 +64,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        96                          th.Meltano.SingerStringType(),
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 3 · 🟠 CRITICAL · CODE_SMELL · `python:S1192`
 **Local**: `src/flext_tap_oracle_oic/_models/streams.py:97` · **Effort**: 14min
@@ -83,7 +83,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       101                          th.Meltano.SingerStringType(),
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 4 · 🟠 CRITICAL · CODE_SMELL · `python:S1192`
 **Local**: `src/flext_tap_oracle_oic/_models/streams.py:102` · **Effort**: 12min
@@ -102,7 +102,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       106                          th.Meltano.SingerArrayType(th.Meltano.SingerObjectType()),
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 5 · 🟠 CRITICAL · CODE_SMELL · `python:S1192`
 **Local**: `src/flext_tap_oracle_oic/_models/streams.py:142` · **Effort**: 6min
@@ -121,7 +121,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       146                          th.Meltano.SingerStringType(),
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 6 · 🟠 CRITICAL · CODE_SMELL · `python:S1192`
 **Local**: `src/flext_tap_oracle_oic/_models/streams.py:246` · **Effort**: 8min
@@ -140,7 +140,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       250                          th.Meltano.SingerStringType(),
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 7 · 🟠 CRITICAL · CODE_SMELL · `python:S3776`
 **Local**: `src/flext_tap_oracle_oic/models.py:222` · **Effort**: 6min
@@ -159,7 +159,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       226  
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 8 · 🟠 CRITICAL · CODE_SMELL · `python:S1192`
 **Local**: `src/flext_tap_oracle_oic/models.py:479` · **Effort**: 6min
@@ -178,7 +178,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       483                      return
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 9 · 🟠 CRITICAL · CODE_SMELL · `python:S1192`
 **Local**: `src/flext_tap_oracle_oic/tap.py:130` · **Effort**: 8min
@@ -197,7 +197,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       134                  return r[FlextApiModels.Api.HttpResponse].fail(
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 10 · 🟠 CRITICAL · CODE_SMELL · `python:S3776`
 **Local**: `src/flext_tap_oracle_oic/utilities.py:335` · **Effort**: 6min
@@ -216,7 +216,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       339              settings: Stream configuration
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 11 · 🟡 MAJOR · VULNERABILITY · `githubactions:S8264`
 **Local**: `.github/workflows/docs.yml:18` · **Effort**: 5min
@@ -235,7 +235,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        22  concurrency:
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 12 · 🟡 MAJOR · VULNERABILITY · `githubactions:S8233`
 **Local**: `.github/workflows/docs.yml:19` · **Effort**: 5min
@@ -254,7 +254,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        23    group: pages
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 13 · 🟡 MAJOR · VULNERABILITY · `githubactions:S8233`
 **Local**: `.github/workflows/docs.yml:20` · **Effort**: 5min
@@ -273,7 +273,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        24    cancel-in-progress: false
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 14 · 🟡 MAJOR · VULNERABILITY · `text:S8565`
 **Local**: `pyproject.toml:-` · **Effort**: 5min
@@ -281,7 +281,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 > Dependency versions are not predictable if the lock file (uv.lock, poetry.lock, pdm.lock or pylock.toml) is missing.
 
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 15 · ⚪ MINOR · CODE_SMELL · `python:S7504`
 **Local**: `conftest.py:20` · **Effort**: 5min
@@ -300,7 +300,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        24                  sys.modules.pop(module_name, None)
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 16 · ⚪ MINOR · CODE_SMELL · `python:S6353`
 **Local**: `src/flext_tap_oracle_oic/constants.py:40` · **Effort**: 5min
@@ -319,7 +319,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        44          MAX_RETRIES: ClassVar[int] = 3
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 17 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_tap_oracle_oic/models.py:111` · **Effort**: 2min
@@ -338,7 +338,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       115  
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 18 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_tap_oracle_oic/models.py:493` · **Effort**: 2min
@@ -357,7 +357,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       497          OicConnectionEntity = _OicConnectionEntity
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 19 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_tap_oracle_oic/models.py:495` · **Effort**: 2min
@@ -376,7 +376,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       499          OicActivityRecord = _OicActivityRecord
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 20 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_tap_oracle_oic/models.py:497` · **Effort**: 2min
@@ -395,7 +395,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       501          OicPackageEntity = _OicPackageEntity
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 21 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_tap_oracle_oic/models.py:499` · **Effort**: 2min
@@ -414,7 +414,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       503          OicMetricsRecord = _OicMetricsRecord
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 22 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_tap_oracle_oic/models.py:501` · **Effort**: 2min
@@ -433,7 +433,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       505          OicAgentEntity = _OicAgentEntity
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 23 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_tap_oracle_oic/models.py:503` · **Effort**: 2min
@@ -452,7 +452,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       507          OicStreamConfiguration = _OicStreamConfiguration
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 24 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_tap_oracle_oic/models.py:505` · **Effort**: 2min
@@ -471,7 +471,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       509          OicApiResponse = _OicApiResponse
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 25 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_tap_oracle_oic/models.py:507` · **Effort**: 2min
@@ -490,7 +490,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       511          OicErrorContext = _OicErrorContext
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 26 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_tap_oracle_oic/models.py:509` · **Effort**: 2min
@@ -509,7 +509,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       513          class OracleOic(m.OracleOic):
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 27 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_tap_oracle_oic/models.py:511` · **Effort**: 2min
@@ -528,7 +528,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       515  
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 28 · ⚪ MINOR · CODE_SMELL · `python:S5685`
 **Local**: `src/flext_tap_oracle_oic/tap.py:306` · **Effort**: 10min
@@ -547,5 +547,4 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       310              )
 ```
 
-**Decisão**: 
-
+**Decisão**: pendente
