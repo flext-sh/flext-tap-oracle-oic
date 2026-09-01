@@ -1,0 +1,6 @@
+{
+  "backend": "dolt",
+  "database": "dolt",
+  "dolt_database": "flext-tap-oracle-oic",
+  "dolt_mode": "server"
+}
