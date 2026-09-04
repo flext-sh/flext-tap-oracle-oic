@@ -21,6 +21,38 @@ def _properties_to_dict(properties: p.TapOracleOic.PropertiesListLike) -> t.Json
     return t.json_mapping_adapter().validate_python(properties.to_dict())
 
 
+def _oic_common_properties() -> tuple[th.Meltano.SingerProperty[str], ...]:
+    """Return the audit trail properties shared by every OIC stream.
+
+    ``created``, ``lastUpdated``, ``createdBy`` and ``lastUpdatedBy`` carry the
+    same SingerProperty definition across all streams, so they are factored out
+    here and spread via ``*_oic_common_properties()`` to eliminate the
+    per-stream jscpd clone.
+    """
+    return (
+        th.Meltano.SingerProperty(
+            "created",
+            th.Meltano.SingerDateTimeType(),
+            description="Creation timestamp",
+        ),
+        th.Meltano.SingerProperty(
+            "lastUpdated",
+            th.Meltano.SingerDateTimeType(),
+            description="Last update timestamp",
+        ),
+        th.Meltano.SingerProperty(
+            "createdBy",
+            th.Meltano.SingerStringType(),
+            description="Created by user",
+        ),
+        th.Meltano.SingerProperty(
+            "lastUpdatedBy",
+            th.Meltano.SingerStringType(),
+            description="Last updated by user",
+        ),
+    )
+
+
 class FlextTapOracleOicModelsStreams:
     """Stream model definitions for Oracle Integration Cloud.
 
@@ -81,26 +113,7 @@ class FlextTapOracleOicModelsStreams:
                         th.Meltano.SingerStringType(),
                         description="Integration style",
                     ),
-                    th.Meltano.SingerProperty(
-                        "created",
-                        th.Meltano.SingerDateTimeType(),
-                        description="Creation timestamp",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "lastUpdated",
-                        th.Meltano.SingerDateTimeType(),
-                        description="Last update timestamp",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "createdBy",
-                        th.Meltano.SingerStringType(),
-                        description="Created by user",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "lastUpdatedBy",
-                        th.Meltano.SingerStringType(),
-                        description="Last updated by user",
-                    ),
+                    *_oic_common_properties(),
                     th.Meltano.SingerProperty(
                         "connections",
                         th.Meltano.SingerArrayType(th.Meltano.SingerObjectType()),
@@ -200,26 +213,7 @@ class FlextTapOracleOicModelsStreams:
                         th.Meltano.SingerStringType(),
                         description="Connection status",
                     ),
-                    th.Meltano.SingerProperty(
-                        "created",
-                        th.Meltano.SingerDateTimeType(),
-                        description="Creation timestamp",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "lastUpdated",
-                        th.Meltano.SingerDateTimeType(),
-                        description="Last update timestamp",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "createdBy",
-                        th.Meltano.SingerStringType(),
-                        description="Created by user",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "lastUpdatedBy",
-                        th.Meltano.SingerStringType(),
-                        description="Last updated by user",
-                    ),
+                    *_oic_common_properties(),
                     th.Meltano.SingerProperty(
                         "connectionUrl",
                         th.Meltano.SingerStringType(),
@@ -298,26 +292,7 @@ class FlextTapOracleOicModelsStreams:
                         th.Meltano.SingerStringType(),
                         description="Package status",
                     ),
-                    th.Meltano.SingerProperty(
-                        "created",
-                        th.Meltano.SingerDateTimeType(),
-                        description="Creation timestamp",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "lastUpdated",
-                        th.Meltano.SingerDateTimeType(),
-                        description="Last update timestamp",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "createdBy",
-                        th.Meltano.SingerStringType(),
-                        description="Created by user",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "lastUpdatedBy",
-                        th.Meltano.SingerStringType(),
-                        description="Last updated by user",
-                    ),
+                    *_oic_common_properties(),
                     th.Meltano.SingerProperty(
                         "integrations",
                         th.Meltano.SingerArrayType(th.Meltano.SingerObjectType()),
@@ -373,26 +348,7 @@ class FlextTapOracleOicModelsStreams:
                         th.Meltano.SingerStringType(),
                         description="Lookup status",
                     ),
-                    th.Meltano.SingerProperty(
-                        "created",
-                        th.Meltano.SingerDateTimeType(),
-                        description="Creation timestamp",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "lastUpdated",
-                        th.Meltano.SingerDateTimeType(),
-                        description="Last update timestamp",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "createdBy",
-                        th.Meltano.SingerStringType(),
-                        description="Created by user",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "lastUpdatedBy",
-                        th.Meltano.SingerStringType(),
-                        description="Last updated by user",
-                    ),
+                    *_oic_common_properties(),
                     th.Meltano.SingerProperty(
                         "valueCount",
                         th.Meltano.SingerIntegerType(),
@@ -455,26 +411,7 @@ class FlextTapOracleOicModelsStreams:
                         th.Meltano.SingerStringType(),
                         description="Library status",
                     ),
-                    th.Meltano.SingerProperty(
-                        "created",
-                        th.Meltano.SingerDateTimeType(),
-                        description="Creation timestamp",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "lastUpdated",
-                        th.Meltano.SingerDateTimeType(),
-                        description="Last update timestamp",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "createdBy",
-                        th.Meltano.SingerStringType(),
-                        description="Created by user",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "lastUpdatedBy",
-                        th.Meltano.SingerStringType(),
-                        description="Last updated by user",
-                    ),
+                    *_oic_common_properties(),
                     th.Meltano.SingerProperty(
                         "version",
                         th.Meltano.SingerStringType(),
@@ -694,26 +631,7 @@ class FlextTapOracleOicModelsStreams:
                         th.Meltano.SingerStringType(),
                         description="Project status",
                     ),
-                    th.Meltano.SingerProperty(
-                        "created",
-                        th.Meltano.SingerDateTimeType(),
-                        description="Creation timestamp",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "lastUpdated",
-                        th.Meltano.SingerDateTimeType(),
-                        description="Last update timestamp",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "createdBy",
-                        th.Meltano.SingerStringType(),
-                        description="Created by user",
-                    ),
-                    th.Meltano.SingerProperty(
-                        "lastUpdatedBy",
-                        th.Meltano.SingerStringType(),
-                        description="Last updated by user",
-                    ),
+                    *_oic_common_properties(),
                     th.Meltano.SingerProperty(
                         "folders",
                         th.Meltano.SingerArrayType(th.Meltano.SingerObjectType()),
