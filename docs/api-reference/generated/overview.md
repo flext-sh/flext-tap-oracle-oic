@@ -17,18 +17,18 @@
 - Project class: `integration`
 - Keywords: `data-extraction`, `enterprise`, `etl`, `flext`, `singer`, `tap`,
   `typed`
-- Main facades: `FlextTapOracleOic`, `FlextTapOracleOicCli`,
+- Main facades: `FlextTapOracleOic`, `FlextTapOracleOicApiError`,
+  `FlextTapOracleOicAuthenticationError`, `FlextTapOracleOicCli`,
   `FlextTapOracleOicClient`, `FlextTapOracleOicConfig`,
-  `FlextTapOracleOicConstants`, `FlextTapOracleOicModels`,
-  `FlextTapOracleOicProtocols`, `FlextTapOracleOicService` (+3 more)
+  `FlextTapOracleOicConnectionError`, `FlextTapOracleOicConstants` (+8 more)
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
 - Public symbol exports: `FlextOracleOicAuthenticator`, `FlextTapOracleOic`,
+  `FlextTapOracleOicApiError`, `FlextTapOracleOicAuthenticationError`,
   `FlextTapOracleOicCli`, `FlextTapOracleOicClient`, `FlextTapOracleOicConfig`,
-  `FlextTapOracleOicConstants`, `FlextTapOracleOicModels`,
-  `FlextTapOracleOicProtocols`, `FlextTapOracleOicService`,
-  `FlextTapOracleOicSettings` (+6 more)
+  `FlextTapOracleOicConnectionError`, `FlextTapOracleOicConstants`,
+  `FlextTapOracleOicModels` (+11 more)
 - Exported module shortcuts: _none_
-- Generated module pages: `8`
+- Generated module pages: `10`
 
 ## Next Pages
 
