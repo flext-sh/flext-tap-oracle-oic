@@ -54,7 +54,7 @@ class FlextTapOracleOicLookup(m):
 
     @property
     def is_empty(self) -> bool:
-        """Check if lookup is empty."""
+        """Whether lookup is empty."""
         is_empty: bool = self.row_count == 0
         return is_empty
 

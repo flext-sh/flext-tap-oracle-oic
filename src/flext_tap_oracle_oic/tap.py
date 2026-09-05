@@ -6,12 +6,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import sys
 from collections.abc import Mapping
 from typing import ClassVar, override
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
-from flext_cli import cli
 from flext_meltano.services.abstractions import FlextMeltanoAbstractions
 from flext_tap_oracle_oic import FlextTapOracleOicSettings, c, m, p, r, t, u
 from flext_tap_oracle_oic._models.streams import ALL_STREAMS
@@ -346,111 +344,8 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             return r[bool].fail(exception_msg)
 
 
-def main() -> int:
-    """Run Oracle OIC tap with proper error handling."""
-    exit_code = _validate_and_setup_config()
-    if exit_code != 0:
-        return exit_code
-    config_typed = t.json_dict_adapter().validate_python(_build_config_from_env())
-    tap = FlextTapOracleOic(settings=config_typed)
-    try:
-        return _execute_tap_command(tap)
-    except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-        logger.exception("Oracle OIC tap execution failed")
-        err_msg = f"Tap execution failed with error: {type(e).__name__}: {e}"
-        logger.warning(err_msg)
-        logger.info("Returning 1 - legitimate tap execution failure properly handled")
-        return 1
-
-
-def _build_config_from_env() -> t.StrMapping:
-    """Build configuration from environment variables using pydantic-settings."""
-    try:
-        settings = FlextTapOracleOicSettings.model_validate({})
-    except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-        logger.debug("Configuration loading failed: %s", e)
-        return {}
-    else:
-        return {
-            "oauth_client_id": settings.TapOracleOic.oauth_client_id,
-            "oauth_client_secret": settings.TapOracleOic.oauth_client_secret,
-            "oauth_token_url": settings.TapOracleOic.oauth_token_url,
-            "oic_url": settings.TapOracleOic.base_url,
-            "oauth_scope": settings.TapOracleOic.oauth_audience,
-        }
-
-
-def _validate_and_setup_config() -> int:
-    """Validate required configuration. Returns 0 for success, 1 for error."""
-    settings = dict(_build_config_from_env())
-    required_config = [
-        "oauth_client_id",
-        "oauth_client_secret",
-        "oauth_token_url",
-        "oic_url",
-    ]
-    missing_config = [key for key in required_config if not settings.get(key)]
-    if missing_config:
-        logger.error("Missing required configuration: ")
-        for key in missing_config:
-            logger.error(f"{key} (env var: TAP_ORACLE_OIC_{key.upper()})")
-        return 1
-    return 0
-
-
-def _execute_tap_command(tap: FlextTapOracleOic) -> int:
-    """Execute appropriate tap command based on arguments."""
-    if "--discover" in sys.argv:
-        return _execute_discover_command(tap)
-    if "--test" in sys.argv:
-        return _execute_test_command(tap)
-    if "--run" in sys.argv:
-        return _execute_run_command(tap)
-    return 0
-
-
-def _execute_discover_command(tap: FlextTapOracleOic) -> int:
-    """Execute discovery command."""
-    logger.info("Discovering Oracle OIC streams")
-    streams = tap.discover_oic_streams()
-    catalog = {
-        "streams": [
-            {
-                "tap_stream_id": getattr(stream, "name", c.IDENTIFIER_UNKNOWN),
-                "schema": getattr(stream, "schema", {}),
-                "key_properties": getattr(stream, "primary_keys", []),
-                "replication_method": "INCREMENTAL"
-                if getattr(stream, "replication_key", None)
-                else "FULL_TABLE",
-                "replication_key": getattr(stream, "replication_key", None),
-            }
-            for stream in streams
-        ]
-    }
-    logger.info("Generated catalog with %s streams", len(catalog["streams"]))
-    return 0
-
-
-def _execute_test_command(tap: FlextTapOracleOic) -> int:
-    """Execute test command."""
-    logger.info("Testing Oracle OIC connection")
-    result = tap.test_connection()
-    return 0 if result.success else 1
-
-
-def _execute_run_command(_tap: FlextTapOracleOic) -> int:
-    """Execute run command."""
-    logger.info("Running Oracle OIC data extraction")
-    return 0
-
-
-if __name__ == "__main__":
-    cli.exit(main())
-
 __all__: list[str] = [
     "FlextOracleOicAuthenticator",
     "FlextTapOracleOic",
     "FlextTapOracleOicClient",
-    "logger",
-    "main",
 ]
