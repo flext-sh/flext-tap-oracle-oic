@@ -35,9 +35,12 @@ class TestsFlextTapOracleOicUtilities(FlextTestsUtilities, FlextTapOracleOicUtil
                 """Return stream identifiers from the public Singer catalog."""
                 result = tap.discover_streams(tap_instance=tap_instance)
                 tm.ok(result)
-                streams = result.value.get("streams")
+                catalog = result.unwrap()
+                streams = catalog.get("streams")
                 tm.that(streams, is_=Sequence)
-                if not isinstance(streams, Sequence) or isinstance(streams, str):
+                if not isinstance(streams, Sequence) or isinstance(
+                    streams, (str, bytes)
+                ):
                     msg = "public discovery catalog must expose a stream sequence"
                     raise AssertionError(msg)
                 names: list[str] = []
