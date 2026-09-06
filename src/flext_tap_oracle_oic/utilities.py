@@ -133,7 +133,9 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
                     parsed_response["items"] = response_data["data"]
                 return r[t.JsonMapping].ok(parsed_response)
             except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-                return r[t.JsonMapping].fail(f"Response parsing error: {e}", exception=e)
+                return r[t.JsonMapping].fail(
+                    f"Response parsing error: {e}", exception=e
+                )
 
         @staticmethod
         def validate_oic_endpoint(endpoint_url: str) -> p.Result[str]:

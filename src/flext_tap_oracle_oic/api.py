@@ -33,4 +33,5 @@ class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
         msg = "tap-oracle-oic uses CLI dispatch, not singer_sdk.Tap"
         raise TypeError(msg)
 
-__all__: list[str] = ["FlextTapOracleOicService", ]
+
+__all__: list[str] = ["FlextTapOracleOicService"]

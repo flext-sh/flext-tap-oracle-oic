@@ -29,8 +29,7 @@ class TestsFlextTapOracleOicUtilities(FlextTestsUtilities, FlextTapOracleOicUtil
 
             @staticmethod
             def discover_stream_names(
-                tap: FlextTapOracleOic,
-                tap_instance: m.Meltano.TapInstance,
+                tap: FlextTapOracleOic, tap_instance: m.Meltano.TapInstance
             ) -> t.StrSequence:
                 """Return stream identifiers from the public Singer catalog."""
                 result = tap.discover_streams(tap_instance=tap_instance)

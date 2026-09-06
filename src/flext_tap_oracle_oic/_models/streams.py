@@ -31,9 +31,7 @@ def _oic_common_properties() -> tuple[th.Meltano.SingerProperty[str], ...]:
     """
     return (
         th.Meltano.SingerProperty(
-            "created",
-            th.Meltano.SingerDateTimeType(),
-            description="Creation timestamp",
+            "created", th.Meltano.SingerDateTimeType(), description="Creation timestamp"
         ),
         th.Meltano.SingerProperty(
             "lastUpdated",
@@ -41,9 +39,7 @@ def _oic_common_properties() -> tuple[th.Meltano.SingerProperty[str], ...]:
             description="Last update timestamp",
         ),
         th.Meltano.SingerProperty(
-            "createdBy",
-            th.Meltano.SingerStringType(),
-            description="Created by user",
+            "createdBy", th.Meltano.SingerStringType(), description="Created by user"
         ),
         th.Meltano.SingerProperty(
             "lastUpdatedBy",

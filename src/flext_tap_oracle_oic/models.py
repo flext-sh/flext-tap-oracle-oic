@@ -150,10 +150,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             @property
             def url_base(self) -> str:
                 """Base URL for Oracle OIC API requests with intelligent discovery.
-                
+
                 Returns:
                 Base URL with appropriate OIC API endpoint for stream type.
-                
+
                 """
                 base_url_raw = self.settings.get("base_url") or self.settings.get(
                     "oic_url", ""

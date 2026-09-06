@@ -21,22 +21,16 @@ class TestsFlextTapOracleOic:
     """Public tap construction and Singer discovery contracts."""
 
     def test_default_tap_exposes_typed_public_settings(
-        self,
-        tap_oracle_oic: FlextTapOracleOic,
-        tap_instance: m.Meltano.TapInstance,
+        self, tap_oracle_oic: FlextTapOracleOic, tap_instance: m.Meltano.TapInstance
     ) -> None:
         """The public facade exposes typed settings and its request identity."""
         tm.that(tap_oracle_oic.oic_settings, is_=FlextTapOracleOicSettings)
         tm.that(tap_instance.tap_type, eq=tap_oracle_oic.name)
 
     def test_discovery_returns_the_canonical_public_stream_catalog(
-        self,
-        tap_oracle_oic: FlextTapOracleOic,
-        tap_instance: m.Meltano.TapInstance,
+        self, tap_oracle_oic: FlextTapOracleOic, tap_instance: m.Meltano.TapInstance
     ) -> None:
         """Discovery returns exactly the streams owned by the public constants."""
-        names = u.TapOracleOic.Tests.discover_stream_names(
-            tap_oracle_oic, tap_instance
-        )
+        names = u.TapOracleOic.Tests.discover_stream_names(tap_oracle_oic, tap_instance)
 
         tm.that(names, eq=tuple(c.TapOracleOic.CORE_STREAMS))
