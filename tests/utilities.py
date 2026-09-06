@@ -41,18 +41,18 @@ class TestsFlextTapOracleOicUtilities(FlextTestsUtilities, FlextTapOracleOicUtil
                     streams, (str, bytes)
                 ):
                     msg = "public discovery catalog must expose a stream sequence"
-                    raise AssertionError(msg)
+                    raise TypeError(msg)
                 names: list[str] = []
                 for stream in streams:
                     tm.that(stream, is_=Mapping)
                     if not isinstance(stream, Mapping):
                         msg = "public discovery catalog entries must be mappings"
-                        raise AssertionError(msg)
+                        raise TypeError(msg)
                     stream_id = stream.get("tap_stream_id")
                     tm.that(stream_id, is_=str)
                     if not isinstance(stream_id, str):
                         msg = "public discovery catalog entries require tap_stream_id"
-                        raise AssertionError(msg)
+                        raise TypeError(msg)
                     names.append(stream_id)
                 return tuple(names)
 
