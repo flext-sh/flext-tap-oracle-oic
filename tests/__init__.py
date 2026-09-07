@@ -1,45 +1,95 @@
-# AUTO-GENERATED FILE — canonical lazy tests facade. Regenerate with: make gen
-"""Test package facade exposing the project test aliases lazily."""
+# AUTO-GENERATED FILE — Regenerate with: make gen
+"""Tests package."""
 
 from __future__ import annotations
 
+from types import MappingProxyType
 from typing import TYPE_CHECKING
 
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from tests.base import (
-        TestsFlextTapOracleOicServiceBase as TestsFlextTapOracleOicServiceBase,
-        s as s,
-    )
-    from tests.constants import (
-        TestsFlextTapOracleOicConstants as TestsFlextTapOracleOicConstants,
-        c as c,
-    )
-    from tests.models import (
-        TestsFlextTapOracleOicModels as TestsFlextTapOracleOicModels,
-        m as m,
-    )
-    from tests.protocols import (
-        TestsFlextTapOracleOicProtocols as TestsFlextTapOracleOicProtocols,
-        p,
-    )
-    from tests.typings import (
-        TestsFlextTapOracleOicTypes as TestsFlextTapOracleOicTypes,
-        t as t,
-    )
-    from tests.utilities import (
-        TestsFlextTapOracleOicUtilities as TestsFlextTapOracleOicUtilities,
-        u,
-    )
+    from flext_tap_oracle_oic import FlextTapOracleOicConstants
+    from flext_tests import FlextTestsConstants, d, e, h, r, td, tf, tk, tm, tv, x
 
-_LAZY_IMPORTS = build_lazy_import_map({
-    ".constants": ("TestsFlextTapOracleOicConstants", "c"),
-    ".typings": ("TestsFlextTapOracleOicTypes", "t"),
-    ".protocols": ("TestsFlextTapOracleOicProtocols", "p"),
-    ".models": ("TestsFlextTapOracleOicModels", "m"),
-    ".utilities": ("TestsFlextTapOracleOicUtilities", "u"),
-    ".base": ("TestsFlextTapOracleOicServiceBase", "s"),
-})
+    from . import unit as unit
+    from .base import (
+        TestsFlextTapOracleOicServiceBase,
+        TestsFlextTapOracleOicServiceBase as s,
+    )
+    from .constants import (
+        TestsFlextTapOracleOicConstants,
+        TestsFlextTapOracleOicConstants as c,
+    )
+    from .models import TestsFlextTapOracleOicModels, TestsFlextTapOracleOicModels as m
+    from .protocols import (
+        TestsFlextTapOracleOicProtocols,
+        TestsFlextTapOracleOicProtocols as p,
+    )
+    from .settings import TestsFlextTapOracleOicSettings
+    from .typings import TestsFlextTapOracleOicTypes, TestsFlextTapOracleOicTypes as t
+    from .utilities import (
+        TestsFlextTapOracleOicUtilities,
+        TestsFlextTapOracleOicUtilities as u,
+    )
+__all__: tuple[str, ...] = (
+    "FlextTapOracleOicConstants",
+    "FlextTestsConstants",
+    "TestsFlextTapOracleOicConstants",
+    "TestsFlextTapOracleOicModels",
+    "TestsFlextTapOracleOicProtocols",
+    "TestsFlextTapOracleOicServiceBase",
+    "TestsFlextTapOracleOicSettings",
+    "TestsFlextTapOracleOicTypes",
+    "TestsFlextTapOracleOicUtilities",
+    "c",
+    "d",
+    "e",
+    "h",
+    "m",
+    "p",
+    "r",
+    "s",
+    "t",
+    "td",
+    "tf",
+    "tk",
+    "tm",
+    "tv",
+    "u",
+    "unit",
+    "x",
+)
 
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, publish_all=False)
+_LAZY_IMPORTS = MappingProxyType(
+    build_lazy_import_map(
+        MappingProxyType({
+            ".base": ("TestsFlextTapOracleOicServiceBase", "s"),
+            ".constants": ("TestsFlextTapOracleOicConstants", "c"),
+            ".models": ("TestsFlextTapOracleOicModels", "m"),
+            ".protocols": ("TestsFlextTapOracleOicProtocols", "p"),
+            ".settings": ("TestsFlextTapOracleOicSettings",),
+            ".typings": ("TestsFlextTapOracleOicTypes", "t"),
+            ".unit": ("unit",),
+            ".utilities": ("TestsFlextTapOracleOicUtilities", "u"),
+            "flext_tap_oracle_oic": ("FlextTapOracleOicConstants",),
+            "flext_tests": (
+                "FlextTestsConstants",
+                "d",
+                "e",
+                "h",
+                "r",
+                "td",
+                "tf",
+                "tk",
+                "tm",
+                "tv",
+                "x",
+            ),
+        }),
+        alias_groups=MappingProxyType({}),
+        sort_keys=False,
+    )
+)
+
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)

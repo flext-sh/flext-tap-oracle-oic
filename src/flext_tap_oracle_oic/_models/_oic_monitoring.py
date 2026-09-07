@@ -56,7 +56,7 @@ class FlextTapOracleOicMonitoringRecord(m):
 
     @property
     def is_failed(self) -> bool:
-        """Check if execution failed."""
+        """Whether execution failed."""
         return self.execution_status.lower() in {
             c.TapOracleOic.OicJobStatus.FAILED.value.lower(),
             "faulted",
@@ -65,7 +65,7 @@ class FlextTapOracleOicMonitoringRecord(m):
 
     @property
     def successful(self) -> bool:
-        """Check if execution was successful."""
+        """Whether execution was successful."""
         return self.execution_status.lower() in {
             c.TapOracleOic.OicJobStatus.COMPLETED.value.lower(),
             "succeeded",

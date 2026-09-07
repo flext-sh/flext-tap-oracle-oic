@@ -38,12 +38,12 @@ class FlextTapOracleOicExecutionSummary(m):
 
     @property
     def failure_rate(self) -> float:
-        """Calculate failure rate percentage."""
+        """Failure rate percentage."""
         return 100.0 - self.success_rate
 
     @property
     def success_rate(self) -> float:
-        """Calculate success rate percentage."""
+        """Success rate percentage."""
         if self.total_executions == 0:
             return 0.0
         success_rate: float = self.successful_executions / self.total_executions * 100.0
