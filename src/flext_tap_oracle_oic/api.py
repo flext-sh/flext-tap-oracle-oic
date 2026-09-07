@@ -34,4 +34,6 @@ class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
         raise TypeError(msg)
 
 
-__all__: list[str] = ["FlextTapOracleOicService"]
+tap_oracle_oic = FlextTapOracleOicService
+
+__all__: list[str] = ["FlextTapOracleOicService", "tap_oracle_oic"]

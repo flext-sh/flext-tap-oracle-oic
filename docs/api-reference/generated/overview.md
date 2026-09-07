@@ -26,7 +26,7 @@
   `FlextTapOracleOicApiError`, `FlextTapOracleOicAuthenticationError`,
   `FlextTapOracleOicCli`, `FlextTapOracleOicClient`, `FlextTapOracleOicConfig`,
   `FlextTapOracleOicConnectionError`, `FlextTapOracleOicConstants`,
-  `FlextTapOracleOicModels` (+10 more)
+  `FlextTapOracleOicModels` (+11 more)
 - Exported module shortcuts: _none_
 - Generated module pages: `10`
 
