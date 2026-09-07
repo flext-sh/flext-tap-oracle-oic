@@ -65,7 +65,7 @@ class FlextTapOracleOicIntegration(m):
 
     @property
     def is_active(self) -> bool:
-        """Check if integration is active."""
+        """Whether integration is active."""
         is_active: bool = (
             self.integration_status == c.TapOracleOic.IntegrationStatus.ACTIVATED
         )

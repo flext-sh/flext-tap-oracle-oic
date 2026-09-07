@@ -14,7 +14,8 @@ from typing import TYPE_CHECKING, Annotated
 
 from pydantic_settings import SettingsConfigDict
 
-from flext_core import FlextSettings, m
+from flext_core import FlextSettings
+from flext_tap_oracle_oic import m
 
 _DEFAULT_BASE_URL = "https://localhost.integration.ocp.oraclecloud.com"
 
