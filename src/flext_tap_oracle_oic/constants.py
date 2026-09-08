@@ -44,6 +44,14 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
         MAX_RETRIES: ClassVar[int] = 3
         DEFAULT_PAGE_SIZE: ClassVar[int] = 50
 
+        DEFAULT_INTEGRATION_VERSION: Final[str] = "01.00.0000"
+        SCHEMA_EXAMPLE_IDCS_URL: Final[str] = (
+            "https://idcs-instance.identity.oraclecloud.com/oauth2/v1/token"
+        )
+        SCHEMA_EXAMPLE_OIC_URL: Final[str] = (
+            "https://mycompany-oic.integration.ocp.oraclecloud.com"
+        )
+
         OIC_API_BASE_PATH: Final[str] = "/ic/api/integration/v1"
         OIC_MONITORING_API_PATH: Final[str] = "/ic/api/monitoring/v1"
         OIC_B2B_API_PATH: Final[str] = "/ic/api/b2b/v1"

@@ -20,9 +20,6 @@ from .__version__ import (
 )
 
 if TYPE_CHECKING:
-    from enum import StrEnum, unique
-    from typing import TYPE_CHECKING, ClassVar, Final
-
     from flext_oracle_oic import FlextOracleOicConstants, d, e, h, r, s, x
 
     from ._config import FlextTapOracleOicConfig, config
@@ -47,9 +44,6 @@ if TYPE_CHECKING:
     from .typings import FlextTapOracleOicTypes, FlextTapOracleOicTypes as t
     from .utilities import FlextTapOracleOicUtilities, FlextTapOracleOicUtilities as u
 __all__: tuple[str, ...] = (
-    "TYPE_CHECKING",
-    "ClassVar",
-    "Final",
     "FlextOracleOicAuthenticator",
     "FlextOracleOicConstants",
     "FlextTapOracleOic",
@@ -68,7 +62,6 @@ __all__: tuple[str, ...] = (
     "FlextTapOracleOicTypes",
     "FlextTapOracleOicUtilities",
     "FlextTapOracleOicValidationError",
-    "StrEnum",
     "__author__",
     "__author_email__",
     "__description__",
@@ -91,7 +84,6 @@ __all__: tuple[str, ...] = (
     "t",
     "tap_oracle_oic",
     "u",
-    "unique",
     "x",
 )
 
@@ -119,7 +111,6 @@ _LAZY_IMPORTS = MappingProxyType(
             ".tap_streams": ("FlextTapOracleOicPaginator",),
             ".typings": ("FlextTapOracleOicTypes", "t"),
             ".utilities": ("FlextTapOracleOicUtilities", "u"),
-            "enum": ("StrEnum", "unique"),
             "flext_oracle_oic": (
                 "FlextOracleOicConstants",
                 "d",
@@ -129,7 +120,6 @@ _LAZY_IMPORTS = MappingProxyType(
                 "s",
                 "x",
             ),
-            "typing": ("ClassVar", "Final", "TYPE_CHECKING"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,

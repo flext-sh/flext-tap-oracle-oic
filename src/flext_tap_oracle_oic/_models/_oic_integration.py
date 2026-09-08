@@ -48,7 +48,9 @@ class FlextTapOracleOicIntegration(m):
     deactivated_at: Annotated[
         datetime | None, u.Field(None, description="Deactivation timestamp")
     ]
-    version: Annotated[str, u.Field(description="Integration version")] = "01.00.0000"
+    version: Annotated[str, u.Field(description="Integration version")] = (
+        c.TapOracleOic.DEFAULT_INTEGRATION_VERSION
+    )
     locked_by: Annotated[
         str | None, u.Field(None, description="User who locked the integration")
     ]

@@ -32,7 +32,7 @@ if TYPE_CHECKING:
     from ._oic_resource_metadata import FlextTapOracleOicResourceMetadata
     from ._package import OicPackageEntity
     from ._stream_config import OicStreamConfiguration
-    from .streams import ALL_STREAMS, FlextTapOracleOicModelsStreams, th
+    from .streams import ALL_STREAMS, FlextTapOracleOicModelsStreams
 __all__: tuple[str, ...] = (
     "ALL_STREAMS",
     "FlextTapOracleOicConnection",
@@ -55,7 +55,6 @@ __all__: tuple[str, ...] = (
     "OicPackageEntity",
     "OicStreamConfiguration",
     "require_entity_value",
-    "th",
     "validate_entity_identity_and_port",
     "validate_optional_port",
 )
@@ -86,7 +85,7 @@ _LAZY_IMPORTS = MappingProxyType(
             "._oic_resource_metadata": ("FlextTapOracleOicResourceMetadata",),
             "._package": ("OicPackageEntity",),
             "._stream_config": ("OicStreamConfiguration",),
-            ".streams": ("ALL_STREAMS", "FlextTapOracleOicModelsStreams", "th"),
+            ".streams": ("ALL_STREAMS", "FlextTapOracleOicModelsStreams"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,

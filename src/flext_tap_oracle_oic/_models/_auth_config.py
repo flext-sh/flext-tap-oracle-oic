@@ -23,8 +23,8 @@ class OicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
                 "examples": [
                     {
                         "oauth_client_id": "my-client-id",
-                        "oauth_token_url": "https://idcs-instance.identity.oraclecloud.com/oauth2/v1/token",
-                        "base_url": "https://mycompany-oic.integration.ocp.oraclecloud.com",
+                        "oauth_token_url": (c.TapOracleOic.SCHEMA_EXAMPLE_IDCS_URL),
+                        "base_url": c.TapOracleOic.SCHEMA_EXAMPLE_OIC_URL,
                     }
                 ],
             }
