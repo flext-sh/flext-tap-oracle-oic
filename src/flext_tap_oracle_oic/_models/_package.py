@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
 from flext_meltano import FlextMeltanoModels
+
 from flext_tap_oracle_oic import c, t, u
 
 if TYPE_CHECKING:

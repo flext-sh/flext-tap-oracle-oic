@@ -11,8 +11,9 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING
 
-from flext_tap_oracle_oic import FlextTapOracleOicUtilities
 from flext_tests import FlextTestsUtilities, tm
+
+from flext_tap_oracle_oic import FlextTapOracleOicUtilities
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import FlextTapOracleOic, m, t

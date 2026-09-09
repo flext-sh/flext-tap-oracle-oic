@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Annotated, ClassVar
 from flext_api import FlextApi, FlextApiSettings
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import m
+
 from flext_tap_oracle_oic import c, e, t, u
 from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator
 

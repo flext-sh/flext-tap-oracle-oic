@@ -9,8 +9,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flext_tap_oracle_oic import FlextTapOracleOicSettings, c
 from flext_tests import tm
+
+from flext_tap_oracle_oic import FlextTapOracleOicSettings, c
 from tests import u
 
 if TYPE_CHECKING:

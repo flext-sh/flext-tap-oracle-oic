@@ -11,6 +11,7 @@ from typing import ClassVar, override
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 from flext_meltano.services.abstractions import FlextMeltanoAbstractions
+
 from flext_tap_oracle_oic import FlextTapOracleOicSettings, c, m, p, r, t, u
 
 from ._models.streams import ALL_STREAMS
