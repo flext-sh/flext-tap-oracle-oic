@@ -13,52 +13,38 @@ from typing import TYPE_CHECKING, Annotated, ClassVar
 from flext_api import FlextApi, FlextApiSettings
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import m
+
 from flext_tap_oracle_oic import c, e, t, u
-from flext_tap_oracle_oic._models._activity import (
-    OicActivityRecord as _OicActivityRecord,
-)
-from flext_tap_oracle_oic._models._agent import OicAgentEntity as _OicAgentEntity
-from flext_tap_oracle_oic._models._api_response import OicApiResponse as _OicApiResponse
-from flext_tap_oracle_oic._models._auth_config import (
-    OicAuthenticationConfig as _OicAuthenticationConfig,
-)
-from flext_tap_oracle_oic._models._connection import (
-    OicConnectionEntity as _OicConnectionEntity,
-)
-from flext_tap_oracle_oic._models._envelope import OicEnvelope as _OicEnvelope
-from flext_tap_oracle_oic._models._error_context import (
-    OicErrorContext as _OicErrorContext,
-)
-from flext_tap_oracle_oic._models._integration import (
-    OicIntegrationEntity as _OicIntegrationEntity,
-)
-from flext_tap_oracle_oic._models._metrics import OicMetricsRecord as _OicMetricsRecord
-from flext_tap_oracle_oic._models._oic_connection import (
+from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator
+
+from ._models._activity import OicActivityRecord as _OicActivityRecord
+from ._models._agent import OicAgentEntity as _OicAgentEntity
+from ._models._api_response import OicApiResponse as _OicApiResponse
+from ._models._auth_config import OicAuthenticationConfig as _OicAuthenticationConfig
+from ._models._connection import OicConnectionEntity as _OicConnectionEntity
+from ._models._envelope import OicEnvelope as _OicEnvelope
+from ._models._error_context import OicErrorContext as _OicErrorContext
+from ._models._integration import OicIntegrationEntity as _OicIntegrationEntity
+from ._models._metrics import OicMetricsRecord as _OicMetricsRecord
+from ._models._oic_connection import (
     FlextTapOracleOicConnection as _FlextTapOracleOicConnection,
 )
-from flext_tap_oracle_oic._models._oic_execution_summary import (
+from ._models._oic_execution_summary import (
     FlextTapOracleOicExecutionSummary as _FlextTapOracleOicExecutionSummary,
 )
-from flext_tap_oracle_oic._models._oic_integration import (
+from ._models._oic_integration import (
     FlextTapOracleOicIntegration as _FlextTapOracleOicIntegration,
 )
-from flext_tap_oracle_oic._models._oic_lookup import (
-    FlextTapOracleOicLookup as _FlextTapOracleOicLookup,
-)
-from flext_tap_oracle_oic._models._oic_monitoring import (
+from ._models._oic_lookup import FlextTapOracleOicLookup as _FlextTapOracleOicLookup
+from ._models._oic_monitoring import (
     FlextTapOracleOicMonitoringRecord as _FlextTapOracleOicMonitoringRecord,
 )
-from flext_tap_oracle_oic._models._oic_project import (
-    FlextTapOracleOicProject as _FlextTapOracleOicProject,
-)
-from flext_tap_oracle_oic._models._oic_resource_metadata import (
+from ._models._oic_project import FlextTapOracleOicProject as _FlextTapOracleOicProject
+from ._models._oic_resource_metadata import (
     FlextTapOracleOicResourceMetadata as _FlextTapOracleOicResourceMetadata,
 )
-from flext_tap_oracle_oic._models._package import OicPackageEntity as _OicPackageEntity
-from flext_tap_oracle_oic._models._stream_config import (
-    OicStreamConfiguration as _OicStreamConfiguration,
-)
-from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator
+from ._models._package import OicPackageEntity as _OicPackageEntity
+from ._models._stream_config import OicStreamConfiguration as _OicStreamConfiguration
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import p
@@ -149,7 +135,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
             @property
             def url_base(self) -> str:
-                """Build base URL for Oracle OIC API requests with intelligent discovery.
+                """Base URL for Oracle OIC API requests with intelligent discovery.
 
                 Returns:
                 Base URL with appropriate OIC API endpoint for stream type.

@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Annotated
 
 from flext_oracle_oic import m
+
 from flext_tap_oracle_oic import t, u
 
 if TYPE_CHECKING:
@@ -54,7 +55,7 @@ class FlextTapOracleOicLookup(m):
 
     @property
     def is_empty(self) -> bool:
-        """Check if lookup is empty."""
+        """Whether lookup is empty."""
         is_empty: bool = self.row_count == 0
         return is_empty
 

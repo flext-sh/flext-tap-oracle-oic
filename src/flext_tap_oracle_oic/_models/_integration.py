@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
 from flext_meltano import FlextMeltanoModels
+
 from flext_tap_oracle_oic import c, t, u
 
 if TYPE_CHECKING:
@@ -25,10 +26,12 @@ class OicIntegrationEntity(FlextMeltanoModels.Entity):
                 "description": "Oracle OIC integration with complete metadata",
                 "examples": [
                     {
-                        "integration_id": "CUSTOMER_SYNC_01.00.0000",
+                        "integration_id": (
+                            f"CUSTOMER_SYNC_{c.TapOracleOic.DEFAULT_INTEGRATION_VERSION}"
+                        ),
                         "name": "Customer Synchronization",
                         "status": "ACTIVE",
-                        "version": "01.00.0000",
+                        "version": c.TapOracleOic.DEFAULT_INTEGRATION_VERSION,
                     }
                 ],
             }

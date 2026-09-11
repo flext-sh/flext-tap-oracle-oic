@@ -15,6 +15,7 @@ from typing import Annotated, Never, override
 from flext_meltano.services.consumer_bases.tap_service_base import (
     FlextMeltanoTapServiceBase,
 )
+
 from flext_tap_oracle_oic import p, t, u
 
 
@@ -34,6 +35,6 @@ class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
         raise TypeError(msg)
 
 
-tap_oracle_oic = FlextTapOracleOicService
+tap_oracle_oic: FlextTapOracleOicService = FlextTapOracleOicService.fetch_global()
 
 __all__: list[str] = ["FlextTapOracleOicService", "tap_oracle_oic"]

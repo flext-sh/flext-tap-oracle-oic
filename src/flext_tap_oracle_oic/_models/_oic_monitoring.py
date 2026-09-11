@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Annotated
 
 from flext_oracle_oic import m
+
 from flext_tap_oracle_oic import c, t, u
 
 if TYPE_CHECKING:
@@ -56,7 +57,7 @@ class FlextTapOracleOicMonitoringRecord(m):
 
     @property
     def is_failed(self) -> bool:
-        """Check if execution failed."""
+        """Whether execution failed."""
         return self.execution_status.lower() in {
             c.TapOracleOic.OicJobStatus.FAILED.value.lower(),
             "faulted",
@@ -65,7 +66,7 @@ class FlextTapOracleOicMonitoringRecord(m):
 
     @property
     def successful(self) -> bool:
-        """Check if execution was successful."""
+        """Whether execution was successful."""
         return self.execution_status.lower() in {
             c.TapOracleOic.OicJobStatus.COMPLETED.value.lower(),
             "succeeded",

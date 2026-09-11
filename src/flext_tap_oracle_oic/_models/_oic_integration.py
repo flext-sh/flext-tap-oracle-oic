@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Annotated
 
 from flext_oracle_oic import m
+
 from flext_tap_oracle_oic import c, t, u
 
 if TYPE_CHECKING:
@@ -48,7 +49,9 @@ class FlextTapOracleOicIntegration(m):
     deactivated_at: Annotated[
         datetime | None, u.Field(None, description="Deactivation timestamp")
     ]
-    version: Annotated[str, u.Field(description="Integration version")] = "01.00.0000"
+    version: Annotated[str, u.Field(description="Integration version")] = (
+        c.TapOracleOic.DEFAULT_INTEGRATION_VERSION
+    )
     locked_by: Annotated[
         str | None, u.Field(None, description="User who locked the integration")
     ]
@@ -65,7 +68,7 @@ class FlextTapOracleOicIntegration(m):
 
     @property
     def is_active(self) -> bool:
-        """Check if integration is active."""
+        """Whether integration is active."""
         is_active: bool = (
             self.integration_status == c.TapOracleOic.IntegrationStatus.ACTIVATED
         )

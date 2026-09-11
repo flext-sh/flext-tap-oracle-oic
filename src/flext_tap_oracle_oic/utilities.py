@@ -13,6 +13,7 @@ from urllib.parse import urljoin, urlparse
 
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_oic import u
+
 from flext_tap_oracle_oic import c, p, r, t
 
 if TYPE_CHECKING:
@@ -72,7 +73,7 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
             try:
                 return _run_build_oic_api_url()
             except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-                return r[str].fail(f"URL building error: {e}")
+                return r[str].fail(f"URL building error: {e}", exception=e)
 
         @staticmethod
         def extract_pagination_info(response: t.JsonMapping | None) -> t.JsonMapping:
@@ -133,7 +134,9 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
                     parsed_response["items"] = response_data["data"]
                 return r[t.JsonMapping].ok(parsed_response)
             except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-                return r[t.JsonMapping].fail(f"Response parsing error: {e}")
+                return r[t.JsonMapping].fail(
+                    f"Response parsing error: {e}", exception=e
+                )
 
         @staticmethod
         def validate_oic_endpoint(endpoint_url: str) -> p.Result[str]:
@@ -156,7 +159,7 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
                     return r[str].fail("URL does not appear to be an OIC endpoint")
                 return r[str].ok(endpoint_url)
             except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-                return r[str].fail(f"URL validation error: {e}")
+                return r[str].fail(f"URL validation error: {e}", exception=e)
 
         @staticmethod
         def extract_integration_metadata(
