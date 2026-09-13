@@ -20,8 +20,7 @@ from .__version__ import (
 )
 
 if TYPE_CHECKING:
-    from flext_meltano import d, e, h, r, s, x
-    from flext_oracle_oic import FlextOracleOicConstants
+    from flext_oracle_oic import FlextOracleOicConstants, d, e, h, r, s, x
 
     from ._config import FlextTapOracleOicConfig, config
     from ._settings import FlextTapOracleOicSettings, settings
@@ -112,8 +111,15 @@ _LAZY_IMPORTS = MappingProxyType(
             ".tap_streams": ("FlextTapOracleOicPaginator",),
             ".typings": ("FlextTapOracleOicTypes", "t"),
             ".utilities": ("FlextTapOracleOicUtilities", "u"),
-            "flext_meltano": ("d", "e", "h", "r", "s", "x"),
-            "flext_oracle_oic": ("FlextOracleOicConstants",),
+            "flext_oracle_oic": (
+                "FlextOracleOicConstants",
+                "d",
+                "e",
+                "h",
+                "r",
+                "s",
+                "x",
+            ),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
