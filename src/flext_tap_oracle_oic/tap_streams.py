@@ -8,17 +8,24 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flext_tap_oracle_oic import c, m, t, u
+from flext_tap_oracle_oic import c, r, t, u
+from ._models._envelope import OicEnvelope
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels
 
+    from flext_tap_oracle_oic import p
 
-def _as_oic_envelope(value: t.JsonMapping) -> m.TapOracleOic.OicEnvelope | None:
+
+def _as_oic_envelope(value: t.JsonMapping) -> p.Result[OicEnvelope]:
     try:
-        return m.TapOracleOic.OicEnvelope.model_validate(value, strict=True)
-    except c.ValidationError:
-        return None
+        return r[OicEnvelope].ok(
+            OicEnvelope.model_validate(value, strict=True)
+        )
+    except c.ValidationError as e:
+        return r[OicEnvelope].fail(
+            f"Invalid OIC envelope format: {e}", exception=e
+        )
 
 
 class FlextTapOracleOicPaginator:
@@ -37,18 +44,10 @@ class FlextTapOracleOicPaginator:
         self._adaptive_sizing: bool = True
         self._response_times: list[float] = []
 
-    def get_next(self, response: FlextApiModels.Api.HttpResponse) -> int | None:
+    def get_next(self, response: FlextApiModels.Api.HttpResponse) -> p.Result[int | None]:
         """Calculate next offset for Oracle OIC pagination."""
-        try:
-            data = self._normalize_response_payload(response)
-            return self._calculate_next_offset(data)
-        except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-            logger = u.fetch_logger(__name__)
-            err_msg = f"OIC pagination parsing failed: {type(e).__name__}: {e}"
-            logger.warning(err_msg)
-            logger.info("Returning None - pagination parsing failure properly handled")
-            logger.debug("This indicates end of pagination or malformed OIC response")
-            return None
+        data = self._normalize_response_payload(response)
+        return self._calculate_next_offset(data)
 
     def _normalize_response_payload(
         self, response: FlextApiModels.Api.HttpResponse
@@ -61,27 +60,35 @@ class FlextTapOracleOicPaginator:
                 msg = "Pagination requires a JSON object response body"
                 raise TypeError(msg)
 
-    def _calculate_next_offset(self, data: t.JsonMapping) -> int | None:
+    def _calculate_next_offset(self, data: t.JsonMapping) -> p.Result[int | None]:
         """Calculate next offset based on OIC response format."""
-        items = self._extract_items_from_response(data)
+        items_result = self._extract_items_from_response(data)
+        if items_result.failure:
+            return r[int | None].fail(
+                "Failed to extract items from response", exception=items_result.exception
+            )
+        items = items_result.unwrap()
         if items is None or not items or len(items) < self._page_size:
-            return None
-        return self.current_value + len(items)
+            return r[int | None].ok(None)
+        return r[int | None].ok(self.current_value + len(items))
 
     def _extract_items_from_response(
         self, data: t.JsonMapping
-    ) -> t.SequenceOf[t.JsonMapping] | None:
+    ) -> p.Result[t.SequenceOf[t.JsonMapping] | None]:
         """Extract items from various OIC response formats."""
-        envelope = _as_oic_envelope(data)
-        if envelope is None:
-            return None
+        envelope_result = _as_oic_envelope(data)
+        if envelope_result.failure:
+            return r[t.SequenceOf[t.JsonMapping] | None].fail(
+                "Not an OIC envelope format", exception=envelope_result.exception
+            )
+        envelope = envelope_result.unwrap()
         if envelope.items is not None:
             items: t.SequenceOf[t.JsonMapping] = envelope.items
-            return items
+            return r[t.SequenceOf[t.JsonMapping] | None].ok(items)
         if envelope.data is not None:
             payload: t.SequenceOf[t.JsonMapping] = envelope.data
-            return payload
-        return None
+            return r[t.SequenceOf[t.JsonMapping] | None].ok(payload)
+        return r[t.SequenceOf[t.JsonMapping] | None].ok(None)
 
     def _track_response_time(self, response_time: float) -> None:
         """Track response times for adaptive page sizing."""

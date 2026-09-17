@@ -8,13 +8,13 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Iterator, Mapping
-from typing import TYPE_CHECKING, Annotated, ClassVar
+from typing import Annotated, ClassVar
 
 from flext_api import FlextApi, FlextApiSettings
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import m
 
-from flext_tap_oracle_oic import c, e, t, u
+from flext_tap_oracle_oic import c, e, p, r, t, u
 from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator
 
 from ._models._activity import OicActivityRecord as _OicActivityRecord
@@ -45,9 +45,6 @@ from ._models._oic_resource_metadata import (
 )
 from ._models._package import OicPackageEntity as _OicPackageEntity
 from ._models._stream_config import OicStreamConfiguration as _OicStreamConfiguration
-
-if TYPE_CHECKING:
-    from flext_tap_oracle_oic import p
 
 
 class FlextTapOracleOicModels(FlextMeltanoModels, m):
@@ -250,13 +247,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                         field_list = t.strict_str_sequence_adapter().validate_python(
                             select_fields
                         )
-                    except c.ValidationError:
-                        field_list = None
-                    params["fields"] = (
-                        ",".join(field_list)
-                        if field_list is not None
-                        else str(select_fields)
-                    )
+                    except c.ValidationError as e:
+                        msg = f"Invalid select_fields format: {e}"
+                        raise ValueError(msg) from e
+                    params["fields"] = ",".join(field_list)
                 if self.additional_params is not None:
                     params.update(self.additional_params)
                 return dict(params)
@@ -364,11 +358,15 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 return identifier
 
             @staticmethod
-            def _as_oic_envelope(data: t.JsonMapping) -> _OicEnvelope | None:
+            def _as_oic_envelope(data: t.JsonMapping) -> p.Result[_OicEnvelope]:
                 try:
-                    return _OicEnvelope.model_validate(data, strict=True)
-                except c.ValidationError:
-                    return None
+                    return r[_OicEnvelope].ok(
+                        _OicEnvelope.model_validate(data, strict=True)
+                    )
+                except c.ValidationError as e:
+                    return r[_OicEnvelope].fail(
+                        f"Invalid OIC envelope format: {e}", exception=e
+                    )
 
             def _handle_response_error(self, response: m.Api.HttpResponse) -> None:
                 """Handle Oracle OIC API response errors with proper categorization."""
@@ -404,15 +402,16 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 """Check if empty result is expected/normal based on OIC response metadata."""
                 if not isinstance(data, Mapping):
                     return not data
-                envelope = self._as_oic_envelope(data)
-                if envelope is not None:
-                    return (
-                        envelope.total_size == 0
-                        or envelope.count == 0
-                        or (envelope.items is not None and not envelope.items)
-                        or (envelope.data is not None and not envelope.data)
-                    )
-                return False
+                envelope_result = self._as_oic_envelope(data)
+                if envelope_result.failure:
+                    return False
+                envelope = envelope_result.unwrap()
+                return (
+                    envelope.total_size == 0
+                    or envelope.count == 0
+                    or (envelope.items is not None and not envelope.items)
+                    or (envelope.data is not None and not envelope.data)
+                )
 
             def _is_single_record(self, data: t.JsonMapping) -> bool:
                 """Check if dict represents a single record vs OIC metadata container."""
@@ -431,13 +430,15 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 self, data: t.JsonMapping
             ) -> Iterator[t.JsonMapping]:
                 """Process dict-type response data with OIC format detection."""
-                envelope = self._as_oic_envelope(data)
-                if envelope is not None and envelope.items is not None:
-                    yield from self._process_list_data(envelope.items)
-                    return
-                if envelope is not None and envelope.data is not None:
-                    yield from self._process_list_data(envelope.data)
-                    return
+                envelope_result = self._as_oic_envelope(data)
+                if envelope_result.success:
+                    envelope = envelope_result.unwrap()
+                    if envelope.items is not None:
+                        yield from self._process_list_data(envelope.items)
+                        return
+                    if envelope.data is not None:
+                        yield from self._process_list_data(envelope.data)
+                        return
                 if self._is_single_record(data):
                     yield data
 
@@ -451,10 +452,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                         continue
                     try:
                         record = t.strict_json_mapping_adapter().validate_python(item)
-                    except c.ValidationError:
-                        record = None
-                    if record is not None:
-                        yield record
+                    except c.ValidationError as e:
+                        msg = f"Invalid record format: {e}"
+                        raise ValueError(msg) from e
+                    yield record
 
             def _track_response_metrics(
                 self, response: m.Api.HttpResponse, data: t.JsonMapping | t.JsonList
@@ -464,9 +465,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                 if not isinstance(data, Mapping):
                     self.logger.debug("Received %s records", len(data))
                     return
-                envelope = self._as_oic_envelope(data)
-                if envelope is None:
+                envelope_result = self._as_oic_envelope(data)
+                if envelope_result.failure:
                     return
+                envelope = envelope_result.unwrap()
                 if envelope.items is not None:
                     self.logger.debug("Received %s records", len(envelope.items))
                 elif envelope.data is not None:
