@@ -246,17 +246,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                     params[f"{self.replication_key}>="] = start_date
                 select_fields = self.settings.get("select_fields")
                 if select_fields:
-                    try:
-                        field_list = t.strict_str_sequence_adapter().validate_python(
-                            select_fields
-                        )
-                    except c.ValidationError:
-                        field_list = None
-                    params["fields"] = (
-                        ",".join(field_list)
-                        if field_list is not None
-                        else str(select_fields)
+                    field_list = t.strict_str_sequence_adapter().validate_python(
+                        select_fields
                     )
+                    params["fields"] = ",".join(field_list)
                 if self.additional_params is not None:
                     params.update(self.additional_params)
                 return dict(params)
@@ -365,10 +358,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
             @staticmethod
             def _as_oic_envelope(data: t.JsonMapping) -> _OicEnvelope | None:
-                try:
-                    return _OicEnvelope.model_validate(data, strict=True)
-                except c.ValidationError:
+                envelope_validation = u.validate_value(_OicEnvelope, data, strict=True)
+                if envelope_validation.failure:
                     return None
+                return envelope_validation.value
 
             def _handle_response_error(self, response: m.Api.HttpResponse) -> None:
                 """Handle Oracle OIC API response errors with proper categorization."""
@@ -449,12 +442,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
                     if isinstance(item, Mapping):
                         yield item
                         continue
-                    try:
-                        record = t.strict_json_mapping_adapter().validate_python(item)
-                    except c.ValidationError:
-                        record = None
-                    if record is not None:
-                        yield record
+                    yield t.strict_json_mapping_adapter().validate_python(item)
 
             def _track_response_metrics(
                 self, response: m.Api.HttpResponse, data: t.JsonMapping | t.JsonList

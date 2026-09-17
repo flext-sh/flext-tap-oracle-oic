@@ -95,12 +95,9 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
                     "current_page_size": 0,
                 }
             items_value = response.get("items")
-            try:
-                items_list = t.strict_json_list_adapter().validate_python(
-                    items_value if items_value is not None else []
-                )
-            except c.ValidationError:
-                items_list = t.strict_json_list_adapter().validate_python([])
+            items_list = t.strict_json_list_adapter().validate_python(
+                items_value if items_value is not None else []
+            )
             return t.json_mapping_adapter().validate_python({
                 "has_more": response.get("hasMore", False),
                 "limit": response.get("limit", c.DEFAULT_PAGE_SIZE),
@@ -187,19 +184,11 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
                 "type": integration_data.get("style"),
             }
             connections = integration_data.get("connectionInstances", [])
-            try:
-                connection_list = t.strict_json_list_adapter().validate_python(
-                    connections
-                )
-            except c.ValidationError:
-                connection_list = t.strict_json_list_adapter().validate_python([])
+            connection_list = t.strict_json_list_adapter().validate_python(connections)
             metadata["connection_count"] = len(connection_list)
             connection_types: list[str] = []
             for conn in connection_list:
-                try:
-                    conn_map = t.strict_json_mapping_adapter().validate_python(conn)
-                except c.ValidationError:
-                    continue
+                conn_map = t.strict_json_mapping_adapter().validate_python(conn)
                 connection_type = conn_map.get("connectionType")
                 if connection_type is not None:
                     connection_types.append(str(connection_type))
@@ -324,11 +313,12 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
             if not str(settings["password"]).strip():
                 return r[t.JsonMapping].fail("Password cannot be empty")
             if "timeout" in settings:
-                try:
-                    timeout = t.int_adapter().validate_python(settings["timeout"])
-                except c.ValidationError:
-                    timeout = None
-                if timeout is None or timeout <= 0:
+                timeout_validation = u.validate_value(
+                    t.int_adapter(), settings["timeout"]
+                )
+                if timeout_validation.failure:
+                    return r[t.JsonMapping].from_failure(timeout_validation)
+                if timeout_validation.value <= 0:
                     return r[t.JsonMapping].fail("Timeout must be a positive integer")
             return r[t.JsonMapping].ok(
                 t.json_mapping_adapter().validate_python(settings)
@@ -350,34 +340,37 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
                     "Configuration must include 'streams' section"
                 )
             streams = settings["streams"]
-            try:
-                stream_map = t.strict_json_mapping_adapter().validate_python(streams)
-            except c.ValidationError:
+            stream_validation = u.validate_value(
+                t.strict_json_mapping_adapter(), streams
+            )
+            if stream_validation.failure:
                 return r[t.JsonMapping].fail(
-                    "Streams configuration must be a dictionary"
+                    f"Streams configuration must be a dictionary: {stream_validation.error}"
                 )
+            stream_map = stream_validation.value
             for stream_name, stream_payload in stream_map.items():
-                try:
-                    stream_config = t.strict_json_mapping_adapter().validate_python(
-                        stream_payload
-                    )
-                except c.ValidationError:
+                config_validation = u.validate_value(
+                    t.strict_json_mapping_adapter(), stream_payload
+                )
+                if config_validation.failure:
                     return r[t.JsonMapping].fail(
-                        f"Stream '{stream_name}' configuration must be a dictionary"
+                        f"Stream '{stream_name}' configuration must be a dictionary: "
+                        f"{config_validation.error}"
                     )
+                stream_config = config_validation.value
                 if "selected" not in stream_config:
                     return r[t.JsonMapping].fail(
                         f"Stream '{stream_name}' must have 'selected' field"
                     )
                 if "page_size" in stream_config:
-                    try:
-                        page_size = t.int_adapter().validate_python(
-                            stream_config["page_size"]
-                        )
-                    except c.ValidationError:
-                        page_size = None
+                    page_size_validation = u.validate_value(
+                        t.int_adapter(), stream_config["page_size"]
+                    )
+                    if page_size_validation.failure:
+                        return r[t.JsonMapping].from_failure(page_size_validation)
+                    page_size = page_size_validation.value
                     max_page_size = c.MAX_PAGE_SIZE
-                    if page_size is None or page_size <= 0 or page_size > max_page_size:
+                    if page_size <= 0 or page_size > max_page_size:
                         return r[t.JsonMapping].fail(
                             f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}"
                         )
@@ -579,10 +572,12 @@ class FlextTapOracleOicUtilities(u, FlextMeltanoUtilities):
         @staticmethod
         def as_oic_envelope(value: t.JsonMapping) -> t.JsonMapping | None:
             """Return normalized envelope payload when OIC wrapper keys are present."""
-            try:
-                envelope = t.strict_json_mapping_adapter().validate_python(value)
-            except c.ValidationError:
+            envelope_validation = u.validate_value(
+                t.strict_json_mapping_adapter(), value
+            )
+            if envelope_validation.failure:
                 return None
+            envelope = envelope_validation.value
             return (
                 envelope
                 if any(

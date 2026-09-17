@@ -15,10 +15,12 @@ if TYPE_CHECKING:
 
 
 def _as_oic_envelope(value: t.JsonMapping) -> m.TapOracleOic.OicEnvelope | None:
-    try:
-        return m.TapOracleOic.OicEnvelope.model_validate(value, strict=True)
-    except c.ValidationError:
+    envelope_validation = u.validate_value(
+        m.TapOracleOic.OicEnvelope, value, strict=True
+    )
+    if envelope_validation.failure:
         return None
+    return envelope_validation.value
 
 
 class FlextTapOracleOicPaginator:
