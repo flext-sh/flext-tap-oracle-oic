@@ -12,7 +12,7 @@
 
 <!-- AUTO-GENERATED — DO NOT EDIT MANUALLY -->
 
-- Version: `0.12.0rc0`
+- Version: `0.12.0`
 - Project class: `integration`
 - Package: `flext_tap_oracle_oic`
 - Description: FLEXT Tap Oracle OIC - Singer Tap for Oracle Integration Cloud
