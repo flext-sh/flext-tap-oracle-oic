@@ -76,8 +76,6 @@ class FlextTapOracleOicPaginator:
         envelope = _as_oic_envelope(data)
         if envelope is None:
             return None
-        reveal_type(envelope)
-        reveal_type(envelope.items)
         if envelope.items is not None:
             items: t.SequenceOf[t.JsonMapping] = envelope.items
             return items

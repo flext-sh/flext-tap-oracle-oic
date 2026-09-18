@@ -118,6 +118,7 @@ class OicErrorContext(FlextMeltanoModels.Entity):
             c.TapOracleOic.OicErrorType.VALIDATION,
         }:
             return str(c.TapOracleOic.OicErrorSeverity.WARNING.value)
+        return None
 
 
 __all__: list[str] = ["OicErrorContext"]
