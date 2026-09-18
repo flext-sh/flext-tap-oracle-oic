@@ -131,7 +131,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             def api_client(self) -> FlextApi:
                 """The authenticated API client from parent tap's OIC client."""
                 api_config = FlextApiSettings.model_validate({})
-                return FlextApi(settings=api_config)
+                return FlextApi(runtime_settings=api_config)
 
             @property
             def url_base(self) -> str:

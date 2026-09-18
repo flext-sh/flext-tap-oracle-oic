@@ -32,7 +32,7 @@ class FlextOracleOicAuthenticator:
         self._access_token: str | None = None
         if api_client is None:
             api_config = FlextApiSettings.model_validate({})
-            self._api_client: FlextApi = FlextApi(settings=api_config)
+            self._api_client: FlextApi = FlextApi(runtime_settings=api_config)
         else:
             self._api_client = api_client
 
@@ -111,7 +111,7 @@ class FlextTapOracleOicClient:
             "base_url": settings.TapOracleOic.base_url.rstrip("/"),
             "timeout": settings.TapOracleOic.timeout,
         })
-        self._api_client = FlextApi(settings=api_config)
+        self._api_client = FlextApi(runtime_settings=api_config)
 
     def get(self, endpoint: str) -> p.Result[FlextApiModels.Api.HttpResponse]:
         """Make authenticated GET request to OIC API."""

@@ -29,7 +29,8 @@ def tap_instance(tap_oracle_oic: FlextTapOracleOic) -> m.Meltano.TapInstance:
         connection_config=connection_config,
         stream_config={},
     )
-    return m.Meltano.TapInstance.model_validate({
+    instance: m.Meltano.TapInstance = m.Meltano.TapInstance.model_validate({
         "tap_type": tap_oracle_oic.name,
         "config": config,
     })
+    return instance

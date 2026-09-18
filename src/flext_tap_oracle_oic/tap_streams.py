@@ -8,16 +8,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flext_tap_oracle_oic import c, m, t, u
+from flext_tap_oracle_oic import c, t, u
+from flext_tap_oracle_oic._models._envelope import OicEnvelope
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels
 
 
-def _as_oic_envelope(value: t.JsonMapping) -> m.TapOracleOic.OicEnvelope | None:
-    envelope_validation = u.validate_value(
-        m.TapOracleOic.OicEnvelope, value, strict=True
-    )
+def _as_oic_envelope(value: t.JsonMapping) -> OicEnvelope | None:
+    envelope_validation = u.validate_value(OicEnvelope, value, strict=True)
     if envelope_validation.failure:
         return None
     return envelope_validation.value
@@ -77,6 +76,8 @@ class FlextTapOracleOicPaginator:
         envelope = _as_oic_envelope(data)
         if envelope is None:
             return None
+        reveal_type(envelope)
+        reveal_type(envelope.items)
         if envelope.items is not None:
             items: t.SequenceOf[t.JsonMapping] = envelope.items
             return items
