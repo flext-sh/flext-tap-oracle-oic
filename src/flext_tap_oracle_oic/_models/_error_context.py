@@ -109,16 +109,9 @@ class OicErrorContext(FlextMeltanoModels.Entity):
             c.TapOracleOic.OicErrorType.AUTHORIZATION,
         }:
             return str(c.TapOracleOic.OicErrorSeverity.CRITICAL.value)
-        if self.error_type == c.TapOracleOic.OicErrorType.RATE_LIMIT:
-            return str(c.TapOracleOic.OicErrorSeverity.WARNING.value)
         if self.error_type == c.TapOracleOic.OicErrorType.SERVER_ERROR:
             return str(c.TapOracleOic.OicErrorSeverity.ERROR.value)
-        if self.error_type in {
-            c.TapOracleOic.OicErrorType.NETWORK,
-            c.TapOracleOic.OicErrorType.VALIDATION,
-        }:
-            return str(c.TapOracleOic.OicErrorSeverity.WARNING.value)
-        return None
+        return str(c.TapOracleOic.OicErrorSeverity.WARNING.value)
 
 
 __all__: list[str] = ["OicErrorContext"]
