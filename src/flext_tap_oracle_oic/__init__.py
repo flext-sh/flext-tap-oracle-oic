@@ -20,7 +20,8 @@ from .__version__ import (
 )
 
 if TYPE_CHECKING:
-    from flext_meltano import d, e, h, r, s, x
+    from flext_core import d, e, h, r, x
+    from flext_meltano import s
 
     from .__version__ import FlextTapOracleOicVersion
     from ._config import FlextTapOracleOicConfig, config
@@ -45,16 +46,46 @@ if TYPE_CHECKING:
     from .typings import FlextTapOracleOicTypes, FlextTapOracleOicTypes as t
     from .utilities import FlextTapOracleOicUtilities, FlextTapOracleOicUtilities as u
 __all__: tuple[str, ...] = (
-    "FlextOracleOicAuthenticator", "FlextTapOracleOic", "FlextTapOracleOicApiError", "FlextTapOracleOicAuthenticationError",
-    "FlextTapOracleOicCli", "FlextTapOracleOicClient", "FlextTapOracleOicConfig", "FlextTapOracleOicConnectionError",
-    "FlextTapOracleOicConstants", "FlextTapOracleOicModels", "FlextTapOracleOicPaginator", "FlextTapOracleOicProtocols",
-    "FlextTapOracleOicService", "FlextTapOracleOicSettings", "FlextTapOracleOicTypes", "FlextTapOracleOicUtilities",
-    "FlextTapOracleOicValidationError", "FlextTapOracleOicVersion", "__author__", "__author_email__",
-    "__description__", "__license__", "__title__", "__url__",
-    "__version__", "__version_info__", "c", "config",
-    "d", "e", "h", "m",
-    "main", "p", "r", "s",
-    "settings", "t", "tap_oracle_oic", "u",
+    "FlextOracleOicAuthenticator",
+    "FlextTapOracleOic",
+    "FlextTapOracleOicApiError",
+    "FlextTapOracleOicAuthenticationError",
+    "FlextTapOracleOicCli",
+    "FlextTapOracleOicClient",
+    "FlextTapOracleOicConfig",
+    "FlextTapOracleOicConnectionError",
+    "FlextTapOracleOicConstants",
+    "FlextTapOracleOicModels",
+    "FlextTapOracleOicPaginator",
+    "FlextTapOracleOicProtocols",
+    "FlextTapOracleOicService",
+    "FlextTapOracleOicSettings",
+    "FlextTapOracleOicTypes",
+    "FlextTapOracleOicUtilities",
+    "FlextTapOracleOicValidationError",
+    "FlextTapOracleOicVersion",
+    "__author__",
+    "__author_email__",
+    "__description__",
+    "__license__",
+    "__title__",
+    "__url__",
+    "__version__",
+    "__version_info__",
+    "c",
+    "config",
+    "d",
+    "e",
+    "h",
+    "m",
+    "main",
+    "p",
+    "r",
+    "s",
+    "settings",
+    "t",
+    "tap_oracle_oic",
+    "u",
     "x",
 )
 
@@ -68,19 +99,23 @@ _LAZY_IMPORTS = MappingProxyType(
             ".cli": ("FlextTapOracleOicCli", "main"),
             ".constants": ("FlextTapOracleOicConstants", "c"),
             ".errors": (
-                "FlextTapOracleOicApiError", "FlextTapOracleOicAuthenticationError",
-                "FlextTapOracleOicConnectionError", "FlextTapOracleOicValidationError",
+                "FlextTapOracleOicApiError",
+                "FlextTapOracleOicAuthenticationError",
+                "FlextTapOracleOicConnectionError",
+                "FlextTapOracleOicValidationError",
             ),
             ".models": ("FlextTapOracleOicModels", "m"),
             ".protocols": ("FlextTapOracleOicProtocols", "p"),
             ".tap": (
-                "FlextOracleOicAuthenticator", "FlextTapOracleOic",
+                "FlextOracleOicAuthenticator",
+                "FlextTapOracleOic",
                 "FlextTapOracleOicClient",
             ),
             ".tap_streams": ("FlextTapOracleOicPaginator",),
             ".typings": ("FlextTapOracleOicTypes", "t"),
             ".utilities": ("FlextTapOracleOicUtilities", "u"),
-            "flext_meltano": ("d", "e", "h", "r", "s", "x"),
+            "flext_core": ("d", "e", "h", "r", "x"),
+            "flext_meltano": ("s",),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
