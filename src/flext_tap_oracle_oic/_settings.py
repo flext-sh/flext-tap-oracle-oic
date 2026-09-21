@@ -12,8 +12,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated
 
-from pydantic_settings import SettingsConfigDict
-
 from flext_core import FlextSettings
 from flext_tap_oracle_oic import m
 
@@ -23,7 +21,7 @@ _DEFAULT_BASE_URL = "https://localhost.integration.ocp.oraclecloud.com"
 class FlextTapOracleOicSettings(FlextSettings):
     """Oracle OIC Singer tap settings; fields under ``settings.TapOracleOic.*``."""
 
-    model_config = SettingsConfigDict(
+    model_config = m.SettingsConfigDict(
         env_prefix="FLEXT_TAP_ORACLE_OIC_", env_nested_delimiter="__", extra="ignore"
     )
 

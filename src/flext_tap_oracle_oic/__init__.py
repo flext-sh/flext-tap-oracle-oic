@@ -22,6 +22,7 @@ from .__version__ import (
 if TYPE_CHECKING:
     from flext_oracle_oic import FlextOracleOicConstants, d, e, h, r, s, x
 
+    from .__version__ import FlextTapOracleOicVersion
     from ._config import FlextTapOracleOicConfig, config
     from ._settings import FlextTapOracleOicSettings, settings
     from .api import FlextTapOracleOicService, tap_oracle_oic
@@ -62,6 +63,7 @@ __all__: tuple[str, ...] = (
     "FlextTapOracleOicTypes",
     "FlextTapOracleOicUtilities",
     "FlextTapOracleOicValidationError",
+    "FlextTapOracleOicVersion",
     "__author__",
     "__author_email__",
     "__description__",
@@ -90,6 +92,7 @@ __all__: tuple[str, ...] = (
 _LAZY_IMPORTS = MappingProxyType(
     build_lazy_import_map(
         MappingProxyType({
+            ".__version__": ("FlextTapOracleOicVersion",),
             "._config": ("FlextTapOracleOicConfig", "config"),
             "._settings": ("FlextTapOracleOicSettings", "settings"),
             ".api": ("FlextTapOracleOicService", "tap_oracle_oic"),
