@@ -8,23 +8,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flext_tap_oracle_oic import c, t, u
-
+from flext_tap_oracle_oic import c, t
 from ._models._envelope import OicEnvelope
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels
 
 
-def _as_oic_envelope(value: t.JsonMapping) -> OicEnvelope | None:
-    envelope_validation = u.validate_value(OicEnvelope, value, strict=True)
-    if envelope_validation.failure:
-        return None
-    return envelope_validation.value
-
-
 class FlextTapOracleOicPaginator:
-    """Oracle OIC API paginator with adaptive page sizing."""
+    """Oracle OIC paginator with Singer's raw-token return contract.
+
+    Empty collections terminate pagination. Invalid collection values raise
+    their validation error; they never represent a successfully exhausted page.
+    """
 
     def __init__(
         self,
@@ -40,17 +36,9 @@ class FlextTapOracleOicPaginator:
         self._response_times: list[float] = []
 
     def get_next(self, response: FlextApiModels.Api.HttpResponse) -> int | None:
-        """Calculate next offset for Oracle OIC pagination."""
-        try:
-            data = self._normalize_response_payload(response)
-            return self._calculate_next_offset(data)
-        except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-            logger = u.fetch_logger(__name__)
-            err_msg = f"OIC pagination parsing failed: {type(e).__name__}: {e}"
-            logger.warning(err_msg)
-            logger.info("Returning None - pagination parsing failure properly handled")
-            logger.debug("This indicates end of pagination or malformed OIC response")
-            return None
+        """Return a raw Singer page token; malformed responses raise."""
+        data = self._normalize_response_payload(response)
+        return self._calculate_next_offset(data)
 
     def _normalize_response_payload(
         self, response: FlextApiModels.Api.HttpResponse
@@ -74,9 +62,7 @@ class FlextTapOracleOicPaginator:
         self, data: t.JsonMapping
     ) -> t.SequenceOf[t.JsonMapping] | None:
         """Extract items from various OIC response formats."""
-        envelope = _as_oic_envelope(data)
-        if envelope is None:
-            return None
+        envelope = OicEnvelope.model_validate(data, strict=True)
         if envelope.items is not None:
             items: t.SequenceOf[t.JsonMapping] = envelope.items
             return items

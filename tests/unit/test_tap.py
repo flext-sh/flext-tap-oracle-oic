@@ -9,9 +9,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import pytest
+from flext_api import m as api_m
 from flext_tests import tm
 
-from flext_tap_oracle_oic import FlextTapOracleOicSettings, c
+from flext_tap_oracle_oic import FlextTapOracleOicPaginator, FlextTapOracleOicSettings, c
 from tests import u
 
 if TYPE_CHECKING:
@@ -35,3 +37,36 @@ class TestsFlextTapOracleOic:
         names = u.TapOracleOic.Tests.discover_stream_names(tap_oracle_oic, tap_instance)
 
         tm.that(names, eq=tuple(c.TapOracleOic.CORE_STREAMS))
+
+    @pytest.mark.parametrize("envelope_key", ["items", "data"])
+    def test_paginator_returns_raw_tokens_and_stops_on_empty_pages(
+        self, envelope_key: str
+    ) -> None:
+        """Singer consumes a token or None, never a result wrapper."""
+        paginator = FlextTapOracleOicPaginator()
+        records = [
+            {"id": str(index)}
+            for index in range(c.TapOracleOic.DEFAULT_PAGINATOR_PAGE_SIZE)
+        ]
+        response = api_m.Api.HttpResponse(
+            status_code=200, body={envelope_key: records}
+        )
+
+        tm.that(
+            paginator.get_next(response),
+            eq=paginator.current_value + len(records),
+        )
+        empty_response = api_m.Api.HttpResponse(
+            status_code=200, body={envelope_key: []}
+        )
+        assert paginator.get_next(empty_response) is None
+
+    @pytest.mark.parametrize("envelope_key", ["items", "data"])
+    def test_paginator_rejects_malformed_pages(self, envelope_key: str) -> None:
+        """Malformed collection payloads cannot signal successful exhaustion."""
+        response = api_m.Api.HttpResponse(
+            status_code=200, body={envelope_key: "not-a-collection"}
+        )
+
+        with pytest.raises(c.ValidationError):
+            FlextTapOracleOicPaginator().get_next(response)
