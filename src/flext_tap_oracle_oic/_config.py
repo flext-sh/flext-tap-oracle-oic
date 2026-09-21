@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Self
+from typing import Annotated, Self
 
 from flext_meltano import FlextMeltanoConfig, m
 
@@ -47,7 +47,10 @@ class FlextTapOracleOicConfig(FlextSettings, FlextMeltanoConfig):
 
     __hash__ = object.__hash__
 
-    TapOracleOic: _TapOracleOicNamespace = _TapOracleOicNamespace()
+    TapOracleOic: Annotated[
+        _TapOracleOicNamespace,
+        m.Field(description="Open namespace exposing ``config/*.yaml`` under ``TapOracleOic``."),
+    ] = _TapOracleOicNamespace()
 
 
 config: FlextTapOracleOicConfig = FlextTapOracleOicConfig.fetch_global()
