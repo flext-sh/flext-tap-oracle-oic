@@ -15,7 +15,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from flext_meltano import p as meltano_p
-from flext_oracle_oic import FlextOracleOicProtocols
+from flext_oracle_oic import p
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from flext_tap_oracle_oic import t
 
 
-class FlextTapOracleOicProtocols(meltano_p, FlextOracleOicProtocols):
+class FlextTapOracleOicProtocols(meltano_p, p):
     """Singer Oracle OIC tap protocols facade — composes Meltano + OracleOic."""
 
     class TapOracleOic:

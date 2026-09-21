@@ -14,13 +14,13 @@ from enum import StrEnum, unique
 from typing import TYPE_CHECKING, ClassVar, Final
 
 from flext_meltano import c
-from flext_oracle_oic import FlextOracleOicConstants
+from flext_oracle_oic import c as _oracle_oic_c
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import t
 
 
-class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
+class FlextTapOracleOicConstants(c, _oracle_oic_c):
     """FLEXT Oracle OIC TAP constants extending flext-core platform constants.
 
     Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
@@ -58,7 +58,7 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
         OIC_PROCESS_API_PATH: Final[str] = "/ic/api/process/v1"
 
         DEFAULT_TIMEOUT: Final[int] = (
-            FlextOracleOicConstants.OracleOic.MIN_REQUEST_TIMEOUT
+            _oracle_oic_c.OracleOic.MIN_REQUEST_TIMEOUT
         )
         DEFAULT_MAX_RETRIES: Final[int] = 3
         DEFAULT_VERIFY_SSL: Final[bool] = True
@@ -73,7 +73,7 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
         INFRASTRUCTURE_STREAMS: Final[t.StrSequence] = ("certificates", "adapters")
 
         MAX_PAGE_SIZE: Final[int] = 1000
-        MIN_PAGE_SIZE: Final[int] = FlextOracleOicConstants.DEFAULT_RETRY_DELAY_SECONDS
+        MIN_PAGE_SIZE: Final[int] = _oracle_oic_c.DEFAULT_RETRY_DELAY_SECONDS
         DEFAULT_PAGINATOR_START: Final[int] = 0
         DEFAULT_PAGINATOR_PAGE_SIZE: Final[int] = 100
         PAGINATOR_MAX_PAGE_SIZE: Final[int] = 1000

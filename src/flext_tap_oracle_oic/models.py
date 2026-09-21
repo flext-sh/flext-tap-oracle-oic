@@ -10,8 +10,8 @@ from __future__ import annotations
 from collections.abc import Iterator, Mapping
 from typing import TYPE_CHECKING, Annotated, ClassVar
 
-from flext_api import FlextApi, FlextApiSettings
-from flext_meltano import FlextMeltanoModels
+from flext_api import FlextApi as _api_FlextApi, FlextApiSettings as _api_FlextApiSettings
+from flext_meltano import m as _meltano_m
 from flext_oracle_oic import m
 
 from flext_tap_oracle_oic import c, e, t, u
@@ -50,7 +50,7 @@ if TYPE_CHECKING:
     from flext_tap_oracle_oic import p
 
 
-class FlextTapOracleOicModels(FlextMeltanoModels, m):
+class FlextTapOracleOicModels(_meltano_m, m):
     """Oracle Integration Cloud tap models extending flext-core m.
 
     Provides complete models for OIC entity extraction, authentication,
@@ -96,7 +96,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
 
         OicEnvelope = _OicEnvelope
 
-        class OICBaseStream(FlextMeltanoModels.BaseModel):
+        class OICBaseStream(_meltano_m.BaseModel):
             """Professional base stream class for Oracle Integration Cloud APIs.
 
             stream implementation with:
@@ -110,8 +110,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             - Support for all OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
             """
 
-            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
-                FlextMeltanoModels.ConfigDict(arbitrary_types_allowed=True)
+            model_config: ClassVar[_meltano_m.ConfigDict] = (
+                _meltano_m.ConfigDict(arbitrary_types_allowed=True)
             )
 
             settings: Annotated[t.JsonMapping, u.Field(default_factory=dict)]
@@ -128,10 +128,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, m):
             primary_keys: ClassVar[t.StrSequence] = []
 
             @property
-            def api_client(self) -> FlextApi:
+            def api_client(self) -> _api_FlextApi:
                 """The authenticated API client from parent tap's OIC client."""
-                api_config = FlextApiSettings.model_validate({})
-                return FlextApi(runtime_settings=api_config)
+                api_config = _api_FlextApiSettings.model_validate({})
+                return _api_FlextApi(runtime_settings=api_config)
 
             @property
             def url_base(self) -> str:
