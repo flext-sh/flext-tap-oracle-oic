@@ -10,7 +10,10 @@ from __future__ import annotations
 from collections.abc import Iterator, Mapping
 from typing import TYPE_CHECKING, Annotated, ClassVar
 
-from flext_api import FlextApi as _api_FlextApi, FlextApiSettings as _api_FlextApiSettings
+from flext_api import (
+    FlextApi as _api_FlextApi,
+    FlextApiSettings as _api_FlextApiSettings,
+)
 from flext_meltano import m as _meltano_m
 from flext_oracle_oic import m
 
