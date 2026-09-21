@@ -20,7 +20,9 @@ from .__version__ import (
 )
 
 if TYPE_CHECKING:
-    from flext_oracle_oic import FlextOracleOicConstants, d, e, h, r, s, x
+    from flext_meltano import s
+
+    from flext_core import d, e, h, r, x
 
     from .__version__ import FlextTapOracleOicVersion
     from ._config import FlextTapOracleOicConfig, config
@@ -46,7 +48,6 @@ if TYPE_CHECKING:
     from .utilities import FlextTapOracleOicUtilities, FlextTapOracleOicUtilities as u
 __all__: tuple[str, ...] = (
     "FlextOracleOicAuthenticator",
-    "FlextOracleOicConstants",
     "FlextTapOracleOic",
     "FlextTapOracleOicApiError",
     "FlextTapOracleOicAuthenticationError",
@@ -114,15 +115,8 @@ _LAZY_IMPORTS = MappingProxyType(
             ".tap_streams": ("FlextTapOracleOicPaginator",),
             ".typings": ("FlextTapOracleOicTypes", "t"),
             ".utilities": ("FlextTapOracleOicUtilities", "u"),
-            "flext_oracle_oic": (
-                "FlextOracleOicConstants",
-                "d",
-                "e",
-                "h",
-                "r",
-                "s",
-                "x",
-            ),
+            "flext_core": ("d", "e", "h", "r", "x"),
+            "flext_meltano": ("s",),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
