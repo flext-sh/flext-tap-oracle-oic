@@ -57,9 +57,7 @@ class FlextTapOracleOicConstants(c, _oracle_oic_c):
         OIC_B2B_API_PATH: Final[str] = "/ic/api/b2b/v1"
         OIC_PROCESS_API_PATH: Final[str] = "/ic/api/process/v1"
 
-        DEFAULT_TIMEOUT: Final[int] = (
-            _oracle_oic_c.OracleOic.MIN_REQUEST_TIMEOUT
-        )
+        DEFAULT_TIMEOUT: Final[int] = _oracle_oic_c.OracleOic.MIN_REQUEST_TIMEOUT
         DEFAULT_MAX_RETRIES: Final[int] = 3
         DEFAULT_VERIFY_SSL: Final[bool] = True
 
