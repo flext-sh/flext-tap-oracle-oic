@@ -29,7 +29,7 @@ This section is generated from public exports and real docstrings.
 
 - Primary facades: `FlextTapOracleOic`, `FlextTapOracleOicApiError`,
   `FlextTapOracleOicAuthenticationError`, `FlextTapOracleOicCli`,
-  `FlextTapOracleOicClient`, `FlextTapOracleOicConfig` (+10 more)
+  `FlextTapOracleOicClient`, `FlextTapOracleOicConfig` (+11 more)
 - Generated module pages: `10`
 
 Back to [project docs](../index.md).

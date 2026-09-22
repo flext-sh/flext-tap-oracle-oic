@@ -12,21 +12,23 @@
 - Version: `0.12.0`
 - Description: FLEXT Tap Oracle OIC - Singer Tap for Oracle Integration Cloud
 - Doc summary: Flext Tap Oracle Oic package.
-- Classifiers: `Development Status :: 3 - Alpha`, `Intended Audience :: Developers`,
-  `Operating System :: OS Independent`, `Programming Language :: Python :: 3 :: Only`,
-  `Programming Language :: Python :: 3.13`, `Topic :: Database` (+3 more)
+- Classifiers: Development Status :: 3 - Alpha, Intended Audience :: Developers,
+  Operating System :: OS Independent, Programming Language :: Python :: 3 :: Only,
+  Programming Language :: Python :: 3.13, Topic :: Database, Topic :: Software
+  Development :: Libraries :: Python Modules, Topic :: System :: Archiving, Typing ::
+  Typed
 - Project class: `integration`
 - Keywords: `data-extraction`, `enterprise`, `etl`, `flext`, `singer`, `tap`, `typed`
 - Main facades: `FlextTapOracleOic`, `FlextTapOracleOicApiError`,
   `FlextTapOracleOicAuthenticationError`, `FlextTapOracleOicCli`,
   `FlextTapOracleOicClient`, `FlextTapOracleOicConfig`,
-  `FlextTapOracleOicConnectionError`, `FlextTapOracleOicConstants` (+8 more)
+  `FlextTapOracleOicConnectionError`, `FlextTapOracleOicConstants` (+9 more)
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
 - Public symbol exports: `FlextOracleOicAuthenticator`, `FlextTapOracleOic`,
   `FlextTapOracleOicApiError`, `FlextTapOracleOicAuthenticationError`,
   `FlextTapOracleOicCli`, `FlextTapOracleOicClient`, `FlextTapOracleOicConfig`,
   `FlextTapOracleOicConnectionError`, `FlextTapOracleOicConstants`,
-  `FlextTapOracleOicModels` (+11 more)
+  `FlextTapOracleOicModels` (+12 more)
 - Exported module shortcuts: _none_
 - Generated module pages: `10`
 
