@@ -49,7 +49,9 @@ class FlextTapOracleOicConfig(FlextSettings, FlextMeltanoConfig):
 
     TapOracleOic: Annotated[
         _TapOracleOicNamespace,
-        m.Field(description="Open namespace exposing ``config/*.yaml`` under ``TapOracleOic``."),
+        m.Field(
+            description="Open namespace exposing ``config/*.yaml`` under ``TapOracleOic``."
+        ),
     ] = _TapOracleOicNamespace()
 
 
