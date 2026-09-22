@@ -202,7 +202,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             "oauth_client_secret": {
                 "type": "string",
                 "description": "OAuth2 client secret",
-                "secret": "True",
+                "secret": True,
             },
             "oauth_token_url": {"type": "string", "description": "OAuth2 token URL"},
             "oic_url": {"type": "string", "description": "OIC instance URL"},
