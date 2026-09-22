@@ -231,23 +231,22 @@ class FlextTapOracleOicUtilities(u, _meltano_u):
                 "%Y-%m-%dT%H:%M:%S",
                 "%Y-%m-%d %H:%M:%S",
             ]
-            for fmt in naive_formats:
+            candidate_formats = (
+                *naive_formats,
+                "%Y-%m-%dT%H:%M:%S%z",
+                "%Y-%m-%dT%H:%M:%S.%f%z",
+            )
+            last_error: ValueError | None = None
+            for fmt in candidate_formats:
                 try:
-                    dt = datetime.strptime(timestamp_str, fmt).replace(tzinfo=UTC)
-                    return r[str].ok(dt.isoformat())
-                except ValueError:
+                    dt = datetime.strptime(timestamp_str, fmt)
+                except ValueError as exc:
+                    last_error = exc
                     continue
-            try:
-                dt = datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M:%S%z")
-                return r[str].ok(dt.isoformat())
-            except ValueError:
-                pass
-            try:
-                dt = datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M:%S.%f%z")
-                return r[str].ok(dt.isoformat())
-            except ValueError:
-                pass
-            return r[str].fail(f"Unsupported timestamp format: {timestamp_str}")
+                aware = dt if dt.tzinfo is not None else dt.replace(tzinfo=UTC)
+                return r[str].ok(aware.isoformat())
+            detail = f" ({last_error})" if last_error else ""
+            return r[str].fail(f"Unsupported timestamp format: {timestamp_str}{detail}")
 
         @staticmethod
         def normalize_integration_name(integration_name: str) -> str:
