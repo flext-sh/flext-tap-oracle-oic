@@ -163,11 +163,8 @@ allow-direct-references = true
 [tool.hatch.build.targets.wheel]
 packages = ["src/flext_tap_oracle_oic"]
 
-[tool.hatch.build.targets.wheel.force-include]
-config = "flext_tap_oracle_oic/config"
-
 [tool.hatch.build.targets.sdist]
-only-include = ["src/flext_tap_oracle_oic", "config"]
+only-include = ["src/flext_tap_oracle_oic"]
 
 [tool.mypy]
 disable_error_code = [

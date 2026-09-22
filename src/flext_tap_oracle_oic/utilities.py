@@ -76,7 +76,9 @@ class FlextTapOracleOicUtilities(u, _meltano_u):
                 return r[str].fail(f"URL building error: {e}", exception=e)
 
         @staticmethod
-        def extract_pagination_info(response: t.JsonMapping | None) -> p.Result[t.JsonMapping]:
+        def extract_pagination_info(
+            response: t.JsonMapping | None,
+        ) -> p.Result[t.JsonMapping]:
             """Extract pagination information from OIC response.
 
             Args:
@@ -96,13 +98,15 @@ class FlextTapOracleOicUtilities(u, _meltano_u):
             if items_validation.failure:
                 return r[t.JsonMapping].from_failure(items_validation)
             items_list = items_validation.value
-            return r[t.JsonMapping].ok(t.json_mapping_adapter().validate_python({
-                "has_more": response.get("hasMore", False),
-                "limit": response.get("limit", c.DEFAULT_PAGE_SIZE),
-                "offset": response.get("offset", 0),
-                "total_count": response.get("count", 0),
-                "current_page_size": len(items_list),
-            }))
+            return r[t.JsonMapping].ok(
+                t.json_mapping_adapter().validate_python({
+                    "has_more": response.get("hasMore", False),
+                    "limit": response.get("limit", c.DEFAULT_PAGE_SIZE),
+                    "offset": response.get("offset", 0),
+                    "total_count": response.get("count", 0),
+                    "current_page_size": len(items_list),
+                })
+            )
 
         @staticmethod
         def parse_oic_response(response_data: t.JsonMapping) -> p.Result[t.JsonMapping]:
