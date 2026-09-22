@@ -54,8 +54,8 @@ email = "team@flext.sh"
 name = "FLEXT Team"
 
 [project.scripts]
-flext-tap-oracle-oic = "flext_tap_oracle_oic.tap:TapOracleOic.cli"
-tap-oracle-oic = "flext_tap_oracle_oic.tap:TapOracleOic.cli"
+flext-tap-oracle-oic = "flext_tap_oracle_oic.cli:main"
+tap-oracle-oic = "flext_tap_oracle_oic.cli:main"
 
 [project.urls]
 Documentation = "https://github.com/flext-sh/flext/blob/main/README.md"
