@@ -269,17 +269,7 @@ class FlextTapOracleOicModels(_meltano_m, m):
                 Individual records from the API response with tap metadata.
 
                 """
-                try:
-                    records = self._parse_response_records(response)
-                except c.Meltano.SINGER_SAFE_EXCEPTIONS:
-                    response_url_err = self._get_response_identifier(response)
-                    self.logger.exception(
-                        "Error parsing response from %s", response_url_err
-                    )
-                    if self.settings.get("fail_on_parsing_errors", True):
-                        raise
-                    return
-                yield from records
+                yield from self._parse_response_records(response)
 
             def _parse_response_records(
                 self, response: m.Api.HttpResponse
@@ -360,11 +350,8 @@ class FlextTapOracleOicModels(_meltano_m, m):
                 return identifier
 
             @staticmethod
-            def _as_oic_envelope(data: t.JsonMapping) -> _OicEnvelope | None:
-                envelope_validation = u.validate_value(_OicEnvelope, data, strict=True)
-                if envelope_validation.failure:
-                    return None
-                return envelope_validation.value
+            def _as_oic_envelope(data: t.JsonMapping) -> _OicEnvelope:
+                return _OicEnvelope.model_validate(data, strict=True)
 
             def _handle_response_error(self, response: m.Api.HttpResponse) -> None:
                 """Handle Oracle OIC API response errors with proper categorization."""
@@ -400,15 +387,15 @@ class FlextTapOracleOicModels(_meltano_m, m):
                 """Check if empty result is expected/normal based on OIC response metadata."""
                 if not isinstance(data, Mapping):
                     return not data
+                if self._is_single_record(data):
+                    return False
                 envelope = self._as_oic_envelope(data)
-                if envelope is not None:
-                    return (
-                        envelope.total_size == 0
-                        or envelope.count == 0
-                        or (envelope.items is not None and not envelope.items)
-                        or (envelope.data is not None and not envelope.data)
-                    )
-                return False
+                return (
+                    envelope.total_size == 0
+                    or envelope.count == 0
+                    or (envelope.items is not None and not envelope.items)
+                    or (envelope.data is not None and not envelope.data)
+                )
 
             def _is_single_record(self, data: t.JsonMapping) -> bool:
                 """Check if dict represents a single record vs OIC metadata container."""
@@ -427,15 +414,15 @@ class FlextTapOracleOicModels(_meltano_m, m):
                 self, data: t.JsonMapping
             ) -> Iterator[t.JsonMapping]:
                 """Process dict-type response data with OIC format detection."""
-                envelope = self._as_oic_envelope(data)
-                if envelope is not None and envelope.items is not None:
-                    yield from self._process_list_data(envelope.items)
-                    return
-                if envelope is not None and envelope.data is not None:
-                    yield from self._process_list_data(envelope.data)
-                    return
                 if self._is_single_record(data):
                     yield data
+                    return
+                envelope = self._as_oic_envelope(data)
+                if envelope.items is not None:
+                    yield from self._process_list_data(envelope.items)
+                    return
+                if envelope.data is not None:
+                    yield from self._process_list_data(envelope.data)
 
             def _process_list_data(
                 self, data: t.JsonList | t.SequenceOf[t.JsonMapping]
@@ -455,9 +442,9 @@ class FlextTapOracleOicModels(_meltano_m, m):
                 if not isinstance(data, Mapping):
                     self.logger.debug("Received %s records", len(data))
                     return
-                envelope = self._as_oic_envelope(data)
-                if envelope is None:
+                if self._is_single_record(data):
                     return
+                envelope = self._as_oic_envelope(data)
                 if envelope.items is not None:
                     self.logger.debug("Received %s records", len(envelope.items))
                 elif envelope.data is not None:
