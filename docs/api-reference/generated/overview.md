@@ -22,13 +22,13 @@
 - Main facades: `FlextTapOracleOic`, `FlextTapOracleOicApiError`,
   `FlextTapOracleOicAuthenticationError`, `FlextTapOracleOicCli`,
   `FlextTapOracleOicClient`, `FlextTapOracleOicConfig`,
-  `FlextTapOracleOicConnectionError`, `FlextTapOracleOicConstants` (+9 more)
+  `FlextTapOracleOicConnectionError`, `FlextTapOracleOicConstants` (+8 more)
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
 - Public symbol exports: `FlextOracleOicAuthenticator`, `FlextTapOracleOic`,
   `FlextTapOracleOicApiError`, `FlextTapOracleOicAuthenticationError`,
   `FlextTapOracleOicCli`, `FlextTapOracleOicClient`, `FlextTapOracleOicConfig`,
   `FlextTapOracleOicConnectionError`, `FlextTapOracleOicConstants`,
-  `FlextTapOracleOicModels` (+12 more)
+  `FlextTapOracleOicModels` (+11 more)
 - Exported module shortcuts: _none_
 - Generated module pages: `10`
 

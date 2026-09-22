@@ -9,30 +9,33 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_auth import auth
-    from flext_cli import cli
-    from flext_infra import docs_main, infra
     from flext_meltano import meltano
-    from flext_oracle_oic import oracle_oic
+    from flext_oracle_oic import auth, oracle_oic, web
     from flext_tests import (
-        active_rules,
         api,
+        cli,
         config,
-        discover_repository_root,
+        core,
+        d,
+        e,
+        from_json,
+        h,
         install_local_packages,
+        lazy_attribute,
         load_infra_report,
+        r,
+        services,
         settings,
-        split_csv,
         td,
         tf,
         tk,
         tm,
+        to_json,
+        to_jsonable_python,
         tv,
+        x,
     )
-    from flext_web import web
-    from pydantic_core import from_json, to_json, to_jsonable_python
 
-    from flext_core import core, d, e, h, lazy_attribute, r, x
     from flext_tap_oracle_oic import main, tap_oracle_oic
 
     from . import unit
@@ -63,7 +66,6 @@ __all__: tuple[str, ...] = (
     "TestsFlextTapOracleOicSettings",
     "TestsFlextTapOracleOicTypes",
     "TestsFlextTapOracleOicUtilities",
-    "active_rules",
     "api",
     "auth",
     "c",
@@ -71,12 +73,9 @@ __all__: tuple[str, ...] = (
     "config",
     "core",
     "d",
-    "discover_repository_root",
-    "docs_main",
     "e",
     "from_json",
     "h",
-    "infra",
     "install_local_packages",
     "lazy_attribute",
     "load_infra_report",
@@ -87,8 +86,8 @@ __all__: tuple[str, ...] = (
     "p",
     "r",
     "s",
+    "services",
     "settings",
-    "split_csv",
     "t",
     "tap_oracle_oic",
     "td",
@@ -115,30 +114,33 @@ _LAZY_IMPORTS = MappingProxyType(
             ".typings": ("TestsFlextTapOracleOicTypes", "t"),
             ".unit": ("unit",),
             ".utilities": ("TestsFlextTapOracleOicUtilities", "u"),
-            "flext_auth": ("auth",),
-            "flext_cli": ("cli",),
-            "flext_core": ("core", "d", "e", "h", "lazy_attribute", "r", "x"),
-            "flext_infra": ("docs_main", "infra"),
             "flext_meltano": ("meltano",),
-            "flext_oracle_oic": ("oracle_oic",),
+            "flext_oracle_oic": ("auth", "oracle_oic", "web"),
             "flext_tap_oracle_oic": ("main", "tap_oracle_oic"),
             "flext_tests": (
-                "active_rules",
                 "api",
+                "cli",
                 "config",
-                "discover_repository_root",
+                "core",
+                "d",
+                "e",
+                "from_json",
+                "h",
                 "install_local_packages",
+                "lazy_attribute",
                 "load_infra_report",
+                "r",
+                "services",
                 "settings",
-                "split_csv",
                 "td",
                 "tf",
                 "tk",
                 "tm",
+                "to_json",
+                "to_jsonable_python",
                 "tv",
+                "x",
             ),
-            "flext_web": ("web",),
-            "pydantic_core": ("from_json", "to_json", "to_jsonable_python"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
