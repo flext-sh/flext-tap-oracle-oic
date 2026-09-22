@@ -33,6 +33,8 @@ if TYPE_CHECKING:
     from ._package import OicPackageEntity
     from ._stream_config import OicStreamConfiguration
     from .streams import ALL_STREAMS, FlextTapOracleOicModelsStreams
+
+
 __all__: tuple[str, ...] = (
     "ALL_STREAMS",
     "FlextTapOracleOicConnection",
