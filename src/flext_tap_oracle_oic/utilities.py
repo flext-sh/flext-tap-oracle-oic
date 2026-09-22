@@ -76,7 +76,9 @@ class FlextTapOracleOicUtilities(u, _meltano_u):
                 return r[str].fail(f"URL building error: {e}", exception=e)
 
         @staticmethod
-        def extract_pagination_info(response: t.JsonMapping | None) -> p.Result[t.JsonMapping]:
+        def extract_pagination_info(
+            response: t.JsonMapping | None,
+        ) -> p.Result[t.JsonMapping]:
             """Extract pagination information from OIC response.
 
             Args:
@@ -96,13 +98,15 @@ class FlextTapOracleOicUtilities(u, _meltano_u):
             if items_validation.failure:
                 return r[t.JsonMapping].from_failure(items_validation)
             items_list = items_validation.value
-            return r[t.JsonMapping].ok(t.json_mapping_adapter().validate_python({
-                "has_more": response.get("hasMore", False),
-                "limit": response.get("limit", c.DEFAULT_PAGE_SIZE),
-                "offset": response.get("offset", 0),
-                "total_count": response.get("count", 0),
-                "current_page_size": len(items_list),
-            }))
+            return r[t.JsonMapping].ok(
+                t.json_mapping_adapter().validate_python({
+                    "has_more": response.get("hasMore", False),
+                    "limit": response.get("limit", c.DEFAULT_PAGE_SIZE),
+                    "offset": response.get("offset", 0),
+                    "total_count": response.get("count", 0),
+                    "current_page_size": len(items_list),
+                })
+            )
 
         @staticmethod
         def parse_oic_response(response_data: t.JsonMapping) -> p.Result[t.JsonMapping]:
@@ -227,23 +231,22 @@ class FlextTapOracleOicUtilities(u, _meltano_u):
                 "%Y-%m-%dT%H:%M:%S",
                 "%Y-%m-%d %H:%M:%S",
             ]
-            for fmt in naive_formats:
+            candidate_formats = (
+                *naive_formats,
+                "%Y-%m-%dT%H:%M:%S%z",
+                "%Y-%m-%dT%H:%M:%S.%f%z",
+            )
+            last_error: ValueError | None = None
+            for fmt in candidate_formats:
                 try:
-                    dt = datetime.strptime(timestamp_str, fmt).replace(tzinfo=UTC)
-                    return r[str].ok(dt.isoformat())
-                except ValueError:
+                    dt = datetime.strptime(timestamp_str, fmt)
+                except ValueError as exc:
+                    last_error = exc
                     continue
-            try:
-                dt = datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M:%S%z")
-                return r[str].ok(dt.isoformat())
-            except ValueError:
-                pass
-            try:
-                dt = datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M:%S.%f%z")
-                return r[str].ok(dt.isoformat())
-            except ValueError:
-                pass
-            return r[str].fail(f"Unsupported timestamp format: {timestamp_str}")
+                aware = dt if dt.tzinfo is not None else dt.replace(tzinfo=UTC)
+                return r[str].ok(aware.isoformat())
+            detail = f" ({last_error})" if last_error else ""
+            return r[str].fail(f"Unsupported timestamp format: {timestamp_str}{detail}")
 
         @staticmethod
         def normalize_integration_name(integration_name: str) -> str:

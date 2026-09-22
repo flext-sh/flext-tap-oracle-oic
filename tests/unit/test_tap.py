@@ -13,7 +13,11 @@ import pytest
 from flext_api import m as api_m
 from flext_tests import tm
 
-from flext_tap_oracle_oic import FlextTapOracleOicPaginator, FlextTapOracleOicSettings, c
+from flext_tap_oracle_oic import (
+    FlextTapOracleOicPaginator,
+    FlextTapOracleOicSettings,
+    c,
+)
 from tests import u
 
 if TYPE_CHECKING:
@@ -48,14 +52,9 @@ class TestsFlextTapOracleOic:
             {"id": str(index)}
             for index in range(c.TapOracleOic.DEFAULT_PAGINATOR_PAGE_SIZE)
         ]
-        response = api_m.Api.HttpResponse(
-            status_code=200, body={envelope_key: records}
-        )
+        response = api_m.Api.HttpResponse(status_code=200, body={envelope_key: records})
 
-        tm.that(
-            paginator.get_next(response),
-            eq=paginator.current_value + len(records),
-        )
+        tm.that(paginator.get_next(response), eq=paginator.current_value + len(records))
         empty_response = api_m.Api.HttpResponse(
             status_code=200, body={envelope_key: []}
         )
