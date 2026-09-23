@@ -17,7 +17,7 @@ class TestsFlextTapOracleOicServiceBase(tests_s):
     # declares only its more-specific bootstrap settings type.
     @classmethod
     @override
-    def _runtime_bootstrap_options(cls) -> m.RuntimeBootstrapOptions:
+    def runtime_bootstrap_options(cls) -> m.RuntimeBootstrapOptions:
         return m.RuntimeBootstrapOptions(settings_type=TestsFlextTapOracleOicSettings)
 
 
