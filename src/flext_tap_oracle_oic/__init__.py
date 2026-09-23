@@ -20,20 +20,14 @@ from .__version__ import (
 )
 
 if TYPE_CHECKING:
-    from flext_meltano import (
-        cli,
-        core,
-        d,
-        e,
-        h,
-        lazy_attribute,
-        meltano,
-        r,
-        s,
-        services,
-        x,
-    )
-    from flext_oracle_oic import api, auth, oracle_oic, web
+    from flext_api import api
+    from flext_auth import auth
+    from flext_cli import cli
+    from flext_meltano import meltano, s
+    from flext_oracle_oic import oracle_oic
+    from flext_web import web
+
+    from flext_core import core, d, e, h, lazy_attribute, r, x
 
     from ._config import FlextTapOracleOicConfig, config
     from ._settings import FlextTapOracleOicSettings, settings
@@ -101,7 +95,6 @@ __all__: tuple[str, ...] = (
     "p",
     "r",
     "s",
-    "services",
     "settings",
     "t",
     "tap_oracle_oic",
@@ -134,20 +127,13 @@ _LAZY_IMPORTS = MappingProxyType(
             ".tap_streams": ("FlextTapOracleOicPaginator",),
             ".typings": ("FlextTapOracleOicTypes", "t"),
             ".utilities": ("FlextTapOracleOicUtilities", "u"),
-            "flext_meltano": (
-                "cli",
-                "core",
-                "d",
-                "e",
-                "h",
-                "lazy_attribute",
-                "meltano",
-                "r",
-                "s",
-                "services",
-                "x",
-            ),
-            "flext_oracle_oic": ("api", "auth", "oracle_oic", "web"),
+            "flext_api": ("api",),
+            "flext_auth": ("auth",),
+            "flext_cli": ("cli",),
+            "flext_core": ("core", "d", "e", "h", "lazy_attribute", "r", "x"),
+            "flext_meltano": ("meltano", "s"),
+            "flext_oracle_oic": ("oracle_oic",),
+            "flext_web": ("web",),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
