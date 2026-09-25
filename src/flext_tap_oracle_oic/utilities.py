@@ -11,8 +11,8 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 from urllib.parse import urljoin, urlparse
 
-from flext_meltano import u as _meltano_u
-from flext_oracle_oic import u
+from flext_meltano import FlextMeltanoUtilities
+from flext_oracle_oic import FlextOracleOicUtilities
 
 from flext_tap_oracle_oic import c, p, r, t
 
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from collections.abc import MutableMapping
 
 
-class FlextTapOracleOicUtilities(u, _meltano_u):
+class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities):
     """Single unified utilities class for Singer tap Oracle OIC operations.
 
     Follows FLEXT unified class pattern with nested helper classes for

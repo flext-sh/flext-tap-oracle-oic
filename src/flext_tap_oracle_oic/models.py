@@ -14,8 +14,8 @@ from flext_api import (
     FlextApi as _api_FlextApi,
     FlextApiSettings as _api_FlextApiSettings,
 )
-from flext_meltano import m as _meltano_m
-from flext_oracle_oic import m
+from flext_meltano import FlextMeltanoModels
+from flext_oracle_oic import FlextOracleOicModels
 
 from flext_tap_oracle_oic import c, e, t, u
 from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator
@@ -53,7 +53,7 @@ if TYPE_CHECKING:
     from flext_tap_oracle_oic import p
 
 
-class FlextTapOracleOicModels(_meltano_m, m):
+class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     """Oracle Integration Cloud tap models extending flext-core m.
 
     Provides complete models for OIC entity extraction, authentication,
@@ -99,7 +99,7 @@ class FlextTapOracleOicModels(_meltano_m, m):
 
         OicEnvelope = _OicEnvelope
 
-        class OICBaseStream(_meltano_m.BaseModel):
+        class OICBaseStream(FlextMeltanoModels.BaseModel):
             """Professional base stream class for Oracle Integration Cloud APIs.
 
             stream implementation with:
@@ -113,8 +113,8 @@ class FlextTapOracleOicModels(_meltano_m, m):
             - Support for all OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
             """
 
-            model_config: ClassVar[_meltano_m.ConfigDict] = _meltano_m.ConfigDict(
-                arbitrary_types_allowed=True
+            model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
+                FlextMeltanoModels.ConfigDict(arbitrary_types_allowed=True)
             )
 
             settings: Annotated[t.JsonMapping, u.Field(default_factory=dict)]
@@ -474,7 +474,7 @@ class FlextTapOracleOicModels(_meltano_m, m):
 
         OicErrorContext = _OicErrorContext
 
-        class OracleOic(m.OracleOic):
+        class OracleOic(FlextOracleOicModels.OracleOic):
             """Domain entity models for Oracle OIC resources.
 
             Canonical home for OIC entity classes, migrated from domain/entities.py
