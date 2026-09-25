@@ -341,13 +341,12 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
             def _get_response_identifier(self, response: m.Api.HttpResponse) -> str:
                 """Return a stable identifier for response logging."""
-                request_id_raw: p.AttributeProbe = response.request_id
-                if isinstance(request_id_raw, str) and request_id_raw:
-                    return request_id_raw
-                identifier: str = (
+                # request_id is a str contract member; pyright proves the
+                # isinstance guard redundant — keep only the truthiness probe.
+                request_id: str = response.request_id
+                return request_id or (
                     self.api_path if self.api_path is not None else self.name
                 )
-                return identifier
 
             @staticmethod
             def _as_oic_envelope(data: t.JsonMapping) -> _OicEnvelope:
