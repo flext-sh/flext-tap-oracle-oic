@@ -10,17 +10,20 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_meltano import t as meltano_t
-from flext_oracle_oic import t
+from flext_meltano import FlextMeltanoTypes
+from flext_oracle_oic import FlextOracleOicTypes
 
 
-class FlextTapOracleOicTypes(meltano_t, t):
+class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
     """MRO facade composing Meltano + Oracle OIC type namespaces."""
 
     class TapOracleOic:
         """Tap Oracle OIC-specific adapter namespace."""
 
-        type SectionedSummary = t.MappingKV[str, t.MappingKV[str, t.JsonValue | None]]
+        type SectionedSummary = FlextOracleOicTypes.MappingKV[
+            str,
+            FlextOracleOicTypes.MappingKV[str, FlextOracleOicTypes.JsonValue | None],
+        ]
         """Two-level summary mapping (section -> field -> value-or-None)."""
 
 
