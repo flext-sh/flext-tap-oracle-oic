@@ -49,8 +49,8 @@ src/flext_tap_oracle_oic/
 ## Commands
 
 ```bash
-make check PROJECT=flext-tap-oracle-oic
-make test PROJECT=flext-tap-oracle-oic # tests/unit
+make check
+make test # tests/unit
 ```
 
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
