@@ -26,23 +26,23 @@ if TYPE_CHECKING:
     from ._settings import FlextTapOracleOicSettings, settings
     from .api import FlextTapOracleOicService, tap_oracle_oic
     from .cli import FlextTapOracleOicCli, main
-    from .constants import FlextTapOracleOicConstants, c
+    from .constants import FlextTapOracleOicConstants, FlextTapOracleOicConstants as c
     from .errors import (
         FlextTapOracleOicApiError,
         FlextTapOracleOicAuthenticationError,
         FlextTapOracleOicConnectionError,
         FlextTapOracleOicValidationError,
     )
-    from .models import FlextTapOracleOicModels, m
-    from .protocols import FlextTapOracleOicProtocols, p
+    from .models import FlextTapOracleOicModels, FlextTapOracleOicModels as m
+    from .protocols import FlextTapOracleOicProtocols, FlextTapOracleOicProtocols as p
     from .tap import (
         FlextOracleOicAuthenticator,
         FlextTapOracleOic,
         FlextTapOracleOicClient,
     )
     from .tap_streams import FlextTapOracleOicPaginator
-    from .typings import FlextTapOracleOicTypes, t
-    from .utilities import FlextTapOracleOicUtilities, u
+    from .typings import FlextTapOracleOicTypes, FlextTapOracleOicTypes as t
+    from .utilities import FlextTapOracleOicUtilities, FlextTapOracleOicUtilities as u
 
 
 __all__: tuple[str, ...] = (
