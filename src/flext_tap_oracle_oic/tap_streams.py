@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 from flext_tap_oracle_oic import c, t
 
-from ._models._envelope import OicEnvelope
+from ._models._envelope import FlextTapOracleOicEnvelope
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels
@@ -36,8 +36,8 @@ class FlextTapOracleOicPaginator:
         self._adaptive_sizing: bool = True
         self._response_times: list[float] = []
 
-    def get_next(self, response: FlextApiModels.Api.HttpResponse) -> int | None:
-        """Return a raw Singer page token; malformed responses raise."""
+    def fetch_next(self, response: FlextApiModels.Api.HttpResponse) -> int | None:
+        """Fetch the raw Singer page token; malformed responses raise."""
         data = self._normalize_response_payload(response)
         return self._calculate_next_offset(data)
 
@@ -63,7 +63,7 @@ class FlextTapOracleOicPaginator:
         self, data: t.JsonMapping
     ) -> t.SequenceOf[t.JsonMapping] | None:
         """Extract items from various OIC response formats."""
-        envelope = OicEnvelope.model_validate(data, strict=True)
+        envelope = FlextTapOracleOicEnvelope.model_validate(data, strict=True)
         if envelope.items is not None:
             items: t.SequenceOf[t.JsonMapping] = envelope.items
             return items

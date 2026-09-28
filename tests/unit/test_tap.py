@@ -54,11 +54,13 @@ class TestsFlextTapOracleOic:
         ]
         response = api_m.Api.HttpResponse(status_code=200, body={envelope_key: records})
 
-        tm.that(paginator.get_next(response), eq=paginator.current_value + len(records))
+        tm.that(
+            paginator.fetch_next(response), eq=paginator.current_value + len(records)
+        )
         empty_response = api_m.Api.HttpResponse(
             status_code=200, body={envelope_key: []}
         )
-        assert paginator.get_next(empty_response) is None
+        assert paginator.fetch_next(empty_response) is None
 
     @pytest.mark.parametrize("envelope_key", ["items", "data"])
     def test_paginator_rejects_malformed_pages(self, envelope_key: str) -> None:
@@ -68,4 +70,4 @@ class TestsFlextTapOracleOic:
         )
 
         with pytest.raises(c.ValidationError):
-            FlextTapOracleOicPaginator().get_next(response)
+            FlextTapOracleOicPaginator().fetch_next(response)

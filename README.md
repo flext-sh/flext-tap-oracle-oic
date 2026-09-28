@@ -56,9 +56,8 @@ verification).
   by `flext-*`. The FLEXT cascade is encoded in the inheritance lists of the facade
   classes listed under Module Map above.
 - Public extensions exposed by this project: `FlextTapOracleOic`,
-  `FlextTapOracleOicApiError`, `FlextTapOracleOicAuthenticationError`,
-  `FlextTapOracleOicCli`, `FlextTapOracleOicClient`, `FlextTapOracleOicConfig` (+10
-  more).
+  `FlextTapOracleOicAuthenticator`, `FlextTapOracleOicCli`, `FlextTapOracleOicClient`,
+  `FlextTapOracleOicConfig`, `FlextTapOracleOicConstants` (+7 more).
 - Library abstraction boundaries: see AGENTS.md §2.7.
 
 ## Quality Gates

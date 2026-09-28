@@ -1,4 +1,4 @@
-"""OIC OicErrorContext model.
+"""OIC FlextTapOracleOicErrorContext model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -13,7 +13,7 @@ from flext_meltano import FlextMeltanoModels
 from flext_tap_oracle_oic import c, t, u
 
 
-class OicErrorContext(FlextMeltanoModels.Entity):
+class FlextTapOracleOicErrorContext(FlextMeltanoModels.Entity):
     """Error context for OIC API error handling."""
 
     # Pydantic 2.11 Configuration - Error Context Features
@@ -114,4 +114,4 @@ class OicErrorContext(FlextMeltanoModels.Entity):
         return str(c.TapOracleOic.OicErrorSeverity.WARNING.value)
 
 
-__all__: list[str] = ["OicErrorContext"]
+__all__: list[str] = ["FlextTapOracleOicErrorContext"]

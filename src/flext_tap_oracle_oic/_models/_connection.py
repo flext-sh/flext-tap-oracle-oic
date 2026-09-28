@@ -1,4 +1,4 @@
-"""OIC OicConnectionEntity model.
+"""OIC FlextTapOracleOicConnectionEntity model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from datetime import datetime
 
 
-class OicConnectionEntity(FlextMeltanoModels.Entity):
+class FlextTapOracleOicConnectionEntity(FlextMeltanoModels.Entity):
     """OIC Connection entity with security sanitization."""
 
     # Pydantic 2.11 Configuration - Connection Features
@@ -126,4 +126,4 @@ class OicConnectionEntity(FlextMeltanoModels.Entity):
         return self
 
 
-__all__: list[str] = ["OicConnectionEntity"]
+__all__: list[str] = ["FlextTapOracleOicConnectionEntity"]

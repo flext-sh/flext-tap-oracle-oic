@@ -1,4 +1,4 @@
-"""OIC OicAgentEntity model.
+"""OIC FlextTapOracleOicAgentEntity model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from datetime import datetime
 
 
-class OicAgentEntity(FlextMeltanoModels.Entity):
+class FlextTapOracleOicAgentEntity(FlextMeltanoModels.Entity):
     """OIC Agent entity for connectivity agents."""
 
     # Pydantic 2.11 Configuration - Agent Features
@@ -119,4 +119,4 @@ class OicAgentEntity(FlextMeltanoModels.Entity):
         return self
 
 
-__all__: list[str] = ["OicAgentEntity"]
+__all__: list[str] = ["FlextTapOracleOicAgentEntity"]

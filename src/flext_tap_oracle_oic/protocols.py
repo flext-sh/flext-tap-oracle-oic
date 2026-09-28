@@ -35,8 +35,10 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
 
             current_value: int
 
-            def get_next(self, response: FlextApiModels.Api.HttpResponse) -> int | None:
-                """Return the next pagination token for a response."""
+            def fetch_next(
+                self, response: FlextApiModels.Api.HttpResponse
+            ) -> int | None:
+                """Fetch the next pagination token for a response."""
                 ...
 
         @runtime_checkable

@@ -1,4 +1,4 @@
-"""OIC OicStreamConfiguration model.
+"""OIC FlextTapOracleOicStreamConfiguration model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -13,7 +13,7 @@ from flext_meltano import FlextMeltanoModels
 from flext_tap_oracle_oic import c, t, u
 
 
-class OicStreamConfiguration(FlextMeltanoModels.ArbitraryTypesModel):
+class FlextTapOracleOicStreamConfiguration(FlextMeltanoModels.ArbitraryTypesModel):
     """Configuration for OIC tap streams."""
 
     # Pydantic 2.11 Configuration - Stream Features
@@ -105,4 +105,4 @@ class OicStreamConfiguration(FlextMeltanoModels.ArbitraryTypesModel):
         return self
 
 
-__all__: list[str] = ["OicStreamConfiguration"]
+__all__: list[str] = ["FlextTapOracleOicStreamConfiguration"]

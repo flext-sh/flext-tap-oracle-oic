@@ -19,18 +19,17 @@
   Typed
 - Project class: `integration`
 - Keywords: `data-extraction`, `enterprise`, `etl`, `flext`, `singer`, `tap`, `typed`
-- Main facades: `FlextTapOracleOic`, `FlextTapOracleOicApiError`,
-  `FlextTapOracleOicAuthenticationError`, `FlextTapOracleOicCli`,
-  `FlextTapOracleOicClient`, `FlextTapOracleOicConfig`,
-  `FlextTapOracleOicConnectionError`, `FlextTapOracleOicConstants` (+8 more)
-- Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
-- Public symbol exports: `FlextOracleOicAuthenticator`, `FlextTapOracleOic`,
-  `FlextTapOracleOicApiError`, `FlextTapOracleOicAuthenticationError`,
+- Main facades: `FlextTapOracleOic`, `FlextTapOracleOicAuthenticator`,
   `FlextTapOracleOicCli`, `FlextTapOracleOicClient`, `FlextTapOracleOicConfig`,
-  `FlextTapOracleOicConnectionError`, `FlextTapOracleOicConstants`,
-  `FlextTapOracleOicModels` (+11 more)
+  `FlextTapOracleOicConstants`, `FlextTapOracleOicModels`, `FlextTapOracleOicPaginator`
+  (+5 more)
+- Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
+- Public symbol exports: `FlextTapOracleOic`, `FlextTapOracleOicAuthenticator`,
+  `FlextTapOracleOicCli`, `FlextTapOracleOicClient`, `FlextTapOracleOicConfig`,
+  `FlextTapOracleOicConstants`, `FlextTapOracleOicModels`, `FlextTapOracleOicPaginator`,
+  `FlextTapOracleOicProtocols`, `FlextTapOracleOicService` (+7 more)
 - Exported module shortcuts: _none_
-- Generated module pages: `10`
+- Generated module pages: `11`
 
 ## Next Pages
 
