@@ -1,4 +1,4 @@
-"""OIC OicMetricsRecord model.
+"""OIC FlextTapOracleOicMetricsRecord model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from datetime import datetime
 
 
-class OicMetricsRecord(FlextMeltanoModels.Entity):
+class FlextTapOracleOicMetricsRecord(FlextMeltanoModels.Entity):
     """OIC Metrics record for performance monitoring."""
 
     # Pydantic 2.11 Configuration - Metrics Features
@@ -128,4 +128,4 @@ class OicMetricsRecord(FlextMeltanoModels.Entity):
         return self
 
 
-__all__: list[str] = ["OicMetricsRecord"]
+__all__: list[str] = ["FlextTapOracleOicMetricsRecord"]

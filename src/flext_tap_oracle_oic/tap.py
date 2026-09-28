@@ -9,185 +9,23 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import ClassVar, override
 
-from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 from flext_meltano.services.abstractions import FlextMeltanoAbstractions
 
-from flext_tap_oracle_oic import FlextTapOracleOicSettings, c, m, p, r, t, u
+from flext_tap_oracle_oic import (
+    FlextTapOracleOicAuthenticator,
+    FlextTapOracleOicClient,
+    FlextTapOracleOicSettings,
+    c,
+    m,
+    p,
+    r,
+    t,
+    u,
+)
 
 from ._models.streams import ALL_STREAMS
 
 logger = u.fetch_logger(__name__)
-
-
-class FlextOracleOicAuthenticator:
-    """Real Oracle OIC OAuth2 authenticator implementation."""
-
-    def __init__(
-        self, settings: FlextTapOracleOicSettings, api_client: FlextApi | None = None
-    ) -> None:
-        """Initialize authenticator with OAuth2 configuration."""
-        # NOTE (multi-agent): settings live on self; methods read
-        # self.settings.TapOracleOic.* (namespaced SSOT, ADR-005).
-        self.settings = settings
-        self._access_token: str | None = None
-        if api_client is None:
-            api_config = FlextApiSettings.model_validate({})
-            self._api_client: FlextApi = FlextApi(runtime_settings=api_config)
-        else:
-            self._api_client = api_client
-
-    @property
-    def access_token(self) -> str | None:
-        """Stored OAuth2 access token."""
-        return self._access_token
-
-    @property
-    def api_client(self) -> FlextApi:
-        """HTTP client used for token requests."""
-        return self._api_client
-
-    def get_access_token(self) -> p.Result[str]:
-        """Get OAuth2 access token using client credentials flow."""
-
-        def _run_get_access_token() -> p.Result[str]:
-            token_request_data = "&".join(
-                f"{key}={value}"
-                for key, value in {
-                    "grant_type": "client_credentials",
-                    "client_id": self.settings.TapOracleOic.oauth_client_id,
-                    "client_secret": self.settings.TapOracleOic.oauth_client_secret,
-                    "audience": self.settings.TapOracleOic.oauth_audience,
-                }.items()
-            )
-            response_result = self._api_client.post(
-                self.settings.TapOracleOic.oauth_token_url,
-                data=token_request_data,
-                headers={"Content-Type": "application/x-www-form-urlencoded"},
-            )
-            if response_result.failure:
-                return r[str].fail_op("OAuth2 request", response_result.error)
-            response = response_result.value
-            if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
-                return r[str].fail(
-                    f"OAuth2 request failed with status {response.status_code}"
-                )
-            token_data: t.JsonMapping
-            match response.body:
-                case dict() as token_dict:
-                    token_data = token_dict
-                case str() as body_str:
-                    token_data = t.json_mapping_adapter().validate_json(body_str)
-                case _:
-                    return r[str].fail("Empty or invalid OAuth response body")
-            access_token = token_data.get("access_token")
-            match access_token:
-                case str() as access_token_str if access_token_str:
-                    self._access_token = access_token_str
-                    logger.info("OAuth2 access token obtained successfully")
-                    return r[str].ok(access_token_str)
-                case _:
-                    return r[str].fail("No valid access token in response")
-
-        try:
-            return _run_get_access_token()
-        except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-            return r[str].fail_op("OAuth2 authentication", e)
-
-
-class FlextTapOracleOicClient:
-    """Real Oracle Integration Cloud API client implementation."""
-
-    def __init__(
-        self,
-        settings: FlextTapOracleOicSettings,
-        authenticator: FlextOracleOicAuthenticator,
-    ) -> None:
-        """Initialize OIC API client."""
-        # NOTE (multi-agent): settings live on self; get/post read
-        # self.settings.TapOracleOic.base_url (namespaced SSOT, ADR-005).
-        self.settings = settings
-        self.authenticator = authenticator
-        api_config = FlextApiSettings.model_validate({
-            "base_url": settings.TapOracleOic.base_url.rstrip("/"),
-            "timeout": settings.TapOracleOic.timeout,
-        })
-        self._api_client = FlextApi(runtime_settings=api_config)
-
-    def get(self, endpoint: str) -> p.Result[FlextApiModels.Api.HttpResponse]:
-        """Make authenticated GET request to OIC API."""
-        url = (
-            f"{self.settings.TapOracleOic.base_url.rstrip('/')}/{endpoint.lstrip('/')}"
-        )
-        headers_result = self._get_auth_headers()
-        if headers_result.failure:
-            return r[FlextApiModels.Api.HttpResponse].fail(
-                f"Failed to get auth headers: {headers_result.error}"
-            )
-        try:
-            response_result = self._api_client.get(url, headers=headers_result.value)
-            if response_result.failure:
-                return r[FlextApiModels.Api.HttpResponse].fail_op(
-                    "OIC API request", response_result.error
-                )
-            response = response_result.value
-            if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
-                return r[FlextApiModels.Api.HttpResponse].fail(
-                    f"OIC API request failed with status {response.status_code}"
-                )
-            return r[FlextApiModels.Api.HttpResponse].ok(response)
-        except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-            return r[FlextApiModels.Api.HttpResponse].fail_op("OIC API request", e)
-
-    def post(
-        self, endpoint: str, data: t.MappingKV[str, t.JsonMapping] | None = None
-    ) -> p.Result[FlextApiModels.Api.HttpResponse]:
-        """Make authenticated POST request to OIC API."""
-        url = (
-            f"{self.settings.TapOracleOic.base_url.rstrip('/')}/{endpoint.lstrip('/')}"
-        )
-        headers_result = self._get_auth_headers()
-        if headers_result.failure:
-            return r[FlextApiModels.Api.HttpResponse].fail(
-                f"Failed to get auth headers: {headers_result.error}"
-            )
-        try:
-            json_body = (
-                t
-                .json_mapping_adapter()
-                .dump_json(t.json_mapping_adapter().validate_python(data))
-                .decode(c.DEFAULT_ENCODING)
-                if data
-                else None
-            )
-            response_result = self._api_client.post(
-                url, data=json_body, headers=headers_result.value
-            )
-            if response_result.failure:
-                return r[FlextApiModels.Api.HttpResponse].fail_op(
-                    "OIC API request", response_result.error
-                )
-            response = response_result.value
-            if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
-                return r[FlextApiModels.Api.HttpResponse].fail(
-                    f"OIC API request failed with status {response.status_code}"
-                )
-            return r[FlextApiModels.Api.HttpResponse].ok(response)
-        except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-            return r[FlextApiModels.Api.HttpResponse].fail_op("OIC API request", e)
-
-    def _get_auth_headers(self) -> p.Result[t.StrMapping]:
-        """Get authorization headers with OAuth2 token."""
-        token_result = self.authenticator.get_access_token()
-        if token_result.failure:
-            return r[t.StrMapping].fail(
-                f"Failed to get access token: {token_result.error}"
-            )
-        headers: t.MutableStrMapping = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
-        headers["Authorization"] = f"Bearer {token_result.value}"
-        return r[t.StrMapping].ok(headers)
 
 
 class FlextTapOracleOic(FlextMeltanoAbstractions):
@@ -263,7 +101,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             oic_config = FlextTapOracleOicSettings.model_validate({
                 "TapOracleOic": oic_config_data
             })
-            authenticator = FlextOracleOicAuthenticator(settings=oic_config)
+            authenticator = FlextTapOracleOicAuthenticator(settings=oic_config)
             self._client = FlextTapOracleOicClient(
                 settings=oic_config, authenticator=authenticator
             )
@@ -346,7 +184,5 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
 
 
 __all__: list[str] = [
-    "FlextOracleOicAuthenticator",
     "FlextTapOracleOic",
-    "FlextTapOracleOicClient",
 ]

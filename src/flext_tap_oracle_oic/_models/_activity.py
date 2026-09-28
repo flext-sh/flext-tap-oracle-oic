@@ -1,4 +1,4 @@
-"""OIC OicActivityRecord model.
+"""OIC FlextTapOracleOicActivityRecord model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from datetime import datetime
 
 
-class OicActivityRecord(FlextMeltanoModels.Entity):
+class FlextTapOracleOicActivityRecord(FlextMeltanoModels.Entity):
     """OIC Activity monitoring record for incremental replication."""
 
     # Pydantic 2.11 Configuration - Activity Features
@@ -122,4 +122,4 @@ class OicActivityRecord(FlextMeltanoModels.Entity):
         return self
 
 
-__all__: list[str] = ["OicActivityRecord"]
+__all__: list[str] = ["FlextTapOracleOicActivityRecord"]

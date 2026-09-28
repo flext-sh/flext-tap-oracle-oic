@@ -1,4 +1,4 @@
-"""OIC OicAuthenticationConfig model.
+"""OIC FlextTapOracleOicAuthenticationConfig model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -13,7 +13,7 @@ from flext_meltano import FlextMeltanoModels
 from flext_tap_oracle_oic import c, t, u
 
 
-class OicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
+class FlextTapOracleOicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
     """OAuth2/IDCS authentication configuration for OIC API access."""
 
     # Pydantic 2.11 Configuration - Authentication Features
@@ -96,4 +96,4 @@ class OicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
         return self
 
 
-__all__: list[str] = ["OicAuthenticationConfig"]
+__all__: list[str] = ["FlextTapOracleOicAuthenticationConfig"]

@@ -1,4 +1,4 @@
-"""OIC OicIntegrationEntity model.
+"""OIC FlextTapOracleOicIntegrationEntity model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from datetime import datetime
 
 
-class OicIntegrationEntity(FlextMeltanoModels.Entity):
+class FlextTapOracleOicIntegrationEntity(FlextMeltanoModels.Entity):
     """OIC Integration entity with complete metadata."""
 
     # Pydantic 2.11 Configuration - Integration Features
@@ -128,4 +128,4 @@ class OicIntegrationEntity(FlextMeltanoModels.Entity):
         return self
 
 
-__all__: list[str] = ["OicIntegrationEntity"]
+__all__: list[str] = ["FlextTapOracleOicIntegrationEntity"]

@@ -25,35 +25,24 @@ if TYPE_CHECKING:
     from ._config import FlextTapOracleOicConfig, config
     from ._settings import FlextTapOracleOicSettings, settings
     from .api import FlextTapOracleOicService, tap_oracle_oic
+    from .authenticator import FlextTapOracleOicAuthenticator
     from .cli import FlextTapOracleOicCli, main
+    from .client import FlextTapOracleOicClient
     from .constants import FlextTapOracleOicConstants, FlextTapOracleOicConstants as c
-    from .errors import (
-        FlextTapOracleOicApiError,
-        FlextTapOracleOicAuthenticationError,
-        FlextTapOracleOicConnectionError,
-        FlextTapOracleOicValidationError,
-    )
     from .models import FlextTapOracleOicModels, FlextTapOracleOicModels as m
     from .protocols import FlextTapOracleOicProtocols, FlextTapOracleOicProtocols as p
-    from .tap import (
-        FlextOracleOicAuthenticator,
-        FlextTapOracleOic,
-        FlextTapOracleOicClient,
-    )
+    from .tap import FlextTapOracleOic
     from .tap_streams import FlextTapOracleOicPaginator
     from .typings import FlextTapOracleOicTypes, FlextTapOracleOicTypes as t
     from .utilities import FlextTapOracleOicUtilities, FlextTapOracleOicUtilities as u
 
 
 __all__: tuple[str, ...] = (
-    "FlextOracleOicAuthenticator",
     "FlextTapOracleOic",
-    "FlextTapOracleOicApiError",
-    "FlextTapOracleOicAuthenticationError",
+    "FlextTapOracleOicAuthenticator",
     "FlextTapOracleOicCli",
     "FlextTapOracleOicClient",
     "FlextTapOracleOicConfig",
-    "FlextTapOracleOicConnectionError",
     "FlextTapOracleOicConstants",
     "FlextTapOracleOicModels",
     "FlextTapOracleOicPaginator",
@@ -62,7 +51,6 @@ __all__: tuple[str, ...] = (
     "FlextTapOracleOicSettings",
     "FlextTapOracleOicTypes",
     "FlextTapOracleOicUtilities",
-    "FlextTapOracleOicValidationError",
     "__author__",
     "__author_email__",
     "__description__",
@@ -94,21 +82,13 @@ _LAZY_IMPORTS = MappingProxyType(
             "._config": ("FlextTapOracleOicConfig", "config"),
             "._settings": ("FlextTapOracleOicSettings", "settings"),
             ".api": ("FlextTapOracleOicService", "tap_oracle_oic"),
+            ".authenticator": ("FlextTapOracleOicAuthenticator",),
             ".cli": ("FlextTapOracleOicCli", "main"),
+            ".client": ("FlextTapOracleOicClient",),
             ".constants": ("FlextTapOracleOicConstants", "c"),
-            ".errors": (
-                "FlextTapOracleOicApiError",
-                "FlextTapOracleOicAuthenticationError",
-                "FlextTapOracleOicConnectionError",
-                "FlextTapOracleOicValidationError",
-            ),
             ".models": ("FlextTapOracleOicModels", "m"),
             ".protocols": ("FlextTapOracleOicProtocols", "p"),
-            ".tap": (
-                "FlextOracleOicAuthenticator",
-                "FlextTapOracleOic",
-                "FlextTapOracleOicClient",
-            ),
+            ".tap": ("FlextTapOracleOic",),
             ".tap_streams": ("FlextTapOracleOicPaginator",),
             ".typings": ("FlextTapOracleOicTypes", "t"),
             ".utilities": ("FlextTapOracleOicUtilities", "u"),

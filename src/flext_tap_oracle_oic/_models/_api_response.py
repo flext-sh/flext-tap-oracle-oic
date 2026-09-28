@@ -1,4 +1,4 @@
-"""OIC OicApiResponse model.
+"""OIC FlextTapOracleOicApiResponse model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from datetime import datetime
 
 
-class OicApiResponse(FlextMeltanoModels.Entity):
+class FlextTapOracleOicApiResponse(FlextMeltanoModels.Entity):
     """Standardized OIC API response wrapper."""
 
     # Pydantic 2.11 Configuration - API Response Features
@@ -110,4 +110,4 @@ class OicApiResponse(FlextMeltanoModels.Entity):
         return self
 
 
-__all__: list[str] = ["OicApiResponse"]
+__all__: list[str] = ["FlextTapOracleOicApiResponse"]

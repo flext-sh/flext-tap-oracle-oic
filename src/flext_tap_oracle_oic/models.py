@@ -10,25 +10,26 @@ from __future__ import annotations
 from collections.abc import Iterator, Mapping
 from typing import TYPE_CHECKING, Annotated, ClassVar
 
-from flext_api import (
-    FlextApi as _api_FlextApi,
-    FlextApiSettings as _api_FlextApiSettings,
-)
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import FlextOracleOicModels
 
 from flext_tap_oracle_oic import c, e, t, u
-from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator
 
-from ._models._activity import OicActivityRecord as _OicActivityRecord
-from ._models._agent import OicAgentEntity as _OicAgentEntity
-from ._models._api_response import OicApiResponse as _OicApiResponse
-from ._models._auth_config import OicAuthenticationConfig as _OicAuthenticationConfig
-from ._models._connection import OicConnectionEntity as _OicConnectionEntity
-from ._models._envelope import OicEnvelope as _OicEnvelope
-from ._models._error_context import OicErrorContext as _OicErrorContext
-from ._models._integration import OicIntegrationEntity as _OicIntegrationEntity
-from ._models._metrics import OicMetricsRecord as _OicMetricsRecord
+from ._models._activity import FlextTapOracleOicActivityRecord as _OicActivityRecord
+from ._models._agent import FlextTapOracleOicAgentEntity as _OicAgentEntity
+from ._models._api_response import FlextTapOracleOicApiResponse as _OicApiResponse
+from ._models._auth_config import (
+    FlextTapOracleOicAuthenticationConfig as _OicAuthenticationConfig,
+)
+from ._models._connection import (
+    FlextTapOracleOicConnectionEntity as _OicConnectionEntity,
+)
+from ._models._envelope import FlextTapOracleOicEnvelope as _OicEnvelope
+from ._models._error_context import FlextTapOracleOicErrorContext as _OicErrorContext
+from ._models._integration import (
+    FlextTapOracleOicIntegrationEntity as _OicIntegrationEntity,
+)
+from ._models._metrics import FlextTapOracleOicMetricsRecord as _OicMetricsRecord
 from ._models._oic_connection import (
     FlextTapOracleOicConnection as _FlextTapOracleOicConnection,
 )
@@ -46,8 +47,11 @@ from ._models._oic_project import FlextTapOracleOicProject as _FlextTapOracleOic
 from ._models._oic_resource_metadata import (
     FlextTapOracleOicResourceMetadata as _FlextTapOracleOicResourceMetadata,
 )
-from ._models._package import OicPackageEntity as _OicPackageEntity
-from ._models._stream_config import OicStreamConfiguration as _OicStreamConfiguration
+from ._models._package import FlextTapOracleOicPackageEntity as _OicPackageEntity
+from ._models._stream_config import (
+    FlextTapOracleOicStreamConfiguration as _OicStreamConfiguration,
+)
+from .tap_streams import FlextTapOracleOicPaginator as _OicPaginator
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import p
@@ -131,12 +135,6 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             primary_keys: ClassVar[t.StrSequence] = []
 
             @property
-            def api_client(self) -> _api_FlextApi:
-                """The authenticated API client from parent tap's OIC client."""
-                api_config = _api_FlextApiSettings.model_validate({})
-                return _api_FlextApi(runtime_settings=api_config)
-
-            @property
             def url_base(self) -> str:
                 """Base URL for Oracle OIC API requests with intelligent discovery.
 
@@ -191,7 +189,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 """
                 page_size_val = self.settings.get("page_size", 100)
                 page_size = page_size_val if isinstance(page_size_val, int) else 100
-                return FlextTapOracleOicPaginator(start_value=0, page_size=page_size)
+                return _OicPaginator(start_value=0, page_size=page_size)
 
             def get_records(
                 self, context: t.JsonMapping | None = None
