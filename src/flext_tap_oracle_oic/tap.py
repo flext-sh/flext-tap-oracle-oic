@@ -183,6 +183,4 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             return r[bool].fail(exception_msg)
 
 
-__all__: list[str] = [
-    "FlextTapOracleOic",
-]
+__all__: list[str] = ["FlextTapOracleOic"]
