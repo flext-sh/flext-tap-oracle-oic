@@ -1,40 +1,43 @@
 # AUTO-GENERATED FILE — Regenerate with: make gen
-"""Flext Tap Oracle Oic package."""
+"""Flext Tap Oracle Oic package.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from flext_core.lazy import build_lazy_import_map, install_lazy_exports
-
-from .__version__ import (
-    __author__ as __author__,
-    __author_email__ as __author_email__,
-    __description__ as __description__,
-    __license__ as __license__,
-    __title__ as __title__,
-    __url__ as __url__,
-    __version__ as __version__,
-    __version_info__ as __version_info__,
+from flext_core import build_lazy_import_map, install_lazy_exports
+from flext_tap_oracle_oic.__version__ import (
+    __author__,
+    __author_email__,
+    __description__,
+    __license__,
+    __title__,
+    __url__,
+    __version__,
+    __version_info__,
 )
 
 if TYPE_CHECKING:
     from flext_meltano import d, e, h, r, s, x
 
-    from ._config import FlextTapOracleOicConfig, config
-    from ._settings import FlextTapOracleOicSettings, settings
-    from .api import FlextTapOracleOicService, tap_oracle_oic
-    from .authenticator import FlextTapOracleOicAuthenticator
-    from .cli import FlextTapOracleOicCli, main
-    from .client import FlextTapOracleOicClient
-    from .constants import FlextTapOracleOicConstants, FlextTapOracleOicConstants as c
-    from .models import FlextTapOracleOicModels, FlextTapOracleOicModels as m
-    from .protocols import FlextTapOracleOicProtocols, FlextTapOracleOicProtocols as p
-    from .tap import FlextTapOracleOic
-    from .tap_streams import FlextTapOracleOicPaginator
-    from .typings import FlextTapOracleOicTypes, FlextTapOracleOicTypes as t
-    from .utilities import FlextTapOracleOicUtilities, FlextTapOracleOicUtilities as u
+    from flext_tap_oracle_oic._config import FlextTapOracleOicConfig, config
+    from flext_tap_oracle_oic._settings import FlextTapOracleOicSettings, settings
+    from flext_tap_oracle_oic.api import FlextTapOracleOicService, tap_oracle_oic
+    from flext_tap_oracle_oic.authenticator import FlextTapOracleOicAuthenticator
+    from flext_tap_oracle_oic.cli import FlextTapOracleOicCli, main
+    from flext_tap_oracle_oic.client import FlextTapOracleOicClient
+    from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
+    from flext_tap_oracle_oic.models import FlextTapOracleOicModels, m
+    from flext_tap_oracle_oic.protocols import FlextTapOracleOicProtocols, p
+    from flext_tap_oracle_oic.tap import FlextTapOracleOic
+    from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator
+    from flext_tap_oracle_oic.typings import FlextTapOracleOicTypes, t
+    from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities, u
 
 
 __all__: tuple[str, ...] = (
@@ -96,7 +99,7 @@ _LAZY_IMPORTS = MappingProxyType(
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
-    )
+    ),
 )
 
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)

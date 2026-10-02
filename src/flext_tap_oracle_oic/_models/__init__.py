@@ -1,38 +1,63 @@
 # AUTO-GENERATED FILE — Regenerate with: make gen
-"""Flext Tap Oracle Oic. Models package."""
+"""Flext Tap Oracle Oic. Models package.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from flext_core.lazy import build_lazy_import_map, install_lazy_exports
+from flext_core import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from ._activity import FlextTapOracleOicActivityRecord
-    from ._agent import FlextTapOracleOicAgentEntity
-    from ._api_response import FlextTapOracleOicApiResponse
-    from ._auth_config import FlextTapOracleOicAuthenticationConfig
-    from ._connection import FlextTapOracleOicConnectionEntity
-    from ._envelope import FlextTapOracleOicEnvelope
-    from ._error_context import FlextTapOracleOicErrorContext
-    from ._helpers import (
+    from flext_tap_oracle_oic._models._activity import FlextTapOracleOicActivityRecord
+    from flext_tap_oracle_oic._models._agent import FlextTapOracleOicAgentEntity
+    from flext_tap_oracle_oic._models._api_response import FlextTapOracleOicApiResponse
+    from flext_tap_oracle_oic._models._auth_config import (
+        FlextTapOracleOicAuthenticationConfig,
+    )
+    from flext_tap_oracle_oic._models._connection import (
+        FlextTapOracleOicConnectionEntity,
+    )
+    from flext_tap_oracle_oic._models._envelope import FlextTapOracleOicEnvelope
+    from flext_tap_oracle_oic._models._error_context import (
+        FlextTapOracleOicErrorContext,
+    )
+    from flext_tap_oracle_oic._models._helpers import (
         require_entity_value,
         validate_entity_identity_and_port,
         validate_optional_port,
     )
-    from ._integration import FlextTapOracleOicIntegrationEntity
-    from ._metrics import FlextTapOracleOicMetricsRecord
-    from ._oic_connection import FlextTapOracleOicConnection
-    from ._oic_execution_summary import FlextTapOracleOicExecutionSummary
-    from ._oic_integration import FlextTapOracleOicIntegration
-    from ._oic_lookup import FlextTapOracleOicLookup
-    from ._oic_monitoring import FlextTapOracleOicMonitoringRecord
-    from ._oic_project import FlextTapOracleOicProject
-    from ._oic_resource_metadata import FlextTapOracleOicResourceMetadata
-    from ._package import FlextTapOracleOicPackageEntity
-    from ._stream_config import FlextTapOracleOicStreamConfiguration
-    from .streams import ALL_STREAMS, FlextTapOracleOicModelsStreams
+    from flext_tap_oracle_oic._models._integration import (
+        FlextTapOracleOicIntegrationEntity,
+    )
+    from flext_tap_oracle_oic._models._metrics import FlextTapOracleOicMetricsRecord
+    from flext_tap_oracle_oic._models._oic_connection import FlextTapOracleOicConnection
+    from flext_tap_oracle_oic._models._oic_execution_summary import (
+        FlextTapOracleOicExecutionSummary,
+    )
+    from flext_tap_oracle_oic._models._oic_integration import (
+        FlextTapOracleOicIntegration,
+    )
+    from flext_tap_oracle_oic._models._oic_lookup import FlextTapOracleOicLookup
+    from flext_tap_oracle_oic._models._oic_monitoring import (
+        FlextTapOracleOicMonitoringRecord,
+    )
+    from flext_tap_oracle_oic._models._oic_project import FlextTapOracleOicProject
+    from flext_tap_oracle_oic._models._oic_resource_metadata import (
+        FlextTapOracleOicResourceMetadata,
+    )
+    from flext_tap_oracle_oic._models._package import FlextTapOracleOicPackageEntity
+    from flext_tap_oracle_oic._models._stream_config import (
+        FlextTapOracleOicStreamConfiguration,
+    )
+    from flext_tap_oracle_oic._models.streams import (
+        ALL_STREAMS,
+        FlextTapOracleOicModelsStreams,
+    )
 
 
 __all__: tuple[str, ...] = (
@@ -91,7 +116,7 @@ _LAZY_IMPORTS = MappingProxyType(
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
-    )
+    ),
 )
 
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)
