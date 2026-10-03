@@ -22,8 +22,7 @@ from flext_tap_oracle_oic import (
     t,
     u,
 )
-
-from ._models.streams import ALL_STREAMS
+from flext_tap_oracle_oic._models.streams import ALL_STREAMS
 
 logger = u.fetch_logger(__name__)
 
@@ -61,7 +60,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
     }
 
     def __init__(
-        self, *, settings: t.JsonMapping | None = None, validate_config: bool = True
+        self, *, settings: t.JsonMapping | None = None, validate_config: bool = True,
     ) -> None:
         """Initialize Oracle OIC tap with library composition."""
         super().__init__()
@@ -69,7 +68,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         # NOTE (multi-agent): flat Singer config maps into the namespaced
         # settings SSOT (settings.TapOracleOic.*, ADR-005); unknown keys ignored.
         self._oic_settings = FlextTapOracleOicSettings.model_validate(
-            {"TapOracleOic": self._tap_config}, strict=validate_config
+            {"TapOracleOic": self._tap_config}, strict=validate_config,
         )
         self._client: FlextTapOracleOicClient | None = None
 
@@ -88,27 +87,31 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
                 "oauth_client_secret": str(config_dict["oauth_client_secret"]),
                 "oauth_token_url": str(config_dict["oauth_token_url"]),
                 "oauth_audience": str(
-                    config_dict.get("oauth_scope", "urn:opc:resource:consumer:all")
+                    config_dict.get("oauth_scope", "urn:opc:resource:consumer:all"),
                 ),
                 "base_url": str(config_dict["oic_url"]),
                 "timeout": u.to_positive_int(
-                    config_dict.get("request_timeout"), default=30
+                    config_dict.get("request_timeout"), default=30,
                 ),
                 "max_retries": u.to_positive_int(
-                    config_dict.get("max_retries"), default=3
+                    config_dict.get("max_retries"), default=3,
                 ),
             }
             oic_config = FlextTapOracleOicSettings.model_validate({
-                "TapOracleOic": oic_config_data
+                "TapOracleOic": oic_config_data,
             })
             authenticator = FlextTapOracleOicAuthenticator(settings=oic_config)
             self._client = FlextTapOracleOicClient(
-                settings=oic_config, authenticator=authenticator
+                settings=oic_config, authenticator=authenticator,
             )
         return self._client
 
     def discover_oic_streams(self) -> t.SequenceOf[m.TapOracleOic.OICBaseStream]:
-        """Discover OIC stream class instances for this tap."""
+        """Discover OIC stream class instances for this tap.
+
+        Returns:
+            The resulting ``t.SequenceOf[m.TapOracleOic.OICBaseStream]``.
+        """
         logger.info("Discovering Oracle OIC streams using consolidated streams")
         stream_names = list(c.TapOracleOic.CORE_STREAMS)
         if self._tap_config.get("include_infrastructure", False):
@@ -123,9 +126,13 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
 
     @override
     def discover_streams(
-        self, tap_instance: m.Meltano.TapInstance
+        self, tap_instance: m.Meltano.TapInstance,
     ) -> p.Result[t.JsonMapping]:
-        """Discover stream catalog matching FlextMeltanoAbstractions contract."""
+        """Discover stream catalog matching FlextMeltanoAbstractions contract.
+
+        Returns:
+            The resulting ``p.Result[t.JsonMapping]``.
+        """
         _ = tap_instance
         streams = self.discover_oic_streams()
         catalog_entries: list[m.Meltano.SingerCatalogEntry] = []
@@ -153,17 +160,21 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             catalog_entries.append(entry_result.value)
         catalog: t.JsonMapping = t.json_mapping_adapter().validate_python(
             m.Meltano.SingerCatalog(streams=catalog_entries).model_dump(
-                by_alias=True, exclude_defaults=True, exclude_none=True, mode="json"
-            )
+                by_alias=True, exclude_defaults=True, exclude_none=True, mode="json",
+            ),
         )
         return r[t.JsonMapping].ok(
             t.json_mapping_adapter().validate_python({
-                "streams": catalog.get("streams", [])
-            })
+                "streams": catalog.get("streams", []),
+            }),
         )
 
     def test_connection(self) -> p.Result[bool]:
-        """Test connection to Oracle OIC using real API client."""
+        """Test connection to Oracle OIC using real API client.
+
+        Returns:
+            The resulting ``p.Result[bool]``.
+        """
 
         def _run_test_connection() -> p.Result[bool]:
             logger.info("Testing Oracle OIC connection")

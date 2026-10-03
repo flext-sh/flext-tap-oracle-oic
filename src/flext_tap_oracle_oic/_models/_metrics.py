@@ -30,47 +30,47 @@ class FlextTapOracleOicMetricsRecord(FlextMeltanoModels.Entity):
                         "integration_id": "CUSTOMER_SYNC_01.00.0000",
                         "throughput_mps": 125.5,
                         "cpu_usage_percent": 45.2,
-                    }
+                    },
                 ],
-            }
+            },
         )
     )
 
     metric_id: Annotated[
-        str, u.Field(..., description="Unique metrics record identifier")
+        str, u.Field(..., description="Unique metrics record identifier"),
     ]
     integration_id: Annotated[
-        str, u.Field(..., description="Associated integration ID")
+        str, u.Field(..., description="Associated integration ID"),
     ]
     timestamp: Annotated[datetime, u.Field(..., description="Metrics timestamp")]
 
     # Performance metrics
     cpu_usage_percent: Annotated[
-        float | None, u.Field(None, description="CPU usage percentage")
+        float | None, u.Field(None, description="CPU usage percentage"),
     ]
     memory_usage_mb: Annotated[
-        float | None, u.Field(None, description="Memory usage in MB")
+        float | None, u.Field(None, description="Memory usage in MB"),
     ]
     throughput_mps: Annotated[
-        float | None, u.Field(None, description="Messages per second")
+        float | None, u.Field(None, description="Messages per second"),
     ]
     latency_ms: Annotated[
-        float | None, u.Field(None, description="Average latency in milliseconds")
+        float | None, u.Field(None, description="Average latency in milliseconds"),
     ]
 
     # Business metrics
     success_count: Annotated[
-        int | None, u.Field(None, description="Successful message count")
+        int | None, u.Field(None, description="Successful message count"),
     ]
     error_count: Annotated[int | None, u.Field(None, description="Error message count")]
     retry_count: Annotated[int | None, u.Field(None, description="Retry attempt count")]
 
     # Resource utilization
     database_connections: Annotated[
-        int | None, u.Field(None, description="Active database connections")
+        int | None, u.Field(None, description="Active database connections"),
     ]
     thread_count: Annotated[
-        int | None, u.Field(None, description="Active thread count")
+        int | None, u.Field(None, description="Active thread count"),
     ]
     queue_depth: Annotated[int | None, u.Field(None, description="Message queue depth")]
 
@@ -111,7 +111,15 @@ class FlextTapOracleOicMetricsRecord(FlextMeltanoModels.Entity):
 
     @u.model_validator(mode="after")
     def validate_metrics_record(self) -> Self:
-        """Validate OIC metrics record."""
+        """Validate OIC metrics record.
+
+        Returns:
+            The resulting ``Self``.
+
+        Raises:
+            ValueError: If Metric ID is required; or if Integration ID is required; or
+                if CPU usage must be between 0 and 100 percent.
+        """
         if not self.metric_id:
             msg = "Metric ID is required"
             raise ValueError(msg)

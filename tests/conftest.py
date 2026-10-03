@@ -20,9 +20,13 @@ def tap_oracle_oic() -> FlextTapOracleOic:
 
 @pytest.fixture
 def tap_instance(tap_oracle_oic: FlextTapOracleOic) -> m.Meltano.TapInstance:
-    """Build the public Meltano request from the tap's typed settings."""
+    """Build the public Meltano request from the tap's typed settings.
+
+    Returns:
+        The resulting ``m.Meltano.TapInstance``.
+    """
     connection_config = t.json_mapping_adapter().validate_python(
-        tap_oracle_oic.oic_settings.TapOracleOic.model_dump(mode="json")
+        tap_oracle_oic.oic_settings.TapOracleOic.model_dump(mode="json"),
     )
     config = m.Meltano.TapConfig(
         tap_type=tap_oracle_oic.name,

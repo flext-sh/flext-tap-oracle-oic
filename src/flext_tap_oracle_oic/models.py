@@ -14,44 +14,61 @@ from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import FlextOracleOicModels
 
 from flext_tap_oracle_oic import c, e, t, u
-
-from ._models._activity import FlextTapOracleOicActivityRecord as _OicActivityRecord
-from ._models._agent import FlextTapOracleOicAgentEntity as _OicAgentEntity
-from ._models._api_response import FlextTapOracleOicApiResponse as _OicApiResponse
-from ._models._auth_config import (
+from flext_tap_oracle_oic._models._activity import (
+    FlextTapOracleOicActivityRecord as _OicActivityRecord,
+)
+from flext_tap_oracle_oic._models._agent import (
+    FlextTapOracleOicAgentEntity as _OicAgentEntity,
+)
+from flext_tap_oracle_oic._models._api_response import (
+    FlextTapOracleOicApiResponse as _OicApiResponse,
+)
+from flext_tap_oracle_oic._models._auth_config import (
     FlextTapOracleOicAuthenticationConfig as _OicAuthenticationConfig,
 )
-from ._models._connection import (
+from flext_tap_oracle_oic._models._connection import (
     FlextTapOracleOicConnectionEntity as _OicConnectionEntity,
 )
-from ._models._envelope import FlextTapOracleOicEnvelope as _OicEnvelope
-from ._models._error_context import FlextTapOracleOicErrorContext as _OicErrorContext
-from ._models._integration import (
+from flext_tap_oracle_oic._models._envelope import (
+    FlextTapOracleOicEnvelope as _OicEnvelope,
+)
+from flext_tap_oracle_oic._models._error_context import (
+    FlextTapOracleOicErrorContext as _OicErrorContext,
+)
+from flext_tap_oracle_oic._models._integration import (
     FlextTapOracleOicIntegrationEntity as _OicIntegrationEntity,
 )
-from ._models._metrics import FlextTapOracleOicMetricsRecord as _OicMetricsRecord
-from ._models._oic_connection import (
+from flext_tap_oracle_oic._models._metrics import (
+    FlextTapOracleOicMetricsRecord as _OicMetricsRecord,
+)
+from flext_tap_oracle_oic._models._oic_connection import (
     FlextTapOracleOicConnection as _FlextTapOracleOicConnection,
 )
-from ._models._oic_execution_summary import (
+from flext_tap_oracle_oic._models._oic_execution_summary import (
     FlextTapOracleOicExecutionSummary as _FlextTapOracleOicExecutionSummary,
 )
-from ._models._oic_integration import (
+from flext_tap_oracle_oic._models._oic_integration import (
     FlextTapOracleOicIntegration as _FlextTapOracleOicIntegration,
 )
-from ._models._oic_lookup import FlextTapOracleOicLookup as _FlextTapOracleOicLookup
-from ._models._oic_monitoring import (
+from flext_tap_oracle_oic._models._oic_lookup import (
+    FlextTapOracleOicLookup as _FlextTapOracleOicLookup,
+)
+from flext_tap_oracle_oic._models._oic_monitoring import (
     FlextTapOracleOicMonitoringRecord as _FlextTapOracleOicMonitoringRecord,
 )
-from ._models._oic_project import FlextTapOracleOicProject as _FlextTapOracleOicProject
-from ._models._oic_resource_metadata import (
+from flext_tap_oracle_oic._models._oic_project import (
+    FlextTapOracleOicProject as _FlextTapOracleOicProject,
+)
+from flext_tap_oracle_oic._models._oic_resource_metadata import (
     FlextTapOracleOicResourceMetadata as _FlextTapOracleOicResourceMetadata,
 )
-from ._models._package import FlextTapOracleOicPackageEntity as _OicPackageEntity
-from ._models._stream_config import (
+from flext_tap_oracle_oic._models._package import (
+    FlextTapOracleOicPackageEntity as _OicPackageEntity,
+)
+from flext_tap_oracle_oic._models._stream_config import (
     FlextTapOracleOicStreamConfiguration as _OicStreamConfiguration,
 )
-from .tap_streams import FlextTapOracleOicPaginator as _OicPaginator
+from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator as _OicPaginator
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import p
@@ -69,14 +86,22 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
 
         @staticmethod
         def require_entity_value(value: str, *, label: str) -> None:
-            """Require one non-empty entity identifier/name value."""
+            """Require one non-empty entity identifier/name value.
+
+            Raises:
+                ValueError: If ``not value``.
+            """
             if not value:
                 msg = f"{label} is required"
                 raise ValueError(msg)
 
         @staticmethod
         def validate_optional_port(port: int | None) -> None:
-            """Validate optional network port within canonical bounds."""
+            """Validate optional network port within canonical bounds.
+
+            Raises:
+                ValueError: If Port must be between 1 and 65535.
+            """
             if port is not None and not (
                 c.DEFAULT_RETRY_DELAY_SECONDS <= port <= c.MAX_PORT
             ):
@@ -94,10 +119,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
         ) -> None:
             """Validate required entity id/name fields and optional port."""
             FlextTapOracleOicModels.TapOracleOic.require_entity_value(
-                entity_id, label=id_label
+                entity_id, label=id_label,
             )
             FlextTapOracleOicModels.TapOracleOic.require_entity_value(
-                entity_name, label=name_label
+                entity_name, label=name_label,
             )
             FlextTapOracleOicModels.TapOracleOic.validate_optional_port(port)
 
@@ -141,9 +166,12 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 Returns:
                 Base URL with appropriate OIC API endpoint for stream type.
 
+                Raises:
+                    ValueError: If Base URL is required but not configured; or if
+                        Invalid OIC endpoint.
                 """
                 base_url_raw = self.settings.get("base_url") or self.settings.get(
-                    "oic_url", ""
+                    "oic_url", "",
                 )
                 base_url = str(base_url_raw).rstrip("/")
                 if not base_url:
@@ -176,7 +204,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     "process": c.TapOracleOic.OIC_PROCESS_API_PATH,
                 }
                 resolved_api_path: str = api_paths.get(
-                    self.api_category, c.TapOracleOic.OIC_API_BASE_PATH
+                    self.api_category, c.TapOracleOic.OIC_API_BASE_PATH,
                 )
                 return base_url + resolved_api_path
 
@@ -191,8 +219,9 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 page_size = page_size_val if isinstance(page_size_val, int) else 100
                 return _OicPaginator(start_value=0, page_size=page_size)
 
+            @staticmethod
             def get_records(
-                self, context: t.JsonMapping | None = None
+                context: t.JsonMapping | None = None,
             ) -> Iterator[t.JsonMapping]:
                 """Yield the records from OIC API.
 
@@ -207,7 +236,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 yield from ()
 
             def get_url_params(
-                self, context: t.JsonMapping | None, next_page_token: int | None
+                self, context: t.JsonMapping | None, next_page_token: int | None,
             ) -> t.JsonMapping:
                 """Build URL parameters for Oracle OIC API requests.
 
@@ -248,7 +277,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 select_fields = self.settings.get("select_fields")
                 if select_fields:
                     field_list = t.strict_str_sequence_adapter().validate_python(
-                        select_fields
+                        select_fields,
                     )
                     params["fields"] = ",".join(field_list)
                 if self.additional_params is not None:
@@ -256,7 +285,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 return dict(params)
 
             def parse_response(
-                self, response: m.Api.HttpResponse
+                self, response: m.Api.HttpResponse,
             ) -> Iterator[t.JsonMapping]:
                 """Parse Oracle OIC API response and yield records with validation.
 
@@ -270,9 +299,13 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 yield from self._parse_response_records(response)
 
             def _parse_response_records(
-                self, response: m.Api.HttpResponse
+                self, response: m.Api.HttpResponse,
             ) -> t.SequenceOf[t.JsonMapping]:
-                """Parse one response into enriched records."""
+                """Parse one response into enriched records.
+
+                Returns:
+                    The resulting ``t.SequenceOf[t.JsonMapping]``.
+                """
                 if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
                     self._handle_response_error(response)
                     return ()
@@ -282,16 +315,24 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 return tuple(self._extract_and_yield_records(data, response_url))
 
             def _enrich_record(self, record: t.JsonMapping) -> t.JsonMapping:
-                """Enrich record with tap metadata for traceability."""
+                """Enrich record with tap metadata for traceability.
+
+                Returns:
+                    The resulting ``t.JsonMapping``.
+                """
                 enriched = t.json_dict_adapter().validate_python(record)
                 enriched["_tap_extracted_at"] = u.generate_datetime_utc().isoformat()
                 enriched["_tap_stream_name"] = self.name
                 return enriched
 
             def _extract_and_yield_records(
-                self, data: t.JsonMapping | t.JsonList, url: str
+                self, data: t.JsonMapping | t.JsonList, url: str,
             ) -> Iterator[t.JsonMapping]:
-                """Extract and yield records with validation and enrichment."""
+                """Extract and yield records with validation and enrichment.
+
+                Yields:
+                    Each ``t.JsonMapping``.
+                """
                 records_yielded = 0
                 for item in self._extract_items_for_processing(data):
                     if self._validate_record(item):
@@ -305,17 +346,21 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                         else str(type(data))
                     )
                     self.logger.warning(
-                        "Unknown response format from %s: %s", url, payload_descriptor
+                        "Unknown response format from %s: %s", url, payload_descriptor,
                     )
                 elif records_yielded > 0:
                     self.logger.debug(
-                        "Successfully parsed %s records from %s", records_yielded, url
+                        "Successfully parsed %s records from %s", records_yielded, url,
                     )
 
             def _extract_items_for_processing(
-                self, data: t.JsonMapping | t.JsonList
+                self, data: t.JsonMapping | t.JsonList,
             ) -> Iterator[t.JsonMapping]:
-                """Extract items from various OIC response formats for processing."""
+                """Extract items from various OIC response formats for processing.
+
+                Yields:
+                    Each ``t.JsonMapping``.
+                """
                 if isinstance(data, Mapping):
                     yield from self._process_dict_data(data)
                     return
@@ -324,10 +369,18 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 else:
                     yield from self._process_list_data(list(data))
 
+            @staticmethod
             def _get_response_data(
-                self, response: m.Api.HttpResponse
+                response: m.Api.HttpResponse,
             ) -> t.JsonMapping | t.JsonList:
-                """Normalize flext-api response bodies to OIC payload structures."""
+                """Normalize flext-api response bodies to OIC payload structures.
+
+                Returns:
+                    The resulting ``t.JsonMapping | t.JsonList``.
+
+                Raises:
+                    TypeError: If OIC response body is empty or not JSON-compatible.
+                """
                 match response.body:
                     case dict() as body_map:
                         return body_map
@@ -351,11 +404,18 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 return _OicEnvelope.model_validate(data, strict=True)
 
             def _handle_response_error(self, response: m.Api.HttpResponse) -> None:
-                """Handle Oracle OIC API response errors with proper categorization."""
+                """Handle Oracle OIC API response errors with proper categorization.
+
+                Raises:
+                    AuthenticationError: If Unauthorized.
+                    AuthorizationError: If Forbidden.
+                    OperationError: Always.
+                    RateLimitError: If Rate limit exceeded.
+                """
                 error_message: t.JsonValue | None = None
                 if isinstance(response.body, dict):
                     error_message = response.body.get("message") or response.body.get(
-                        "error"
+                        "error",
                     )
                 if error_message is None:
                     error_message = (
@@ -379,9 +439,13 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 raise e.OperationError(err_msg)
 
             def _is_empty_result_expected(
-                self, data: t.JsonMapping | t.JsonList
+                self, data: t.JsonMapping | t.JsonList,
             ) -> bool:
-                """Check if empty result is expected/normal based on OIC response metadata."""
+                """Check if empty result is expected/normal based on OIC response metadata.
+
+                Returns:
+                    The resulting ``bool``.
+                """
                 if not isinstance(data, Mapping):
                     return not data
                 if self._is_single_record(data):
@@ -394,8 +458,13 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     or (envelope.data is not None and not envelope.data)
                 )
 
-            def _is_single_record(self, data: t.JsonMapping) -> bool:
-                """Check if dict represents a single record vs OIC metadata container."""
+            @staticmethod
+            def _is_single_record(data: t.JsonMapping) -> bool:
+                """Check if dict represents a single record vs OIC metadata container.
+
+                Returns:
+                    The resulting ``bool``.
+                """
                 metadata_keys = {
                     "totalSize",
                     "count",
@@ -408,9 +477,13 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 return not any(key in data for key in metadata_keys)
 
             def _process_dict_data(
-                self, data: t.JsonMapping
+                self, data: t.JsonMapping,
             ) -> Iterator[t.JsonMapping]:
-                """Process dict-type response data with OIC format detection."""
+                """Process dict-type response data with OIC format detection.
+
+                Yields:
+                    Each ``t.JsonMapping``.
+                """
                 if self._is_single_record(data):
                     yield data
                     return
@@ -421,10 +494,15 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 if envelope.data is not None:
                     yield from self._process_list_data(envelope.data)
 
+            @staticmethod
             def _process_list_data(
-                self, data: t.JsonList | t.SequenceOf[t.JsonMapping]
+                data: t.JsonList | t.SequenceOf[t.JsonMapping],
             ) -> Iterator[t.JsonMapping]:
-                """Process list-type response data."""
+                """Process list-type response data.
+
+                Yields:
+                    Each ``t.JsonMapping``.
+                """
                 for item in data:
                     if isinstance(item, Mapping):
                         yield item
@@ -432,7 +510,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                     yield t.strict_json_mapping_adapter().validate_python(item)
 
             def _track_response_metrics(
-                self, response: m.Api.HttpResponse, data: t.JsonMapping | t.JsonList
+                self, response: m.Api.HttpResponse, data: t.JsonMapping | t.JsonList,
             ) -> None:
                 """Track response metrics for monitoring and optimization."""
                 self.logger.debug("Response status: %s", response.status_code)
@@ -447,8 +525,13 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 elif envelope.data is not None:
                     self.logger.debug("Received %s records", len(envelope.data))
 
-            def _validate_record(self, record: t.JsonMapping) -> bool:
-                """Validate record meets basic requirements for processing."""
+            @staticmethod
+            def _validate_record(record: t.JsonMapping) -> bool:
+                """Validate record meets basic requirements for processing.
+
+                Returns:
+                    The resulting ``bool``.
+                """
                 return bool(record)
 
         OicAuthenticationConfig = _OicAuthenticationConfig
