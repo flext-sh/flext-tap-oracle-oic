@@ -30,16 +30,23 @@ class TestsFlextTapOracleOicUtilities(FlextTestsUtilities, FlextTapOracleOicUtil
 
             @staticmethod
             def discover_stream_names(
-                tap: FlextTapOracleOic, tap_instance: m.Meltano.TapInstance
+                tap: FlextTapOracleOic, tap_instance: m.Meltano.TapInstance,
             ) -> t.StrSequence:
-                """Return stream identifiers from the public Singer catalog."""
+                """Return stream identifiers from the public Singer catalog.
+
+                Raises:
+                    TypeError: If public discovery catalog must expose a stream
+                        sequence; or if public discovery catalog entries must be
+                        mappings; or if public discovery catalog entries require
+                        tap_stream_id.
+                """
                 result = tap.discover_streams(tap_instance=tap_instance)
                 tm.ok(result)
                 catalog = result.unwrap()
                 streams = catalog.get("streams")
                 tm.that(streams, is_=Sequence)
                 if not isinstance(streams, Sequence) or isinstance(
-                    streams, (str, bytes)
+                    streams, (str, bytes),
                 ):
                     msg = "public discovery catalog must expose a stream sequence"
                     raise TypeError(msg)

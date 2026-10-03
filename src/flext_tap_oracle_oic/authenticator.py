@@ -22,7 +22,7 @@ class FlextTapOracleOicAuthenticator:
     """Real Oracle OIC OAuth2 authenticator implementation."""
 
     def __init__(
-        self, settings: FlextTapOracleOicSettings, api_client: FlextApi | None = None
+        self, settings: FlextTapOracleOicSettings, api_client: FlextApi | None = None,
     ) -> None:
         """Initialize authenticator with OAuth2 configuration."""
         # NOTE (multi-agent): settings live on self; methods read
@@ -46,7 +46,11 @@ class FlextTapOracleOicAuthenticator:
         return self._api_client
 
     def fetch_access_token(self) -> p.Result[str]:
-        """Fetch an OAuth2 access token using the client credentials flow."""
+        """Fetch an OAuth2 access token using the client credentials flow.
+
+        Returns:
+            The resulting ``p.Result[str]``.
+        """
 
         def _run_fetch_access_token() -> p.Result[str]:
             token_request_data = "&".join(
@@ -68,7 +72,7 @@ class FlextTapOracleOicAuthenticator:
             response = response_result.value
             if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
                 return r[str].fail(
-                    f"OAuth2 request failed with status {response.status_code}"
+                    f"OAuth2 request failed with status {response.status_code}",
                 )
             token_data: t.JsonMapping
             match response.body:

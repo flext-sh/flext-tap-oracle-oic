@@ -26,11 +26,7 @@ if TYPE_CHECKING:
     from flext_tap_oracle_oic._models._error_context import (
         FlextTapOracleOicErrorContext,
     )
-    from flext_tap_oracle_oic._models._helpers import (
-        require_entity_value,
-        validate_entity_identity_and_port,
-        validate_optional_port,
-    )
+    from flext_tap_oracle_oic._models._helpers import FlextTapOracleOicModelsHelpers
     from flext_tap_oracle_oic._models._integration import (
         FlextTapOracleOicIntegrationEntity,
     )
@@ -75,15 +71,13 @@ __all__: tuple[str, ...] = (
     "FlextTapOracleOicIntegrationEntity",
     "FlextTapOracleOicLookup",
     "FlextTapOracleOicMetricsRecord",
+    "FlextTapOracleOicModelsHelpers",
     "FlextTapOracleOicModelsStreams",
     "FlextTapOracleOicMonitoringRecord",
     "FlextTapOracleOicPackageEntity",
     "FlextTapOracleOicProject",
     "FlextTapOracleOicResourceMetadata",
     "FlextTapOracleOicStreamConfiguration",
-    "require_entity_value",
-    "validate_entity_identity_and_port",
-    "validate_optional_port",
 )
 
 _LAZY_IMPORTS = MappingProxyType(
@@ -96,11 +90,7 @@ _LAZY_IMPORTS = MappingProxyType(
             "._connection": ("FlextTapOracleOicConnectionEntity",),
             "._envelope": ("FlextTapOracleOicEnvelope",),
             "._error_context": ("FlextTapOracleOicErrorContext",),
-            "._helpers": (
-                "require_entity_value",
-                "validate_entity_identity_and_port",
-                "validate_optional_port",
-            ),
+            "._helpers": ("FlextTapOracleOicModelsHelpers",),
             "._integration": ("FlextTapOracleOicIntegrationEntity",),
             "._metrics": ("FlextTapOracleOicMetricsRecord",),
             "._oic_connection": ("FlextTapOracleOicConnection",),
