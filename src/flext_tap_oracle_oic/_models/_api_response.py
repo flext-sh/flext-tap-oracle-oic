@@ -38,10 +38,12 @@ class FlextTapOracleOicApiResponse(FlextMeltanoModels.Entity):
 
     success: Annotated[bool, u.Field(..., description="Response success indicator")]
     data: Annotated[
-        t.JsonMapping | None, u.Field(None, description="Response data payload"),
+        t.JsonMapping | None,
+        u.Field(None, description="Response data payload"),
     ]
     total_count: Annotated[
-        int | None, u.Field(None, description="Total entity count (for pagination)"),
+        int | None,
+        u.Field(None, description="Total entity count (for pagination)"),
     ]
     page_size: Annotated[int | None, u.Field(None, description="Current page size")]
     page_number: Annotated[int | None, u.Field(None, description="Current page number")]
@@ -49,7 +51,8 @@ class FlextTapOracleOicApiResponse(FlextMeltanoModels.Entity):
     # Error information
     error_code: Annotated[str | None, u.Field(None, description="Error code if failed")]
     error_message: Annotated[
-        str | None, u.Field(None, description="Error message if failed"),
+        str | None,
+        u.Field(None, description="Error message if failed"),
     ]
     error_details: Annotated[
         t.MappingKV[str, t.JsonMapping] | None,
@@ -62,7 +65,8 @@ class FlextTapOracleOicApiResponse(FlextMeltanoModels.Entity):
     )
     api_version: Annotated[str | None, u.Field(None, description="OIC API version")]
     request_id: Annotated[
-        str | None, u.Field(None, description="Request correlation ID"),
+        str | None,
+        u.Field(None, description="Request correlation ID"),
     ]
 
     @u.computed_field

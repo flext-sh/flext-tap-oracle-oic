@@ -820,4 +820,4 @@ ALL_STREAMS: t.MappingKV[str, type[m.TapOracleOic.OICBaseStream]] = {
     "metrics": FlextTapOracleOicModelsStreams.MetricsStream,
 }
 
-__all__: list[str] = ["FlextTapOracleOicModelsStreams", "ALL_STREAMS"]
+__all__: list[str] = ["ALL_STREAMS", "FlextTapOracleOicModelsStreams"]

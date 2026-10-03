@@ -48,7 +48,8 @@ class FlextTapOracleOicModelsHelpers:
         """Validate required entity id/name fields and optional port."""
         FlextTapOracleOicModelsHelpers.require_entity_value(entity_id, label=id_label)
         FlextTapOracleOicModelsHelpers.require_entity_value(
-            entity_name, label=name_label
+            entity_name,
+            label=name_label,
         )
         FlextTapOracleOicModelsHelpers.validate_optional_port(port)
 

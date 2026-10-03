@@ -22,7 +22,9 @@ class FlextTapOracleOicAuthenticator:
     """Real Oracle OIC OAuth2 authenticator implementation."""
 
     def __init__(
-        self, settings: FlextTapOracleOicSettings, api_client: FlextApi | None = None,
+        self,
+        settings: FlextTapOracleOicSettings,
+        api_client: FlextApi | None = None,
     ) -> None:
         """Initialize authenticator with OAuth2 configuration."""
         # NOTE (multi-agent): settings live on self; methods read

@@ -34,18 +34,22 @@ class FlextTapOracleOicErrorContext(FlextMeltanoModels.Entity):
     )
 
     error_type: Annotated[
-        c.TapOracleOic.OicErrorType, u.Field(..., description="Error category"),
+        c.TapOracleOic.OicErrorType,
+        u.Field(..., description="Error category"),
     ]
     http_status_code: Annotated[
-        int | None, u.Field(None, description="HTTP status code"),
+        int | None,
+        u.Field(None, description="HTTP status code"),
     ]
     retry_after_seconds: Annotated[
-        int | None, u.Field(None, description="Retry after duration"),
+        int | None,
+        u.Field(None, description="Retry after duration"),
     ]
 
     # Context information
     endpoint: Annotated[
-        str | None, u.Field(None, description="API endpoint that failed"),
+        str | None,
+        u.Field(None, description="API endpoint that failed"),
     ]
     request_method: Annotated[str | None, u.Field(None, description="HTTP method used")]
     request_params: Annotated[
@@ -58,10 +62,12 @@ class FlextTapOracleOicErrorContext(FlextMeltanoModels.Entity):
         False
     )
     suggested_action: Annotated[
-        str | None, u.Field(None, description="Suggested recovery action"),
+        str | None,
+        u.Field(None, description="Suggested recovery action"),
     ]
     max_retry_attempts: Annotated[
-        int | None, u.Field(None, description="Maximum retry attempts for this error"),
+        int | None,
+        u.Field(None, description="Maximum retry attempts for this error"),
     ]
 
     @u.computed_field

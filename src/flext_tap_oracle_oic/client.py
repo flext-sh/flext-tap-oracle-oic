@@ -54,7 +54,8 @@ class FlextTapOracleOicClient:
             response_result = self._api_client.get(url, headers=headers_result.value)
             if response_result.failure:
                 return r[FlextApiModels.Api.HttpResponse].fail_op(
-                    "OIC API request", response_result.error,
+                    "OIC API request",
+                    response_result.error,
                 )
             response = response_result.value
             if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
@@ -66,7 +67,9 @@ class FlextTapOracleOicClient:
             return r[FlextApiModels.Api.HttpResponse].fail_op("OIC API request", e)
 
     def post(
-        self, endpoint: str, data: t.MappingKV[str, t.JsonMapping] | None = None,
+        self,
+        endpoint: str,
+        data: t.MappingKV[str, t.JsonMapping] | None = None,
     ) -> p.Result[FlextApiModels.Api.HttpResponse]:
         """Make authenticated POST request to OIC API.
 
@@ -91,11 +94,14 @@ class FlextTapOracleOicClient:
                 else None
             )
             response_result = self._api_client.post(
-                url, data=json_body, headers=headers_result.value,
+                url,
+                data=json_body,
+                headers=headers_result.value,
             )
             if response_result.failure:
                 return r[FlextApiModels.Api.HttpResponse].fail_op(
-                    "OIC API request", response_result.error,
+                    "OIC API request",
+                    response_result.error,
                 )
             response = response_result.value
             if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:

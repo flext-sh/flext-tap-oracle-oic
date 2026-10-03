@@ -33,25 +33,31 @@ class FlextTapOracleOicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesMod
     )
 
     oauth_client_id: Annotated[
-        str, u.Field(..., description="OAuth2 client ID for OIC API"),
+        str,
+        u.Field(..., description="OAuth2 client ID for OIC API"),
     ]
     oauth_client_secret: Annotated[
-        str, u.Field(..., description="OAuth2 client secret"),
+        str,
+        u.Field(..., description="OAuth2 client secret"),
     ]
     oauth_token_url: Annotated[
-        str, u.Field(..., description="IDCS OAuth2 token endpoint URL"),
+        str,
+        u.Field(..., description="IDCS OAuth2 token endpoint URL"),
     ]
     oauth_client_aud: Annotated[
-        str, u.Field(..., description="OAuth2 audience parameter"),
+        str,
+        u.Field(..., description="OAuth2 audience parameter"),
     ]
     base_url: Annotated[str, u.Field(..., description="OIC instance base URL")]
 
     # Optional authentication settings
     token_expiry_buffer: Annotated[
-        int, u.Field(description="Token refresh buffer in seconds"),
+        int,
+        u.Field(description="Token refresh buffer in seconds"),
     ] = 300
     max_retry_attempts: Annotated[
-        int, u.Field(description="Maximum authentication retry attempts"),
+        int,
+        u.Field(description="Maximum authentication retry attempts"),
     ] = 3
     timeout_seconds: Annotated[int, u.Field(description="Authentication timeout")] = 30
 
