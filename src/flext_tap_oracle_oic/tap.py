@@ -60,7 +60,10 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
     }
 
     def __init__(
-        self, *, settings: t.JsonMapping | None = None, validate_config: bool = True,
+        self,
+        *,
+        settings: t.JsonMapping | None = None,
+        validate_config: bool = True,
     ) -> None:
         """Initialize Oracle OIC tap with library composition."""
         super().__init__()
@@ -68,7 +71,8 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         # NOTE (multi-agent): flat Singer config maps into the namespaced
         # settings SSOT (settings.TapOracleOic.*, ADR-005); unknown keys ignored.
         self._oic_settings = FlextTapOracleOicSettings.model_validate(
-            {"TapOracleOic": self._tap_config}, strict=validate_config,
+            {"TapOracleOic": self._tap_config},
+            strict=validate_config,
         )
         self._client: FlextTapOracleOicClient | None = None
 
@@ -91,10 +95,12 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
                 ),
                 "base_url": str(config_dict["oic_url"]),
                 "timeout": u.to_positive_int(
-                    config_dict.get("request_timeout"), default=30,
+                    config_dict.get("request_timeout"),
+                    default=30,
                 ),
                 "max_retries": u.to_positive_int(
-                    config_dict.get("max_retries"), default=3,
+                    config_dict.get("max_retries"),
+                    default=3,
                 ),
             }
             oic_config = FlextTapOracleOicSettings.model_validate({
@@ -102,7 +108,8 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             })
             authenticator = FlextTapOracleOicAuthenticator(settings=oic_config)
             self._client = FlextTapOracleOicClient(
-                settings=oic_config, authenticator=authenticator,
+                settings=oic_config,
+                authenticator=authenticator,
             )
         return self._client
 
@@ -126,7 +133,8 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
 
     @override
     def discover_streams(
-        self, tap_instance: m.Meltano.TapInstance,
+        self,
+        tap_instance: m.Meltano.TapInstance,
     ) -> p.Result[t.JsonMapping]:
         """Discover stream catalog matching FlextMeltanoAbstractions contract.
 
@@ -160,7 +168,10 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             catalog_entries.append(entry_result.value)
         catalog: t.JsonMapping = t.json_mapping_adapter().validate_python(
             m.Meltano.SingerCatalog(streams=catalog_entries).model_dump(
-                by_alias=True, exclude_defaults=True, exclude_none=True, mode="json",
+                by_alias=True,
+                exclude_defaults=True,
+                exclude_none=True,
+                mode="json",
             ),
         )
         return r[t.JsonMapping].ok(

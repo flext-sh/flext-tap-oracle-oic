@@ -22,17 +22,21 @@ class FlextTapOracleOicSettings(FlextSettings):
     """Oracle OIC Singer tap settings; fields under ``settings.TapOracleOic.*``."""
 
     model_config = m.SettingsConfigDict(
-        env_prefix="FLEXT_TAP_ORACLE_OIC_", env_nested_delimiter="__", extra="ignore",
+        env_prefix="FLEXT_TAP_ORACLE_OIC_",
+        env_nested_delimiter="__",
+        extra="ignore",
     )
 
     class _TapOracleOic(m.BaseModel):
         """Namespaced Oracle OIC tap settings."""
 
         oauth_client_id: Annotated[
-            str, m.Field(default="", description="OAuth client id"),
+            str,
+            m.Field(default="", description="OAuth client id"),
         ]
         oauth_client_secret: Annotated[
-            str, m.Field(default="", description="OAuth client secret"),
+            str,
+            m.Field(default="", description="OAuth client secret"),
         ]
         oauth_token_url: Annotated[
             str,
@@ -42,25 +46,31 @@ class FlextTapOracleOicSettings(FlextSettings):
             ),
         ]
         oauth_audience: Annotated[
-            str, m.Field(default="", description="OAuth audience"),
+            str,
+            m.Field(default="", description="OAuth audience"),
         ]
         base_url: Annotated[
-            str, m.Field(default=_DEFAULT_BASE_URL, description="OIC base URL"),
+            str,
+            m.Field(default=_DEFAULT_BASE_URL, description="OIC base URL"),
         ]
         timeout: Annotated[
-            int, m.Field(default=30, ge=1, description="HTTP timeout (s)"),
+            int,
+            m.Field(default=30, ge=1, description="HTTP timeout (s)"),
         ]
         max_retries: Annotated[int, m.Field(default=3, ge=0, description="Max retries")]
         page_size: Annotated[int, m.Field(default=10, ge=1, description="Page size")]
         include_extended: Annotated[
-            bool, m.Field(default=False, description="Extended metadata streams"),
+            bool,
+            m.Field(default=False, description="Extended metadata streams"),
         ]
         include_monitoring: Annotated[
-            bool, m.Field(default=False, description="Monitoring streams"),
+            bool,
+            m.Field(default=False, description="Monitoring streams"),
         ]
         include_logs: Annotated[bool, m.Field(default=False, description="Log streams")]
         include_artifacts: Annotated[
-            bool, m.Field(default=False, description="Artifact streams"),
+            bool,
+            m.Field(default=False, description="Artifact streams"),
         ]
 
     if TYPE_CHECKING:

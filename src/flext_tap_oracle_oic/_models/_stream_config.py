@@ -35,18 +35,22 @@ class FlextTapOracleOicStreamConfiguration(FlextMeltanoModels.ArbitraryTypesMode
 
     stream_name: Annotated[str, u.Field(..., description="Singer stream name")]
     replication_method: Annotated[
-        c.TapOracleOic.OicReplicationMethod, u.Field(description="Replication method"),
+        c.TapOracleOic.OicReplicationMethod,
+        u.Field(description="Replication method"),
     ] = c.TapOracleOic.OicReplicationMethod.FULL_TABLE
     replication_key: Annotated[
-        str | None, u.Field(None, description="Replication key field name"),
+        str | None,
+        u.Field(None, description="Replication key field name"),
     ]
 
     # Pagination and performance
     page_size: Annotated[
-        int, u.Field(ge=1, le=1000, description="API pagination size"),
+        int,
+        u.Field(ge=1, le=1000, description="API pagination size"),
     ] = 100
     include_extended: Annotated[
-        bool, u.Field(description="Include extended entity metadata"),
+        bool,
+        u.Field(description="Include extended entity metadata"),
     ] = False
 
     # Filtering
@@ -61,10 +65,12 @@ class FlextTapOracleOicStreamConfiguration(FlextMeltanoModels.ArbitraryTypesMode
 
     # Security
     sanitize_sensitive_data: Annotated[
-        bool, u.Field(description="Enable data sanitization"),
+        bool,
+        u.Field(description="Enable data sanitization"),
     ] = True
     exclude_test_entities: Annotated[
-        bool, u.Field(description="Exclude test/demo entities"),
+        bool,
+        u.Field(description="Exclude test/demo entities"),
     ] = True
 
     @u.computed_field

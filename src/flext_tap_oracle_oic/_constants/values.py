@@ -25,10 +25,6 @@ class FlextTapOracleOicConstantsValues:
 
         # === Regex authority for the TapOracleOic domain ===
         OCI_REGION_RE: re.Pattern[str] = re.compile(r"(\w+-\w+-\d+)")
-        NORMALIZE_NON_ALNUM_RE: re.Pattern[str] = re.compile(r"[^a-zA-Z0-9]")
-        NORMALIZE_REPEATED_UNDERSCORE_RE: re.Pattern[str] = re.compile(r"_+")
-        SANITIZE_CAMEL_BOUNDARY_RE: re.Pattern[str] = re.compile(r"(?<!^)(?=[A-Z])")
-        SANITIZE_NON_IDENTIFIER_RE: re.Pattern[str] = re.compile(r"[^a-zA-Z0-9_]")
 
         DEFAULT_BATCH_SIZE: int = 100
         MAX_RETRIES: int = 3

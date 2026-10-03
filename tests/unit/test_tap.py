@@ -29,7 +29,8 @@ class TestsFlextTapOracleOic:
 
     @staticmethod
     def test_default_tap_exposes_typed_public_settings(
-        tap_oracle_oic: FlextTapOracleOic, tap_instance: m.Meltano.TapInstance,
+        tap_oracle_oic: FlextTapOracleOic,
+        tap_instance: m.Meltano.TapInstance,
     ) -> None:
         """The public facade exposes typed settings and its request identity."""
         tm.that(tap_oracle_oic.oic_settings, is_=FlextTapOracleOicSettings)
@@ -37,7 +38,8 @@ class TestsFlextTapOracleOic:
 
     @staticmethod
     def test_discovery_returns_the_canonical_public_stream_catalog(
-        tap_oracle_oic: FlextTapOracleOic, tap_instance: m.Meltano.TapInstance,
+        tap_oracle_oic: FlextTapOracleOic,
+        tap_instance: m.Meltano.TapInstance,
     ) -> None:
         """Discovery returns exactly the streams owned by the public constants."""
         names = u.TapOracleOic.Tests.discover_stream_names(tap_oracle_oic, tap_instance)
@@ -58,10 +60,12 @@ class TestsFlextTapOracleOic:
         response = api_m.Api.HttpResponse(status_code=200, body={envelope_key: records})
 
         tm.that(
-            paginator.fetch_next(response), eq=paginator.current_value + len(records),
+            paginator.fetch_next(response),
+            eq=paginator.current_value + len(records),
         )
         empty_response = api_m.Api.HttpResponse(
-            status_code=200, body={envelope_key: []},
+            status_code=200,
+            body={envelope_key: []},
         )
         assert paginator.fetch_next(empty_response) is None
 
@@ -70,7 +74,8 @@ class TestsFlextTapOracleOic:
     def test_paginator_rejects_malformed_pages(envelope_key: str) -> None:
         """Malformed collection payloads cannot signal successful exhaustion."""
         response = api_m.Api.HttpResponse(
-            status_code=200, body={envelope_key: "not-a-collection"},
+            status_code=200,
+            body={envelope_key: "not-a-collection"},
         )
 
         with pytest.raises(c.ValidationError):
