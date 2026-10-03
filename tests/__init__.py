@@ -1,41 +1,31 @@
 # AUTO-GENERATED FILE — Regenerate with: make gen
-"""Tests package."""
+"""Tests package.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
+from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from types import MappingProxyType
-
-from flext_core.lazy import build_lazy_import_map, install_lazy_exports
+from flext_core import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from . import unit as unit
-    from flext_tap_oracle_oic import FlextTapOracleOicConstants
-    from flext_tests import FlextTestsConstants, d, e, h, r, td, tf, tk, tm, tv, x
+    from flext_tests import api, d, e, h, r, td, tf, tk, tm, x
 
-    from .base import (
-        TestsFlextTapOracleOicServiceBase,
-        TestsFlextTapOracleOicServiceBase as s,
-    )
-    from .constants import (
-        TestsFlextTapOracleOicConstants,
-        TestsFlextTapOracleOicConstants as c,
-    )
-    from .models import TestsFlextTapOracleOicModels, TestsFlextTapOracleOicModels as m
-    from .protocols import (
-        TestsFlextTapOracleOicProtocols,
-        TestsFlextTapOracleOicProtocols as p,
-    )
-    from .settings import TestsFlextTapOracleOicSettings
-    from .typings import TestsFlextTapOracleOicTypes, TestsFlextTapOracleOicTypes as t
-    from .utilities import (
-        TestsFlextTapOracleOicUtilities,
-        TestsFlextTapOracleOicUtilities as u,
-    )
+    from tests import unit
+    from tests.base import TestsFlextTapOracleOicServiceBase, s
+    from tests.constants import TestsFlextTapOracleOicConstants, c
+    from tests.models import TestsFlextTapOracleOicModels, m
+    from tests.protocols import TestsFlextTapOracleOicProtocols, p
+    from tests.settings import TestsFlextTapOracleOicSettings
+    from tests.typings import TestsFlextTapOracleOicTypes, t
+    from tests.utilities import TestsFlextTapOracleOicUtilities, u
+
+
 __all__: tuple[str, ...] = (
-    "FlextTapOracleOicConstants",
-    "FlextTestsConstants",
     "TestsFlextTapOracleOicConstants",
     "TestsFlextTapOracleOicModels",
     "TestsFlextTapOracleOicProtocols",
@@ -43,6 +33,7 @@ __all__: tuple[str, ...] = (
     "TestsFlextTapOracleOicSettings",
     "TestsFlextTapOracleOicTypes",
     "TestsFlextTapOracleOicUtilities",
+    "api",
     "c",
     "d",
     "e",
@@ -56,7 +47,6 @@ __all__: tuple[str, ...] = (
     "tf",
     "tk",
     "tm",
-    "tv",
     "u",
     "unit",
     "x",
@@ -73,24 +63,11 @@ _LAZY_IMPORTS = MappingProxyType(
             ".typings": ("TestsFlextTapOracleOicTypes", "t"),
             ".unit": ("unit",),
             ".utilities": ("TestsFlextTapOracleOicUtilities", "u"),
-            "flext_tap_oracle_oic": ("FlextTapOracleOicConstants",),
-            "flext_tests": (
-                "FlextTestsConstants",
-                "d",
-                "e",
-                "h",
-                "r",
-                "td",
-                "tf",
-                "tk",
-                "tm",
-                "tv",
-                "x",
-            ),
+            "flext_tests": ("api", "d", "e", "h", "r", "td", "tf", "tk", "tm", "x"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
-    )
+    ),
 )
 
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)

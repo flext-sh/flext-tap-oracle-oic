@@ -8,21 +8,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flext_tap_oracle_oic import c, m, t, u
+from flext_tap_oracle_oic import c, t
+from flext_tap_oracle_oic._models._envelope import FlextTapOracleOicEnvelope
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels
 
 
-def _as_oic_envelope(value: t.JsonMapping) -> m.TapOracleOic.OicEnvelope | None:
-    try:
-        return m.TapOracleOic.OicEnvelope.model_validate(value, strict=True)
-    except c.ValidationError:
-        return None
-
-
 class FlextTapOracleOicPaginator:
-    """Oracle OIC API paginator with adaptive page sizing."""
+    """Oracle OIC paginator with Singer's raw-token return contract.
+
+    Empty collections terminate pagination. Invalid collection values raise
+    their validation error; they never represent a successfully exhausted page.
+    """
 
     def __init__(
         self,
@@ -37,23 +35,27 @@ class FlextTapOracleOicPaginator:
         self._adaptive_sizing: bool = True
         self._response_times: list[float] = []
 
-    def get_next(self, response: FlextApiModels.Api.HttpResponse) -> int | None:
-        """Calculate next offset for Oracle OIC pagination."""
-        try:
-            data = self._normalize_response_payload(response)
-            return self._calculate_next_offset(data)
-        except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-            logger = u.fetch_logger(__name__)
-            err_msg = f"OIC pagination parsing failed: {type(e).__name__}: {e}"
-            logger.warning(err_msg)
-            logger.info("Returning None - pagination parsing failure properly handled")
-            logger.debug("This indicates end of pagination or malformed OIC response")
-            return None
+    def fetch_next(self, response: FlextApiModels.Api.HttpResponse) -> int | None:
+        """Fetch the raw Singer page token; malformed responses raise.
 
+        Returns:
+            The resulting ``int | None``.
+        """
+        data = self._normalize_response_payload(response)
+        return self._calculate_next_offset(data)
+
+    @staticmethod
     def _normalize_response_payload(
-        self, response: FlextApiModels.Api.HttpResponse
+        response: FlextApiModels.Api.HttpResponse,
     ) -> t.JsonMapping:
-        """Normalize flext-api response bodies to OIC pagination payloads."""
+        """Normalize flext-api response bodies to OIC pagination payloads.
+
+        Returns:
+            The resulting ``t.JsonMapping``.
+
+        Raises:
+            TypeError: If Pagination requires a JSON object response body.
+        """
         match response.body:
             case dict() as body_map:
                 return body_map
@@ -62,19 +64,26 @@ class FlextTapOracleOicPaginator:
                 raise TypeError(msg)
 
     def _calculate_next_offset(self, data: t.JsonMapping) -> int | None:
-        """Calculate next offset based on OIC response format."""
+        """Calculate next offset based on OIC response format.
+
+        Returns:
+            The resulting ``int | None``.
+        """
         items = self._extract_items_from_response(data)
         if items is None or not items or len(items) < self._page_size:
             return None
         return self.current_value + len(items)
 
+    @staticmethod
     def _extract_items_from_response(
-        self, data: t.JsonMapping
+        data: t.JsonMapping,
     ) -> t.SequenceOf[t.JsonMapping] | None:
-        """Extract items from various OIC response formats."""
-        envelope = _as_oic_envelope(data)
-        if envelope is None:
-            return None
+        """Extract items from various OIC response formats.
+
+        Returns:
+            The resulting ``t.SequenceOf[t.JsonMapping] | None``.
+        """
+        envelope = FlextTapOracleOicEnvelope.model_validate(data, strict=True)
         if envelope.items is not None:
             items: t.SequenceOf[t.JsonMapping] = envelope.items
             return items

@@ -1,4 +1,4 @@
-"""OIC OicApiResponse model.
+"""OIC FlextTapOracleOicApiResponse model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -9,13 +9,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
 from flext_meltano import FlextMeltanoModels
+
 from flext_tap_oracle_oic import t, u
 
 if TYPE_CHECKING:
     from datetime import datetime
 
 
-class OicApiResponse(FlextMeltanoModels.Entity):
+class FlextTapOracleOicApiResponse(FlextMeltanoModels.Entity):
     """Standardized OIC API response wrapper."""
 
     # Pydantic 2.11 Configuration - API Response Features
@@ -29,18 +30,18 @@ class OicApiResponse(FlextMeltanoModels.Entity):
                         "total_count": 150,
                         "page_size": 50,
                         "page_number": 1,
-                    }
+                    },
                 ],
-            }
+            },
         )
     )
 
     success: Annotated[bool, u.Field(..., description="Response success indicator")]
     data: Annotated[
-        t.JsonMapping | None, u.Field(None, description="Response data payload")
+        t.JsonMapping | None, u.Field(None, description="Response data payload"),
     ]
     total_count: Annotated[
-        int | None, u.Field(None, description="Total entity count (for pagination)")
+        int | None, u.Field(None, description="Total entity count (for pagination)"),
     ]
     page_size: Annotated[int | None, u.Field(None, description="Current page size")]
     page_number: Annotated[int | None, u.Field(None, description="Current page number")]
@@ -48,7 +49,7 @@ class OicApiResponse(FlextMeltanoModels.Entity):
     # Error information
     error_code: Annotated[str | None, u.Field(None, description="Error code if failed")]
     error_message: Annotated[
-        str | None, u.Field(None, description="Error message if failed")
+        str | None, u.Field(None, description="Error message if failed"),
     ]
     error_details: Annotated[
         t.MappingKV[str, t.JsonMapping] | None,
@@ -57,11 +58,11 @@ class OicApiResponse(FlextMeltanoModels.Entity):
 
     # Metadata
     timestamp: Annotated[datetime, u.Field(description="Response timestamp")] = u.Field(
-        default_factory=u.now
+        default_factory=u.now,
     )
     api_version: Annotated[str | None, u.Field(None, description="OIC API version")]
     request_id: Annotated[
-        str | None, u.Field(None, description="Request correlation ID")
+        str | None, u.Field(None, description="Request correlation ID"),
     ]
 
     @u.computed_field
@@ -99,7 +100,15 @@ class OicApiResponse(FlextMeltanoModels.Entity):
 
     @u.model_validator(mode="after")
     def validate_api_response(self) -> Self:
-        """Validate OIC API response."""
+        """Validate OIC API response.
+
+        Returns:
+            The resulting ``Self``.
+
+        Raises:
+            ValueError: If Failed responses must have an error message; or if Page
+                number must be positive.
+        """
         if not self.success and not self.error_message:
             msg = "Failed responses must have an error message"
             raise ValueError(msg)
@@ -109,4 +118,4 @@ class OicApiResponse(FlextMeltanoModels.Entity):
         return self
 
 
-__all__: list[str] = ["OicApiResponse"]
+__all__: list[str] = ["FlextTapOracleOicApiResponse"]

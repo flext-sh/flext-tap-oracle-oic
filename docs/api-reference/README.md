@@ -1,9 +1,11 @@
 # flext-tap-oracle-oic API Reference
 
 <!-- TOC START -->
+
 - [Source of Truth](#source-of-truth)
 - [Generated Pages](#generated-pages)
 - [Surface Summary](#surface-summary)
+
 <!-- TOC END -->
 
 <!-- AUTO-GENERATED — DO NOT EDIT MANUALLY -->
@@ -25,9 +27,9 @@ This section is generated from public exports and real docstrings.
 
 ## Surface Summary
 
-- Primary facades: `FlextTapOracleOic`, `FlextTapOracleOicApiError`,
-  `FlextTapOracleOicAuthenticationError`, `FlextTapOracleOicCli`,
-  `FlextTapOracleOicClient`, `FlextTapOracleOicConfig` (+10 more)
-- Generated module pages: `10`
+- Primary facades: `FlextTapOracleOic`, `FlextTapOracleOicAuthenticator`,
+  `FlextTapOracleOicCli`, `FlextTapOracleOicClient`, `FlextTapOracleOicConfig`,
+  `FlextTapOracleOicConstants` (+7 more)
+- Generated module pages: `11`
 
 Back to [project docs](../index.md).

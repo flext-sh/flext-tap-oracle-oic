@@ -1,62 +1,51 @@
 # AUTO-GENERATED FILE — Regenerate with: make gen
-"""Flext Tap Oracle Oic package."""
+"""Flext Tap Oracle Oic package.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
+from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from types import MappingProxyType
-
-from flext_core.lazy import build_lazy_import_map, install_lazy_exports
-
-from .__version__ import __author__ as __author__
-from .__version__ import __author_email__ as __author_email__
-from .__version__ import __description__ as __description__
-from .__version__ import __license__ as __license__
-from .__version__ import __title__ as __title__
-from .__version__ import __url__ as __url__
-from .__version__ import __version__ as __version__
-from .__version__ import __version_info__ as __version_info__
+from flext_core import build_lazy_import_map, install_lazy_exports
+from flext_tap_oracle_oic.__version__ import (
+    __author__,
+    __author_email__,
+    __description__,
+    __license__,
+    __title__,
+    __url__,
+    __version__,
+    __version_info__,
+)
 
 if TYPE_CHECKING:
-    from enum import StrEnum, unique
-    from flext_oracle_oic import FlextOracleOicConstants, d, e, h, r, s, x
-    from typing import ClassVar, Final, TYPE_CHECKING
+    from flext_meltano import d, e, h, r, s, x
 
-    from ._config import FlextTapOracleOicConfig, config
-    from ._settings import FlextTapOracleOicSettings, settings
-    from .api import FlextTapOracleOicService, tap_oracle_oic
-    from .cli import FlextTapOracleOicCli, main
-    from .constants import FlextTapOracleOicConstants, FlextTapOracleOicConstants as c
-    from .errors import (
-        FlextTapOracleOicApiError,
-        FlextTapOracleOicAuthenticationError,
-        FlextTapOracleOicConnectionError,
-        FlextTapOracleOicValidationError,
-    )
-    from .models import FlextTapOracleOicModels, FlextTapOracleOicModels as m
-    from .protocols import FlextTapOracleOicProtocols, FlextTapOracleOicProtocols as p
-    from .tap import (
-        FlextOracleOicAuthenticator,
-        FlextTapOracleOic,
-        FlextTapOracleOicClient,
-    )
-    from .tap_streams import FlextTapOracleOicPaginator
-    from .typings import FlextTapOracleOicTypes, FlextTapOracleOicTypes as t
-    from .utilities import FlextTapOracleOicUtilities, FlextTapOracleOicUtilities as u
+    from flext_tap_oracle_oic._config import FlextTapOracleOicConfig, config
+    from flext_tap_oracle_oic._settings import FlextTapOracleOicSettings, settings
+    from flext_tap_oracle_oic.api import FlextTapOracleOicService, tap_oracle_oic
+    from flext_tap_oracle_oic.authenticator import FlextTapOracleOicAuthenticator
+    from flext_tap_oracle_oic.cli import FlextTapOracleOicCli, main
+    from flext_tap_oracle_oic.client import FlextTapOracleOicClient
+    from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
+    from flext_tap_oracle_oic.models import FlextTapOracleOicModels, m
+    from flext_tap_oracle_oic.protocols import FlextTapOracleOicProtocols, p
+    from flext_tap_oracle_oic.tap import FlextTapOracleOic
+    from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator
+    from flext_tap_oracle_oic.typings import FlextTapOracleOicTypes, t
+    from flext_tap_oracle_oic.utilities import FlextTapOracleOicUtilities, u
+
+
 __all__: tuple[str, ...] = (
-    "TYPE_CHECKING",
-    "ClassVar",
-    "Final",
-    "FlextOracleOicAuthenticator",
-    "FlextOracleOicConstants",
     "FlextTapOracleOic",
-    "FlextTapOracleOicApiError",
-    "FlextTapOracleOicAuthenticationError",
+    "FlextTapOracleOicAuthenticator",
     "FlextTapOracleOicCli",
     "FlextTapOracleOicClient",
     "FlextTapOracleOicConfig",
-    "FlextTapOracleOicConnectionError",
     "FlextTapOracleOicConstants",
     "FlextTapOracleOicModels",
     "FlextTapOracleOicPaginator",
@@ -65,8 +54,6 @@ __all__: tuple[str, ...] = (
     "FlextTapOracleOicSettings",
     "FlextTapOracleOicTypes",
     "FlextTapOracleOicUtilities",
-    "FlextTapOracleOicValidationError",
-    "StrEnum",
     "__author__",
     "__author_email__",
     "__description__",
@@ -89,7 +76,6 @@ __all__: tuple[str, ...] = (
     "t",
     "tap_oracle_oic",
     "u",
-    "unique",
     "x",
 )
 
@@ -99,39 +85,21 @@ _LAZY_IMPORTS = MappingProxyType(
             "._config": ("FlextTapOracleOicConfig", "config"),
             "._settings": ("FlextTapOracleOicSettings", "settings"),
             ".api": ("FlextTapOracleOicService", "tap_oracle_oic"),
+            ".authenticator": ("FlextTapOracleOicAuthenticator",),
             ".cli": ("FlextTapOracleOicCli", "main"),
+            ".client": ("FlextTapOracleOicClient",),
             ".constants": ("FlextTapOracleOicConstants", "c"),
-            ".errors": (
-                "FlextTapOracleOicApiError",
-                "FlextTapOracleOicAuthenticationError",
-                "FlextTapOracleOicConnectionError",
-                "FlextTapOracleOicValidationError",
-            ),
             ".models": ("FlextTapOracleOicModels", "m"),
             ".protocols": ("FlextTapOracleOicProtocols", "p"),
-            ".tap": (
-                "FlextOracleOicAuthenticator",
-                "FlextTapOracleOic",
-                "FlextTapOracleOicClient",
-            ),
+            ".tap": ("FlextTapOracleOic",),
             ".tap_streams": ("FlextTapOracleOicPaginator",),
             ".typings": ("FlextTapOracleOicTypes", "t"),
             ".utilities": ("FlextTapOracleOicUtilities", "u"),
-            "enum": ("StrEnum", "unique"),
-            "flext_oracle_oic": (
-                "FlextOracleOicConstants",
-                "d",
-                "e",
-                "h",
-                "r",
-                "s",
-                "x",
-            ),
-            "typing": ("ClassVar", "Final", "TYPE_CHECKING"),
+            "flext_meltano": ("d", "e", "h", "r", "s", "x"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
-    )
+    ),
 )
 
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)
