@@ -27,25 +27,25 @@ class FlextTapOracleOicErrorContext(FlextMeltanoModels.Entity):
                         "http_status_code": 429,
                         "retry_after_seconds": 60,
                         "is_retryable": True,
-                    }
+                    },
                 ],
-            }
+            },
         )
     )
 
     error_type: Annotated[
-        c.TapOracleOic.OicErrorType, u.Field(..., description="Error category")
+        c.TapOracleOic.OicErrorType, u.Field(..., description="Error category"),
     ]
     http_status_code: Annotated[
-        int | None, u.Field(None, description="HTTP status code")
+        int | None, u.Field(None, description="HTTP status code"),
     ]
     retry_after_seconds: Annotated[
-        int | None, u.Field(None, description="Retry after duration")
+        int | None, u.Field(None, description="Retry after duration"),
     ]
 
     # Context information
     endpoint: Annotated[
-        str | None, u.Field(None, description="API endpoint that failed")
+        str | None, u.Field(None, description="API endpoint that failed"),
     ]
     request_method: Annotated[str | None, u.Field(None, description="HTTP method used")]
     request_params: Annotated[
@@ -58,10 +58,10 @@ class FlextTapOracleOicErrorContext(FlextMeltanoModels.Entity):
         False
     )
     suggested_action: Annotated[
-        str | None, u.Field(None, description="Suggested recovery action")
+        str | None, u.Field(None, description="Suggested recovery action"),
     ]
     max_retry_attempts: Annotated[
-        int | None, u.Field(None, description="Maximum retry attempts for this error")
+        int | None, u.Field(None, description="Maximum retry attempts for this error"),
     ]
 
     @u.computed_field
@@ -91,7 +91,15 @@ class FlextTapOracleOicErrorContext(FlextMeltanoModels.Entity):
 
     @u.model_validator(mode="after")
     def validate_error_context(self) -> Self:
-        """Validate OIC error context."""
+        """Validate OIC error context.
+
+        Returns:
+            The resulting ``Self``.
+
+        Raises:
+            ValueError: If HTTP status code must be between 100 and 599; or if Retry
+                after seconds cannot be negative.
+        """
         if self.http_status_code is not None and not (
             c.HTTP_STATUS_MIN <= self.http_status_code <= c.HTTP_STATUS_MAX
         ):
@@ -103,7 +111,11 @@ class FlextTapOracleOicErrorContext(FlextMeltanoModels.Entity):
         return self
 
     def _determine_severity(self) -> str:
-        """Determine error severity based on type and status code."""
+        """Determine error severity based on type and status code.
+
+        Returns:
+            The resulting ``str``.
+        """
         if self.error_type in {
             c.TapOracleOic.OicErrorType.AUTHENTICATION,
             c.TapOracleOic.OicErrorType.AUTHORIZATION,

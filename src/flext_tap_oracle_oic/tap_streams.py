@@ -9,8 +9,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from flext_tap_oracle_oic import c, t
-
-from ._models._envelope import FlextTapOracleOicEnvelope
+from flext_tap_oracle_oic._models._envelope import FlextTapOracleOicEnvelope
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels
@@ -37,14 +36,26 @@ class FlextTapOracleOicPaginator:
         self._response_times: list[float] = []
 
     def fetch_next(self, response: FlextApiModels.Api.HttpResponse) -> int | None:
-        """Fetch the raw Singer page token; malformed responses raise."""
+        """Fetch the raw Singer page token; malformed responses raise.
+
+        Returns:
+            The resulting ``int | None``.
+        """
         data = self._normalize_response_payload(response)
         return self._calculate_next_offset(data)
 
+    @staticmethod
     def _normalize_response_payload(
-        self, response: FlextApiModels.Api.HttpResponse
+        response: FlextApiModels.Api.HttpResponse,
     ) -> t.JsonMapping:
-        """Normalize flext-api response bodies to OIC pagination payloads."""
+        """Normalize flext-api response bodies to OIC pagination payloads.
+
+        Returns:
+            The resulting ``t.JsonMapping``.
+
+        Raises:
+            TypeError: If Pagination requires a JSON object response body.
+        """
         match response.body:
             case dict() as body_map:
                 return body_map
@@ -53,16 +64,25 @@ class FlextTapOracleOicPaginator:
                 raise TypeError(msg)
 
     def _calculate_next_offset(self, data: t.JsonMapping) -> int | None:
-        """Calculate next offset based on OIC response format."""
+        """Calculate next offset based on OIC response format.
+
+        Returns:
+            The resulting ``int | None``.
+        """
         items = self._extract_items_from_response(data)
         if items is None or not items or len(items) < self._page_size:
             return None
         return self.current_value + len(items)
 
+    @staticmethod
     def _extract_items_from_response(
-        self, data: t.JsonMapping
+        data: t.JsonMapping,
     ) -> t.SequenceOf[t.JsonMapping] | None:
-        """Extract items from various OIC response formats."""
+        """Extract items from various OIC response formats.
+
+        Returns:
+            The resulting ``t.SequenceOf[t.JsonMapping] | None``.
+        """
         envelope = FlextTapOracleOicEnvelope.model_validate(data, strict=True)
         if envelope.items is not None:
             items: t.SequenceOf[t.JsonMapping] = envelope.items

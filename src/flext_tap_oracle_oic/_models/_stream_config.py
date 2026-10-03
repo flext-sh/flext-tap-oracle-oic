@@ -27,26 +27,26 @@ class FlextTapOracleOicStreamConfiguration(FlextMeltanoModels.ArbitraryTypesMode
                         "replication_method": "INCREMENTAL",
                         "replication_key": "last_updated",
                         "page_size": 100,
-                    }
+                    },
                 ],
-            }
+            },
         )
     )
 
     stream_name: Annotated[str, u.Field(..., description="Singer stream name")]
     replication_method: Annotated[
-        c.TapOracleOic.OicReplicationMethod, u.Field(description="Replication method")
+        c.TapOracleOic.OicReplicationMethod, u.Field(description="Replication method"),
     ] = c.TapOracleOic.OicReplicationMethod.FULL_TABLE
     replication_key: Annotated[
-        str | None, u.Field(None, description="Replication key field name")
+        str | None, u.Field(None, description="Replication key field name"),
     ]
 
     # Pagination and performance
     page_size: Annotated[
-        int, u.Field(ge=1, le=1000, description="API pagination size")
+        int, u.Field(ge=1, le=1000, description="API pagination size"),
     ] = 100
     include_extended: Annotated[
-        bool, u.Field(description="Include extended entity metadata")
+        bool, u.Field(description="Include extended entity metadata"),
     ] = False
 
     # Filtering
@@ -61,10 +61,10 @@ class FlextTapOracleOicStreamConfiguration(FlextMeltanoModels.ArbitraryTypesMode
 
     # Security
     sanitize_sensitive_data: Annotated[
-        bool, u.Field(description="Enable data sanitization")
+        bool, u.Field(description="Enable data sanitization"),
     ] = True
     exclude_test_entities: Annotated[
-        bool, u.Field(description="Exclude test/demo entities")
+        bool, u.Field(description="Exclude test/demo entities"),
     ] = True
 
     @u.computed_field
@@ -92,7 +92,15 @@ class FlextTapOracleOicStreamConfiguration(FlextMeltanoModels.ArbitraryTypesMode
 
     @u.model_validator(mode="after")
     def validate_stream_config(self) -> Self:
-        """Validate OIC stream configuration."""
+        """Validate OIC stream configuration.
+
+        Returns:
+            The resulting ``Self``.
+
+        Raises:
+            ValueError: If Stream name is required; or if Incremental replication
+                requires a replication key; or if Page size must be between 1 and 1000.
+        """
         if not self.stream_name:
             msg = "Stream name is required"
             raise ValueError(msg)

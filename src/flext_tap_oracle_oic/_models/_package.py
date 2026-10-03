@@ -30,9 +30,9 @@ class FlextTapOracleOicPackageEntity(FlextMeltanoModels.Entity):
                         "name": "Customer Management Suite",
                         "package_type": "INTEGRATION",
                         "status": "ACTIVE",
-                    }
+                    },
                 ],
-            }
+            },
         )
     )
 
@@ -40,32 +40,32 @@ class FlextTapOracleOicPackageEntity(FlextMeltanoModels.Entity):
     name: Annotated[str, u.Field(..., description="Package name")]
     description: Annotated[str | None, u.Field(None, description="Package description")]
     api_version: Annotated[
-        str, u.Field(..., description="Package version from OIC API")
+        str, u.Field(..., description="Package version from OIC API"),
     ]
 
     # Package metadata
     package_type: Annotated[
-        c.TapOracleOic.OicIntegrationType, u.Field(..., description="Package type")
+        c.TapOracleOic.OicIntegrationType, u.Field(..., description="Package type"),
     ]
     created_by: Annotated[str | None, u.Field(None, description="Package creator")]
     created_date: Annotated[
-        datetime | None, u.Field(None, description="Package creation date")
+        datetime | None, u.Field(None, description="Package creation date"),
     ]
 
     # Dependencies and relationships
     dependencies: Annotated[
-        t.StrSequence, u.Field(description="List of dependent package IDs")
+        t.StrSequence, u.Field(description="List of dependent package IDs"),
     ] = u.Field(default_factory=tuple)
     integration_count: Annotated[
-        int | None, u.Field(None, description="Number of integrations in package")
+        int | None, u.Field(None, description="Number of integrations in package"),
     ]
 
     # Status
     status: Annotated[
-        c.TapOracleOic.OicIntegrationStatus, u.Field(..., description="Package status")
+        c.TapOracleOic.OicIntegrationStatus, u.Field(..., description="Package status"),
     ]
     download_count: Annotated[
-        int | None, u.Field(None, description="Package download count")
+        int | None, u.Field(None, description="Package download count"),
     ]
 
     @u.computed_field
@@ -99,7 +99,15 @@ class FlextTapOracleOicPackageEntity(FlextMeltanoModels.Entity):
 
     @u.model_validator(mode="after")
     def validate_package_entity(self) -> Self:
-        """Validate OIC package entity."""
+        """Validate OIC package entity.
+
+        Returns:
+            The resulting ``Self``.
+
+        Raises:
+            ValueError: If Package ID is required; or if Package name is required; or if
+                Integration count cannot be negative.
+        """
         if not self.package_id:
             msg = "Package ID is required"
             raise ValueError(msg)

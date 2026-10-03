@@ -26,32 +26,32 @@ class FlextTapOracleOicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesMod
                         "oauth_client_id": "my-client-id",
                         "oauth_token_url": (c.TapOracleOic.SCHEMA_EXAMPLE_IDCS_URL),
                         "base_url": c.TapOracleOic.SCHEMA_EXAMPLE_OIC_URL,
-                    }
+                    },
                 ],
-            }
+            },
         )
     )
 
     oauth_client_id: Annotated[
-        str, u.Field(..., description="OAuth2 client ID for OIC API")
+        str, u.Field(..., description="OAuth2 client ID for OIC API"),
     ]
     oauth_client_secret: Annotated[
-        str, u.Field(..., description="OAuth2 client secret")
+        str, u.Field(..., description="OAuth2 client secret"),
     ]
     oauth_token_url: Annotated[
-        str, u.Field(..., description="IDCS OAuth2 token endpoint URL")
+        str, u.Field(..., description="IDCS OAuth2 token endpoint URL"),
     ]
     oauth_client_aud: Annotated[
-        str, u.Field(..., description="OAuth2 audience parameter")
+        str, u.Field(..., description="OAuth2 audience parameter"),
     ]
     base_url: Annotated[str, u.Field(..., description="OIC instance base URL")]
 
     # Optional authentication settings
     token_expiry_buffer: Annotated[
-        int, u.Field(description="Token refresh buffer in seconds")
+        int, u.Field(description="Token refresh buffer in seconds"),
     ] = 300
     max_retry_attempts: Annotated[
-        int, u.Field(description="Maximum authentication retry attempts")
+        int, u.Field(description="Maximum authentication retry attempts"),
     ] = 3
     timeout_seconds: Annotated[int, u.Field(description="Authentication timeout")] = 30
 
@@ -83,7 +83,15 @@ class FlextTapOracleOicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesMod
 
     @u.model_validator(mode="after")
     def validate_auth_config(self) -> Self:
-        """Validate OAuth2 authentication configuration."""
+        """Validate OAuth2 authentication configuration.
+
+        Returns:
+            The resulting ``Self``.
+
+        Raises:
+            ValueError: If OAuth token URL must use HTTPS; or if OIC base URL must use
+                HTTPS; or if Token expiry buffer must be at least 60 seconds.
+        """
         if not self.oauth_token_url.startswith("https://"):
             msg = "OAuth token URL must use HTTPS"
             raise ValueError(msg)

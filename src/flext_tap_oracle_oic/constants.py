@@ -14,7 +14,7 @@ from enum import StrEnum, unique
 from flext_meltano import FlextMeltanoConstants
 from flext_oracle_oic import FlextOracleOicConstants
 
-from ._constants.values import FlextTapOracleOicConstantsValues
+from flext_tap_oracle_oic._constants.values import FlextTapOracleOicConstantsValues
 
 
 class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants):
