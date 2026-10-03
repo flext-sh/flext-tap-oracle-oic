@@ -1,4 +1,4 @@
-"""Tests for tap-oracle-oic.
+"""Observable behavior of the public Oracle OIC tap facade.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -7,106 +7,71 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from typing import TYPE_CHECKING
 
 import pytest
+from flext_api import m as api_m
 from flext_tests import tm
 
-from flext_tap_oracle_oic.tap import FlextTapOracleOic as TapOracleOic
-from tests import c, m, p, t
+from flext_tap_oracle_oic import (
+    FlextTapOracleOicPaginator,
+    FlextTapOracleOicSettings,
+    c,
+)
+from tests import u
+
+if TYPE_CHECKING:
+    from flext_tap_oracle_oic import FlextTapOracleOic, m
 
 
-def _build_tap_instance() -> p.Meltano.TapInstance:
-    return m.Meltano.TapInstance(
-        tap_type="oracle-oic",
-        settings=m.Meltano.TapConfig(
-            tap_type="oracle-oic",
-            connection_config={
-                "base_url": "https://test.integration.ocp.oraclecloud.com"
-            },
-            stream_config={},
-        ),
-    )
+class TestsFlextTapOracleOic:
+    """Public tap construction and Singer discovery contracts."""
 
+    @staticmethod
+    def test_default_tap_exposes_typed_public_settings(
+        tap_oracle_oic: FlextTapOracleOic, tap_instance: m.Meltano.TapInstance,
+    ) -> None:
+        """The public facade exposes typed settings and its request identity."""
+        tm.that(tap_oracle_oic.oic_settings, is_=FlextTapOracleOicSettings)
+        tm.that(tap_instance.tap_type, eq=tap_oracle_oic.name)
 
-def _discover_stream_names(tap: TapOracleOic) -> t.StrSequence:
-    result = tap.discover_streams(tap_instance=_build_tap_instance())
-    tm.ok(result)
-    value = result.value
-    tm.that(value, is_=Mapping)
-    streams = value["streams"]
-    assert isinstance(streams, Sequence) and not isinstance(streams, str)
-    return [str(s["tap_stream_id"]) for s in streams if isinstance(s, Mapping)]
+    @staticmethod
+    def test_discovery_returns_the_canonical_public_stream_catalog(
+        tap_oracle_oic: FlextTapOracleOic, tap_instance: m.Meltano.TapInstance,
+    ) -> None:
+        """Discovery returns exactly the streams owned by the public constants."""
+        names = u.TapOracleOic.Tests.discover_stream_names(tap_oracle_oic, tap_instance)
 
+        tm.that(names, eq=tuple(c.TapOracleOic.CORE_STREAMS))
 
-class TestsFlextTapOracleOicTap:
-    """Test cases for TapOracleOic."""
+    @staticmethod
+    @pytest.mark.parametrize("envelope_key", ["items", "data"])
+    def test_paginator_returns_raw_tokens_and_stops_on_empty_pages(
+        envelope_key: str,
+    ) -> None:
+        """Singer consumes a token or None, never a result wrapper."""
+        paginator = FlextTapOracleOicPaginator()
+        records = [
+            {"id": str(index)}
+            for index in range(c.TapOracleOic.DEFAULT_PAGINATOR_PAGE_SIZE)
+        ]
+        response = api_m.Api.HttpResponse(status_code=200, body={envelope_key: records})
 
-    def test_tap_initialization(self) -> None:
-        """Test method."""
-        "Test tap initialization function."
-        settings = {
-            "base_url": "https://test.integration.ocp.oraclecloud.com",
-            "oauth_client_id": "test_client",
-            "oauth_client_secret": "test_secret",
-            "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
-        }
-        tap = TapOracleOic(settings=settings, validate_config=False)
-        if tap.name != "tap-oracle-oic":
-            msg = f"Expected {'tap-oracle-oic'}, got {tap.name}"
-            raise AssertionError(msg)
-        tm.that(tap.oic_settings.TapOracleOic.base_url, eq=settings["base_url"])
-        assert (
-            tap.oic_settings.TapOracleOic.oauth_client_id == settings["oauth_client_id"]
+        tm.that(
+            paginator.fetch_next(response), eq=paginator.current_value + len(records),
+        )
+        empty_response = api_m.Api.HttpResponse(
+            status_code=200, body={envelope_key: []},
+        )
+        assert paginator.fetch_next(empty_response) is None
+
+    @staticmethod
+    @pytest.mark.parametrize("envelope_key", ["items", "data"])
+    def test_paginator_rejects_malformed_pages(envelope_key: str) -> None:
+        """Malformed collection payloads cannot signal successful exhaustion."""
+        response = api_m.Api.HttpResponse(
+            status_code=200, body={envelope_key: "not-a-collection"},
         )
 
-    def test_discover_streams(self) -> None:
-        """Test method."""
-        "Test discover streams function."
-        settings = {
-            "base_url": "https://test.integration.ocp.oraclecloud.com",
-            "oauth_client_id": "test_client",
-            "oauth_client_secret": "test_secret",
-            "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
-        }
-        tap = TapOracleOic(settings=settings, validate_config=False)
-        stream_names = _discover_stream_names(tap)
-        if len(stream_names) < 5:
-            msg = f"Expected {len(stream_names)} >= {5}"
-            raise AssertionError(msg)
-        if "integrations" not in stream_names:
-            msg = f"Expected {'integrations'} in {stream_names}"
-            raise AssertionError(msg)
-        tm.that(stream_names, has="connections")
-
-    def test_config_validation(self) -> None:
-        """Test method."""
-        "Test settings validation rejects invalid field types."
-
-        adapter: p.TypeAdapter[t.PositiveInt] = m.TypeAdapter(t.PositiveInt)
         with pytest.raises(c.ValidationError):
-            adapter.validate_python(-1)
-
-    def test_include_extended_streams(self) -> None:
-        """Test method."""
-        "Test include extended streams function."
-        settings: t.JsonMapping = {
-            "base_url": "https://test.integration.ocp.oraclecloud.com",
-            "oauth_client_id": "test_client",
-            "oauth_client_secret": "test_secret",
-            "oauth_token_url": "https://test.identity.oraclecloud.com/oauth2/v1/token",
-            "include_extended": True,
-        }
-        tap = TapOracleOic(settings=settings, validate_config=False)
-        stream_names = _discover_stream_names(tap)
-        if "integrations" not in stream_names:
-            msg = f"Expected {'integrations'} in {stream_names}"
-            raise AssertionError(msg)
-        tm.that(stream_names, has="connections")
-        if "packages" not in stream_names:
-            msg = f"Expected {'packages'} in {stream_names}"
-            raise AssertionError(msg)
-        tm.that(stream_names, has="libraries")
-        if "lookups" not in stream_names:
-            msg = f"Expected {'lookups'} in {stream_names}"
-            raise AssertionError(msg)
+            FlextTapOracleOicPaginator().fetch_next(response)

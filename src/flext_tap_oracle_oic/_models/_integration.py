@@ -1,4 +1,4 @@
-"""OIC OicIntegrationEntity model.
+"""OIC FlextTapOracleOicIntegrationEntity model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -9,13 +9,14 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
 from flext_meltano import FlextMeltanoModels
+
 from flext_tap_oracle_oic import c, t, u
 
 if TYPE_CHECKING:
     from datetime import datetime
 
 
-class OicIntegrationEntity(FlextMeltanoModels.Entity):
+class FlextTapOracleOicIntegrationEntity(FlextMeltanoModels.Entity):
     """OIC Integration entity with complete metadata."""
 
     # Pydantic 2.11 Configuration - Integration Features
@@ -25,23 +26,25 @@ class OicIntegrationEntity(FlextMeltanoModels.Entity):
                 "description": "Oracle OIC integration with complete metadata",
                 "examples": [
                     {
-                        "integration_id": "CUSTOMER_SYNC_01.00.0000",
+                        "integration_id": (
+                            f"CUSTOMER_SYNC_{c.TapOracleOic.DEFAULT_INTEGRATION_VERSION}"
+                        ),
                         "name": "Customer Synchronization",
                         "status": "ACTIVE",
-                        "version": "01.00.0000",
-                    }
+                        "version": c.TapOracleOic.DEFAULT_INTEGRATION_VERSION,
+                    },
                 ],
-            }
+            },
         )
     )
 
     integration_id: Annotated[str, u.Field(description="Unique integration identifier")]
     name: Annotated[str, u.Field(..., description="Integration name")]
     description: Annotated[
-        str | None, u.Field(None, description="Integration description")
+        str | None, u.Field(None, description="Integration description"),
     ]
     api_version: Annotated[
-        str, u.Field(..., description="Integration version from OIC API")
+        str, u.Field(..., description="Integration version from OIC API"),
     ]
     status: Annotated[
         c.TapOracleOic.OicIntegrationStatus,
@@ -50,34 +53,34 @@ class OicIntegrationEntity(FlextMeltanoModels.Entity):
 
     # Temporal information
     created_date: Annotated[
-        datetime | None, u.Field(None, description="Integration creation date")
+        datetime | None, u.Field(None, description="Integration creation date"),
     ]
     last_updated: Annotated[
-        datetime | None, u.Field(None, description="Last update timestamp")
+        datetime | None, u.Field(None, description="Last update timestamp"),
     ]
     last_activated: Annotated[
-        datetime | None, u.Field(None, description="Last activation timestamp")
+        datetime | None, u.Field(None, description="Last activation timestamp"),
     ]
 
     # Metadata
     package_id: Annotated[
-        str | None, u.Field(None, description="Associated package ID")
+        str | None, u.Field(None, description="Associated package ID"),
     ]
     pattern: Annotated[
-        str | None, u.Field(None, description="Integration pattern type")
+        str | None, u.Field(None, description="Integration pattern type"),
     ]
     style: Annotated[str | None, u.Field(None, description="Integration style")]
 
     # Runtime information
     execution_count: Annotated[
-        int | None, u.Field(None, description="Total execution count")
+        int | None, u.Field(None, description="Total execution count"),
     ]
     error_count: Annotated[int | None, u.Field(None, description="Total error count")]
     last_execution_time: Annotated[
-        datetime | None, u.Field(None, description="Last execution timestamp")
+        datetime | None, u.Field(None, description="Last execution timestamp"),
     ]
 
-    @u.computed_field()
+    @u.computed_field
     @property
     def integration_health_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC integration health and performance summary."""
@@ -112,7 +115,15 @@ class OicIntegrationEntity(FlextMeltanoModels.Entity):
 
     @u.model_validator(mode="after")
     def validate_integration_entity(self) -> Self:
-        """Validate OIC integration entity."""
+        """Validate OIC integration entity.
+
+        Returns:
+            The resulting ``Self``.
+
+        Raises:
+            ValueError: If Integration ID is required; or if Integration name is
+                required; or if Execution count cannot be negative.
+        """
         if not self.integration_id:
             msg = "Integration ID is required"
             raise ValueError(msg)
@@ -125,4 +136,4 @@ class OicIntegrationEntity(FlextMeltanoModels.Entity):
         return self
 
 
-__all__: list[str] = ["OicIntegrationEntity"]
+__all__: list[str] = ["FlextTapOracleOicIntegrationEntity"]

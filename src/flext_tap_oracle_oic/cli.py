@@ -26,7 +26,11 @@ class FlextTapOracleOicCli:
 
     @classmethod
     def run(cls, args: t.StrSequence | None = None) -> int:
-        """Execute the canonical tap-oracle-oic CLI entry point."""
+        """Execute the canonical tap-oracle-oic CLI entry point.
+
+        Returns:
+            The resulting ``int``.
+        """
         _ = cls
         return FlextTapOracleOicService().cli_main(args)
 
@@ -64,9 +68,8 @@ def main(args: t.StrSequence | None = None) -> int:
         >>> command = FlextMeltanoSingerCliTranslator.translate_tap_run(params)
         >>> # Executes: ["tap-oracle-oic", "--config", "settings.json", "--discover"]
 
-    Raises:
-        SystemExit: On configuration errors or execution failures
-
+    Returns:
+        The resulting ``int``.
     """
     return FlextTapOracleOicCli.run(args)
 

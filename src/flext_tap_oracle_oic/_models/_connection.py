@@ -1,4 +1,4 @@
-"""OIC OicConnectionEntity model.
+"""OIC FlextTapOracleOicConnectionEntity model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -9,14 +9,15 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
 from flext_meltano import FlextMeltanoModels
+
 from flext_tap_oracle_oic import c, t, u
-from flext_tap_oracle_oic._models._helpers import validate_entity_identity_and_port
+from flext_tap_oracle_oic._models._helpers import FlextTapOracleOicModelsHelpers
 
 if TYPE_CHECKING:
     from datetime import datetime
 
 
-class OicConnectionEntity(FlextMeltanoModels.Entity):
+class FlextTapOracleOicConnectionEntity(FlextMeltanoModels.Entity):
     """OIC Connection entity with security sanitization."""
 
     # Pydantic 2.11 Configuration - Connection Features
@@ -30,37 +31,44 @@ class OicConnectionEntity(FlextMeltanoModels.Entity):
                         "name": "Salesforce Production",
                         "connection_type": "SALESFORCE_ADAPTER",
                         "status": "ACTIVE",
-                    }
+                    },
                 ],
-            }
+            },
         )
     )
 
     connection_id: Annotated[
-        str, u.Field(..., description="Unique connection identifier")
+        str,
+        u.Field(..., description="Unique connection identifier"),
     ]
     name: Annotated[str, u.Field(..., description="Connection name")]
     description: Annotated[
-        str | None, u.Field(None, description="Connection description")
+        str | None,
+        u.Field(None, description="Connection description"),
     ]
     connection_type: Annotated[str, u.Field(..., description="Connection adapter type")]
 
     host: Annotated[
-        str | None, u.Field(None, description="Connection host (if applicable)")
+        str | None,
+        u.Field(None, description="Connection host (if applicable)"),
     ]
     port: Annotated[
-        int | None, u.Field(None, description="Connection port (if applicable)")
+        int | None,
+        u.Field(None, description="Connection port (if applicable)"),
     ]
 
     # Security metadata (credentials removed)
     authentication_type: Annotated[
-        str | None, u.Field(None, description="Authentication method used")
+        str | None,
+        u.Field(None, description="Authentication method used"),
     ]
     security_policy: Annotated[
-        str | None, u.Field(None, description="Security policy name")
+        str | None,
+        u.Field(None, description="Security policy name"),
     ]
     certificate_alias: Annotated[
-        str | None, u.Field(None, description="Certificate alias (if used)")
+        str | None,
+        u.Field(None, description="Certificate alias (if used)"),
     ]
 
     # Status and health
@@ -69,19 +77,22 @@ class OicConnectionEntity(FlextMeltanoModels.Entity):
         u.Field(..., description="Connection status"),
     ]
     last_tested: Annotated[
-        datetime | None, u.Field(None, description="Last connection test timestamp")
+        datetime | None,
+        u.Field(None, description="Last connection test timestamp"),
     ]
     test_result: Annotated[str | None, u.Field(None, description="Last test result")]
 
     # Sanitization markers
     data_sanitized: Annotated[
-        bool, u.Field(description="Indicates if sensitive data was removed")
+        bool,
+        u.Field(description="Indicates if sensitive data was removed"),
     ] = True
     sanitization_timestamp: Annotated[
-        datetime | None, u.Field(description="When sanitization occurred")
+        datetime | None,
+        u.Field(description="When sanitization occurred"),
     ] = u.Field(default_factory=u.now)
 
-    @u.computed_field()
+    @u.computed_field
     @property
     def connection_security_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC connection security and health summary."""
@@ -113,8 +124,12 @@ class OicConnectionEntity(FlextMeltanoModels.Entity):
 
     @u.model_validator(mode="after")
     def validate_connection_entity(self) -> Self:
-        """Validate OIC connection entity."""
-        validate_entity_identity_and_port(
+        """Validate OIC connection entity.
+
+        Returns:
+            The resulting ``Self``.
+        """
+        FlextTapOracleOicModelsHelpers.validate_entity_identity_and_port(
             entity_id=self.connection_id,
             entity_name=self.name,
             id_label="Connection ID",
@@ -124,4 +139,4 @@ class OicConnectionEntity(FlextMeltanoModels.Entity):
         return self
 
 
-__all__: list[str] = ["OicConnectionEntity"]
+__all__: list[str] = ["FlextTapOracleOicConnectionEntity"]

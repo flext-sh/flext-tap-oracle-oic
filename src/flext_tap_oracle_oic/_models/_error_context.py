@@ -1,4 +1,4 @@
-"""OIC OicErrorContext model.
+"""OIC FlextTapOracleOicErrorContext model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -9,10 +9,11 @@ from __future__ import annotations
 from typing import Annotated, ClassVar, Self
 
 from flext_meltano import FlextMeltanoModels
+
 from flext_tap_oracle_oic import c, t, u
 
 
-class OicErrorContext(FlextMeltanoModels.Entity):
+class FlextTapOracleOicErrorContext(FlextMeltanoModels.Entity):
     """Error context for OIC API error handling."""
 
     # Pydantic 2.11 Configuration - Error Context Features
@@ -26,25 +27,25 @@ class OicErrorContext(FlextMeltanoModels.Entity):
                         "http_status_code": 429,
                         "retry_after_seconds": 60,
                         "is_retryable": True,
-                    }
+                    },
                 ],
-            }
+            },
         )
     )
 
     error_type: Annotated[
-        c.TapOracleOic.OicErrorType, u.Field(..., description="Error category")
+        c.TapOracleOic.OicErrorType, u.Field(..., description="Error category"),
     ]
     http_status_code: Annotated[
-        int | None, u.Field(None, description="HTTP status code")
+        int | None, u.Field(None, description="HTTP status code"),
     ]
     retry_after_seconds: Annotated[
-        int | None, u.Field(None, description="Retry after duration")
+        int | None, u.Field(None, description="Retry after duration"),
     ]
 
     # Context information
     endpoint: Annotated[
-        str | None, u.Field(None, description="API endpoint that failed")
+        str | None, u.Field(None, description="API endpoint that failed"),
     ]
     request_method: Annotated[str | None, u.Field(None, description="HTTP method used")]
     request_params: Annotated[
@@ -57,13 +58,13 @@ class OicErrorContext(FlextMeltanoModels.Entity):
         False
     )
     suggested_action: Annotated[
-        str | None, u.Field(None, description="Suggested recovery action")
+        str | None, u.Field(None, description="Suggested recovery action"),
     ]
     max_retry_attempts: Annotated[
-        int | None, u.Field(None, description="Maximum retry attempts for this error")
+        int | None, u.Field(None, description="Maximum retry attempts for this error"),
     ]
 
-    @u.computed_field()
+    @u.computed_field
     @property
     def error_context_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OIC error context summary."""
@@ -90,7 +91,15 @@ class OicErrorContext(FlextMeltanoModels.Entity):
 
     @u.model_validator(mode="after")
     def validate_error_context(self) -> Self:
-        """Validate OIC error context."""
+        """Validate OIC error context.
+
+        Returns:
+            The resulting ``Self``.
+
+        Raises:
+            ValueError: If HTTP status code must be between 100 and 599; or if Retry
+                after seconds cannot be negative.
+        """
         if self.http_status_code is not None and not (
             c.HTTP_STATUS_MIN <= self.http_status_code <= c.HTTP_STATUS_MAX
         ):
@@ -102,22 +111,19 @@ class OicErrorContext(FlextMeltanoModels.Entity):
         return self
 
     def _determine_severity(self) -> str:
-        """Determine error severity based on type and status code."""
+        """Determine error severity based on type and status code.
+
+        Returns:
+            The resulting ``str``.
+        """
         if self.error_type in {
             c.TapOracleOic.OicErrorType.AUTHENTICATION,
             c.TapOracleOic.OicErrorType.AUTHORIZATION,
         }:
             return str(c.TapOracleOic.OicErrorSeverity.CRITICAL.value)
-        if self.error_type == c.TapOracleOic.OicErrorType.RATE_LIMIT:
-            return str(c.TapOracleOic.OicErrorSeverity.WARNING.value)
         if self.error_type == c.TapOracleOic.OicErrorType.SERVER_ERROR:
             return str(c.TapOracleOic.OicErrorSeverity.ERROR.value)
-        if self.error_type in {
-            c.TapOracleOic.OicErrorType.NETWORK,
-            c.TapOracleOic.OicErrorType.VALIDATION,
-        }:
-            return str(c.TapOracleOic.OicErrorSeverity.WARNING.value)
-        return str(c.TapOracleOic.OicErrorSeverity.UNKNOWN.value)
+        return str(c.TapOracleOic.OicErrorSeverity.WARNING.value)
 
 
-__all__: list[str] = ["OicErrorContext"]
+__all__: list[str] = ["FlextTapOracleOicErrorContext"]

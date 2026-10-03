@@ -9,80 +9,24 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import re
 from enum import StrEnum, unique
-from typing import TYPE_CHECKING, ClassVar, Final
 
-from flext_meltano import c
+from flext_meltano import FlextMeltanoConstants
 from flext_oracle_oic import FlextOracleOicConstants
 
-if TYPE_CHECKING:
-    from flext_tap_oracle_oic import t
+from flext_tap_oracle_oic._constants.values import FlextTapOracleOicConstantsValues
 
 
-class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
+class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants):
     """FLEXT Oracle OIC TAP constants extending flext-core platform constants.
 
     Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
+    Scalar constants inherit from ``FlextTapOracleOicConstantsValues`` (the
+    ``_constants`` SSOT); this class declares only the domain enums.
     """
 
-    class TapOracleOic:
-        """OIC connection configuration."""
-
-        # === Regex authority for the TapOracleOic domain ===
-        OCI_REGION_RE: ClassVar[t.RegexPattern] = re.compile(r"(\w+-\w+-\d+)")
-        NORMALIZE_NON_ALNUM_RE: ClassVar[t.RegexPattern] = re.compile(r"[^a-zA-Z0-9]")
-        NORMALIZE_REPEATED_UNDERSCORE_RE: ClassVar[t.RegexPattern] = re.compile(r"_+")
-        SANITIZE_CAMEL_BOUNDARY_RE: ClassVar[t.RegexPattern] = re.compile(
-            r"(?<!^)(?=[A-Z])"
-        )
-        SANITIZE_NON_IDENTIFIER_RE: ClassVar[t.RegexPattern] = re.compile(
-            r"[^a-zA-Z0-9_]"
-        )
-
-        DEFAULT_BATCH_SIZE: ClassVar[int] = 100
-        MAX_RETRIES: ClassVar[int] = 3
-        DEFAULT_PAGE_SIZE: ClassVar[int] = 50
-
-        OIC_API_BASE_PATH: Final[str] = "/ic/api/integration/v1"
-        OIC_MONITORING_API_PATH: Final[str] = "/ic/api/monitoring/v1"
-        OIC_B2B_API_PATH: Final[str] = "/ic/api/b2b/v1"
-        OIC_PROCESS_API_PATH: Final[str] = "/ic/api/process/v1"
-
-        DEFAULT_TIMEOUT: Final[int] = (
-            FlextOracleOicConstants.OracleOic.MIN_REQUEST_TIMEOUT
-        )
-        DEFAULT_MAX_RETRIES: Final[int] = 3
-        DEFAULT_VERIFY_SSL: Final[bool] = True
-
-        CORE_STREAMS: Final[t.StrSequence] = (
-            "integrations",
-            "connections",
-            "packages",
-            "lookups",
-            "libraries",
-        )
-        INFRASTRUCTURE_STREAMS: Final[t.StrSequence] = ("certificates", "adapters")
-
-        MAX_PAGE_SIZE: Final[int] = 1000
-        MIN_PAGE_SIZE: Final[int] = FlextOracleOicConstants.DEFAULT_RETRY_DELAY_SECONDS
-        DEFAULT_PAGINATOR_START: Final[int] = 0
-        DEFAULT_PAGINATOR_PAGE_SIZE: Final[int] = 100
-        PAGINATOR_MAX_PAGE_SIZE: Final[int] = 1000
-        PAGINATOR_MIN_PAGE_SIZE: Final[int] = 10
-
-        HTTP_UNAUTHORIZED: Final[int] = 401
-        HTTP_FORBIDDEN: Final[int] = 403
-        HTTP_ERROR_STATUS_THRESHOLD: Final[int] = 400
-        HTTP_RATE_LIMITED: Final[int] = 429
-
-        MIN_TOKEN_EXPIRY_BUFFER: Final[int] = 60
-        MIN_PERCENTAGE: Final[float] = 0.0
-        MAX_PERCENTAGE: Final[float] = 100.0
-
-        RESPONSE_TIME_HISTORY_SIZE: Final[int] = 10
-        MIN_RESPONSE_SAMPLES: Final[int] = 5
-        SLOW_RESPONSE_THRESHOLD: Final[float] = 5.0
+    class TapOracleOic(FlextTapOracleOicConstantsValues.TapOracleOic):
+        """OIC connection configuration and domain enumerations."""
 
         @unique
         class OicIntegrationStatus(StrEnum):
@@ -222,4 +166,4 @@ class FlextTapOracleOicConstants(c, FlextOracleOicConstants):
 
 c = FlextTapOracleOicConstants
 
-__all__: t.StrSequence = ("FlextTapOracleOicConstants", "c")
+__all__: tuple[str, ...] = ("FlextTapOracleOicConstants", "c")

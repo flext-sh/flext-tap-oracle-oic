@@ -1,4 +1,4 @@
-"""OIC OicAuthenticationConfig model.
+"""OIC FlextTapOracleOicAuthenticationConfig model.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -9,10 +9,11 @@ from __future__ import annotations
 from typing import Annotated, ClassVar, Self
 
 from flext_meltano import FlextMeltanoModels
+
 from flext_tap_oracle_oic import c, t, u
 
 
-class OicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
+class FlextTapOracleOicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
     """OAuth2/IDCS authentication configuration for OIC API access."""
 
     # Pydantic 2.11 Configuration - Authentication Features
@@ -23,38 +24,38 @@ class OicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
                 "examples": [
                     {
                         "oauth_client_id": "my-client-id",
-                        "oauth_token_url": "https://idcs-instance.identity.oraclecloud.com/oauth2/v1/token",
-                        "base_url": "https://mycompany-oic.integration.ocp.oraclecloud.com",
-                    }
+                        "oauth_token_url": (c.TapOracleOic.SCHEMA_EXAMPLE_IDCS_URL),
+                        "base_url": c.TapOracleOic.SCHEMA_EXAMPLE_OIC_URL,
+                    },
                 ],
-            }
+            },
         )
     )
 
     oauth_client_id: Annotated[
-        str, u.Field(..., description="OAuth2 client ID for OIC API")
+        str, u.Field(..., description="OAuth2 client ID for OIC API"),
     ]
     oauth_client_secret: Annotated[
-        str, u.Field(..., description="OAuth2 client secret")
+        str, u.Field(..., description="OAuth2 client secret"),
     ]
     oauth_token_url: Annotated[
-        str, u.Field(..., description="IDCS OAuth2 token endpoint URL")
+        str, u.Field(..., description="IDCS OAuth2 token endpoint URL"),
     ]
     oauth_client_aud: Annotated[
-        str, u.Field(..., description="OAuth2 audience parameter")
+        str, u.Field(..., description="OAuth2 audience parameter"),
     ]
     base_url: Annotated[str, u.Field(..., description="OIC instance base URL")]
 
     # Optional authentication settings
     token_expiry_buffer: Annotated[
-        int, u.Field(description="Token refresh buffer in seconds")
+        int, u.Field(description="Token refresh buffer in seconds"),
     ] = 300
     max_retry_attempts: Annotated[
-        int, u.Field(description="Maximum authentication retry attempts")
+        int, u.Field(description="Maximum authentication retry attempts"),
     ] = 3
     timeout_seconds: Annotated[int, u.Field(description="Authentication timeout")] = 30
 
-    @u.computed_field()
+    @u.computed_field
     @property
     def auth_config_summary(self) -> t.TapOracleOic.SectionedSummary:
         """OAuth2 authentication configuration summary."""
@@ -82,7 +83,15 @@ class OicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
 
     @u.model_validator(mode="after")
     def validate_auth_config(self) -> Self:
-        """Validate OAuth2 authentication configuration."""
+        """Validate OAuth2 authentication configuration.
+
+        Returns:
+            The resulting ``Self``.
+
+        Raises:
+            ValueError: If OAuth token URL must use HTTPS; or if OIC base URL must use
+                HTTPS; or if Token expiry buffer must be at least 60 seconds.
+        """
         if not self.oauth_token_url.startswith("https://"):
             msg = "OAuth token URL must use HTTPS"
             raise ValueError(msg)
@@ -95,4 +104,4 @@ class OicAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
         return self
 
 
-__all__: list[str] = ["OicAuthenticationConfig"]
+__all__: list[str] = ["FlextTapOracleOicAuthenticationConfig"]
