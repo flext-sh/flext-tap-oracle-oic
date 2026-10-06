@@ -454,7 +454,6 @@ runtime-evaluated-base-classes = [
   "flext_meltano.FlextMeltanoModels.ArbitraryTypesModel",
   "flext_meltano.FlextMeltanoModels.BaseModel",
   "flext_meltano.FlextMeltanoModels.Entity",
-  "flext_meltano.m.BaseModel",
   "flext_meltano.services.abstractions.FlextMeltanoAbstractions",
   "flext_meltano.services.consumer_bases.tap_service_base.FlextMeltanoTapServiceBase",
   "flext_tap_oracle_oic.FlextTapOracleOicSettings",

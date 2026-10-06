@@ -51,13 +51,12 @@ if TYPE_CHECKING:
         FlextTapOracleOicStreamConfiguration,
     )
     from flext_tap_oracle_oic._models.streams import (
-        ALL_STREAMS,
+        FlextTapOracleOicFlextModelsStreams,
         FlextTapOracleOicModelsStreams,
     )
 
 
 __all__: tuple[str, ...] = (
-    "ALL_STREAMS",
     "FlextTapOracleOicActivityRecord",
     "FlextTapOracleOicAgentEntity",
     "FlextTapOracleOicApiResponse",
@@ -67,6 +66,7 @@ __all__: tuple[str, ...] = (
     "FlextTapOracleOicEnvelope",
     "FlextTapOracleOicErrorContext",
     "FlextTapOracleOicExecutionSummary",
+    "FlextTapOracleOicFlextModelsStreams",
     "FlextTapOracleOicIntegration",
     "FlextTapOracleOicIntegrationEntity",
     "FlextTapOracleOicLookup",
@@ -84,7 +84,6 @@ install_lazy_exports(
     __name__,
     globals(),
     MappingProxyType({
-        "ALL_STREAMS": ".streams",
         "FlextTapOracleOicActivityRecord": "._activity",
         "FlextTapOracleOicAgentEntity": "._agent",
         "FlextTapOracleOicApiResponse": "._api_response",
@@ -94,6 +93,7 @@ install_lazy_exports(
         "FlextTapOracleOicEnvelope": "._envelope",
         "FlextTapOracleOicErrorContext": "._error_context",
         "FlextTapOracleOicExecutionSummary": "._oic_execution_summary",
+        "FlextTapOracleOicFlextModelsStreams": ".streams",
         "FlextTapOracleOicIntegration": "._oic_integration",
         "FlextTapOracleOicIntegrationEntity": "._integration",
         "FlextTapOracleOicLookup": "._oic_lookup",
