@@ -10,7 +10,7 @@ from __future__ import annotations
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from flext_core import build_lazy_import_map, install_lazy_exports
+from flext_core import install_lazy_exports
 from flext_tap_oracle_oic.__version__ import (
     __author__,
     __author_email__,
@@ -79,27 +79,38 @@ __all__: tuple[str, ...] = (
     "x",
 )
 
-_LAZY_IMPORTS = MappingProxyType(
-    build_lazy_import_map(
-        MappingProxyType({
-            "._config": ("FlextTapOracleOicConfig", "config"),
-            "._settings": ("FlextTapOracleOicSettings", "settings"),
-            ".api": ("FlextTapOracleOicService", "tap_oracle_oic"),
-            ".authenticator": ("FlextTapOracleOicAuthenticator",),
-            ".cli": ("FlextTapOracleOicCli", "main"),
-            ".client": ("FlextTapOracleOicClient",),
-            ".constants": ("FlextTapOracleOicConstants", "c"),
-            ".models": ("FlextTapOracleOicModels", "m"),
-            ".protocols": ("FlextTapOracleOicProtocols", "p"),
-            ".tap": ("FlextTapOracleOic",),
-            ".tap_streams": ("FlextTapOracleOicPaginator",),
-            ".typings": ("FlextTapOracleOicTypes", "t"),
-            ".utilities": ("FlextTapOracleOicUtilities", "u"),
-            "flext_meltano": ("d", "e", "h", "r", "s", "x"),
-        }),
-        alias_groups=MappingProxyType({}),
-        sort_keys=False,
-    ),
+install_lazy_exports(
+    __name__,
+    globals(),
+    MappingProxyType({
+        "FlextTapOracleOic": ".tap",
+        "FlextTapOracleOicAuthenticator": ".authenticator",
+        "FlextTapOracleOicCli": ".cli",
+        "FlextTapOracleOicClient": ".client",
+        "FlextTapOracleOicConfig": "._config",
+        "FlextTapOracleOicConstants": ".constants",
+        "FlextTapOracleOicModels": ".models",
+        "FlextTapOracleOicPaginator": ".tap_streams",
+        "FlextTapOracleOicProtocols": ".protocols",
+        "FlextTapOracleOicService": ".api",
+        "FlextTapOracleOicSettings": "._settings",
+        "FlextTapOracleOicTypes": ".typings",
+        "FlextTapOracleOicUtilities": ".utilities",
+        "c": ".constants",
+        "config": "._config",
+        "d": "flext_meltano",
+        "e": "flext_meltano",
+        "h": "flext_meltano",
+        "m": ".models",
+        "main": ".cli",
+        "p": ".protocols",
+        "r": "flext_meltano",
+        "s": "flext_meltano",
+        "settings": "._settings",
+        "t": ".typings",
+        "tap_oracle_oic": ".api",
+        "u": ".utilities",
+        "x": "flext_meltano",
+    }),
+    public_exports=__all__,
 )
-
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)

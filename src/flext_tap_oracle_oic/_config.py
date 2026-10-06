@@ -12,7 +12,9 @@ from __future__ import annotations
 
 from typing import Annotated, Self
 
-from flext_meltano import FlextMeltanoConfig, m
+from flext_meltano import FlextMeltanoConfig
+
+from flext_tap_oracle_oic import m
 
 
 class _TapOracleOicNamespace(m.BaseModel):
