@@ -114,8 +114,9 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
             """Oracle Integration Cloud resource types.
 
             DRY Pattern:
-                StrEnum is the single source of truth. Use OICResourceType.INTEGRATION.value
-                or OICResourceType.INTEGRATION directly - no base strings needed.
+                StrEnum is the single source of truth. Use
+                OICResourceType.INTEGRATION.value or OICResourceType.INTEGRATION
+                directly - no base strings needed.
             """
 
             INTEGRATION = "integration"
@@ -129,8 +130,9 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
             """Integration lifecycle status.
 
             DRY Pattern:
-                StrEnum is the single source of truth. Use IntegrationStatus.ACTIVATED.value
-                or IntegrationStatus.ACTIVATED directly - no base strings needed.
+                StrEnum is the single source of truth. Use
+                IntegrationStatus.ACTIVATED.value or IntegrationStatus.ACTIVATED
+                directly - no base strings needed.
             """
 
             CONFIGURED = "configured"

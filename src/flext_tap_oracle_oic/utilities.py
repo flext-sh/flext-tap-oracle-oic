@@ -70,7 +70,8 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
             )
             if stream_validation.failure:
                 return r[t.JsonMapping].fail(
-                    f"Streams configuration must be a dictionary: {stream_validation.error}",
+                    f"Streams configuration must be a dictionary: "
+                    f"{stream_validation.error}",
                 )
             stream_map = stream_validation.value
             for stream_name, stream_payload in stream_map.items():
@@ -99,7 +100,8 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
                     max_page_size = c.MAX_PAGE_SIZE
                     if page_size <= 0 or page_size > max_page_size:
                         return r[t.JsonMapping].fail(
-                            f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}",
+                            f"Stream '{stream_name}' page_size must be "
+                            f"between 1 and {max_page_size}",
                         )
             return r[t.JsonMapping].ok(
                 t.json_mapping_adapter().validate_python(settings),

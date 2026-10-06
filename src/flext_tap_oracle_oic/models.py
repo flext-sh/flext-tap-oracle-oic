@@ -141,7 +141,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             - Data quality validation and metrics collection
             - Rate limiting and request optimization
             - Incremental extraction with state management
-            - Support for all OIC API patterns (Design, Runtime, Monitoring, B2B, Process)
+            - Support for all OIC API patterns (Design, Runtime, Monitoring,
+              B2B, Process)
             """
 
             model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
@@ -457,7 +458,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
                 self,
                 data: t.JsonMapping | t.JsonList,
             ) -> bool:
-                """Check if empty result is expected/normal based on OIC response metadata.
+                """Check if empty result is expected per OIC response metadata.
 
                 Returns:
                     The resulting ``bool``.

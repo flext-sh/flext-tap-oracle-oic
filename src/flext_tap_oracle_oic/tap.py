@@ -39,8 +39,8 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             "oauth_client_secret": {
                 "type": "string",
                 "description": "OAuth2 client secret",
-                # Singer JSON-schema secret marker, not a credential; operator-authorized
-                # false positive 2026-09-23 (bead flext-tdtyq).
+                # Singer JSON-schema secret marker, not a credential;
+                # operator-authorized false positive 2026-09-23 (bead flext-tdtyq).
                 "secret": True,  # nosec B105
             },
             "oauth_token_url": {"type": "string", "description": "OAuth2 token URL"},

@@ -10,7 +10,8 @@ integration through flext-meltano.
 Usage:
  python -m flext_tap_oracle_oic --config settings.json --discover
  python -m flext_tap_oracle_oic --config settings.json --catalog catalog.json
- python -m flext_tap_oracle_oic --config settings.json --catalog catalog.json --state state.json
+ python -m flext_tap_oracle_oic --config settings.json --catalog catalog.json \
+ --state state.json
 
 Architecture:
  - Standard Singer TAP protocol (--discover, --catalog, --state)

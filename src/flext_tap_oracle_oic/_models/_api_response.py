@@ -23,7 +23,9 @@ class FlextTapOracleOicApiResponse(FlextMeltanoModels.Entity):
     model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
         FlextMeltanoModels.ConfigDict(
             json_schema_extra={
-                "description": "Oracle OIC API response with pagination and error handling",
+                "description": (
+                    "Oracle OIC API response with pagination and error handling"
+                ),
                 "examples": [
                     {
                         "success": True,
