@@ -11,10 +11,10 @@ from typing import TYPE_CHECKING
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 
 from flext_tap_oracle_oic import c, p, r, t
-from flext_tap_oracle_oic.authenticator import FlextTapOracleOicAuthenticator
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import FlextTapOracleOicSettings
+    from flext_tap_oracle_oic.authenticator import FlextTapOracleOicAuthenticator
 
 
 class FlextTapOracleOicClient:

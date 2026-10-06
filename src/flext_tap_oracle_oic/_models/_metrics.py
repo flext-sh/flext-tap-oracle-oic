@@ -23,7 +23,9 @@ class FlextTapOracleOicMetricsRecord(FlextMeltanoModels.Entity):
     model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
         FlextMeltanoModels.ConfigDict(
             json_schema_extra={
-                "description": "Oracle OIC performance metrics with resource monitoring",
+                "description": (
+                    "Oracle OIC performance metrics with resource monitoring"
+                ),
                 "examples": [
                     {
                         "metric_id": "METRIC_20230101_001",

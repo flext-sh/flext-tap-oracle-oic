@@ -22,7 +22,7 @@ from flext_tap_oracle_oic import (
     t,
     u,
 )
-from flext_tap_oracle_oic._models.streams import ALL_STREAMS
+from flext_tap_oracle_oic._models.streams import FlextTapOracleOicFlextModelsStreams
 
 logger = u.fetch_logger(__name__)
 
@@ -39,8 +39,8 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             "oauth_client_secret": {
                 "type": "string",
                 "description": "OAuth2 client secret",
-                # Singer JSON-schema secret marker, not a credential; operator-authorized
-                # false positive 2026-09-23 (bead flext-tdtyq).
+                # Singer JSON-schema secret marker, not a credential;
+                # operator-authorized false positive 2026-09-23 (bead flext-tdtyq).
                 "secret": True,  # nosec B105
             },
             "oauth_token_url": {"type": "string", "description": "OAuth2 token URL"},
@@ -124,9 +124,11 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         if self._tap_config.get("include_infrastructure", False):
             stream_names.extend(c.TapOracleOic.INFRASTRUCTURE_STREAMS)
         streams = [
-            ALL_STREAMS[stream_name].model_validate({"settings": self._tap_config})
+            FlextTapOracleOicFlextModelsStreams.ALL_STREAMS[
+                stream_name
+            ].model_validate({"settings": self._tap_config})
             for stream_name in stream_names
-            if stream_name in ALL_STREAMS
+            if stream_name in FlextTapOracleOicFlextModelsStreams.ALL_STREAMS
         ]
         logger.info("Discovered %s streams from Oracle OIC", len(streams))
         return streams
