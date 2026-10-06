@@ -76,7 +76,7 @@ class FlextTapOracleOicModelsStreams:
         default_sort: ClassVar[str | None] = "lastUpdated:desc"
         default_expand: ClassVar[str] = "connections,endpoints"
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            FlextTapOracleOicModelsStreams._properties_to_dict(
+            _properties_to_dict(
                 m.Meltano.SingerPropertiesList(
                     m.Meltano.SingerProperty(
                         "id",
@@ -113,7 +113,7 @@ class FlextTapOracleOicModelsStreams:
                         m.Meltano.SingerStringType(),
                         description="Integration style",
                     ),
-                    *FlextTapOracleOicModelsStreams._oic_common_properties(),
+                    *_oic_common_properties(),
                     m.Meltano.SingerProperty(
                         "connections",
                         m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
@@ -178,7 +178,7 @@ class FlextTapOracleOicModelsStreams:
         requires_design_api: ClassVar[bool] = True
         default_sort: ClassVar[str | None] = "name:asc"
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            FlextTapOracleOicModelsStreams._properties_to_dict(
+            _properties_to_dict(
                 m.Meltano.SingerPropertiesList(
                     m.Meltano.SingerProperty(
                         "id",
@@ -215,7 +215,7 @@ class FlextTapOracleOicModelsStreams:
                         m.Meltano.SingerStringType(),
                         description="Connection status",
                     ),
-                    *FlextTapOracleOicModelsStreams._oic_common_properties(),
+                    *_oic_common_properties(),
                     m.Meltano.SingerProperty(
                         "connectionUrl",
                         m.Meltano.SingerStringType(),
@@ -269,7 +269,7 @@ class FlextTapOracleOicModelsStreams:
         api_category: ClassVar[str] = "core"
         default_sort: ClassVar[str | None] = "lastUpdated:desc"
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            FlextTapOracleOicModelsStreams._properties_to_dict(
+            _properties_to_dict(
                 m.Meltano.SingerPropertiesList(
                     m.Meltano.SingerProperty(
                         "id",
@@ -296,7 +296,7 @@ class FlextTapOracleOicModelsStreams:
                         m.Meltano.SingerStringType(),
                         description="Package status",
                     ),
-                    *FlextTapOracleOicModelsStreams._oic_common_properties(),
+                    *_oic_common_properties(),
                     m.Meltano.SingerProperty(
                         "integrations",
                         m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
@@ -334,7 +334,7 @@ class FlextTapOracleOicModelsStreams:
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "core"
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            FlextTapOracleOicModelsStreams._properties_to_dict(
+            _properties_to_dict(
                 m.Meltano.SingerPropertiesList(
                     m.Meltano.SingerProperty(
                         "name",
@@ -356,7 +356,7 @@ class FlextTapOracleOicModelsStreams:
                         m.Meltano.SingerStringType(),
                         description="Lookup status",
                     ),
-                    *FlextTapOracleOicModelsStreams._oic_common_properties(),
+                    *_oic_common_properties(),
                     m.Meltano.SingerProperty(
                         "valueCount",
                         m.Meltano.SingerIntegerType(),
@@ -394,7 +394,7 @@ class FlextTapOracleOicModelsStreams:
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "infrastructure"
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            FlextTapOracleOicModelsStreams._properties_to_dict(
+            _properties_to_dict(
                 m.Meltano.SingerPropertiesList(
                     m.Meltano.SingerProperty(
                         "id",
@@ -421,7 +421,7 @@ class FlextTapOracleOicModelsStreams:
                         m.Meltano.SingerStringType(),
                         description="Library status",
                     ),
-                    *FlextTapOracleOicModelsStreams._oic_common_properties(),
+                    *_oic_common_properties(),
                     m.Meltano.SingerProperty(
                         "version",
                         m.Meltano.SingerStringType(),
@@ -459,7 +459,7 @@ class FlextTapOracleOicModelsStreams:
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "security"
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            FlextTapOracleOicModelsStreams._properties_to_dict(
+            _properties_to_dict(
                 m.Meltano.SingerPropertiesList(
                     m.Meltano.SingerProperty(
                         "name",
@@ -543,7 +543,7 @@ class FlextTapOracleOicModelsStreams:
         replication_key: str | None = None
         api_category: ClassVar[str] = "infrastructure"
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            FlextTapOracleOicModelsStreams._properties_to_dict(
+            _properties_to_dict(
                 m.Meltano.SingerPropertiesList(
                     m.Meltano.SingerProperty(
                         "id",
@@ -623,7 +623,7 @@ class FlextTapOracleOicModelsStreams:
         api_category: ClassVar[str] = "extended"
         requires_design_api: ClassVar[bool] = True
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            FlextTapOracleOicModelsStreams._properties_to_dict(
+            _properties_to_dict(
                 m.Meltano.SingerPropertiesList(
                     m.Meltano.SingerProperty(
                         "id",
@@ -645,7 +645,7 @@ class FlextTapOracleOicModelsStreams:
                         m.Meltano.SingerStringType(),
                         description="Project status",
                     ),
-                    *FlextTapOracleOicModelsStreams._oic_common_properties(),
+                    *_oic_common_properties(),
                     m.Meltano.SingerProperty(
                         "folders",
                         m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
@@ -684,7 +684,7 @@ class FlextTapOracleOicModelsStreams:
         api_category: ClassVar[str] = "monitoring"
         requires_monitoring_api: ClassVar[bool] = True
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            FlextTapOracleOicModelsStreams._properties_to_dict(
+            _properties_to_dict(
                 m.Meltano.SingerPropertiesList(
                     m.Meltano.SingerProperty(
                         "instanceId",
@@ -759,7 +759,7 @@ class FlextTapOracleOicModelsStreams:
         api_category: ClassVar[str] = "monitoring"
         requires_monitoring_api: ClassVar[bool] = True
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            FlextTapOracleOicModelsStreams._properties_to_dict(
+            _properties_to_dict(
                 m.Meltano.SingerPropertiesList(
                     m.Meltano.SingerProperty(
                         "metricId",

@@ -14,8 +14,10 @@ from typing import Annotated, Self
 
 from flext_meltano import FlextMeltanoConfig
 
-import flext_tap_oracle_oic._models._tap_oracle_oic_namespace
 from flext_tap_oracle_oic import m
+from flext_tap_oracle_oic._models._tap_oracle_oic_namespace import (
+    FlextTapOracleOicModelsTapOracleOicNamespace,
+)
 
 
 class FlextTapOracleOicConfig(FlextMeltanoConfig):
@@ -40,11 +42,11 @@ class FlextTapOracleOicConfig(FlextMeltanoConfig):
     __hash__ = object.__hash__
 
     TapOracleOic: Annotated[
-        flext_tap_oracle_oic._models._tap_oracle_oic_namespace._TapOracleOicNamespace,
+        FlextTapOracleOicModelsTapOracleOicNamespace,
         m.Field(
             description="Open namespace exposing ``config/*.yaml`` under ``TapOracleOic``.",
         ),
-    ] = flext_tap_oracle_oic._models._tap_oracle_oic_namespace._TapOracleOicNamespace()
+    ] = FlextTapOracleOicModelsTapOracleOicNamespace()
 
 
 config: FlextTapOracleOicConfig = FlextTapOracleOicConfig.fetch_global()
