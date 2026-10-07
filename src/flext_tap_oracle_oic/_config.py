@@ -1,4 +1,4 @@
-"""FlextTapOracleOicConfig — frozen config singleton (ADR-005 §7).
+"""FlextTapOracleOicConfig — frozen config singleton for flext-tap-oracle-oic (ADR-005 §7).
 
 Model-less: business rules live in ``config/*.yaml`` under the ``TapOracleOic:`` key and
 are exposed through the open ``config.TapOracleOic`` namespace (``extra="allow"``), with
@@ -15,12 +15,9 @@ from typing import Annotated, Self
 from flext_meltano import FlextMeltanoConfig
 
 from flext_tap_oracle_oic import m
-
-
-class _TapOracleOicNamespace(m.BaseModel):
-    """Open, frozen namespace exposing every ``config/*.yaml`` domain model-less."""
-
-    model_config = m.ConfigDict(extra="allow", frozen=True)
+from flext_tap_oracle_oic._models._tap_oracle_oic_namespace import (
+    FlextTapOracleOicModelsTapOracleOicNamespace,
+)
 
 
 class FlextTapOracleOicConfig(FlextMeltanoConfig):
@@ -45,16 +42,14 @@ class FlextTapOracleOicConfig(FlextMeltanoConfig):
     __hash__ = object.__hash__
 
     TapOracleOic: Annotated[
-        _TapOracleOicNamespace,
+        FlextTapOracleOicModelsTapOracleOicNamespace,
         m.Field(
-            description=(
-                "Open namespace exposing ``config/*.yaml`` under ``TapOracleOic``."
-            ),
+            description="Open namespace exposing ``config/*.yaml`` under ``TapOracleOic``.",
         ),
-    ] = _TapOracleOicNamespace()
+    ] = FlextTapOracleOicModelsTapOracleOicNamespace()
 
 
 config: FlextTapOracleOicConfig = FlextTapOracleOicConfig.fetch_global()
-"""Pre-instantiated frozen config — ``from flext_tap_oracle_oic import config``."""
+"""Pre-instantiated frozen config singleton — ``from flext_tap_oracle_oic import config``."""
 
 __all__: list[str] = ["FlextTapOracleOicConfig", "config"]
