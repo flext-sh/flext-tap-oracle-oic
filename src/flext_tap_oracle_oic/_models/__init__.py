@@ -10,7 +10,7 @@ from __future__ import annotations
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from flext_core import build_lazy_import_map, install_lazy_exports
+from flext_core import install_lazy_exports
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic._models._activity import FlextTapOracleOicActivityRecord
@@ -51,13 +51,12 @@ if TYPE_CHECKING:
         FlextTapOracleOicStreamConfiguration,
     )
     from flext_tap_oracle_oic._models.streams import (
-        ALL_STREAMS,
+        FlextTapOracleOicFlextModelsStreams,
         FlextTapOracleOicModelsStreams,
     )
 
 
 __all__: tuple[str, ...] = (
-    "ALL_STREAMS",
     "FlextTapOracleOicActivityRecord",
     "FlextTapOracleOicAgentEntity",
     "FlextTapOracleOicApiResponse",
@@ -67,6 +66,7 @@ __all__: tuple[str, ...] = (
     "FlextTapOracleOicEnvelope",
     "FlextTapOracleOicErrorContext",
     "FlextTapOracleOicExecutionSummary",
+    "FlextTapOracleOicFlextModelsStreams",
     "FlextTapOracleOicIntegration",
     "FlextTapOracleOicIntegrationEntity",
     "FlextTapOracleOicLookup",
@@ -80,33 +80,31 @@ __all__: tuple[str, ...] = (
     "FlextTapOracleOicStreamConfiguration",
 )
 
-_LAZY_IMPORTS = MappingProxyType(
-    build_lazy_import_map(
-        MappingProxyType({
-            "._activity": ("FlextTapOracleOicActivityRecord",),
-            "._agent": ("FlextTapOracleOicAgentEntity",),
-            "._api_response": ("FlextTapOracleOicApiResponse",),
-            "._auth_config": ("FlextTapOracleOicAuthenticationConfig",),
-            "._connection": ("FlextTapOracleOicConnectionEntity",),
-            "._envelope": ("FlextTapOracleOicEnvelope",),
-            "._error_context": ("FlextTapOracleOicErrorContext",),
-            "._helpers": ("FlextTapOracleOicModelsHelpers",),
-            "._integration": ("FlextTapOracleOicIntegrationEntity",),
-            "._metrics": ("FlextTapOracleOicMetricsRecord",),
-            "._oic_connection": ("FlextTapOracleOicConnection",),
-            "._oic_execution_summary": ("FlextTapOracleOicExecutionSummary",),
-            "._oic_integration": ("FlextTapOracleOicIntegration",),
-            "._oic_lookup": ("FlextTapOracleOicLookup",),
-            "._oic_monitoring": ("FlextTapOracleOicMonitoringRecord",),
-            "._oic_project": ("FlextTapOracleOicProject",),
-            "._oic_resource_metadata": ("FlextTapOracleOicResourceMetadata",),
-            "._package": ("FlextTapOracleOicPackageEntity",),
-            "._stream_config": ("FlextTapOracleOicStreamConfiguration",),
-            ".streams": ("ALL_STREAMS", "FlextTapOracleOicModelsStreams"),
-        }),
-        alias_groups=MappingProxyType({}),
-        sort_keys=False,
-    ),
+install_lazy_exports(
+    __name__,
+    globals(),
+    MappingProxyType({
+        "FlextTapOracleOicActivityRecord": "._activity",
+        "FlextTapOracleOicAgentEntity": "._agent",
+        "FlextTapOracleOicApiResponse": "._api_response",
+        "FlextTapOracleOicAuthenticationConfig": "._auth_config",
+        "FlextTapOracleOicConnection": "._oic_connection",
+        "FlextTapOracleOicConnectionEntity": "._connection",
+        "FlextTapOracleOicEnvelope": "._envelope",
+        "FlextTapOracleOicErrorContext": "._error_context",
+        "FlextTapOracleOicExecutionSummary": "._oic_execution_summary",
+        "FlextTapOracleOicFlextModelsStreams": ".streams",
+        "FlextTapOracleOicIntegration": "._oic_integration",
+        "FlextTapOracleOicIntegrationEntity": "._integration",
+        "FlextTapOracleOicLookup": "._oic_lookup",
+        "FlextTapOracleOicMetricsRecord": "._metrics",
+        "FlextTapOracleOicModelsHelpers": "._helpers",
+        "FlextTapOracleOicModelsStreams": ".streams",
+        "FlextTapOracleOicMonitoringRecord": "._oic_monitoring",
+        "FlextTapOracleOicPackageEntity": "._package",
+        "FlextTapOracleOicProject": "._oic_project",
+        "FlextTapOracleOicResourceMetadata": "._oic_resource_metadata",
+        "FlextTapOracleOicStreamConfiguration": "._stream_config",
+    }),
+    public_exports=__all__,
 )
-
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)
