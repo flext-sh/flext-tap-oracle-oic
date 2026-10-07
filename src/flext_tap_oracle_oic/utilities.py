@@ -15,6 +15,46 @@ from flext_oracle_oic import FlextOracleOicUtilities
 from flext_tap_oracle_oic import c, p, r, t
 
 
+def _validate_single_stream(
+    stream_name: str,
+    stream_payload: object,
+) -> p.Result[None]:
+    """Validate one stream entry of the tap configuration.
+
+    Returns:
+        The resulting ``p.Result[None]``.
+    """
+    config_validation = u.validate_value(
+        t.strict_json_mapping_adapter(),
+        stream_payload,
+    )
+    if config_validation.failure:
+        return r[None].fail(
+            f"Stream '{stream_name}' configuration must be a dictionary: "
+            f"{config_validation.error}",
+        )
+    stream_config = config_validation.value
+    if "selected" not in stream_config:
+        return r[None].fail(
+            f"Stream '{stream_name}' must have 'selected' field",
+        )
+    if "page_size" not in stream_config:
+        return r[None].ok(None)
+    page_size_validation = u.validate_value(
+        t.int_adapter(),
+        stream_config["page_size"],
+    )
+    if page_size_validation.failure:
+        return r[None].from_failure(page_size_validation)
+    page_size = page_size_validation.value
+    max_page_size = c.MAX_PAGE_SIZE
+    if page_size <= 0 or page_size > max_page_size:
+        return r[None].fail(
+            f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}",
+        )
+    return r[None].ok(None)
+
+
 class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities):
     """Single unified utilities class for Singer tap Oracle OIC operations.
 
@@ -73,36 +113,10 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
                     f"Streams configuration must be a dictionary: "
                     f"{stream_validation.error}",
                 )
-            stream_map = stream_validation.value
-            for stream_name, stream_payload in stream_map.items():
-                config_validation = u.validate_value(
-                    t.strict_json_mapping_adapter(),
-                    stream_payload,
-                )
-                if config_validation.failure:
-                    return r[t.JsonMapping].fail(
-                        f"Stream '{stream_name}' configuration must be a dictionary: "
-                        f"{config_validation.error}",
-                    )
-                stream_config = config_validation.value
-                if "selected" not in stream_config:
-                    return r[t.JsonMapping].fail(
-                        f"Stream '{stream_name}' must have 'selected' field",
-                    )
-                if "page_size" in stream_config:
-                    page_size_validation = u.validate_value(
-                        t.int_adapter(),
-                        stream_config["page_size"],
-                    )
-                    if page_size_validation.failure:
-                        return r[t.JsonMapping].from_failure(page_size_validation)
-                    page_size = page_size_validation.value
-                    max_page_size = c.MAX_PAGE_SIZE
-                    if page_size <= 0 or page_size > max_page_size:
-                        return r[t.JsonMapping].fail(
-                            f"Stream '{stream_name}' page_size must be "
-                            f"between 1 and {max_page_size}",
-                        )
+            for stream_name, stream_payload in stream_validation.value.items():
+                single = _validate_single_stream(stream_name, stream_payload)
+                if single.failure:
+                    return r[t.JsonMapping].fail(single.error or "invalid stream")
             return r[t.JsonMapping].ok(
                 t.json_mapping_adapter().validate_python(settings),
             )
