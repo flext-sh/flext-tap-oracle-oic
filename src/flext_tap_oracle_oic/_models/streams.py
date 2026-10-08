@@ -812,19 +812,5 @@ class FlextTapOracleOicFlextModelsStreams:
                 ),
             )
 
-    # Stream registry - maps stream names to their classes
-    ALL_STREAMS: ClassVar[t.MappingKV[str, type[m.TapOracleOic.OICBaseStream]]] = {
-        "integrations": FlextTapOracleOicModelsStreams.IntegrationsStream,
-        "connections": FlextTapOracleOicModelsStreams.ConnectionsStream,
-        "packages": FlextTapOracleOicModelsStreams.PackagesStream,
-        "lookups": FlextTapOracleOicModelsStreams.LookupsStream,
-        "libraries": FlextTapOracleOicModelsStreams.LibrariesStream,
-        "certificates": FlextTapOracleOicModelsStreams.CertificatesStream,
-        "adapters": FlextTapOracleOicModelsStreams.AdaptersStream,
-        "projects": FlextTapOracleOicModelsStreams.ProjectsStream,
-        "executions": FlextTapOracleOicModelsStreams.ExecutionsStream,
-        "metrics": FlextTapOracleOicModelsStreams.MetricsStream,
-    }
-
 
 __all__: list[str] = ["FlextTapOracleOicFlextModelsStreams"]
