@@ -42,5 +42,6 @@ class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
 
 
 tap_oracle_oic: FlextTapOracleOicService = FlextTapOracleOicService.fetch_global()
+"""Shared ``FlextTapOracleOicService`` instance for the Oracle OIC tap."""
 
 __all__: list[str] = ["FlextTapOracleOicService", "tap_oracle_oic"]
