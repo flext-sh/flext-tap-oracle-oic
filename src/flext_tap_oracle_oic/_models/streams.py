@@ -15,50 +15,50 @@ from typing import ClassVar
 from flext_tap_oracle_oic import m, p, t
 
 
+def _properties_to_dict(
+    properties: p.TapOracleOic.PropertiesListLike,
+) -> t.JsonMapping:
+    return t.json_mapping_adapter().validate_python(properties.to_dict())
+
+
+def _oic_common_properties() -> tuple[m.Meltano.SingerProperty[str], ...]:
+    """Return the audit trail properties shared by every OIC stream.
+
+    ``created``, ``lastUpdated``, ``createdBy`` and ``lastUpdatedBy`` carry the
+    same SingerProperty definition across all streams, so they are factored out
+    here and spread via ``*_oic_common_properties()`` to eliminate the
+    per-stream jscpd clone.
+    """
+    return (
+        m.Meltano.SingerProperty(
+            "created",
+            m.Meltano.SingerDateTimeType(),
+            description="Creation timestamp",
+        ),
+        m.Meltano.SingerProperty(
+            "lastUpdated",
+            m.Meltano.SingerDateTimeType(),
+            description="Last update timestamp",
+        ),
+        m.Meltano.SingerProperty(
+            "createdBy",
+            m.Meltano.SingerStringType(),
+            description="Created by user",
+        ),
+        m.Meltano.SingerProperty(
+            "lastUpdatedBy",
+            m.Meltano.SingerStringType(),
+            description="Last updated by user",
+        ),
+    )
+
+
 class FlextTapOracleOicModelsStreams:
     """Stream model definitions for Oracle Integration Cloud.
 
     Contains all OIC stream classes as inner classes, wired into
     m.TapOracleOic via MRO composition.
     """
-
-    @staticmethod
-    def _properties_to_dict(
-        properties: p.TapOracleOic.PropertiesListLike,
-    ) -> t.JsonMapping:
-        return t.json_mapping_adapter().validate_python(properties.to_dict())
-
-    @staticmethod
-    def _oic_common_properties() -> tuple[m.Meltano.SingerProperty[str], ...]:
-        """Return the audit trail properties shared by every OIC stream.
-
-        ``created``, ``lastUpdated``, ``createdBy`` and ``lastUpdatedBy`` carry the
-        same SingerProperty definition across all streams, so they are factored out
-        here and spread via ``*_oic_common_properties()`` to eliminate the
-        per-stream jscpd clone.
-        """
-        return (
-            m.Meltano.SingerProperty(
-                "created",
-                m.Meltano.SingerDateTimeType(),
-                description="Creation timestamp",
-            ),
-            m.Meltano.SingerProperty(
-                "lastUpdated",
-                m.Meltano.SingerDateTimeType(),
-                description="Last update timestamp",
-            ),
-            m.Meltano.SingerProperty(
-                "createdBy",
-                m.Meltano.SingerStringType(),
-                description="Created by user",
-            ),
-            m.Meltano.SingerProperty(
-                "lastUpdatedBy",
-                m.Meltano.SingerStringType(),
-                description="Last updated by user",
-            ),
-        )
 
     class IntegrationsStream(m.TapOracleOic.OICBaseStream):
         """Oracle Integration Cloud Integrations Stream.
