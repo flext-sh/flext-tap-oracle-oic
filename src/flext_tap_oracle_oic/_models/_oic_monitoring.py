@@ -55,7 +55,7 @@ class FlextTapOracleOicMonitoringRecord(m):
     business_identifiers: Annotated[
         t.MappingKV[str, t.JsonMapping],
         u.Field(description="Business tracking identifiers"),
-    ] = u.Field(default_factory=dict)
+    ] = u.Field(default_factory=dict[str, t.JsonMapping])
 
     @property
     def duration_seconds(self) -> float | None:

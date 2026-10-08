@@ -35,7 +35,7 @@ class FlextTapOracleOicConnection(m):
     connection_properties: Annotated[
         t.MappingKV[str, t.JsonMapping],
         u.Field(description="Connection properties"),
-    ] = u.Field(default_factory=dict)
+    ] = u.Field(default_factory=dict[str, t.JsonMapping])
     security_policy: Annotated[
         str | None,
         u.Field(None, description="Security policy name"),

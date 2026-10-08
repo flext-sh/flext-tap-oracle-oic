@@ -29,7 +29,7 @@ class FlextTapOracleOicProject(m):
     integration_ids: Annotated[
         MutableSequence[str],
         u.Field(description="Integration IDs in project"),
-    ] = u.Field(default_factory=list)
+    ] = u.Field(default_factory=list[str])
     connection_ids: Annotated[
         t.StrSequence,
         u.Field(description="Connection IDs in project"),
