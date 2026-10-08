@@ -123,12 +123,20 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         stream_names = list(c.TapOracleOic.CORE_STREAMS)
         if self._tap_config.get("include_infrastructure", False):
             stream_names.extend(c.TapOracleOic.INFRASTRUCTURE_STREAMS)
+        # The registry derives from the declaring namespace: every stream class
+        # owns its ``name`` default, so no hand-maintained name→class table exists.
+        registry = {
+            member.model_fields["name"].default: member
+            for member in vars(
+                FlextTapOracleOicFlextModelsStreams.FlextTapOracleOicModelsStreams,
+            ).values()
+            if isinstance(member, type)
+            and issubclass(member, m.TapOracleOic.OICBaseStream)
+        }
         streams = [
-            FlextTapOracleOicFlextModelsStreams.ALL_STREAMS[
-                stream_name
-            ].model_validate({"settings": self._tap_config})
+            registry[stream_name].model_validate({"settings": self._tap_config})
             for stream_name in stream_names
-            if stream_name in FlextTapOracleOicFlextModelsStreams.ALL_STREAMS
+            if stream_name in registry
         ]
         logger.info("Discovered %s streams from Oracle OIC", len(streams))
         return streams

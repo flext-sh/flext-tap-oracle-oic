@@ -15,46 +15,6 @@ from flext_oracle_oic import FlextOracleOicUtilities
 from flext_tap_oracle_oic import c, p, r, t
 
 
-def _validate_single_stream(
-    stream_name: str,
-    stream_payload: object,
-) -> p.Result[None]:
-    """Validate one stream entry of the tap configuration.
-
-    Returns:
-        The resulting ``p.Result[None]``.
-    """
-    config_validation = u.validate_value(
-        t.strict_json_mapping_adapter(),
-        stream_payload,
-    )
-    if config_validation.failure:
-        return r[None].fail(
-            f"Stream '{stream_name}' configuration must be a dictionary: "
-            f"{config_validation.error}",
-        )
-    stream_config = config_validation.value
-    if "selected" not in stream_config:
-        return r[None].fail(
-            f"Stream '{stream_name}' must have 'selected' field",
-        )
-    if "page_size" not in stream_config:
-        return r[None].ok(None)
-    page_size_validation = u.validate_value(
-        t.int_adapter(),
-        stream_config["page_size"],
-    )
-    if page_size_validation.failure:
-        return r[None].from_failure(page_size_validation)
-    page_size = page_size_validation.value
-    max_page_size = c.MAX_PAGE_SIZE
-    if page_size <= 0 or page_size > max_page_size:
-        return r[None].fail(
-            f"Stream '{stream_name}' page_size must be between 1 and {max_page_size}",
-        )
-    return r[None].ok(None)
-
-
 class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities):
     """Single unified utilities class for Singer tap Oracle OIC operations.
 
@@ -89,6 +49,47 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
                 return r[str].fail(f"URL validation error: {e}", exception=e)
 
         @staticmethod
+        def validate_single_stream(
+            stream_name: str,
+            stream_payload: t.JsonValue,
+        ) -> p.Result[bool]:
+            """Validate one stream entry of the tap configuration.
+
+            Returns:
+                ``r[bool].ok(value=True)`` when the entry is valid, else the failure.
+            """
+            config_validation = u.validate_value(
+                t.strict_json_mapping_adapter(),
+                stream_payload,
+            )
+            if config_validation.failure:
+                return r[bool].fail(
+                    f"Stream '{stream_name}' configuration must be a dictionary: "
+                    f"{config_validation.error}",
+                )
+            stream_config = config_validation.value
+            if "selected" not in stream_config:
+                return r[bool].fail(
+                    f"Stream '{stream_name}' must have 'selected' field",
+                )
+            if "page_size" not in stream_config:
+                return r[bool].ok(value=True)
+            page_size_validation = u.validate_value(
+                t.int_adapter(),
+                stream_config["page_size"],
+            )
+            if page_size_validation.failure:
+                return r[bool].fail(page_size_validation.error or "invalid page_size")
+            page_size = page_size_validation.value
+            max_page_size = c.MAX_PAGE_SIZE
+            if page_size <= 0 or page_size > max_page_size:
+                return r[bool].fail(
+                    f"Stream '{stream_name}' page_size must be between 1 and "
+                    f"{max_page_size}",
+                )
+            return r[bool].ok(value=True)
+
+        @staticmethod
         def validate_stream_config(settings: t.JsonMapping) -> p.Result[t.JsonMapping]:
             """Validate OIC tap stream configuration.
 
@@ -114,7 +115,10 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
                     f"{stream_validation.error}",
                 )
             for stream_name, stream_payload in stream_validation.value.items():
-                single = _validate_single_stream(stream_name, stream_payload)
+                single = u.TapOracleOic.validate_single_stream(
+                    stream_name,
+                    stream_payload,
+                )
                 if single.failure:
                     return r[t.JsonMapping].fail(single.error or "invalid stream")
             return r[t.JsonMapping].ok(
