@@ -807,4 +807,4 @@ class FlextTapOracleOicModelsStreams:
         return None
 
 
-__all__: list[str] = ["FlextTapOracleOicFlextModelsStreams"]
+__all__: list[str] = ["FlextTapOracleOicModelsStreams"]
