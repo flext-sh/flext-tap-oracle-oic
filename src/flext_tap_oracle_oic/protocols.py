@@ -1,10 +1,7 @@
 """Singer Oracle OIC tap protocols for FLEXT ecosystem.
 
-Of the 5 inner ``TapOracleOic.*`` Protocol classes that previously lived
-here, 3 had **zero workspace consumers** (per AGENTS.md §3.5 + STRICT YAGNI
-they were deleted). Only ``TapOracleOic.Paginator`` (consumed by
-``models.py``) and ``TapOracleOic.PropertiesListLike`` (consumed by
-``_models/streams.py``) remain.
+Only ``TapOracleOic.Paginator`` (consumed by ``models.py``) remains; every
+other inner protocol lost its last consumer and was deleted (STRICT YAGNI).
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -19,8 +16,6 @@ from flext_oracle_oic import FlextOracleOicProtocols
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels
-
-    from flext_tap_oracle_oic import t
 
 
 class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols):
@@ -40,14 +35,6 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
                 response: FlextApiModels.Api.HttpResponse,
             ) -> int | None:
                 """Fetch the next pagination token for a response."""
-                ...
-
-        @runtime_checkable
-        class PropertiesListLike(Protocol):
-            """Structural protocol for singer PropertiesList-compatible objects."""
-
-            def to_dict(self) -> t.JsonMapping:
-                """Convert properties list to dictionary representation."""
                 ...
 
 
