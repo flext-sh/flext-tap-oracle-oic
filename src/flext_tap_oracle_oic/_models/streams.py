@@ -15,14 +15,18 @@ from typing import ClassVar
 from flext_tap_oracle_oic import m, p, t
 
 
-def _properties_to_dict(properties: p.TapOracleOic.PropertiesListLike) -> t.JsonMapping:
-    """Convert a Singer properties list into a validated JSON mapping.
+class FlextTapOracleOicModelsStreams:
+    """Stream model definitions for Oracle Integration Cloud.
 
-    Returns:
-        The properties list validated as a JSON mapping.
-
+    Contains all OIC stream classes as inner classes, wired into
+    m.TapOracleOic via MRO composition.
     """
-    return t.json_mapping_adapter().validate_python(properties.to_dict())
+
+    @staticmethod
+    def _properties_to_dict(
+        properties: p.TapOracleOic.PropertiesListLike,
+    ) -> t.JsonMapping:
+        return t.json_mapping_adapter().validate_python(properties.to_dict())
 
 
 def _oic_common_properties() -> tuple[m.Meltano.SingerProperty[str], ...]:
@@ -56,19 +60,8 @@ def _oic_common_properties() -> tuple[m.Meltano.SingerProperty[str], ...]:
         ),
     )
 
-
-class FlextTapOracleOicFlextModelsStreams:
-    """Canonical namespace owner."""
-
-    class FlextTapOracleOicModelsStreams:
-        """Stream model definitions for Oracle Integration Cloud.
-
-        Contains all OIC stream classes as inner classes, wired into
-        m.TapOracleOic via MRO composition.
-        """
-
-        class IntegrationsStream(m.TapOracleOic.OICBaseStream):
-            """Oracle Integration Cloud Integrations Stream.
+    class IntegrationsStream(m.TapOracleOic.OICBaseStream):
+        """Oracle Integration Cloud Integrations Stream.
 
             Extracts complete integration metadata including configurations,
             endpoints, triggers, connections, and execution statistics.
