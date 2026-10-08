@@ -175,7 +175,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
                 return r[t.JsonMapping].from_failure(entry_result)
             catalog_entries.append(entry_result.value)
         catalog: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            m.Meltano.SingerCatalog(streams=catalog_entries).model_dump(
+            m.Meltano.SingerCatalog(streams=tuple(catalog_entries)).model_dump(
                 by_alias=True,
                 exclude_defaults=True,
                 exclude_none=True,
