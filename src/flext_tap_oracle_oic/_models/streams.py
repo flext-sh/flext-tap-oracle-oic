@@ -28,40 +28,39 @@ class FlextTapOracleOicModelsStreams:
     ) -> t.JsonMapping:
         return t.json_mapping_adapter().validate_python(properties.to_dict())
 
+    def _oic_common_properties() -> tuple[m.Meltano.SingerProperty[str], ...]:
+        """Return the audit trail properties shared by every OIC stream.
 
-def _oic_common_properties() -> tuple[m.Meltano.SingerProperty[str], ...]:
-    """Return the audit trail properties shared by every OIC stream.
+        ``created``, ``lastUpdated``, ``createdBy`` and ``lastUpdatedBy`` carry the
+        same SingerProperty definition across all streams, so they are factored out
+        here and spread via ``*_oic_common_properties()`` to eliminate the
+        per-stream jscpd clone.
+        """
+        return (
+            m.Meltano.SingerProperty(
+                "created",
+                m.Meltano.SingerDateTimeType(),
+                description="Creation timestamp",
+            ),
+            m.Meltano.SingerProperty(
+                "lastUpdated",
+                m.Meltano.SingerDateTimeType(),
+                description="Last update timestamp",
+            ),
+            m.Meltano.SingerProperty(
+                "createdBy",
+                m.Meltano.SingerStringType(),
+                description="Created by user",
+            ),
+            m.Meltano.SingerProperty(
+                "lastUpdatedBy",
+                m.Meltano.SingerStringType(),
+                description="Last updated by user",
+            ),
+        )
 
-    ``created``, ``lastUpdated``, ``createdBy`` and ``lastUpdatedBy`` carry the
-    same SingerProperty definition across all streams, so they are factored out
-    here and spread via ``*_oic_common_properties()`` to eliminate the
-    per-stream jscpd clone.
-    """
-    return (
-        m.Meltano.SingerProperty(
-            "created",
-            m.Meltano.SingerDateTimeType(),
-            description="Creation timestamp",
-        ),
-        m.Meltano.SingerProperty(
-            "lastUpdated",
-            m.Meltano.SingerDateTimeType(),
-            description="Last update timestamp",
-        ),
-        m.Meltano.SingerProperty(
-            "createdBy",
-            m.Meltano.SingerStringType(),
-            description="Created by user",
-        ),
-        m.Meltano.SingerProperty(
-            "lastUpdatedBy",
-            m.Meltano.SingerStringType(),
-            description="Last updated by user",
-        ),
-    )
-
-    class IntegrationsStream(m.TapOracleOic.OICBaseStream):
-        """Oracle Integration Cloud Integrations Stream.
+        class IntegrationsStream(m.TapOracleOic.OICBaseStream):
+            """Oracle Integration Cloud Integrations Stream.
 
             Extracts complete integration metadata including configurations,
             endpoints, triggers, connections, and execution statistics.
@@ -804,6 +803,8 @@ def _oic_common_properties() -> tuple[m.Meltano.SingerProperty[str], ...]:
                     ),
                 ),
             )
+
+        return None
 
 
 __all__: list[str] = ["FlextTapOracleOicFlextModelsStreams"]
