@@ -32,12 +32,13 @@ class TestsFlextTapOracleOicUtilities:
     @staticmethod
     def test_validate_stream_config_accepts_page_size_within_bound() -> None:
         """Test validate stream config accepts page size within bound."""
-        settings = {
-            "streams": {
-                "integrations": {"selected": True, "page_size": c.MAX_PAGE_SIZE},
-            },
-        }
-        tm.ok(u.TapOracleOic.validate_stream_config(settings))
+        tm.ok(
+            u.TapOracleOic.validate_stream_config({
+                "streams": {
+                    "integrations": {"selected": True, "page_size": c.MAX_PAGE_SIZE},
+                },
+            }),
+        )
 
     @staticmethod
     def test_validate_stream_config_rejects_invalid_streams() -> None:
