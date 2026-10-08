@@ -21,7 +21,7 @@ from flext_tap_oracle_oic import (
 from tests import u
 
 if TYPE_CHECKING:
-    from flext_tap_oracle_oic import FlextTapOracleOic, m
+    from flext_tap_oracle_oic import FlextTapOracleOic, m, t
 
 
 class TestsFlextTapOracleOic:
@@ -53,11 +53,16 @@ class TestsFlextTapOracleOic:
     ) -> None:
         """Singer consumes a token or None, never a result wrapper."""
         paginator = FlextTapOracleOicPaginator()
-        records = [
+        records: list[t.JsonValue] = [
             {"id": str(index)}
             for index in range(c.TapOracleOic.DEFAULT_PAGINATOR_PAGE_SIZE)
         ]
-        response = api_m.Api.HttpResponse(status_code=200, body={envelope_key: records})
+        body: t.JsonDict = {envelope_key: records}
+        response = api_m.Api.HttpResponse(
+            status_code=200,
+            request_id="paginator-page-1",
+            body=body,
+        )
 
         tm.that(
             paginator.fetch_next(response),
@@ -65,6 +70,7 @@ class TestsFlextTapOracleOic:
         )
         empty_response = api_m.Api.HttpResponse(
             status_code=200,
+            request_id="paginator-page-empty",
             body={envelope_key: []},
         )
         assert paginator.fetch_next(empty_response) is None
@@ -75,6 +81,7 @@ class TestsFlextTapOracleOic:
         """Malformed collection payloads cannot signal successful exhaustion."""
         response = api_m.Api.HttpResponse(
             status_code=200,
+            request_id="paginator-page-malformed",
             body={envelope_key: "not-a-collection"},
         )
 

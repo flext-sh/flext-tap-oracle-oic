@@ -40,11 +40,19 @@ class FlextTapOracleOicConfig(FlextMeltanoConfig):
         return object.__new__(cls)
 
     def __eq__(self, other: object) -> bool:
-        """Identity equality per the frozen-config singleton contract."""
+        """Identity equality per the frozen-config singleton contract.
+
+        Returns:
+            The resulting ``bool``.
+        """
         return object.__eq__(self, other)
 
     def __hash__(self) -> int:
-        """Identity hash per the frozen-config singleton contract."""
+        """Identity hash per the frozen-config singleton contract.
+
+        Returns:
+            The resulting ``int``.
+        """
         return object.__hash__(self)
 
     TapOracleOic: Annotated[
