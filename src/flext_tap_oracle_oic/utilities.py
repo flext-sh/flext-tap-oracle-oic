@@ -79,7 +79,7 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
                 stream_config["page_size"],
             )
             if page_size_validation.failure:
-                return r[bool].fail(page_size_validation.error or "invalid page_size")
+                return r[bool].from_failure(page_size_validation)
             page_size = page_size_validation.value
             max_page_size = c.MAX_PAGE_SIZE
             if page_size <= 0 or page_size > max_page_size:
@@ -120,7 +120,7 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
                     stream_payload,
                 )
                 if single.failure:
-                    return r[t.JsonMapping].fail(single.error or "invalid stream")
+                    return r[t.JsonMapping].from_failure(single)
             return r[t.JsonMapping].ok(
                 t.json_mapping_adapter().validate_python(settings),
             )
