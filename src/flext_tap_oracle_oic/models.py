@@ -8,12 +8,12 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Iterator, Mapping
-from typing import TYPE_CHECKING, Annotated, ClassVar
+from typing import Annotated, ClassVar
 
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import FlextOracleOicModels
 
-from flext_tap_oracle_oic import c, e, t, u
+from flext_tap_oracle_oic import c, e, p, t, u
 from flext_tap_oracle_oic._models._activity import (
     FlextTapOracleOicActivityRecord as _OicActivityRecord,
 )
@@ -69,9 +69,6 @@ from flext_tap_oracle_oic._models._stream_config import (
     FlextTapOracleOicStreamConfiguration as _OicStreamConfiguration,
 )
 from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator as _OicPaginator
-
-if TYPE_CHECKING:
-    from flext_tap_oracle_oic import p
 
 
 class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
@@ -161,6 +158,32 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             default_sort: ClassVar[str | None] = None
             additional_params: ClassVar[t.JsonMapping | None] = None
             primary_keys: ClassVar[t.StrSequence] = []
+            # Audit-trail properties carried by every OIC stream schema; declared
+            # once here and spread into each stream's SingerPropertiesList.
+            oic_common_properties: ClassVar[
+                tuple[FlextMeltanoModels.Meltano.SingerProperty[str], ...]
+            ] = (
+                FlextMeltanoModels.Meltano.SingerProperty(
+                    "created",
+                    FlextMeltanoModels.Meltano.SingerDateTimeType(),
+                    description="Creation timestamp",
+                ),
+                FlextMeltanoModels.Meltano.SingerProperty(
+                    "lastUpdated",
+                    FlextMeltanoModels.Meltano.SingerDateTimeType(),
+                    description="Last update timestamp",
+                ),
+                FlextMeltanoModels.Meltano.SingerProperty(
+                    "createdBy",
+                    FlextMeltanoModels.Meltano.SingerStringType(),
+                    description="Created by user",
+                ),
+                FlextMeltanoModels.Meltano.SingerProperty(
+                    "lastUpdatedBy",
+                    FlextMeltanoModels.Meltano.SingerStringType(),
+                    description="Last updated by user",
+                ),
+            )
 
             @property
             def url_base(self) -> str:

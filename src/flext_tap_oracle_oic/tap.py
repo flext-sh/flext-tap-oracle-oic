@@ -22,7 +22,7 @@ from flext_tap_oracle_oic import (
     t,
     u,
 )
-from flext_tap_oracle_oic._models.streams import FlextTapOracleOicFlextModelsStreams
+from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams
 
 logger = u.fetch_logger(__name__)
 
@@ -127,9 +127,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         # owns its ``name`` default, so no hand-maintained name→class table exists.
         registry = {
             member.model_fields["name"].default: member
-            for member in vars(
-                FlextTapOracleOicFlextModelsStreams.FlextTapOracleOicModelsStreams,
-            ).values()
+            for member in vars(FlextTapOracleOicModelsStreams).values()
             if isinstance(member, type)
             and issubclass(member, m.TapOracleOic.OICBaseStream)
         }
