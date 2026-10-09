@@ -10,9 +10,34 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import ClassVar
+from typing import ClassVar, Protocol
 
 from flext_tap_oracle_oic import m, t
+
+
+class _SchemaSource(Protocol):
+    """Structural contract for Singer SDK schema carriers dumped to JSON.
+
+    The upstream ``singer_sdk`` ``to_dict`` return is unparameterized; this
+    protocol pins the fleet contract (a JSON schema mapping) at the single
+    dump site instead of leaking the partially-unknown member type.
+    """
+
+    def to_dict(self) -> t.JsonMapping:
+        """The JSON Schema dictionary describing the object."""
+        ...
+
+
+def _stream_schema(properties: _SchemaSource) -> t.JsonMapping:
+    """Dump one Singer property list into the typed stream schema contract.
+
+    Args:
+    properties: The constructed Singer SDK property list to dump.
+
+    Returns:
+        The resulting ``t.JsonMapping``.
+    """
+    return properties.to_dict()
 
 
 class FlextTapOracleOicModelsStreams:
@@ -38,89 +63,91 @@ class FlextTapOracleOicModelsStreams:
         default_sort: ClassVar[str | None] = "lastUpdated:desc"
         default_expand: ClassVar[str] = "connections,endpoints"
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            m.Meltano.SingerPropertiesList(
-                m.Meltano.SingerProperty(
-                    "id",
-                    m.Meltano.SingerStringType(),
-                    description="Integration ID",
+            _stream_schema(
+                m.Meltano.SingerPropertiesList(
+                    m.Meltano.SingerProperty(
+                        "id",
+                        m.Meltano.SingerStringType(),
+                        description="Integration ID",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "name",
+                        m.Meltano.SingerStringType(),
+                        description="Integration name",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "version",
+                        m.Meltano.SingerStringType(),
+                        description="Integration version",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "description",
+                        m.Meltano.SingerStringType(),
+                        description="Integration description",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "status",
+                        m.Meltano.SingerStringType(),
+                        description="Integration status",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "pattern",
+                        m.Meltano.SingerStringType(),
+                        description="Integration pattern",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "style",
+                        m.Meltano.SingerStringType(),
+                        description="Integration style",
+                    ),
+                    *m.TapOracleOic.OICBaseStream.oic_common_properties,
+                    m.Meltano.SingerProperty(
+                        "connections",
+                        m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
+                        description="Used connections",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "endpoints",
+                        m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
+                        description="Integration endpoints",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "trackingu.Fields",
+                        m.Meltano.SingerArrayType(m.Meltano.SingerStringType()),
+                        description="Tracking fields",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "payloadTracking",
+                        m.Meltano.SingerBooleanType(),
+                        description="Payload tracking enabled",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "tracing",
+                        m.Meltano.SingerBooleanType(),
+                        description="Tracing enabled",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "lockedBy",
+                        m.Meltano.SingerStringType(),
+                        description="Locked by user",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "lockedFlag",
+                        m.Meltano.SingerBooleanType(),
+                        description="Is locked",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "projectId",
+                        m.Meltano.SingerStringType(),
+                        description="Project ID",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "folderId",
+                        m.Meltano.SingerStringType(),
+                        description="Folder ID",
+                    ),
                 ),
-                m.Meltano.SingerProperty(
-                    "name",
-                    m.Meltano.SingerStringType(),
-                    description="Integration name",
-                ),
-                m.Meltano.SingerProperty(
-                    "version",
-                    m.Meltano.SingerStringType(),
-                    description="Integration version",
-                ),
-                m.Meltano.SingerProperty(
-                    "description",
-                    m.Meltano.SingerStringType(),
-                    description="Integration description",
-                ),
-                m.Meltano.SingerProperty(
-                    "status",
-                    m.Meltano.SingerStringType(),
-                    description="Integration status",
-                ),
-                m.Meltano.SingerProperty(
-                    "pattern",
-                    m.Meltano.SingerStringType(),
-                    description="Integration pattern",
-                ),
-                m.Meltano.SingerProperty(
-                    "style",
-                    m.Meltano.SingerStringType(),
-                    description="Integration style",
-                ),
-                *m.TapOracleOic.OICBaseStream.oic_common_properties,
-                m.Meltano.SingerProperty(
-                    "connections",
-                    m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
-                    description="Used connections",
-                ),
-                m.Meltano.SingerProperty(
-                    "endpoints",
-                    m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
-                    description="Integration endpoints",
-                ),
-                m.Meltano.SingerProperty(
-                    "trackingu.Fields",
-                    m.Meltano.SingerArrayType(m.Meltano.SingerStringType()),
-                    description="Tracking fields",
-                ),
-                m.Meltano.SingerProperty(
-                    "payloadTracking",
-                    m.Meltano.SingerBooleanType(),
-                    description="Payload tracking enabled",
-                ),
-                m.Meltano.SingerProperty(
-                    "tracing",
-                    m.Meltano.SingerBooleanType(),
-                    description="Tracing enabled",
-                ),
-                m.Meltano.SingerProperty(
-                    "lockedBy",
-                    m.Meltano.SingerStringType(),
-                    description="Locked by user",
-                ),
-                m.Meltano.SingerProperty(
-                    "lockedFlag",
-                    m.Meltano.SingerBooleanType(),
-                    description="Is locked",
-                ),
-                m.Meltano.SingerProperty(
-                    "projectId",
-                    m.Meltano.SingerStringType(),
-                    description="Project ID",
-                ),
-                m.Meltano.SingerProperty(
-                    "folderId",
-                    m.Meltano.SingerStringType(),
-                    description="Folder ID",
-                ),
-            ).to_dict(),
+            ),
         )
 
     class ConnectionsStream(m.TapOracleOic.OICBaseStream):
@@ -138,79 +165,81 @@ class FlextTapOracleOicModelsStreams:
         requires_design_api: ClassVar[bool] = True
         default_sort: ClassVar[str | None] = "name:asc"
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            m.Meltano.SingerPropertiesList(
-                m.Meltano.SingerProperty(
-                    "id",
-                    m.Meltano.SingerStringType(),
-                    description="Connection ID",
+            _stream_schema(
+                m.Meltano.SingerPropertiesList(
+                    m.Meltano.SingerProperty(
+                        "id",
+                        m.Meltano.SingerStringType(),
+                        description="Connection ID",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "name",
+                        m.Meltano.SingerStringType(),
+                        description="Connection name",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "description",
+                        m.Meltano.SingerStringType(),
+                        description="Connection description",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "adapterType",
+                        m.Meltano.SingerStringType(),
+                        description="Adapter type",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "adapterDisplayName",
+                        m.Meltano.SingerStringType(),
+                        description="Adapter display name",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "adapterVersion",
+                        m.Meltano.SingerStringType(),
+                        description="Adapter version",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "status",
+                        m.Meltano.SingerStringType(),
+                        description="Connection status",
+                    ),
+                    *m.TapOracleOic.OICBaseStream.oic_common_properties,
+                    m.Meltano.SingerProperty(
+                        "connectionUrl",
+                        m.Meltano.SingerStringType(),
+                        description="Connection URL",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "securityPolicy",
+                        m.Meltano.SingerStringType(),
+                        description="Security policy",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "connectionProperties",
+                        m.Meltano.SingerObjectType(),
+                        description="Connection properties",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "isValid",
+                        m.Meltano.SingerBooleanType(),
+                        description="Connection validity",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "usageCount",
+                        m.Meltano.SingerIntegerType(),
+                        description="Usage count",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "lockedBy",
+                        m.Meltano.SingerStringType(),
+                        description="Locked by user",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "lockedFlag",
+                        m.Meltano.SingerBooleanType(),
+                        description="Is locked",
+                    ),
                 ),
-                m.Meltano.SingerProperty(
-                    "name",
-                    m.Meltano.SingerStringType(),
-                    description="Connection name",
-                ),
-                m.Meltano.SingerProperty(
-                    "description",
-                    m.Meltano.SingerStringType(),
-                    description="Connection description",
-                ),
-                m.Meltano.SingerProperty(
-                    "adapterType",
-                    m.Meltano.SingerStringType(),
-                    description="Adapter type",
-                ),
-                m.Meltano.SingerProperty(
-                    "adapterDisplayName",
-                    m.Meltano.SingerStringType(),
-                    description="Adapter display name",
-                ),
-                m.Meltano.SingerProperty(
-                    "adapterVersion",
-                    m.Meltano.SingerStringType(),
-                    description="Adapter version",
-                ),
-                m.Meltano.SingerProperty(
-                    "status",
-                    m.Meltano.SingerStringType(),
-                    description="Connection status",
-                ),
-                *m.TapOracleOic.OICBaseStream.oic_common_properties,
-                m.Meltano.SingerProperty(
-                    "connectionUrl",
-                    m.Meltano.SingerStringType(),
-                    description="Connection URL",
-                ),
-                m.Meltano.SingerProperty(
-                    "securityPolicy",
-                    m.Meltano.SingerStringType(),
-                    description="Security policy",
-                ),
-                m.Meltano.SingerProperty(
-                    "connectionProperties",
-                    m.Meltano.SingerObjectType(),
-                    description="Connection properties",
-                ),
-                m.Meltano.SingerProperty(
-                    "isValid",
-                    m.Meltano.SingerBooleanType(),
-                    description="Connection validity",
-                ),
-                m.Meltano.SingerProperty(
-                    "usageCount",
-                    m.Meltano.SingerIntegerType(),
-                    description="Usage count",
-                ),
-                m.Meltano.SingerProperty(
-                    "lockedBy",
-                    m.Meltano.SingerStringType(),
-                    description="Locked by user",
-                ),
-                m.Meltano.SingerProperty(
-                    "lockedFlag",
-                    m.Meltano.SingerBooleanType(),
-                    description="Is locked",
-                ),
-            ).to_dict(),
+            ),
         )
 
     class PackagesStream(m.TapOracleOic.OICBaseStream):
@@ -227,54 +256,56 @@ class FlextTapOracleOicModelsStreams:
         api_category: ClassVar[str] = "core"
         default_sort: ClassVar[str | None] = "lastUpdated:desc"
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            m.Meltano.SingerPropertiesList(
-                m.Meltano.SingerProperty(
-                    "id",
-                    m.Meltano.SingerStringType(),
-                    description="Package ID",
+            _stream_schema(
+                m.Meltano.SingerPropertiesList(
+                    m.Meltano.SingerProperty(
+                        "id",
+                        m.Meltano.SingerStringType(),
+                        description="Package ID",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "name",
+                        m.Meltano.SingerStringType(),
+                        description="Package name",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "description",
+                        m.Meltano.SingerStringType(),
+                        description="Package description",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "version",
+                        m.Meltano.SingerStringType(),
+                        description="Package version",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "status",
+                        m.Meltano.SingerStringType(),
+                        description="Package status",
+                    ),
+                    *m.TapOracleOic.OICBaseStream.oic_common_properties,
+                    m.Meltano.SingerProperty(
+                        "integrations",
+                        m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
+                        description="Included integrations",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "connections",
+                        m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
+                        description="Included connections",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "size",
+                        m.Meltano.SingerIntegerType(),
+                        description="Package size",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "projectId",
+                        m.Meltano.SingerStringType(),
+                        description="Project ID",
+                    ),
                 ),
-                m.Meltano.SingerProperty(
-                    "name",
-                    m.Meltano.SingerStringType(),
-                    description="Package name",
-                ),
-                m.Meltano.SingerProperty(
-                    "description",
-                    m.Meltano.SingerStringType(),
-                    description="Package description",
-                ),
-                m.Meltano.SingerProperty(
-                    "version",
-                    m.Meltano.SingerStringType(),
-                    description="Package version",
-                ),
-                m.Meltano.SingerProperty(
-                    "status",
-                    m.Meltano.SingerStringType(),
-                    description="Package status",
-                ),
-                *m.TapOracleOic.OICBaseStream.oic_common_properties,
-                m.Meltano.SingerProperty(
-                    "integrations",
-                    m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
-                    description="Included integrations",
-                ),
-                m.Meltano.SingerProperty(
-                    "connections",
-                    m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
-                    description="Included connections",
-                ),
-                m.Meltano.SingerProperty(
-                    "size",
-                    m.Meltano.SingerIntegerType(),
-                    description="Package size",
-                ),
-                m.Meltano.SingerProperty(
-                    "projectId",
-                    m.Meltano.SingerStringType(),
-                    description="Project ID",
-                ),
-            ).to_dict(),
+            ),
         )
 
     class LookupsStream(m.TapOracleOic.OICBaseStream):
@@ -290,49 +321,51 @@ class FlextTapOracleOicModelsStreams:
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "core"
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            m.Meltano.SingerPropertiesList(
-                m.Meltano.SingerProperty(
-                    "name",
-                    m.Meltano.SingerStringType(),
-                    description="Lookup name",
+            _stream_schema(
+                m.Meltano.SingerPropertiesList(
+                    m.Meltano.SingerProperty(
+                        "name",
+                        m.Meltano.SingerStringType(),
+                        description="Lookup name",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "description",
+                        m.Meltano.SingerStringType(),
+                        description="Lookup description",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "type",
+                        m.Meltano.SingerStringType(),
+                        description="Lookup type",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "status",
+                        m.Meltano.SingerStringType(),
+                        description="Lookup status",
+                    ),
+                    *m.TapOracleOic.OICBaseStream.oic_common_properties,
+                    m.Meltano.SingerProperty(
+                        "valueCount",
+                        m.Meltano.SingerIntegerType(),
+                        description="Number of lookup values",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "defaultValue",
+                        m.Meltano.SingerStringType(),
+                        description="Default lookup value",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "isReadOnly",
+                        m.Meltano.SingerBooleanType(),
+                        description="Is read-only",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "usageCount",
+                        m.Meltano.SingerIntegerType(),
+                        description="Usage count",
+                    ),
                 ),
-                m.Meltano.SingerProperty(
-                    "description",
-                    m.Meltano.SingerStringType(),
-                    description="Lookup description",
-                ),
-                m.Meltano.SingerProperty(
-                    "type",
-                    m.Meltano.SingerStringType(),
-                    description="Lookup type",
-                ),
-                m.Meltano.SingerProperty(
-                    "status",
-                    m.Meltano.SingerStringType(),
-                    description="Lookup status",
-                ),
-                *m.TapOracleOic.OICBaseStream.oic_common_properties,
-                m.Meltano.SingerProperty(
-                    "valueCount",
-                    m.Meltano.SingerIntegerType(),
-                    description="Number of lookup values",
-                ),
-                m.Meltano.SingerProperty(
-                    "defaultValue",
-                    m.Meltano.SingerStringType(),
-                    description="Default lookup value",
-                ),
-                m.Meltano.SingerProperty(
-                    "isReadOnly",
-                    m.Meltano.SingerBooleanType(),
-                    description="Is read-only",
-                ),
-                m.Meltano.SingerProperty(
-                    "usageCount",
-                    m.Meltano.SingerIntegerType(),
-                    description="Usage count",
-                ),
-            ).to_dict(),
+            ),
         )
 
     class LibrariesStream(m.TapOracleOic.OICBaseStream):
@@ -348,54 +381,56 @@ class FlextTapOracleOicModelsStreams:
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "infrastructure"
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            m.Meltano.SingerPropertiesList(
-                m.Meltano.SingerProperty(
-                    "id",
-                    m.Meltano.SingerStringType(),
-                    description="Library ID",
+            _stream_schema(
+                m.Meltano.SingerPropertiesList(
+                    m.Meltano.SingerProperty(
+                        "id",
+                        m.Meltano.SingerStringType(),
+                        description="Library ID",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "name",
+                        m.Meltano.SingerStringType(),
+                        description="Library name",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "description",
+                        m.Meltano.SingerStringType(),
+                        description="Library description",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "type",
+                        m.Meltano.SingerStringType(),
+                        description="Library type",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "status",
+                        m.Meltano.SingerStringType(),
+                        description="Library status",
+                    ),
+                    *m.TapOracleOic.OICBaseStream.oic_common_properties,
+                    m.Meltano.SingerProperty(
+                        "version",
+                        m.Meltano.SingerStringType(),
+                        description="Library version",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "size",
+                        m.Meltano.SingerIntegerType(),
+                        description="Library size",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "usageCount",
+                        m.Meltano.SingerIntegerType(),
+                        description="Usage count",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "functions",
+                        m.Meltano.SingerArrayType(m.Meltano.SingerStringType()),
+                        description="Available functions",
+                    ),
                 ),
-                m.Meltano.SingerProperty(
-                    "name",
-                    m.Meltano.SingerStringType(),
-                    description="Library name",
-                ),
-                m.Meltano.SingerProperty(
-                    "description",
-                    m.Meltano.SingerStringType(),
-                    description="Library description",
-                ),
-                m.Meltano.SingerProperty(
-                    "type",
-                    m.Meltano.SingerStringType(),
-                    description="Library type",
-                ),
-                m.Meltano.SingerProperty(
-                    "status",
-                    m.Meltano.SingerStringType(),
-                    description="Library status",
-                ),
-                *m.TapOracleOic.OICBaseStream.oic_common_properties,
-                m.Meltano.SingerProperty(
-                    "version",
-                    m.Meltano.SingerStringType(),
-                    description="Library version",
-                ),
-                m.Meltano.SingerProperty(
-                    "size",
-                    m.Meltano.SingerIntegerType(),
-                    description="Library size",
-                ),
-                m.Meltano.SingerProperty(
-                    "usageCount",
-                    m.Meltano.SingerIntegerType(),
-                    description="Usage count",
-                ),
-                m.Meltano.SingerProperty(
-                    "functions",
-                    m.Meltano.SingerArrayType(m.Meltano.SingerStringType()),
-                    description="Available functions",
-                ),
-            ).to_dict(),
+            ),
         )
 
     class CertificatesStream(m.TapOracleOic.OICBaseStream):
@@ -411,73 +446,75 @@ class FlextTapOracleOicModelsStreams:
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "security"
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            m.Meltano.SingerPropertiesList(
-                m.Meltano.SingerProperty(
-                    "name",
-                    m.Meltano.SingerStringType(),
-                    description="Certificate name",
+            _stream_schema(
+                m.Meltano.SingerPropertiesList(
+                    m.Meltano.SingerProperty(
+                        "name",
+                        m.Meltano.SingerStringType(),
+                        description="Certificate name",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "description",
+                        m.Meltano.SingerStringType(),
+                        description="Certificate description",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "type",
+                        m.Meltano.SingerStringType(),
+                        description="Certificate type",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "status",
+                        m.Meltano.SingerStringType(),
+                        description="Certificate status",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "created",
+                        m.Meltano.SingerDateTimeType(),
+                        description="Creation timestamp",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "lastUpdated",
+                        m.Meltano.SingerDateTimeType(),
+                        description="Last update timestamp",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "createdBy",
+                        m.Meltano.SingerStringType(),
+                        description="Created by user",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "expirationDate",
+                        m.Meltano.SingerDateTimeType(),
+                        description="Expiration date",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "issuer",
+                        m.Meltano.SingerStringType(),
+                        description="Certificate issuer",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "subject",
+                        m.Meltano.SingerStringType(),
+                        description="Certificate subject",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "serialNumber",
+                        m.Meltano.SingerStringType(),
+                        description="Serial number",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "fingerprint",
+                        m.Meltano.SingerStringType(),
+                        description="Certificate fingerprint",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "usageCount",
+                        m.Meltano.SingerIntegerType(),
+                        description="Usage count",
+                    ),
                 ),
-                m.Meltano.SingerProperty(
-                    "description",
-                    m.Meltano.SingerStringType(),
-                    description="Certificate description",
-                ),
-                m.Meltano.SingerProperty(
-                    "type",
-                    m.Meltano.SingerStringType(),
-                    description="Certificate type",
-                ),
-                m.Meltano.SingerProperty(
-                    "status",
-                    m.Meltano.SingerStringType(),
-                    description="Certificate status",
-                ),
-                m.Meltano.SingerProperty(
-                    "created",
-                    m.Meltano.SingerDateTimeType(),
-                    description="Creation timestamp",
-                ),
-                m.Meltano.SingerProperty(
-                    "lastUpdated",
-                    m.Meltano.SingerDateTimeType(),
-                    description="Last update timestamp",
-                ),
-                m.Meltano.SingerProperty(
-                    "createdBy",
-                    m.Meltano.SingerStringType(),
-                    description="Created by user",
-                ),
-                m.Meltano.SingerProperty(
-                    "expirationDate",
-                    m.Meltano.SingerDateTimeType(),
-                    description="Expiration date",
-                ),
-                m.Meltano.SingerProperty(
-                    "issuer",
-                    m.Meltano.SingerStringType(),
-                    description="Certificate issuer",
-                ),
-                m.Meltano.SingerProperty(
-                    "subject",
-                    m.Meltano.SingerStringType(),
-                    description="Certificate subject",
-                ),
-                m.Meltano.SingerProperty(
-                    "serialNumber",
-                    m.Meltano.SingerStringType(),
-                    description="Serial number",
-                ),
-                m.Meltano.SingerProperty(
-                    "fingerprint",
-                    m.Meltano.SingerStringType(),
-                    description="Certificate fingerprint",
-                ),
-                m.Meltano.SingerProperty(
-                    "usageCount",
-                    m.Meltano.SingerIntegerType(),
-                    description="Usage count",
-                ),
-            ).to_dict(),
+            ),
         )
 
     class AdaptersStream(m.TapOracleOic.OICBaseStream):
@@ -493,68 +530,70 @@ class FlextTapOracleOicModelsStreams:
         replication_key: str | None = None
         api_category: ClassVar[str] = "infrastructure"
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            m.Meltano.SingerPropertiesList(
-                m.Meltano.SingerProperty(
-                    "id",
-                    m.Meltano.SingerStringType(),
-                    description="Adapter ID",
+            _stream_schema(
+                m.Meltano.SingerPropertiesList(
+                    m.Meltano.SingerProperty(
+                        "id",
+                        m.Meltano.SingerStringType(),
+                        description="Adapter ID",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "name",
+                        m.Meltano.SingerStringType(),
+                        description="Adapter name",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "displayName",
+                        m.Meltano.SingerStringType(),
+                        description="Adapter display name",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "description",
+                        m.Meltano.SingerStringType(),
+                        description="Adapter description",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "version",
+                        m.Meltano.SingerStringType(),
+                        description="Adapter version",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "vendor",
+                        m.Meltano.SingerStringType(),
+                        description="Adapter vendor",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "category",
+                        m.Meltano.SingerStringType(),
+                        description="Adapter category",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "capabilities",
+                        m.Meltano.SingerArrayType(m.Meltano.SingerStringType()),
+                        description="Adapter capabilities",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "connectionTypes",
+                        m.Meltano.SingerArrayType(m.Meltano.SingerStringType()),
+                        description="Connection types",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "isCustom",
+                        m.Meltano.SingerBooleanType(),
+                        description="Is custom adapter",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "isDeprecated",
+                        m.Meltano.SingerBooleanType(),
+                        description="Is deprecated",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "documentationUrl",
+                        m.Meltano.SingerStringType(),
+                        description="Documentation URL",
+                    ),
                 ),
-                m.Meltano.SingerProperty(
-                    "name",
-                    m.Meltano.SingerStringType(),
-                    description="Adapter name",
-                ),
-                m.Meltano.SingerProperty(
-                    "displayName",
-                    m.Meltano.SingerStringType(),
-                    description="Adapter display name",
-                ),
-                m.Meltano.SingerProperty(
-                    "description",
-                    m.Meltano.SingerStringType(),
-                    description="Adapter description",
-                ),
-                m.Meltano.SingerProperty(
-                    "version",
-                    m.Meltano.SingerStringType(),
-                    description="Adapter version",
-                ),
-                m.Meltano.SingerProperty(
-                    "vendor",
-                    m.Meltano.SingerStringType(),
-                    description="Adapter vendor",
-                ),
-                m.Meltano.SingerProperty(
-                    "category",
-                    m.Meltano.SingerStringType(),
-                    description="Adapter category",
-                ),
-                m.Meltano.SingerProperty(
-                    "capabilities",
-                    m.Meltano.SingerArrayType(m.Meltano.SingerStringType()),
-                    description="Adapter capabilities",
-                ),
-                m.Meltano.SingerProperty(
-                    "connectionTypes",
-                    m.Meltano.SingerArrayType(m.Meltano.SingerStringType()),
-                    description="Connection types",
-                ),
-                m.Meltano.SingerProperty(
-                    "isCustom",
-                    m.Meltano.SingerBooleanType(),
-                    description="Is custom adapter",
-                ),
-                m.Meltano.SingerProperty(
-                    "isDeprecated",
-                    m.Meltano.SingerBooleanType(),
-                    description="Is deprecated",
-                ),
-                m.Meltano.SingerProperty(
-                    "documentationUrl",
-                    m.Meltano.SingerStringType(),
-                    description="Documentation URL",
-                ),
-            ).to_dict(),
+            ),
         )
 
     class ProjectsStream(m.TapOracleOic.OICBaseStream):
@@ -571,49 +610,51 @@ class FlextTapOracleOicModelsStreams:
         api_category: ClassVar[str] = "extended"
         requires_design_api: ClassVar[bool] = True
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            m.Meltano.SingerPropertiesList(
-                m.Meltano.SingerProperty(
-                    "id",
-                    m.Meltano.SingerStringType(),
-                    description="Project ID",
+            _stream_schema(
+                m.Meltano.SingerPropertiesList(
+                    m.Meltano.SingerProperty(
+                        "id",
+                        m.Meltano.SingerStringType(),
+                        description="Project ID",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "name",
+                        m.Meltano.SingerStringType(),
+                        description="Project name",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "description",
+                        m.Meltano.SingerStringType(),
+                        description="Project description",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "status",
+                        m.Meltano.SingerStringType(),
+                        description="Project status",
+                    ),
+                    *m.TapOracleOic.OICBaseStream.oic_common_properties,
+                    m.Meltano.SingerProperty(
+                        "folders",
+                        m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
+                        description="Project folders",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "integrationCount",
+                        m.Meltano.SingerIntegerType(),
+                        description="Number of integrations",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "connectionCount",
+                        m.Meltano.SingerIntegerType(),
+                        description="Number of connections",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "permissions",
+                        m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
+                        description="Project permissions",
+                    ),
                 ),
-                m.Meltano.SingerProperty(
-                    "name",
-                    m.Meltano.SingerStringType(),
-                    description="Project name",
-                ),
-                m.Meltano.SingerProperty(
-                    "description",
-                    m.Meltano.SingerStringType(),
-                    description="Project description",
-                ),
-                m.Meltano.SingerProperty(
-                    "status",
-                    m.Meltano.SingerStringType(),
-                    description="Project status",
-                ),
-                *m.TapOracleOic.OICBaseStream.oic_common_properties,
-                m.Meltano.SingerProperty(
-                    "folders",
-                    m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
-                    description="Project folders",
-                ),
-                m.Meltano.SingerProperty(
-                    "integrationCount",
-                    m.Meltano.SingerIntegerType(),
-                    description="Number of integrations",
-                ),
-                m.Meltano.SingerProperty(
-                    "connectionCount",
-                    m.Meltano.SingerIntegerType(),
-                    description="Number of connections",
-                ),
-                m.Meltano.SingerProperty(
-                    "permissions",
-                    m.Meltano.SingerArrayType(m.Meltano.SingerObjectType()),
-                    description="Project permissions",
-                ),
-            ).to_dict(),
+            ),
         )
 
     class ExecutionsStream(m.TapOracleOic.OICBaseStream):
@@ -630,63 +671,65 @@ class FlextTapOracleOicModelsStreams:
         api_category: ClassVar[str] = "monitoring"
         requires_monitoring_api: ClassVar[bool] = True
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            m.Meltano.SingerPropertiesList(
-                m.Meltano.SingerProperty(
-                    "instanceId",
-                    m.Meltano.SingerStringType(),
-                    description="Execution instance ID",
+            _stream_schema(
+                m.Meltano.SingerPropertiesList(
+                    m.Meltano.SingerProperty(
+                        "instanceId",
+                        m.Meltano.SingerStringType(),
+                        description="Execution instance ID",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "integrationName",
+                        m.Meltano.SingerStringType(),
+                        description="Integration name",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "integrationVersion",
+                        m.Meltano.SingerStringType(),
+                        description="Integration version",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "status",
+                        m.Meltano.SingerStringType(),
+                        description="Execution status",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "startTime",
+                        m.Meltano.SingerDateTimeType(),
+                        description="Execution start time",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "endTime",
+                        m.Meltano.SingerDateTimeType(),
+                        description="Execution end time",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "duration",
+                        m.Meltano.SingerIntegerType(),
+                        description="Execution duration (ms)",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "errorCode",
+                        m.Meltano.SingerStringType(),
+                        description="Error code",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "errorMessage",
+                        m.Meltano.SingerStringType(),
+                        description="Error message",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "payloadSize",
+                        m.Meltano.SingerIntegerType(),
+                        description="Payload size",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "processedRecords",
+                        m.Meltano.SingerIntegerType(),
+                        description="Processed record count",
+                    ),
                 ),
-                m.Meltano.SingerProperty(
-                    "integrationName",
-                    m.Meltano.SingerStringType(),
-                    description="Integration name",
-                ),
-                m.Meltano.SingerProperty(
-                    "integrationVersion",
-                    m.Meltano.SingerStringType(),
-                    description="Integration version",
-                ),
-                m.Meltano.SingerProperty(
-                    "status",
-                    m.Meltano.SingerStringType(),
-                    description="Execution status",
-                ),
-                m.Meltano.SingerProperty(
-                    "startTime",
-                    m.Meltano.SingerDateTimeType(),
-                    description="Execution start time",
-                ),
-                m.Meltano.SingerProperty(
-                    "endTime",
-                    m.Meltano.SingerDateTimeType(),
-                    description="Execution end time",
-                ),
-                m.Meltano.SingerProperty(
-                    "duration",
-                    m.Meltano.SingerIntegerType(),
-                    description="Execution duration (ms)",
-                ),
-                m.Meltano.SingerProperty(
-                    "errorCode",
-                    m.Meltano.SingerStringType(),
-                    description="Error code",
-                ),
-                m.Meltano.SingerProperty(
-                    "errorMessage",
-                    m.Meltano.SingerStringType(),
-                    description="Error message",
-                ),
-                m.Meltano.SingerProperty(
-                    "payloadSize",
-                    m.Meltano.SingerIntegerType(),
-                    description="Payload size",
-                ),
-                m.Meltano.SingerProperty(
-                    "processedRecords",
-                    m.Meltano.SingerIntegerType(),
-                    description="Processed record count",
-                ),
-            ).to_dict(),
+            ),
         )
 
     class MetricsStream(m.TapOracleOic.OICBaseStream):
@@ -703,48 +746,50 @@ class FlextTapOracleOicModelsStreams:
         api_category: ClassVar[str] = "monitoring"
         requires_monitoring_api: ClassVar[bool] = True
         stream_schema: t.JsonMapping = t.json_mapping_adapter().validate_python(
-            m.Meltano.SingerPropertiesList(
-                m.Meltano.SingerProperty(
-                    "metricId",
-                    m.Meltano.SingerStringType(),
-                    description="Metric ID",
+            _stream_schema(
+                m.Meltano.SingerPropertiesList(
+                    m.Meltano.SingerProperty(
+                        "metricId",
+                        m.Meltano.SingerStringType(),
+                        description="Metric ID",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "metricName",
+                        m.Meltano.SingerStringType(),
+                        description="Metric name",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "timestamp",
+                        m.Meltano.SingerDateTimeType(),
+                        description="Metric timestamp",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "value",
+                        m.Meltano.SingerNumberType(),
+                        description="Metric value",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "unit",
+                        m.Meltano.SingerStringType(),
+                        description="Metric unit",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "tags",
+                        m.Meltano.SingerObjectType(),
+                        description="Metric tags",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "integrationName",
+                        m.Meltano.SingerStringType(),
+                        description="Related integration",
+                    ),
+                    m.Meltano.SingerProperty(
+                        "connectionName",
+                        m.Meltano.SingerStringType(),
+                        description="Related connection",
+                    ),
                 ),
-                m.Meltano.SingerProperty(
-                    "metricName",
-                    m.Meltano.SingerStringType(),
-                    description="Metric name",
-                ),
-                m.Meltano.SingerProperty(
-                    "timestamp",
-                    m.Meltano.SingerDateTimeType(),
-                    description="Metric timestamp",
-                ),
-                m.Meltano.SingerProperty(
-                    "value",
-                    m.Meltano.SingerNumberType(),
-                    description="Metric value",
-                ),
-                m.Meltano.SingerProperty(
-                    "unit",
-                    m.Meltano.SingerStringType(),
-                    description="Metric unit",
-                ),
-                m.Meltano.SingerProperty(
-                    "tags",
-                    m.Meltano.SingerObjectType(),
-                    description="Metric tags",
-                ),
-                m.Meltano.SingerProperty(
-                    "integrationName",
-                    m.Meltano.SingerStringType(),
-                    description="Related integration",
-                ),
-                m.Meltano.SingerProperty(
-                    "connectionName",
-                    m.Meltano.SingerStringType(),
-                    description="Related connection",
-                ),
-            ).to_dict(),
+            ),
         )
 
 
