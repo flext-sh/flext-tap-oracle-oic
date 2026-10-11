@@ -122,7 +122,7 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
                 if single.failure:
                     return r[t.JsonMapping].from_failure(single)
             return r[t.JsonMapping].ok(
-                t.json_mapping_adapter().validate_python(settings),
+                u.json_mapping_adapter().validate_python(settings),
             )
 
 

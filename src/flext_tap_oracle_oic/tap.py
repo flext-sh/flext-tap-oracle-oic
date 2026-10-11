@@ -156,7 +156,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             stream_name = str(getattr(stream, "name", c.IDENTIFIER_UNKNOWN))
             stream_schema_raw: p.AttributeProbe = getattr(stream, "stream_schema", {})
             stream_schema: t.JsonMapping = (
-                t.json_mapping_adapter().validate_python(stream_schema_raw)
+                u.json_mapping_adapter().validate_python(stream_schema_raw)
                 if isinstance(stream_schema_raw, Mapping)
                 else {}
             )
@@ -174,7 +174,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             if entry_result.failure:
                 return r[t.JsonMapping].from_failure(entry_result)
             catalog_entries.append(entry_result.value)
-        catalog: t.JsonMapping = t.json_mapping_adapter().validate_python(
+        catalog: t.JsonMapping = u.json_mapping_adapter().validate_python(
             m.Meltano.SingerCatalog(streams=tuple(catalog_entries)).model_dump(
                 by_alias=True,
                 exclude_defaults=True,
@@ -183,7 +183,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             ),
         )
         return r[t.JsonMapping].ok(
-            t.json_mapping_adapter().validate_python({
+            u.json_mapping_adapter().validate_python({
                 "streams": catalog.get("streams", []),
             }),
         )

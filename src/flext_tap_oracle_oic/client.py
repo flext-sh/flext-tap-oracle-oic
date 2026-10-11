@@ -88,7 +88,7 @@ class FlextTapOracleOicClient:
             json_body = (
                 t
                 .json_mapping_adapter()
-                .dump_json(t.json_mapping_adapter().validate_python(data))
+                .dump_json(u.json_mapping_adapter().validate_python(data))
                 .decode(c.DEFAULT_ENCODING)
                 if data
                 else None

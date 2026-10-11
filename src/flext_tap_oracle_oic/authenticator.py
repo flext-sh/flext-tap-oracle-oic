@@ -81,7 +81,7 @@ class FlextTapOracleOicAuthenticator:
                 case dict() as token_dict:
                     token_data = token_dict
                 case str() as body_str:
-                    token_data = t.json_mapping_adapter().validate_json(body_str)
+                    token_data = u.json_mapping_adapter().validate_json(body_str)
                 case _:
                     return r[str].fail("Empty or invalid OAuth response body")
             access_token = token_data.get("access_token")
