@@ -9,7 +9,8 @@ from __future__ import annotations
 
 import pytest
 
-from flext_tap_oracle_oic import FlextTapOracleOic, m, t
+from flext_tap_oracle_oic import FlextTapOracleOic
+from tests import m, u
 
 
 @pytest.fixture

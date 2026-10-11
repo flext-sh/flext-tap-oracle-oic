@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Protocol
 
-from flext_tap_oracle_oic import m, t
+from flext_tap_oracle_oic import m, t, u
 
 
 class _SchemaSource(Protocol):
