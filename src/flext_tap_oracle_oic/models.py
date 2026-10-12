@@ -15,60 +15,62 @@ from flext_oracle_oic import FlextOracleOicModels
 
 from flext_tap_oracle_oic import c, e, p, t, u
 from flext_tap_oracle_oic._models._activity import (
-    FlextTapOracleOicActivityRecord as _OicActivityRecord,
+    FlextTapOracleOicActivityRecord, FlextTapOracleOicActivityRecord as _OicActivityRecord,
 )
 from flext_tap_oracle_oic._models._agent import (
-    FlextTapOracleOicAgentEntity as _OicAgentEntity,
+    FlextTapOracleOicAgentEntity, FlextTapOracleOicAgentEntity as _OicAgentEntity,
 )
 from flext_tap_oracle_oic._models._api_response import (
-    FlextTapOracleOicApiResponse as _OicApiResponse,
+    FlextTapOracleOicApiResponse, FlextTapOracleOicApiResponse as _OicApiResponse,
 )
 from flext_tap_oracle_oic._models._auth_config import (
-    FlextTapOracleOicAuthenticationConfig as _OicAuthenticationConfig,
+    FlextTapOracleOicAuthenticationConfig, FlextTapOracleOicAuthenticationConfig as _OicAuthenticationConfig,
 )
 from flext_tap_oracle_oic._models._connection import (
-    FlextTapOracleOicConnectionEntity as _OicConnectionEntity,
+    FlextTapOracleOicConnectionEntity, FlextTapOracleOicConnectionEntity as _OicConnectionEntity,
 )
 from flext_tap_oracle_oic._models._envelope import (
-    FlextTapOracleOicEnvelope as _OicEnvelope,
+    FlextTapOracleOicEnvelope, FlextTapOracleOicEnvelope as _OicEnvelope,
 )
 from flext_tap_oracle_oic._models._error_context import (
-    FlextTapOracleOicErrorContext as _OicErrorContext,
+    FlextTapOracleOicErrorContext, FlextTapOracleOicErrorContext as _OicErrorContext,
 )
 from flext_tap_oracle_oic._models._integration import (
-    FlextTapOracleOicIntegrationEntity as _OicIntegrationEntity,
+    FlextTapOracleOicIntegrationEntity, FlextTapOracleOicIntegrationEntity as _OicIntegrationEntity,
 )
 from flext_tap_oracle_oic._models._metrics import (
-    FlextTapOracleOicMetricsRecord as _OicMetricsRecord,
+    FlextTapOracleOicMetricsRecord, FlextTapOracleOicMetricsRecord as _OicMetricsRecord,
 )
 from flext_tap_oracle_oic._models._oic_connection import (
-    FlextTapOracleOicConnection as _FlextTapOracleOicConnection,
+    FlextTapOracleOicConnection, FlextTapOracleOicConnection as _FlextTapOracleOicConnection,
 )
 from flext_tap_oracle_oic._models._oic_execution_summary import (
-    FlextTapOracleOicExecutionSummary as _FlextTapOracleOicExecutionSummary,
+    FlextTapOracleOicExecutionSummary, FlextTapOracleOicExecutionSummary as _FlextTapOracleOicExecutionSummary,
 )
 from flext_tap_oracle_oic._models._oic_integration import (
-    FlextTapOracleOicIntegration as _FlextTapOracleOicIntegration,
+    FlextTapOracleOicIntegration, FlextTapOracleOicIntegration as _FlextTapOracleOicIntegration,
 )
 from flext_tap_oracle_oic._models._oic_lookup import (
-    FlextTapOracleOicLookup as _FlextTapOracleOicLookup,
+    FlextTapOracleOicLookup, FlextTapOracleOicLookup as _FlextTapOracleOicLookup,
 )
 from flext_tap_oracle_oic._models._oic_monitoring import (
-    FlextTapOracleOicMonitoringRecord as _FlextTapOracleOicMonitoringRecord,
+    FlextTapOracleOicMonitoringRecord, FlextTapOracleOicMonitoringRecord as _FlextTapOracleOicMonitoringRecord,
 )
 from flext_tap_oracle_oic._models._oic_project import (
-    FlextTapOracleOicProject as _FlextTapOracleOicProject,
+    FlextTapOracleOicProject, FlextTapOracleOicProject as _FlextTapOracleOicProject,
 )
 from flext_tap_oracle_oic._models._oic_resource_metadata import (
-    FlextTapOracleOicResourceMetadata as _FlextTapOracleOicResourceMetadata,
+    FlextTapOracleOicResourceMetadata, FlextTapOracleOicResourceMetadata as _FlextTapOracleOicResourceMetadata,
 )
 from flext_tap_oracle_oic._models._package import (
-    FlextTapOracleOicPackageEntity as _OicPackageEntity,
+    FlextTapOracleOicPackageEntity, FlextTapOracleOicPackageEntity as _OicPackageEntity,
 )
 from flext_tap_oracle_oic._models._stream_config import (
-    FlextTapOracleOicStreamConfiguration as _OicStreamConfiguration,
+    FlextTapOracleOicStreamConfiguration, FlextTapOracleOicStreamConfiguration as _OicStreamConfiguration,
 )
 from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator as _OicPaginator
+from flext_tap_oracle_oic._models._helpers import FlextTapOracleOicModelsHelpers
+from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams
 
 
 class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
@@ -78,7 +80,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     monitoring, and Singer protocol compliance following standardized patterns.
     """
 
-    class TapOracleOic:
+    class TapOracleOic(FlextTapOracleOicActivityRecord, FlextTapOracleOicAgentEntity, FlextTapOracleOicApiResponse, FlextTapOracleOicAuthenticationConfig, FlextTapOracleOicConnectionEntity, FlextTapOracleOicEnvelope, FlextTapOracleOicErrorContext, FlextTapOracleOicModelsHelpers, FlextTapOracleOicIntegrationEntity, FlextTapOracleOicMetricsRecord, FlextTapOracleOicConnection, FlextTapOracleOicExecutionSummary, FlextTapOracleOicIntegration, FlextTapOracleOicLookup, FlextTapOracleOicMonitoringRecord, FlextTapOracleOicProject, FlextTapOracleOicResourceMetadata, FlextTapOracleOicPackageEntity, FlextTapOracleOicStreamConfiguration, FlextTapOracleOicModelsStreams):
         """TapOracleOic domain namespace."""
 
         @staticmethod
