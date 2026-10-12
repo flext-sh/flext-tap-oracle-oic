@@ -14,7 +14,6 @@ from flext_meltano.services.abstractions import FlextMeltanoAbstractions
 from flext_tap_oracle_oic import (
     FlextTapOracleOicAuthenticator,
     FlextTapOracleOicClient,
-    FlextTapOracleOicSettings,
     c,
     m,
     p,
@@ -23,6 +22,7 @@ from flext_tap_oracle_oic import (
     u,
 )
 from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams
+from flext_tap_oracle_oic._settings import FlextTapOracleOicSettings
 
 logger = u.fetch_logger(__name__)
 
