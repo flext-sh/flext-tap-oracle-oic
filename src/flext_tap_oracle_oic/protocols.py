@@ -14,6 +14,8 @@ from typing import TYPE_CHECKING, Protocol, runtime_checkable
 from flext_meltano import FlextMeltanoProtocols
 from flext_oracle_oic import FlextOracleOicProtocols
 
+from flext_tap_oracle_oic import t
+
 if TYPE_CHECKING:
     from flext_api import FlextApiModels
 
@@ -37,6 +39,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
                 """Fetch the next pagination token for a response."""
                 ...
 
+        @runtime_checkable
         class SingerProperty(Protocol):
             """Structural contract for one upstream Singer SDK property helper.
 
@@ -47,6 +50,14 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
             """
 
             name: str
+
+        @runtime_checkable
+        class SchemaSource(Protocol):
+            """Structural contract for Singer SDK schema carriers dumped to JSON."""
+
+            def to_dict(self) -> t.JsonMapping:
+                """Dump the carrier to a JSON Schema mapping."""
+                ...
 
 
 p = FlextTapOracleOicProtocols

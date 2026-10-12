@@ -26,8 +26,6 @@ from flext_tap_oracle_oic._models import (
     FlextTapOracleOicStreamBase,
 )
 
-logger = u.fetch_logger(__name__)
-
 
 class FlextTapOracleOic(FlextMeltanoAbstractions):
     """Oracle Integration Cloud tap implementation using flext-oracle-oic."""
@@ -121,13 +119,13 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         Returns:
             The resulting ``t.SequenceOf[FlextTapOracleOicStreamBase]``.
         """
-        logger.info("Discovering Oracle OIC streams using consolidated streams")
+        self.logger.info("Discovering Oracle OIC streams using consolidated streams")
         stream_names = list(c.TapOracleOic.CORE_STREAMS)
         if self._tap_config.get("include_infrastructure", False):
             stream_names.extend(c.TapOracleOic.INFRASTRUCTURE_STREAMS)
         # The registry derives from the declaring namespace: every stream class
         # owns its ``name`` default, so no hand-maintained name→class table exists.
-        registry: dict[str, type[FlextTapOracleOicStreamBase]] = {}
+        registry: t.MutableMappingKV[str, type[FlextTapOracleOicStreamBase]] = {}
         for member in vars(FlextTapOracleOicModelsStreams).values():
             if not isinstance(member, type) or not issubclass(
                 member,
@@ -140,7 +138,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             for stream_name in stream_names
             if stream_name in registry
         ]
-        logger.info("Discovered %s streams from Oracle OIC", len(streams))
+        self.logger.info("Discovered %s streams from Oracle OIC", len(streams))
         return streams
 
     @override
@@ -188,20 +186,20 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         """
 
         def _run_test_connection() -> p.Result[bool]:
-            logger.info("Testing Oracle OIC connection")
+            self.logger.info("Testing Oracle OIC connection")
             test_result = self.client.get("integrations")
             if test_result.success:
-                logger.info("Oracle OIC connection test successful")
+                self.logger.info("Oracle OIC connection test successful")
                 return r[bool].ok(value=True)
             error_msg = f"Oracle OIC connection test failed: {test_result.error}"
-            logger.error(error_msg)
+            self.logger.error(error_msg)
             return r[bool].fail(error_msg)
 
         try:
             return _run_test_connection()
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             exception_msg = f"Oracle OIC connection test exception: {e}"
-            logger.exception(exception_msg)
+            self.logger.exception(exception_msg)
             return r[bool].fail(exception_msg)
 
 

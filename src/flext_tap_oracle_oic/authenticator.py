@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 
 from flext_api import FlextApi, FlextApiSettings
 
@@ -15,11 +15,11 @@ from flext_tap_oracle_oic import c, p, r, t, u
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import FlextTapOracleOicSettings
 
-logger = u.fetch_logger(__name__)
-
 
 class FlextTapOracleOicAuthenticator:
     """Real Oracle OIC OAuth2 authenticator implementation."""
+
+    logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
 
     def __init__(
         self,
@@ -88,7 +88,7 @@ class FlextTapOracleOicAuthenticator:
             match access_token:
                 case str() as access_token_str if access_token_str:
                     self._access_token = access_token_str
-                    logger.info("OAuth2 access token obtained successfully")
+                    self.logger.info("OAuth2 access token obtained successfully")
                     return r[str].ok(access_token_str)
                 case _:
                     return r[str].fail("No valid access token in response")
