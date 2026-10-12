@@ -50,9 +50,6 @@ if TYPE_CHECKING:
     from flext_tap_oracle_oic._models._stream_config import (
         FlextTapOracleOicStreamConfiguration,
     )
-    from flext_tap_oracle_oic._models._tap_oracle_oic_namespace import (
-        FlextTapOracleOicModelsTapOracleOicNamespace,
-    )
     from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams
 
 
@@ -72,7 +69,6 @@ __all__: tuple[str, ...] = (
     "FlextTapOracleOicMetricsRecord",
     "FlextTapOracleOicModelsHelpers",
     "FlextTapOracleOicModelsStreams",
-    "FlextTapOracleOicModelsTapOracleOicNamespace",
     "FlextTapOracleOicMonitoringRecord",
     "FlextTapOracleOicPackageEntity",
     "FlextTapOracleOicProject",
@@ -99,7 +95,6 @@ install_lazy_exports(
         "FlextTapOracleOicMetricsRecord": "._metrics",
         "FlextTapOracleOicModelsHelpers": "._helpers",
         "FlextTapOracleOicModelsStreams": ".streams",
-        "FlextTapOracleOicModelsTapOracleOicNamespace": "._tap_oracle_oic_namespace",
         "FlextTapOracleOicMonitoringRecord": "._oic_monitoring",
         "FlextTapOracleOicPackageEntity": "._package",
         "FlextTapOracleOicProject": "._oic_project",

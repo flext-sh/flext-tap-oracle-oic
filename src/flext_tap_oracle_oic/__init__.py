@@ -11,20 +11,22 @@ from types import MappingProxyType
 from typing import TYPE_CHECKING
 
 from flext_core.lazy import install_lazy_exports
-from flext_tap_oracle_oic.__version__ import (
-    __author__,
-    __author_email__,
-    __description__,
-    __license__,
-    __title__,
-    __url__,
-    __version__,
-    __version_info__,
-)
+from flext_tap_oracle_oic.__version__ import __version__
 
 if TYPE_CHECKING:
     from flext_meltano import d, e, h, r, s, x
 
+    from flext_tap_oracle_oic import _constants, _models
+    from flext_tap_oracle_oic.__version__ import (
+        FlextTapOracleOicVersion,
+        __author__,
+        __author_email__,
+        __description__,
+        __license__,
+        __title__,
+        __url__,
+        __version_info__,
+    )
     from flext_tap_oracle_oic._config import FlextTapOracleOicConfig, config
     from flext_tap_oracle_oic._settings import FlextTapOracleOicSettings, settings
     from flext_tap_oracle_oic.api import FlextTapOracleOicService, tap_oracle_oic
@@ -54,6 +56,7 @@ __all__: tuple[str, ...] = (
     "FlextTapOracleOicSettings",
     "FlextTapOracleOicTypes",
     "FlextTapOracleOicUtilities",
+    "FlextTapOracleOicVersion",
     "__author__",
     "__author_email__",
     "__description__",
@@ -62,6 +65,8 @@ __all__: tuple[str, ...] = (
     "__url__",
     "__version__",
     "__version_info__",
+    "_constants",
+    "_models",
     "c",
     "config",
     "d",
@@ -96,6 +101,16 @@ install_lazy_exports(
         "FlextTapOracleOicSettings": "._settings",
         "FlextTapOracleOicTypes": ".typings",
         "FlextTapOracleOicUtilities": ".utilities",
+        "FlextTapOracleOicVersion": ".__version__",
+        "__author__": ".__version__",
+        "__author_email__": ".__version__",
+        "__description__": ".__version__",
+        "__license__": ".__version__",
+        "__title__": ".__version__",
+        "__url__": ".__version__",
+        "__version_info__": ".__version__",
+        "_constants": "._constants",
+        "_models": "._models",
         "c": ".constants",
         "config": "._config",
         "d": "flext_meltano",
