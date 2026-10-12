@@ -9,11 +9,17 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, override
+from collections.abc import Iterator, Mapping
+from typing import Annotated, ClassVar
 
 from flext_meltano import FlextMeltanoModels
+from flext_oracle_oic import FlextOracleOicModels
 
-from flext_tap_oracle_oic import c, p, t, u
+from flext_tap_oracle_oic import c, e, p, t, u
+from flext_tap_oracle_oic._models._envelope import (
+    FlextTapOracleOicEnvelope as _OicEnvelope,
+)
+from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator as _OicPaginator
 
 
 class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
@@ -103,13 +109,9 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
             region = region_match.group(1) if region_match else "us-ashburn-1"
         if "integration.ocp.oraclecloud.com" in base_url:
             if self.requires_design_api:
-                base_url = (
-                    f"https://design.integration.{region}.ocp.oraclecloud.com"
-                )
+                base_url = f"https://design.integration.{region}.ocp.oraclecloud.com"
             elif self.requires_runtime_api:
-                base_url = (
-                    f"https://runtime.integration.{region}.ocp.oraclecloud.com"
-                )
+                base_url = f"https://runtime.integration.{region}.ocp.oraclecloud.com"
         if self.api_path is not None:
             api_path: str = self.api_path
             return base_url + api_path
@@ -177,9 +179,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
             params["integrationInstance"] = instance_id
         sort_field = self.settings.get("sort_field")
         if sort_field:
-            sort_direction = (
-                "desc" if self.settings.get("sort_desc", False) else "asc"
-            )
+            sort_direction = "desc" if self.settings.get("sort_desc", False) else "asc"
             params["orderBy"] = f"{sort_field}:{sort_direction}"
         elif self.default_sort is not None:
             params["orderBy"] = self.default_sort
@@ -205,7 +205,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
 
     def parse_response(
         self,
-        response: m.Api.HttpResponse,
+        response: FlextOracleOicModels.Api.HttpResponse,
     ) -> Iterator[t.JsonMapping]:
         """Parse Oracle OIC API response and yield records with validation.
 
@@ -220,7 +220,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
 
     def _parse_response_records(
         self,
-        response: m.Api.HttpResponse,
+        response: FlextOracleOicModels.Api.HttpResponse,
     ) -> t.SequenceOf[t.JsonMapping]:
         """Parse one response into enriched records.
 
@@ -264,9 +264,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
         if records_yielded == 0 and (not self._is_empty_result_expected(data)):
             map_data = data if isinstance(data, Mapping) else None
             payload_descriptor: str = (
-                str(list(map_data.keys()))
-                if map_data is not None
-                else str(type(data))
+                str(list(map_data.keys())) if map_data is not None else str(type(data))
             )
             self.logger.warning(
                 "Unknown response format from %s: %s",
@@ -299,7 +297,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
 
     @staticmethod
     def _get_response_data(
-        response: m.Api.HttpResponse,
+        response: FlextOracleOicModels.Api.HttpResponse,
     ) -> t.JsonMapping | t.JsonList:
         """Normalize flext-api response bodies to OIC payload structures.
 
@@ -318,20 +316,22 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
                 msg = "OIC response body is empty or not JSON-compatible"
                 raise TypeError(msg)
 
-    def _get_response_identifier(self, response: m.Api.HttpResponse) -> str:
+    def _get_response_identifier(
+        self, response: FlextOracleOicModels.Api.HttpResponse
+    ) -> str:
         """Return a stable identifier for response logging."""
         # request_id is a str contract member; pyright proves the
         # isinstance guard redundant — keep only the truthiness probe.
         request_id: str = response.request_id
-        return request_id or (
-            self.api_path if self.api_path is not None else self.name
-        )
+        return request_id or (self.api_path if self.api_path is not None else self.name)
 
     @staticmethod
     def _as_oic_envelope(data: t.JsonMapping) -> _OicEnvelope:
         return _OicEnvelope.model_validate(data, strict=True)
 
-    def _handle_response_error(self, response: m.Api.HttpResponse) -> None:
+    def _handle_response_error(
+        self, response: FlextOracleOicModels.Api.HttpResponse
+    ) -> None:
         """Handle Oracle OIC API response errors with proper categorization.
 
         Raises:
@@ -347,9 +347,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
             )
         if error_message is None:
             error_message = (
-                str(response.body)
-                if response.body
-                else f"HTTP {response.status_code}"
+                str(response.body) if response.body else f"HTTP {response.status_code}"
             )
         response_url = self._get_response_identifier(response)
         err_msg = str(error_message)
@@ -441,7 +439,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
 
     def _track_response_metrics(
         self,
-        response: m.Api.HttpResponse,
+        response: FlextOracleOicModels.Api.HttpResponse,
         data: t.JsonMapping | t.JsonList,
     ) -> None:
         """Track response metrics for monitoring and optimization."""
@@ -465,7 +463,6 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
             The resulting ``bool``.
         """
         return bool(record)
-
 
 
 __all__: list[str] = ["FlextTapOracleOicStreamBase"]

@@ -7,13 +7,12 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Iterator, Mapping
-from typing import Annotated, ClassVar
+from typing import ClassVar
 
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import FlextOracleOicModels
 
-from flext_tap_oracle_oic import c, e, p, t, u
+from flext_tap_oracle_oic import c
 from flext_tap_oracle_oic._models._activity import (
     FlextTapOracleOicActivityRecord,
     FlextTapOracleOicActivityRecord as _OicActivityRecord,
@@ -87,9 +86,8 @@ from flext_tap_oracle_oic._models._stream_config import (
     FlextTapOracleOicStreamConfiguration,
     FlextTapOracleOicStreamConfiguration as _OicStreamConfiguration,
 )
-from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams
 from flext_tap_oracle_oic._models.stream_base import FlextTapOracleOicStreamBase
-from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator as _OicPaginator
+from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams
 
 
 class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
@@ -167,28 +165,28 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             )
             FlextTapOracleOicModels.TapOracleOic.validate_optional_port(port)
 
-        OicEnvelope = _OicEnvelope
+        OicEnvelope: ClassVar[type] = _OicEnvelope
 
-        OICBaseStream = FlextTapOracleOicStreamBase
-        OicAuthenticationConfig = _OicAuthenticationConfig
+        OICBaseStream: ClassVar[type] = FlextTapOracleOicStreamBase
+        OicAuthenticationConfig: ClassVar[type] = _OicAuthenticationConfig
 
-        OicIntegrationEntity = _OicIntegrationEntity
+        OicIntegrationEntity: ClassVar[type] = _OicIntegrationEntity
 
-        OicConnectionEntity = _OicConnectionEntity
+        OicConnectionEntity: ClassVar[type] = _OicConnectionEntity
 
-        OicActivityRecord = _OicActivityRecord
+        OicActivityRecord: ClassVar[type] = _OicActivityRecord
 
-        OicPackageEntity = _OicPackageEntity
+        OicPackageEntity: ClassVar[type] = _OicPackageEntity
 
-        OicMetricsRecord = _OicMetricsRecord
+        OicMetricsRecord: ClassVar[type] = _OicMetricsRecord
 
-        OicAgentEntity = _OicAgentEntity
+        OicAgentEntity: ClassVar[type] = _OicAgentEntity
 
-        OicStreamConfiguration = _OicStreamConfiguration
+        OicStreamConfiguration: ClassVar[type] = _OicStreamConfiguration
 
-        OicApiResponse = _OicApiResponse
+        OicApiResponse: ClassVar[type] = _OicApiResponse
 
-        OicErrorContext = _OicErrorContext
+        OicErrorContext: ClassVar[type] = _OicErrorContext
 
         class OracleOic(FlextOracleOicModels.OracleOic):
             """Domain entity models for Oracle OIC resources.
@@ -197,19 +195,25 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
             per MRO policy: all m subclasses live under [Project]Models.
             """
 
-            FlextTapOracleOicConnection = _FlextTapOracleOicConnection
+            FlextTapOracleOicConnection: ClassVar[type] = _FlextTapOracleOicConnection
 
-            FlextTapOracleOicIntegration = _FlextTapOracleOicIntegration
+            FlextTapOracleOicIntegration: ClassVar[type] = _FlextTapOracleOicIntegration
 
-            FlextTapOracleOicLookup = _FlextTapOracleOicLookup
+            FlextTapOracleOicLookup: ClassVar[type] = _FlextTapOracleOicLookup
 
-            FlextTapOracleOicMonitoringRecord = _FlextTapOracleOicMonitoringRecord
+            FlextTapOracleOicMonitoringRecord: ClassVar[type] = (
+                _FlextTapOracleOicMonitoringRecord
+            )
 
-            FlextTapOracleOicProject = _FlextTapOracleOicProject
+            FlextTapOracleOicProject: ClassVar[type] = _FlextTapOracleOicProject
 
-            FlextTapOracleOicResourceMetadata = _FlextTapOracleOicResourceMetadata
+            FlextTapOracleOicResourceMetadata: ClassVar[type] = (
+                _FlextTapOracleOicResourceMetadata
+            )
 
-            FlextTapOracleOicExecutionSummary = _FlextTapOracleOicExecutionSummary
+            FlextTapOracleOicExecutionSummary: ClassVar[type] = (
+                _FlextTapOracleOicExecutionSummary
+            )
 
 
 # Short alias

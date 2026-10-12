@@ -13,6 +13,7 @@ from __future__ import annotations
 from typing import ClassVar, Protocol
 
 from flext_meltano import FlextMeltanoModels, t, u
+
 from flext_tap_oracle_oic._models.stream_base import FlextTapOracleOicStreamBase
 
 
@@ -104,17 +105,23 @@ class FlextTapOracleOicModelsStreams:
                     *FlextTapOracleOicStreamBase.oic_common_properties,
                     FlextMeltanoModels.Meltano.SingerProperty(
                         "connections",
-                        FlextMeltanoModels.Meltano.SingerArrayType(FlextMeltanoModels.Meltano.SingerObjectType()),
+                        FlextMeltanoModels.Meltano.SingerArrayType(
+                            FlextMeltanoModels.Meltano.SingerObjectType()
+                        ),
                         description="Used connections",
                     ),
                     FlextMeltanoModels.Meltano.SingerProperty(
                         "endpoints",
-                        FlextMeltanoModels.Meltano.SingerArrayType(FlextMeltanoModels.Meltano.SingerObjectType()),
+                        FlextMeltanoModels.Meltano.SingerArrayType(
+                            FlextMeltanoModels.Meltano.SingerObjectType()
+                        ),
                         description="Integration endpoints",
                     ),
                     FlextMeltanoModels.Meltano.SingerProperty(
                         "trackingu.Fields",
-                        FlextMeltanoModels.Meltano.SingerArrayType(FlextMeltanoModels.Meltano.SingerStringType()),
+                        FlextMeltanoModels.Meltano.SingerArrayType(
+                            FlextMeltanoModels.Meltano.SingerStringType()
+                        ),
                         description="Tracking fields",
                     ),
                     FlextMeltanoModels.Meltano.SingerProperty(
@@ -287,12 +294,16 @@ class FlextTapOracleOicModelsStreams:
                     *FlextTapOracleOicStreamBase.oic_common_properties,
                     FlextMeltanoModels.Meltano.SingerProperty(
                         "integrations",
-                        FlextMeltanoModels.Meltano.SingerArrayType(FlextMeltanoModels.Meltano.SingerObjectType()),
+                        FlextMeltanoModels.Meltano.SingerArrayType(
+                            FlextMeltanoModels.Meltano.SingerObjectType()
+                        ),
                         description="Included integrations",
                     ),
                     FlextMeltanoModels.Meltano.SingerProperty(
                         "connections",
-                        FlextMeltanoModels.Meltano.SingerArrayType(FlextMeltanoModels.Meltano.SingerObjectType()),
+                        FlextMeltanoModels.Meltano.SingerArrayType(
+                            FlextMeltanoModels.Meltano.SingerObjectType()
+                        ),
                         description="Included connections",
                     ),
                     FlextMeltanoModels.Meltano.SingerProperty(
@@ -427,7 +438,9 @@ class FlextTapOracleOicModelsStreams:
                     ),
                     FlextMeltanoModels.Meltano.SingerProperty(
                         "functions",
-                        FlextMeltanoModels.Meltano.SingerArrayType(FlextMeltanoModels.Meltano.SingerStringType()),
+                        FlextMeltanoModels.Meltano.SingerArrayType(
+                            FlextMeltanoModels.Meltano.SingerStringType()
+                        ),
                         description="Available functions",
                     ),
                 ),
@@ -570,12 +583,16 @@ class FlextTapOracleOicModelsStreams:
                     ),
                     FlextMeltanoModels.Meltano.SingerProperty(
                         "capabilities",
-                        FlextMeltanoModels.Meltano.SingerArrayType(FlextMeltanoModels.Meltano.SingerStringType()),
+                        FlextMeltanoModels.Meltano.SingerArrayType(
+                            FlextMeltanoModels.Meltano.SingerStringType()
+                        ),
                         description="Adapter capabilities",
                     ),
                     FlextMeltanoModels.Meltano.SingerProperty(
                         "connectionTypes",
-                        FlextMeltanoModels.Meltano.SingerArrayType(FlextMeltanoModels.Meltano.SingerStringType()),
+                        FlextMeltanoModels.Meltano.SingerArrayType(
+                            FlextMeltanoModels.Meltano.SingerStringType()
+                        ),
                         description="Connection types",
                     ),
                     FlextMeltanoModels.Meltano.SingerProperty(
@@ -636,7 +653,9 @@ class FlextTapOracleOicModelsStreams:
                     *FlextTapOracleOicStreamBase.oic_common_properties,
                     FlextMeltanoModels.Meltano.SingerProperty(
                         "folders",
-                        FlextMeltanoModels.Meltano.SingerArrayType(FlextMeltanoModels.Meltano.SingerObjectType()),
+                        FlextMeltanoModels.Meltano.SingerArrayType(
+                            FlextMeltanoModels.Meltano.SingerObjectType()
+                        ),
                         description="Project folders",
                     ),
                     FlextMeltanoModels.Meltano.SingerProperty(
@@ -651,7 +670,9 @@ class FlextTapOracleOicModelsStreams:
                     ),
                     FlextMeltanoModels.Meltano.SingerProperty(
                         "permissions",
-                        FlextMeltanoModels.Meltano.SingerArrayType(FlextMeltanoModels.Meltano.SingerObjectType()),
+                        FlextMeltanoModels.Meltano.SingerArrayType(
+                            FlextMeltanoModels.Meltano.SingerObjectType()
+                        ),
                         description="Project permissions",
                     ),
                 ),
