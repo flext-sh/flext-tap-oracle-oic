@@ -14,9 +14,8 @@ from __future__ import annotations
 
 from typing import Annotated, Self
 
-from flext_meltano import FlextMeltanoConfig
+from flext_meltano import FlextMeltanoConfig, m
 
-from flext_tap_oracle_oic import m
 from flext_tap_oracle_oic._models._tap_oracle_oic_namespace import (
     FlextTapOracleOicModelsTapOracleOicNamespace,
 )

@@ -12,8 +12,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated
 
-from flext_core import FlextSettings
-from flext_tap_oracle_oic import m
+from flext_core import FlextSettings, m
 
 _DEFAULT_BASE_URL = "https://localhost.integration.ocp.oraclecloud.com"
 
