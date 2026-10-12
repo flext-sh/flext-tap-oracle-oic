@@ -6,7 +6,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from typing import ClassVar, override
 
 from flext_meltano.services.abstractions import FlextMeltanoAbstractions
@@ -14,6 +13,7 @@ from flext_meltano.services.abstractions import FlextMeltanoAbstractions
 from flext_tap_oracle_oic import (
     FlextTapOracleOicAuthenticator,
     FlextTapOracleOicClient,
+    FlextTapOracleOicSettings,
     c,
     m,
     p,
@@ -21,8 +21,10 @@ from flext_tap_oracle_oic import (
     t,
     u,
 )
-from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams
-from flext_tap_oracle_oic._settings import FlextTapOracleOicSettings
+from flext_tap_oracle_oic._models import (
+    FlextTapOracleOicModelsStreams,
+    FlextTapOracleOicStreamBase,
+)
 
 logger = u.fetch_logger(__name__)
 
@@ -113,11 +115,11 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             )
         return self._client
 
-    def discover_oic_streams(self) -> t.SequenceOf[m.TapOracleOic.OICBaseStream]:
+    def discover_oic_streams(self) -> t.SequenceOf[FlextTapOracleOicStreamBase]:
         """Discover OIC stream class instances for this tap.
 
         Returns:
-            The resulting ``t.SequenceOf[m.TapOracleOic.OICBaseStream]``.
+            The resulting ``t.SequenceOf[FlextTapOracleOicStreamBase]``.
         """
         logger.info("Discovering Oracle OIC streams using consolidated streams")
         stream_names = list(c.TapOracleOic.CORE_STREAMS)
@@ -125,12 +127,14 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             stream_names.extend(c.TapOracleOic.INFRASTRUCTURE_STREAMS)
         # The registry derives from the declaring namespace: every stream class
         # owns its ``name`` default, so no hand-maintained name→class table exists.
-        registry = {
-            member.model_fields["name"].default: member
-            for member in vars(FlextTapOracleOicModelsStreams).values()
-            if isinstance(member, type)
-            and issubclass(member, m.TapOracleOic.OICBaseStream)
-        }
+        registry: dict[str, type[FlextTapOracleOicStreamBase]] = {}
+        for member in vars(FlextTapOracleOicModelsStreams).values():
+            if not isinstance(member, type) or not issubclass(
+                member,
+                FlextTapOracleOicStreamBase,
+            ):
+                continue
+            registry[str(member.model_fields["name"].default)] = member
         streams = [
             registry[stream_name].model_validate({"settings": self._tap_config})
             for stream_name in stream_names
@@ -153,23 +157,11 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         streams = self.discover_oic_streams()
         catalog_entries: list[m.Meltano.SingerCatalogEntry] = []
         for stream in streams:
-            stream_name = str(getattr(stream, "name", c.IDENTIFIER_UNKNOWN))
-            stream_schema_raw: p.AttributeProbe = getattr(stream, "stream_schema", {})
-            stream_schema: t.JsonMapping = (
-                u.json_mapping_adapter().validate_python(stream_schema_raw)
-                if isinstance(stream_schema_raw, Mapping)
-                else {}
-            )
             entry_result = u.Meltano.build_catalog_entry(
-                stream_name=stream_name,
-                schema=stream_schema,
+                stream_name=stream.name,
+                schema=stream.stream_schema,
                 key_properties=(),
-                replication_key=(
-                    str(replication_key)
-                    if (replication_key := getattr(stream, "replication_key", None))
-                    is not None
-                    else None
-                ),
+                replication_key=stream.replication_key,
             )
             if entry_result.failure:
                 return r[t.JsonMapping].from_failure(entry_result)

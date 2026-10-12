@@ -461,10 +461,12 @@ notice-rgx = "Copyright \\(c\\) \\d{4} \\S[^\\n]*\\. All rights reserved\\."
 [tool.ruff.lint.flake8-type-checking]
 runtime-evaluated-base-classes = [
   "flext_core.FlextSettings",
+  "flext_core.m.BaseModel",
   "flext_meltano.FlextMeltanoConfig",
   "flext_meltano.FlextMeltanoModels.ArbitraryTypesModel",
   "flext_meltano.FlextMeltanoModels.BaseModel",
   "flext_meltano.FlextMeltanoModels.Entity",
+  "flext_meltano.m.BaseModel",
   "flext_meltano.services.abstractions.FlextMeltanoAbstractions",
   "flext_meltano.services.consumer_bases.tap_service_base.FlextMeltanoTapServiceBase",
   "flext_tap_oracle_oic.FlextTapOracleOicModels.TapOracleOic",
@@ -480,8 +482,7 @@ runtime-evaluated-base-classes = [
   "flext_tap_oracle_oic._models._metrics.FlextTapOracleOicMetricsRecord",
   "flext_tap_oracle_oic._models._package.FlextTapOracleOicPackageEntity",
   "flext_tap_oracle_oic._models._stream_config.FlextTapOracleOicStreamConfiguration",
-  "flext_tap_oracle_oic.m.BaseModel",
-  "flext_tap_oracle_oic.m.TapOracleOic.OICBaseStream",
+  "flext_tap_oracle_oic._models.stream_base.FlextTapOracleOicStreamBase",
   "flext_tests.FlextTestsServiceBase",
   "flext_tests.FlextTestsSettings",
   "pydantic.BaseModel",

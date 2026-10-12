@@ -37,6 +37,17 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
                 """Fetch the next pagination token for a response."""
                 ...
 
+        class SingerProperty(Protocol):
+            """Structural contract for one upstream Singer SDK property helper.
+
+            ``singer_sdk`` exposes the property class through a class-body alias
+            that the static checkers reject in type position; this pins the
+            runtime shape (a named property helper) at the single declaration
+            site instead of leaking the partially-unknown member type.
+            """
+
+            name: str
+
 
 p = FlextTapOracleOicProtocols
 __all__: list[str] = ["FlextTapOracleOicProtocols", "p"]

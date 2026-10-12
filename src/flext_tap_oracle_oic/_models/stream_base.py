@@ -12,14 +12,11 @@ from __future__ import annotations
 from collections.abc import Iterator, Mapping
 from typing import Annotated, ClassVar
 
-from flext_meltano import FlextMeltanoModels
+from flext_meltano import FlextMeltanoModels, u
 from flext_oracle_oic import FlextOracleOicModels
 
-from flext_tap_oracle_oic import c, e, p, t, u
-from flext_tap_oracle_oic._models._envelope import (
-    FlextTapOracleOicEnvelope as _OicEnvelope,
-)
-from flext_tap_oracle_oic.tap_streams import FlextTapOracleOicPaginator as _OicPaginator
+from flext_tap_oracle_oic import FlextTapOracleOicPaginator, c, p, t
+from flext_tap_oracle_oic._models._envelope import FlextTapOracleOicEnvelope
 
 
 class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
@@ -44,6 +41,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
     settings: Annotated[t.JsonMapping, u.Field(default_factory=dict)]
     name: Annotated[str, u.Field(default="")]
     replication_key: Annotated[str | None, u.Field(default=None)]
+    stream_schema: Annotated[t.JsonMapping, u.Field(default_factory=dict)]
     logger: p.Logger = u.Field(default_factory=lambda: u.fetch_logger(__name__))
 
     requires_design_api: ClassVar[bool] = False
@@ -55,9 +53,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
     primary_keys: ClassVar[t.StrSequence] = []
     # Audit-trail properties carried by every OIC stream schema; declared
     # once here and spread into each stream's SingerPropertiesList.
-    oic_common_properties: ClassVar[
-        tuple[FlextMeltanoModels.Meltano.SingerProperty[str], ...]
-    ] = (
+    oic_common_properties: ClassVar[tuple[p.TapOracleOic.SingerProperty, ...]] = (
         FlextMeltanoModels.Meltano.SingerProperty(
             "created",
             FlextMeltanoModels.Meltano.SingerDateTimeType(),
@@ -136,7 +132,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
         """
         page_size_val = self.settings.get("page_size", 100)
         page_size = page_size_val if isinstance(page_size_val, int) else 100
-        return _OicPaginator(start_value=0, page_size=page_size)
+        return FlextTapOracleOicPaginator(start_value=0, page_size=page_size)
 
     @staticmethod
     def get_records(
@@ -326,8 +322,8 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
         return request_id or (self.api_path if self.api_path is not None else self.name)
 
     @staticmethod
-    def _as_oic_envelope(data: t.JsonMapping) -> _OicEnvelope:
-        return _OicEnvelope.model_validate(data, strict=True)
+    def _as_oic_envelope(data: t.JsonMapping) -> FlextTapOracleOicEnvelope:
+        return FlextTapOracleOicEnvelope.model_validate(data, strict=True)
 
     def _handle_response_error(
         self, response: FlextOracleOicModels.Api.HttpResponse

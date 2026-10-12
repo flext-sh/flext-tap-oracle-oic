@@ -14,19 +14,14 @@ from typing import ClassVar, Protocol
 
 from flext_meltano import FlextMeltanoModels, t, u
 
-from flext_tap_oracle_oic._models.stream_base import FlextTapOracleOicStreamBase
+from flext_tap_oracle_oic._models import FlextTapOracleOicStreamBase
 
 
 class _SchemaSource(Protocol):
-    """Structural contract for Singer SDK schema carriers dumped to JSON.
-
-    The upstream ``singer_sdk`` ``to_dict`` return is unparameterized; this
-    protocol pins the fleet contract (a JSON schema mapping) at the single
-    dump site instead of leaking the partially-unknown member type.
-    """
+    """Structural contract for Singer SDK schema carriers dumped to JSON."""
 
     def to_dict(self) -> t.JsonMapping:
-        """The JSON Schema dictionary describing the object."""
+        """Dump the carrier to a JSON Schema mapping."""
         ...
 
 

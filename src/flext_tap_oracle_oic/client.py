@@ -13,8 +13,10 @@ from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 from flext_tap_oracle_oic import c, p, r, t, u
 
 if TYPE_CHECKING:
-    from flext_tap_oracle_oic._settings import FlextTapOracleOicSettings
-    from flext_tap_oracle_oic.authenticator import FlextTapOracleOicAuthenticator
+    from flext_tap_oracle_oic import (
+        FlextTapOracleOicAuthenticator,
+        FlextTapOracleOicSettings,
+    )
 
 
 class FlextTapOracleOicClient:

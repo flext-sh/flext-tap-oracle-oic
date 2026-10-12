@@ -7,8 +7,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tap_oracle_oic import c
-from tests import tm, u
+from tests import c, tm, u
 
 
 class TestsFlextTapOracleOicUtilities:

@@ -8,9 +8,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated, ClassVar, Self
 
-from flext_meltano import FlextMeltanoModels
+from flext_meltano import FlextMeltanoModels, u
 
-from flext_tap_oracle_oic import t, u
+from flext_tap_oracle_oic import t
 
 if TYPE_CHECKING:
     from datetime import datetime

@@ -8,9 +8,9 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from flext_meltano import FlextMeltanoModels
+from flext_meltano import FlextMeltanoModels, u
 
-from flext_tap_oracle_oic import t, u
+from flext_tap_oracle_oic import t
 
 
 class FlextTapOracleOicEnvelope(FlextMeltanoModels.Entity):

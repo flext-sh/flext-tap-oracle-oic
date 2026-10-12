@@ -14,7 +14,10 @@ from enum import StrEnum, unique
 from flext_meltano import FlextMeltanoConstants
 from flext_oracle_oic import FlextOracleOicConstants
 
-from flext_tap_oracle_oic._constants.values import FlextTapOracleOicConstantsValues
+from flext_tap_oracle_oic._constants import (
+    FlextTapOracleOicConstantsBase,
+    FlextTapOracleOicConstantsValues,
+)
 
 
 class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants):
@@ -25,7 +28,11 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
     ``_constants`` SSOT); this class declares only the domain enums.
     """
 
-    class TapOracleOic(FlextTapOracleOicConstantsValues.TapOracleOic):
+    class TapOracleOic(
+        FlextTapOracleOicConstantsValues.TapOracleOic,
+        FlextTapOracleOicConstantsValues,
+        FlextTapOracleOicConstantsBase,
+    ):
         """OIC connection configuration and domain enumerations."""
 
         @unique

@@ -8,9 +8,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated
 
+from flext_meltano import u
 from flext_oracle_oic import m
 
-from flext_tap_oracle_oic import t, u
+from flext_tap_oracle_oic import t
 
 if TYPE_CHECKING:
     from datetime import datetime

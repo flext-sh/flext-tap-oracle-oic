@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from flext_tap_oracle_oic import c, t
-from flext_tap_oracle_oic._models._envelope import FlextTapOracleOicEnvelope
+from flext_tap_oracle_oic._models import FlextTapOracleOicEnvelope
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels

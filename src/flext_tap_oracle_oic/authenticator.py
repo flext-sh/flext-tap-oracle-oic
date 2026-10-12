@@ -13,7 +13,7 @@ from flext_api import FlextApi, FlextApiSettings
 from flext_tap_oracle_oic import c, p, r, t, u
 
 if TYPE_CHECKING:
-    from flext_tap_oracle_oic._settings import FlextTapOracleOicSettings
+    from flext_tap_oracle_oic import FlextTapOracleOicSettings
 
 logger = u.fetch_logger(__name__)
 
