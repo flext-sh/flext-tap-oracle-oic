@@ -10,11 +10,9 @@ from __future__ import annotations
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import FlextOracleOicModels
 
-from flext_tap_oracle_oic._models.stream_base import (
-    FlextTapOracleOicStreamBase,
-)
 from flext_tap_oracle_oic._models._envelope import FlextTapOracleOicEnvelope
 from flext_tap_oracle_oic._models.base import FlextTapOracleOicModelsBase
+from flext_tap_oracle_oic._models.stream_base import FlextTapOracleOicStreamBase
 from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams
 
 
