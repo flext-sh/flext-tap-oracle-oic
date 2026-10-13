@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import Annotated, ClassVar
 
-from flext_meltano import FlextMeltanoModels, u
+from flext_meltano import FlextMeltanoModels, m
 from typing_extensions import TypeForm
 
 from flext_tap_oracle_oic import p, t
@@ -31,31 +31,24 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
 
     settings: Annotated[
         t.JsonMapping,
-        u.Field(
-            default_factory=u.empty(TypeForm(t.JsonMapping)),
+        m.Field(
             description="Runtime stream settings passed by the tap",
         ),
-    ]
+    ] = m.Field(default_factory=m.empty(TypeForm(t.JsonMapping)))
     name: Annotated[
         str,
-        u.Field(default="", description="Canonical Singer stream name"),
-    ]
+        m.Field(description="Canonical Singer stream name"),
+    ] = ""
     replication_key: Annotated[
         str | None,
-        u.Field(default=None, description="Incremental replication key field"),
-    ]
+        m.Field(description="Incremental replication key field"),
+    ] = None
     stream_schema: Annotated[
         t.JsonMapping,
-        u.Field(
-            default_factory=u.empty(TypeForm(t.JsonMapping)),
+        m.Field(
             description="Singer JSON schema mapping for the stream",
         ),
-    ]
-    logger: p.Logger = u.Field(
-        default_factory=lambda: u.fetch_logger(__name__),
-        description="Stream logger",
-    )
-
+    ] = m.Field(default_factory=m.empty(TypeForm(t.JsonMapping)))
     requires_design_api: ClassVar[bool] = False
     requires_runtime_api: ClassVar[bool] = False
     api_path: ClassVar[str | None] = None
