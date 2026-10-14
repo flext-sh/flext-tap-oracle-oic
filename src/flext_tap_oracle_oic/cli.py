@@ -34,7 +34,7 @@ class FlextTapOracleOicCli:
         Returns:
             Process exit code from the tap CLI run.
 
-        
+
         """
         _ = cls
         return FlextTapOracleOicService().cli_main(args)
@@ -80,7 +80,7 @@ def main(args: t.StrSequence | None = None) -> int:
     Returns:
         Process exit code from the tap CLI run.
 
-    
+
     """
     return FlextTapOracleOicCli.run(args)
 

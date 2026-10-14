@@ -35,7 +35,7 @@ class FlextTapOracleOicAuthenticator:
             api_client: HTTP client used for token requests; a default
                 ``FlextApi`` is constructed when omitted.
 
-        
+
         """
         # NOTE (multi-agent): settings live on self; methods read
         # self.settings.TapOracleOic.* (namespaced SSOT, ADR-005).
@@ -65,7 +65,7 @@ class FlextTapOracleOicAuthenticator:
             the authenticator), or failing with the request, HTTP-status,
             or response-payload error.
 
-        
+
         """
 
         def _run_fetch_access_token() -> p.Result[str]:

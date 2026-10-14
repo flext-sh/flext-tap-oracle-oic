@@ -74,7 +74,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             validate_config: Validate the composed settings strictly when
                 true.
 
-        
+
         """
         super().__init__()
         self._tap_config = t.json_dict_adapter().validate_python(settings or {})
@@ -130,7 +130,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             Sequence of configured stream model instances, one per declared
             stream name (infrastructure streams included only when enabled).
 
-        
+
         """
         self.logger.info("Discovering Oracle OIC streams using consolidated streams")
         stream_names = list(c.TapOracleOic.CORE_STREAMS)
@@ -168,7 +168,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             Result succeeding with the Singer catalog mapping, or failing
             when a catalog entry cannot be built.
 
-        
+
         """
         _ = tap_instance
         streams = self.discover_oic_streams()
@@ -204,7 +204,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             Result succeeding with ``True`` when the API responds
             successfully, or failing with the connection error.
 
-        
+
         """
 
         def _run_test_connection() -> p.Result[bool]:

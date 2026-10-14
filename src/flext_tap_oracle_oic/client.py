@@ -35,7 +35,7 @@ class FlextTapOracleOicClient:
                 and HTTP timeout.
             authenticator: Authenticator providing the OAuth2 bearer token.
 
-        
+
         """
         # NOTE (multi-agent): settings live on self; fetch/post read
         # self.settings.TapOracleOic.base_url (namespaced SSOT, ADR-005).
@@ -57,7 +57,7 @@ class FlextTapOracleOicClient:
             Result succeeding with the HTTP response, or failing with the
             auth, transport, or HTTP-status error.
 
-        
+
         """
         return self._dispatch(endpoint)
 
@@ -76,7 +76,7 @@ class FlextTapOracleOicClient:
             Result succeeding with the HTTP response, or failing with the
             auth, transport, or HTTP-status error.
 
-        
+
         """
         return self._dispatch(endpoint, is_post=True, body=self._encode_body(data))
 
@@ -98,7 +98,7 @@ class FlextTapOracleOicClient:
             Result succeeding with the HTTP response, or failing with the
             auth, transport, or HTTP-status error.
 
-        
+
         """
         headers_result = self._get_auth_headers()
         if headers_result.failure:
@@ -138,7 +138,7 @@ class FlextTapOracleOicClient:
         Returns:
             JSON-encoded body string, or ``None`` when no data is given.
 
-        
+
         """
         if not data:
             return None
@@ -156,7 +156,7 @@ class FlextTapOracleOicClient:
             Result succeeding with the request headers, or failing when the
             access token cannot be fetched.
 
-        
+
         """
         token_result = self.authenticator.fetch_access_token()
         if token_result.failure:

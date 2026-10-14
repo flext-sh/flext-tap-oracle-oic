@@ -25,7 +25,7 @@ class FlextTapOracleOicConfig(FlextMeltanoConfig):
 
     MRO carries ``FlextSettings`` FIRST (ENFORCE-042); the class stays a frozen,
     YAML-validated config singleton.
-    
+
     """
 
     TapOracleOic: Annotated[

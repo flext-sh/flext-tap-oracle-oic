@@ -20,7 +20,7 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
 
     Follows FLEXT unified class pattern with nested helper classes for
     domain-specific Singer tap functionality with Oracle Integration Cloud.
-    
+
     """
 
     class TapOracleOic:
@@ -37,7 +37,7 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
                 Result succeeding with the validated URL, or failing when
                 the URL is empty, malformed, or not an OIC endpoint.
 
-            
+
             """
             if not endpoint_url:
                 return r[str].fail("OIC endpoint URL cannot be empty")
@@ -66,7 +66,7 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
                 Result succeeding with ``True`` when the entry is valid, or
                 the failure describing the first violated rule.
 
-            
+
             """
             config_validation = u.validate_value(
                 t.strict_json_mapping_adapter(),
@@ -111,7 +111,7 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
                 Result succeeding with the validated settings mapping, or
                 the failure describing the first invalid stream.
 
-            
+
             """
             if "streams" not in settings:
                 return r[t.JsonMapping].fail(

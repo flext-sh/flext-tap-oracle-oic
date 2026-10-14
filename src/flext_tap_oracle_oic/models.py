@@ -22,7 +22,7 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     Provides the OIC stream namespace, envelope, and stream base composed from
     the ``_models`` family; the OIC domain entities live in ``flext-oracle-oic``
     (ADR-006 thin driver), so the tap does not duplicate them.
-    
+
     """
 
     class TapOracleOic(

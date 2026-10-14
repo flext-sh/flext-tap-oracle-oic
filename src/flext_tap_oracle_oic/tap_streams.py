@@ -21,7 +21,7 @@ class FlextTapOracleOicPaginator:
 
     Empty collections terminate pagination. Invalid collection values raise
     their validation error; they never represent a successfully exhausted page.
-    
+
     """
 
     def __init__(
@@ -36,7 +36,7 @@ class FlextTapOracleOicPaginator:
             page_size: Initial number of records requested per page; later
                 adapted to observed response times within configured bounds.
 
-        
+
         """
         self.current_value: int = start_value
         self._page_size: int = page_size
@@ -55,7 +55,7 @@ class FlextTapOracleOicPaginator:
             Next offset when the page is full, or ``None`` when the
             collection is exhausted; malformed payloads raise.
 
-        
+
         """
         data = self._normalize_response_payload(response)
         return self._calculate_next_offset(data)
@@ -75,7 +75,7 @@ class FlextTapOracleOicPaginator:
         Raises:
             TypeError: If Pagination requires a JSON object response body.
 
-        
+
         """
         match response.body:
             case dict() as body_map:
@@ -94,7 +94,7 @@ class FlextTapOracleOicPaginator:
             Next offset when the page holds a full page of items, or
             ``None`` when pagination is exhausted.
 
-        
+
         """
         items = self._extract_items_from_response(data)
         if items is None or not items or len(items) < self._page_size:
@@ -114,7 +114,7 @@ class FlextTapOracleOicPaginator:
             Item mappings from the ``items`` or ``data`` envelope field, or
             ``None`` when neither is present.
 
-        
+
         """
         envelope = FlextTapOracleOicEnvelope.model_validate(data, strict=True)
         if envelope.items is not None:
@@ -131,7 +131,7 @@ class FlextTapOracleOicPaginator:
         Args:
             response_time: Observed request duration in seconds.
 
-        
+
         """
         self._response_times.append(response_time)
         if len(self._response_times) > c.TapOracleOic.RESPONSE_TIME_HISTORY_SIZE:

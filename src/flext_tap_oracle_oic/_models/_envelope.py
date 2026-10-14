@@ -19,7 +19,7 @@ class FlextTapOracleOicEnvelope(FlextMeltanoModels.Entity):
 
     Parses the outer wrapper that Oracle OIC returns for list responses,
     normalizing between 'items', 'data', 'count', and 'totalSize' fields.
-    
+
     """
 
     items: Annotated[

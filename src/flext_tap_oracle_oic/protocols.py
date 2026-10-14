@@ -48,7 +48,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
             that the static checkers reject in type position; this pins the
             runtime shape (a named property helper) at the single declaration
             site instead of leaking the partially-unknown member type.
-            
+
             """
 
             name: str

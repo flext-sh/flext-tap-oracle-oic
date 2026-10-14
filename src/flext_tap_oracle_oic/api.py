@@ -16,7 +16,7 @@ from flext_meltano.services.consumer_bases.tap_service_base import (
     FlextMeltanoTapServiceBase,
 )
 
-from flext_tap_oracle_oic import p, t, u
+from flext_tap_oracle_oic import m, p, t
 
 
 class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
@@ -24,7 +24,7 @@ class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
 
     tap_name: Annotated[
         t.NonEmptyStr,
-        u.Field(description="Canonical Singer tap identifier."),
+        m.Field(description="Canonical Singer tap identifier."),
     ] = "tap-oracle-oic"
 
     @override
@@ -40,8 +40,6 @@ class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
         Raises:
             TypeError: Always; tap-oracle-oic uses CLI dispatch, not
                 singer_sdk.Tap, so build ``FlextTapOracleOic`` directly.
-
-        
         """
         msg = "tap-oracle-oic uses CLI dispatch, not singer_sdk.Tap"
         raise TypeError(msg)

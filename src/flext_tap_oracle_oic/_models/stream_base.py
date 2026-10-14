@@ -24,7 +24,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
     Carries the Singer stream contract shared by every OIC stream:
     incremental replication identity, the JSON schema mapping, and the
     audit-trail properties spread into each concrete stream schema.
-    
+
     """
 
     model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
@@ -91,8 +91,6 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
 
         Returns:
             The stream schema mapping produced by the property list.
-
-        
         """
         return properties.to_dict()
 
