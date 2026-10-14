@@ -49,12 +49,12 @@ class FlextTapOracleOicAuthenticator:
 
     @property
     def access_token(self) -> str | None:
-        """Return the stored OAuth2 access token, or ``None`` before the first fetch."""
+        """The stored OAuth2 access token, or ``None`` before the first fetch."""
         return self._access_token
 
     @property
     def api_client(self) -> FlextApi:
-        """Return the HTTP client used for token requests."""
+        """The HTTP client used for token requests."""
         return self._api_client
 
     def fetch_access_token(self) -> p.Result[str]:
