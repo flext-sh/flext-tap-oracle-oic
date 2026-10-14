@@ -6,6 +6,7 @@ the tap derives its stream registry from this namespace.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations
@@ -22,6 +23,7 @@ class FlextTapOracleOicModelsStreams:
 
     Contains all OIC stream classes as inner classes; shared audit-trail
     properties come from ``FlextTapOracleOicStreamBase.oic_common_properties``.
+    
     """
 
     class IntegrationsStream(FlextTapOracleOicStreamBase):
@@ -29,6 +31,7 @@ class FlextTapOracleOicModelsStreams:
 
         Extracts complete integration metadata including configurations,
         endpoints, triggers, connections, and execution statistics.
+        
         """
 
         name: str = "integrations"
@@ -138,6 +141,7 @@ class FlextTapOracleOicModelsStreams:
 
         Extracts adapter connection configurations, security policies,
         and connection properties for integrations.
+        
         """
 
         name: str = "connections"
@@ -230,6 +234,7 @@ class FlextTapOracleOicModelsStreams:
 
         Extracts integration packages for deployment and versioning,
         including package metadata and content information.
+        
         """
 
         name: str = "packages"
@@ -300,6 +305,7 @@ class FlextTapOracleOicModelsStreams:
 
         Extracts data transformation lookup tables used in mappings
         and transformations across integrations.
+        
         """
 
         name: str = "lookups"
@@ -360,6 +366,7 @@ class FlextTapOracleOicModelsStreams:
 
         Extracts reusable libraries including JavaScript libraries,
         XSLT stylesheets, and custom functions.
+        
         """
 
         name: str = "libraries"
@@ -427,6 +434,7 @@ class FlextTapOracleOicModelsStreams:
 
         Extracts security certificates used for SSL/TLS connections,
         message encryption, and digital signatures.
+        
         """
 
         name: str = "certificates"
@@ -511,6 +519,7 @@ class FlextTapOracleOicModelsStreams:
 
         Extracts available adapter information including versions,
         capabilities, and configuration options.
+        
         """
 
         name: str = "adapters"
@@ -594,6 +603,7 @@ class FlextTapOracleOicModelsStreams:
 
         Extracts project organization data including folder structure,
         permissions, and resource grouping.
+        
         """
 
         name: str = "projects"
@@ -659,6 +669,7 @@ class FlextTapOracleOicModelsStreams:
 
         Extracts integration execution data including status,
         performance metrics, and error information.
+        
         """
 
         name: str = "executions"
@@ -734,6 +745,7 @@ class FlextTapOracleOicModelsStreams:
 
         Extracts performance and usage metrics for integrations,
         connections, and overall system health.
+        
         """
 
         name: str = "metrics"

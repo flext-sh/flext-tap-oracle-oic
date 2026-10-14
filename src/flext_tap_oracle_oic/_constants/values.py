@@ -18,6 +18,7 @@ class FlextTapOracleOicConstantsValues:
     Inherited attributes do not appear in the namespace class's ``vars()``,
     so the runtime census stops flagging them while every consumer path
     keeps resolving.
+    
     """
 
     class TapOracleOic:

@@ -8,6 +8,7 @@ no per-domain model. Access is ``config.TapOracleOic.<domain>[<key>...]``.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations
@@ -24,6 +25,7 @@ class FlextTapOracleOicConfig(FlextMeltanoConfig):
 
     MRO carries ``FlextSettings`` FIRST (ENFORCE-042); the class stays a frozen,
     YAML-validated config singleton.
+    
     """
 
     TapOracleOic: Annotated[

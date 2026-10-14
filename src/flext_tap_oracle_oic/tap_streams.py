@@ -2,6 +2,7 @@
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ class FlextTapOracleOicPaginator:
 
     Empty collections terminate pagination. Invalid collection values raise
     their validation error; they never represent a successfully exhausted page.
+    
     """
 
     def __init__(
@@ -27,7 +29,15 @@ class FlextTapOracleOicPaginator:
         start_value: int = c.TapOracleOic.DEFAULT_PAGINATOR_START,
         page_size: int = c.TapOracleOic.DEFAULT_PAGINATOR_PAGE_SIZE,
     ) -> None:
-        """Initialize paginator with starting offset and page size."""
+        """Initialize the paginator with starting offset and page size.
+
+        Args:
+            start_value: Initial replication offset.
+            page_size: Initial number of records requested per page; later
+                adapted to observed response times within configured bounds.
+
+        
+        """
         self.current_value: int = start_value
         self._page_size: int = page_size
         self._max_page_size: int = c.TapOracleOic.PAGINATOR_MAX_PAGE_SIZE
@@ -36,10 +46,16 @@ class FlextTapOracleOicPaginator:
         self._response_times: list[float] = []
 
     def fetch_next(self, response: FlextApiModels.Api.HttpResponse) -> int | None:
-        """Fetch the raw Singer page token; malformed responses raise.
+        """Return the raw Singer page token for one response.
+
+        Args:
+            response: HTTP response of the page just fetched.
 
         Returns:
-            The resulting ``int | None``.
+            Next offset when the page is full, or ``None`` when the
+            collection is exhausted; malformed payloads raise.
+
+        
         """
         data = self._normalize_response_payload(response)
         return self._calculate_next_offset(data)
@@ -50,11 +66,16 @@ class FlextTapOracleOicPaginator:
     ) -> t.JsonMapping:
         """Normalize flext-api response bodies to OIC pagination payloads.
 
+        Args:
+            response: HTTP response whose body is normalized.
+
         Returns:
-            The resulting ``t.JsonMapping``.
+            The JSON object payload of the response body.
 
         Raises:
             TypeError: If Pagination requires a JSON object response body.
+
+        
         """
         match response.body:
             case dict() as body_map:
@@ -64,10 +85,16 @@ class FlextTapOracleOicPaginator:
                 raise TypeError(msg)
 
     def _calculate_next_offset(self, data: t.JsonMapping) -> int | None:
-        """Calculate next offset based on OIC response format.
+        """Calculate the next offset based on the OIC response format.
+
+        Args:
+            data: Normalized JSON payload of the response.
 
         Returns:
-            The resulting ``int | None``.
+            Next offset when the page holds a full page of items, or
+            ``None`` when pagination is exhausted.
+
+        
         """
         items = self._extract_items_from_response(data)
         if items is None or not items or len(items) < self._page_size:
@@ -78,10 +105,16 @@ class FlextTapOracleOicPaginator:
     def _extract_items_from_response(
         data: t.JsonMapping,
     ) -> t.SequenceOf[t.JsonMapping] | None:
-        """Extract items from various OIC response formats.
+        """Extract items from the supported OIC response formats.
+
+        Args:
+            data: Normalized JSON payload of the response.
 
         Returns:
-            The resulting ``t.SequenceOf[t.JsonMapping] | None``.
+            Item mappings from the ``items`` or ``data`` envelope field, or
+            ``None`` when neither is present.
+
+        
         """
         envelope = FlextTapOracleOicEnvelope.model_validate(data, strict=True)
         if envelope.items is not None:
@@ -93,7 +126,13 @@ class FlextTapOracleOicPaginator:
         return None
 
     def _track_response_time(self, response_time: float) -> None:
-        """Track response times for adaptive page sizing."""
+        """Track one response time and adapt the page size.
+
+        Args:
+            response_time: Observed request duration in seconds.
+
+        
+        """
         self._response_times.append(response_time)
         if len(self._response_times) > c.TapOracleOic.RESPONSE_TIME_HISTORY_SIZE:
             self._response_times.pop(0)

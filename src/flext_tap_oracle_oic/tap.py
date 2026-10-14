@@ -2,6 +2,7 @@
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations
@@ -65,7 +66,16 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         settings: t.JsonMapping | None = None,
         validate_config: bool = True,
     ) -> None:
-        """Initialize Oracle OIC tap with library composition."""
+        """Initialize Oracle OIC tap with library composition.
+
+        Args:
+            settings: Flat Singer tap configuration mapping; maps into the
+                namespaced settings SSOT (``settings.TapOracleOic.*``).
+            validate_config: Validate the composed settings strictly when
+                true.
+
+        
+        """
         super().__init__()
         self._tap_config = t.json_dict_adapter().validate_python(settings or {})
         # NOTE (multi-agent): flat Singer config maps into the namespaced
@@ -78,12 +88,12 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
 
     @property
     def oic_settings(self) -> FlextTapOracleOicSettings:
-        """The typed OIC settings."""
+        """Return the typed OIC settings."""
         return self._oic_settings
 
     @property
     def client(self) -> FlextTapOracleOicClient:
-        """Oracle OIC client instance using flext-oracle-oic."""
+        """Return the Oracle OIC API client, constructing it on first access."""
         if self._client is None:
             config_dict = self._tap_config
             oic_config_data: t.JsonMapping = {
@@ -117,7 +127,10 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         """Discover OIC stream class instances for this tap.
 
         Returns:
-            The resulting ``t.SequenceOf[FlextTapOracleOicStreamBase]``.
+            Sequence of configured stream model instances, one per declared
+            stream name (infrastructure streams included only when enabled).
+
+        
         """
         self.logger.info("Discovering Oracle OIC streams using consolidated streams")
         stream_names = list(c.TapOracleOic.CORE_STREAMS)
@@ -146,10 +159,16 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         self,
         tap_instance: m.Meltano.TapInstance,
     ) -> p.Result[t.JsonMapping]:
-        """Discover stream catalog matching FlextMeltanoAbstractions contract.
+        """Discover the stream catalog matching the base-class contract.
+
+        Args:
+            tap_instance: Unused; accepted for the base-class signature.
 
         Returns:
-            The resulting ``p.Result[t.JsonMapping]``.
+            Result succeeding with the Singer catalog mapping, or failing
+            when a catalog entry cannot be built.
+
+        
         """
         _ = tap_instance
         streams = self.discover_oic_streams()
@@ -179,10 +198,13 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
         )
 
     def test_connection(self) -> p.Result[bool]:
-        """Test connection to Oracle OIC using real API client.
+        """Test the connection to Oracle OIC with a real API request.
 
         Returns:
-            The resulting ``p.Result[bool]``.
+            Result succeeding with ``True`` when the API responds
+            successfully, or failing with the connection error.
+
+        
         """
 
         def _run_test_connection() -> p.Result[bool]:

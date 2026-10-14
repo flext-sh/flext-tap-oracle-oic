@@ -2,6 +2,7 @@
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations
@@ -26,7 +27,16 @@ class FlextTapOracleOicAuthenticator:
         settings: FlextTapOracleOicSettings,
         api_client: FlextApi | None = None,
     ) -> None:
-        """Initialize authenticator with OAuth2 configuration."""
+        """Initialize the authenticator with OAuth2 configuration.
+
+        Args:
+            settings: Namespaced tap settings supplying the OAuth2 client
+                credentials and token URL.
+            api_client: HTTP client used for token requests; a default
+                ``FlextApi`` is constructed when omitted.
+
+        
+        """
         # NOTE (multi-agent): settings live on self; methods read
         # self.settings.TapOracleOic.* (namespaced SSOT, ADR-005).
         self.settings = settings
@@ -39,19 +49,23 @@ class FlextTapOracleOicAuthenticator:
 
     @property
     def access_token(self) -> str | None:
-        """Stored OAuth2 access token."""
+        """Return the stored OAuth2 access token, or ``None`` before the first fetch."""
         return self._access_token
 
     @property
     def api_client(self) -> FlextApi:
-        """HTTP client used for token requests."""
+        """Return the HTTP client used for token requests."""
         return self._api_client
 
     def fetch_access_token(self) -> p.Result[str]:
         """Fetch an OAuth2 access token using the client credentials flow.
 
         Returns:
-            The resulting ``p.Result[str]``.
+            Result succeeding with the fetched access token (also stored on
+            the authenticator), or failing with the request, HTTP-status,
+            or response-payload error.
+
+        
         """
 
         def _run_fetch_access_token() -> p.Result[str]:

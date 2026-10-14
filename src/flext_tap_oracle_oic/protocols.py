@@ -5,6 +5,7 @@ other inner protocol lost its last consumer and was deleted (STRICT YAGNI).
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations
@@ -47,6 +48,7 @@ class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols)
             that the static checkers reject in type position; this pins the
             runtime shape (a named property helper) at the single declaration
             site instead of leaking the partially-unknown member type.
+            
             """
 
             name: str

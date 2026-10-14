@@ -2,6 +2,7 @@
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations
@@ -27,7 +28,15 @@ class FlextTapOracleOicClient:
         settings: FlextTapOracleOicSettings,
         authenticator: FlextTapOracleOicAuthenticator,
     ) -> None:
-        """Initialize OIC API client."""
+        """Initialize the OIC API client.
+
+        Args:
+            settings: Namespaced tap settings supplying the OIC base URL
+                and HTTP timeout.
+            authenticator: Authenticator providing the OAuth2 bearer token.
+
+        
+        """
         # NOTE (multi-agent): settings live on self; fetch/post read
         # self.settings.TapOracleOic.base_url (namespaced SSOT, ADR-005).
         self.settings = settings
@@ -39,10 +48,16 @@ class FlextTapOracleOicClient:
         self._api_client = FlextApi(runtime_settings=api_config)
 
     def get(self, endpoint: str) -> p.Result[FlextApiModels.Api.HttpResponse]:
-        """Make authenticated GET request to OIC API.
+        """Perform an authenticated GET request to the OIC API.
+
+        Args:
+            endpoint: API path relative to the configured OIC base URL.
 
         Returns:
-            The resulting ``p.Result[FlextApiModels.Api.HttpResponse]``.
+            Result succeeding with the HTTP response, or failing with the
+            auth, transport, or HTTP-status error.
+
+        
         """
         return self._dispatch(endpoint)
 
@@ -51,10 +66,17 @@ class FlextTapOracleOicClient:
         endpoint: str,
         data: t.MappingKV[str, t.JsonMapping] | None = None,
     ) -> p.Result[FlextApiModels.Api.HttpResponse]:
-        """Make authenticated POST request to OIC API.
+        """Perform an authenticated POST request to the OIC API.
+
+        Args:
+            endpoint: API path relative to the configured OIC base URL.
+            data: Optional JSON request body mapping.
 
         Returns:
-            The resulting ``p.Result[FlextApiModels.Api.HttpResponse]``.
+            Result succeeding with the HTTP response, or failing with the
+            auth, transport, or HTTP-status error.
+
+        
         """
         return self._dispatch(endpoint, is_post=True, body=self._encode_body(data))
 
@@ -67,8 +89,16 @@ class FlextTapOracleOicClient:
     ) -> p.Result[FlextApiModels.Api.HttpResponse]:
         """Send one authenticated request and normalize its outcome.
 
+        Args:
+            endpoint: API path relative to the configured OIC base URL.
+            is_post: Send a POST instead of a GET request.
+            body: Encoded request body for POST requests.
+
         Returns:
-            The resulting ``p.Result[FlextApiModels.Api.HttpResponse]``.
+            Result succeeding with the HTTP response, or failing with the
+            auth, transport, or HTTP-status error.
+
+        
         """
         headers_result = self._get_auth_headers()
         if headers_result.failure:
@@ -102,8 +132,13 @@ class FlextTapOracleOicClient:
     def _encode_body(data: t.MappingKV[str, t.JsonMapping] | None) -> str | None:
         """Encode an optional JSON request body.
 
+        Args:
+            data: Optional JSON request body mapping.
+
         Returns:
-            The resulting ``str | None``.
+            JSON-encoded body string, or ``None`` when no data is given.
+
+        
         """
         if not data:
             return None
@@ -115,10 +150,13 @@ class FlextTapOracleOicClient:
         )
 
     def _get_auth_headers(self) -> p.Result[t.StrMapping]:
-        """Build authorization headers with the OAuth2 token.
+        """Build the authorization headers carrying the OAuth2 bearer token.
 
         Returns:
-            The resulting ``p.Result[t.StrMapping]``.
+            Result succeeding with the request headers, or failing when the
+            access token cannot be fetched.
+
+        
         """
         token_result = self.authenticator.fetch_access_token()
         if token_result.failure:

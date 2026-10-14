@@ -5,6 +5,7 @@ namespace and the facade) share one owner without a facade import cycle.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations
@@ -23,6 +24,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
     Carries the Singer stream contract shared by every OIC stream:
     incremental replication identity, the JSON schema mapping, and the
     audit-trail properties spread into each concrete stream schema.
+    
     """
 
     model_config: ClassVar[FlextMeltanoModels.ConfigDict] = (
@@ -88,7 +90,9 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
             properties: The constructed Singer SDK property list to dump.
 
         Returns:
-            The resulting ``t.JsonMapping``.
+            The stream schema mapping produced by the property list.
+
+        
         """
         return properties.to_dict()
 

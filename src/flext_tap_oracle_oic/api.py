@@ -1,11 +1,11 @@
 """FLEXT service orchestrator for tap-oracle-oic.
 
-from flext_tap_oracle_oic import u
 Thin facade — all infrastructure from ``FlextMeltanoTapServiceBase`` via MRO.
 The tap uses FlextMeltanoAbstractions (CLI dispatch), not singer_sdk.Tap.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations
@@ -32,10 +32,16 @@ class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
         self,
         settings: p.Settings | t.JsonMapping | None = None,
     ) -> Never:
-        """Not supported — use FlextTapOracleOic directly.
+        """Raise ``TypeError``; tap instance creation is not supported.
+
+        Args:
+            settings: Unused; accepted for the base-class signature.
 
         Raises:
-            TypeError: If tap-oracle-oic uses CLI dispatch, not singer_sdk.Tap.
+            TypeError: Always; tap-oracle-oic uses CLI dispatch, not
+                singer_sdk.Tap, so build ``FlextTapOracleOic`` directly.
+
+        
         """
         msg = "tap-oracle-oic uses CLI dispatch, not singer_sdk.Tap"
         raise TypeError(msg)
