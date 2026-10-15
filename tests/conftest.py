@@ -9,7 +9,8 @@ from __future__ import annotations
 
 import pytest
 
-from flext_tap_oracle_oic import FlextTapOracleOic, m, t
+from flext_tap_oracle_oic import FlextTapOracleOic
+from tests import m, u
 
 
 @pytest.fixture
@@ -24,8 +25,9 @@ def tap_instance(tap_oracle_oic: FlextTapOracleOic) -> m.Meltano.TapInstance:
 
     Returns:
         The resulting ``m.Meltano.TapInstance``.
+
     """
-    connection_config = t.json_mapping_adapter().validate_python(
+    connection_config = u.json_mapping_adapter().validate_python(
         tap_oracle_oic.oic_settings.TapOracleOic.model_dump(mode="json"),
     )
     config = m.Meltano.TapConfig(

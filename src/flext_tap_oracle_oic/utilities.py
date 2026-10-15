@@ -20,6 +20,7 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
 
     Follows FLEXT unified class pattern with nested helper classes for
     domain-specific Singer tap functionality with Oracle Integration Cloud.
+
     """
 
     class TapOracleOic:
@@ -27,13 +28,15 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
 
         @staticmethod
         def validate_oic_endpoint(endpoint_url: str) -> p.Result[str]:
-            """Validate Oracle OIC endpoint URL.
+            """Validate an Oracle OIC endpoint URL.
 
             Args:
-            endpoint_url: OIC endpoint URL
+                endpoint_url: Candidate OIC endpoint URL.
 
             Returns:
-            r[str]: Validated URL or error
+                Result succeeding with the validated URL, or failing when
+                the URL is empty, malformed, or not an OIC endpoint.
+
 
             """
             if not endpoint_url:
@@ -55,8 +58,15 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
         ) -> p.Result[bool]:
             """Validate one stream entry of the tap configuration.
 
+            Args:
+                stream_name: Name of the stream entry being validated.
+                stream_payload: Raw stream entry payload from the config.
+
             Returns:
-                ``r[bool].ok(value=True)`` when the entry is valid, else the failure.
+                Result succeeding with ``True`` when the entry is valid, or
+                the failure describing the first violated rule.
+
+
             """
             config_validation = u.validate_value(
                 t.strict_json_mapping_adapter(),
@@ -91,13 +101,16 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
 
         @staticmethod
         def validate_stream_config(settings: t.JsonMapping) -> p.Result[t.JsonMapping]:
-            """Validate OIC tap stream configuration.
+            """Validate the OIC tap stream configuration.
 
             Args:
-            settings: Stream configuration
+                settings: Tap settings holding the ``streams`` section to
+                    validate.
 
             Returns:
-            r[t.JsonMapping]: Validated settings or error
+                Result succeeding with the validated settings mapping, or
+                the failure describing the first invalid stream.
+
 
             """
             if "streams" not in settings:
@@ -122,7 +135,7 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
                 if single.failure:
                     return r[t.JsonMapping].from_failure(single)
             return r[t.JsonMapping].ok(
-                t.json_mapping_adapter().validate_python(settings),
+                u.json_mapping_adapter().validate_python(settings),
             )
 
 

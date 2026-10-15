@@ -1,8 +1,8 @@
-"""FLEXT Tap Oracle OIC - Singer SDK CLI Integration.
+"""FLEXT Tap Oracle OIC command-line interface.
 
-This module provides the command-line interface for the Oracle Integration Cloud
-Singer tap, leveraging the Singer SDK's built-in CLI functionality with flext-meltano
-integration for orchestration compatibility.
+This module provides the command-line interface for the Oracle Integration
+Cloud Singer tap, delegating to the ``FlextTapOracleOicService`` CLI
+dispatch (flext-meltano) instead of the Singer SDK CLI.
 
 The tap supports standard Singer protocol operations:
 - Discovery: Generate catalog with `--discover`
@@ -28,19 +28,25 @@ class FlextTapOracleOicCli:
     def run(cls, args: t.StrSequence | None = None) -> int:
         """Execute the canonical tap-oracle-oic CLI entry point.
 
+        Args:
+            args: CLI arguments; defaults to ``sys.argv`` when ``None``.
+
         Returns:
-            The resulting ``int``.
+            Process exit code from the tap CLI run.
+
+
         """
         _ = cls
         return FlextTapOracleOicService().cli_main(args)
 
 
 def main(args: t.StrSequence | None = None) -> int:
-    """Execute Oracle OIC tap using Singer SDK CLI.
+    """Execute the Oracle OIC tap through its CLI entry point.
 
     This function serves as the primary entry point for the tap when
     executed as a command-line tool or Python module. It delegates to
-    the Singer SDK's built-in CLI functionality for full protocol compliance.
+    the ``FlextTapOracleOicService`` CLI dispatch for full Singer
+    protocol compliance.
 
     The CLI supports standard Singer operations:
     - `--discover`: Generate schema catalog
@@ -68,8 +74,13 @@ def main(args: t.StrSequence | None = None) -> int:
         >>> command = FlextMeltanoSingerCliTranslator.translate_tap_run(params)
         >>> # Executes: ["tap-oracle-oic", "--config", "settings.json", "--discover"]
 
+    Args:
+        args: CLI arguments; defaults to ``sys.argv`` when ``None``.
+
     Returns:
-        The resulting ``int``.
+        Process exit code from the tap CLI run.
+
+
     """
     return FlextTapOracleOicCli.run(args)
 
