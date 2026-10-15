@@ -42,6 +42,7 @@ class TestsFlextTapOracleOicUtilities(FlextTestsUtilities, FlextTapOracleOicUtil
                         sequence; or if public discovery catalog entries must be
                         mappings; or if public discovery catalog entries require
                         tap_stream_id.
+
                 """
                 result = tap.discover_streams(tap_instance=tap_instance)
                 tm.ok(result)

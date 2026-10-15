@@ -91,6 +91,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
 
         Returns:
             The stream schema mapping produced by the property list.
+
         """
         return properties.to_dict()
 
