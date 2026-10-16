@@ -11,17 +11,13 @@ from typing import TYPE_CHECKING
 
 import pytest
 from flext_api import m as api_m
-from flext_tests import tm
 
-from flext_tap_oracle_oic import (
-    FlextTapOracleOicPaginator,
-    FlextTapOracleOicSettings,
-    c,
-)
-from tests import u
+from flext_tap_oracle_oic import FlextTapOracleOicPaginator, FlextTapOracleOicSettings
+from tests import c, tm, u
 
 if TYPE_CHECKING:
-    from flext_tap_oracle_oic import FlextTapOracleOic, m, t
+    from flext_tap_oracle_oic import FlextTapOracleOic
+    from tests import m, t
 
 
 class TestsFlextTapOracleOic:

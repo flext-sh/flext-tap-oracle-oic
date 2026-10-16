@@ -2,15 +2,16 @@
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations
 
 from typing import Annotated
 
-from flext_meltano import FlextMeltanoModels
+from flext_meltano import FlextMeltanoModels, m
 
-from flext_tap_oracle_oic import t, u
+from flext_tap_oracle_oic import t
 
 
 class FlextTapOracleOicEnvelope(FlextMeltanoModels.Entity):
@@ -18,19 +19,20 @@ class FlextTapOracleOicEnvelope(FlextMeltanoModels.Entity):
 
     Parses the outer wrapper that Oracle OIC returns for list responses,
     normalizing between 'items', 'data', 'count', and 'totalSize' fields.
+
     """
 
     items: Annotated[
         t.SequenceOf[t.JsonMapping] | None,
-        u.Field(None, description="Records in the returned page"),
+        m.Field(None, description="Records in the returned page"),
     ] = None
     data: Annotated[
         t.SequenceOf[t.JsonMapping] | None,
-        u.Field(None, description="Alternative records payload returned by OIC"),
+        m.Field(None, description="Alternative records payload returned by OIC"),
     ] = None
     total_size: Annotated[
         int | None,
-        u.Field(
+        m.Field(
             None,
             alias="totalSize",
             description="Total number of records available server-side",
@@ -38,7 +40,7 @@ class FlextTapOracleOicEnvelope(FlextMeltanoModels.Entity):
     ] = None
     count: Annotated[
         int | None,
-        u.Field(None, description="Number of records present in this response"),
+        m.Field(None, description="Number of records present in this response"),
     ] = None
 
 

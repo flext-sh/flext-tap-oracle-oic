@@ -14,7 +14,10 @@ from enum import StrEnum, unique
 from flext_meltano import FlextMeltanoConstants
 from flext_oracle_oic import FlextOracleOicConstants
 
-from flext_tap_oracle_oic._constants.values import FlextTapOracleOicConstantsValues
+from flext_tap_oracle_oic._constants import (
+    FlextTapOracleOicConstantsBase,
+    FlextTapOracleOicConstantsValues,
+)
 
 
 class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants):
@@ -23,9 +26,14 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
     Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
     Scalar constants inherit from ``FlextTapOracleOicConstantsValues`` (the
     ``_constants`` SSOT); this class declares only the domain enums.
+
     """
 
-    class TapOracleOic(FlextTapOracleOicConstantsValues.TapOracleOic):
+    class TapOracleOic(
+        FlextTapOracleOicConstantsValues.TapOracleOic,
+        FlextTapOracleOicConstantsValues,
+        FlextTapOracleOicConstantsBase,
+    ):
         """OIC connection configuration and domain enumerations."""
 
         @unique
@@ -117,6 +125,7 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
                 StrEnum is the single source of truth. Use
                 OICResourceType.INTEGRATION.value or OICResourceType.INTEGRATION
                 directly - no base strings needed.
+
             """
 
             INTEGRATION = "integration"
@@ -133,6 +142,7 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
                 StrEnum is the single source of truth. Use
                 IntegrationStatus.ACTIVATED.value or IntegrationStatus.ACTIVATED
                 directly - no base strings needed.
+
             """
 
             CONFIGURED = "configured"
@@ -148,6 +158,7 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
             DRY Pattern:
                 StrEnum is the single source of truth. Use ConnectionStatus.TESTED.value
                 or ConnectionStatus.TESTED directly - no base strings needed.
+
             """
 
             CONFIGURED = "configured"
