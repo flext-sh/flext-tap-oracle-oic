@@ -14,6 +14,8 @@ from __future__ import annotations
 from flext_meltano import FlextMeltanoTypes
 from flext_oracle_oic import FlextOracleOicTypes
 
+from flext_tap_oracle_oic._typings.base import FlextTapOracleOicTypingsBase
+
 
 class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
     """MRO facade composing Meltano + Oracle OIC type namespaces."""
@@ -21,11 +23,7 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
     class TapOracleOic:
         """Tap Oracle OIC-specific adapter namespace."""
 
-        type SectionedSummary = FlextOracleOicTypes.MappingKV[
-            str,
-            FlextOracleOicTypes.MappingKV[str, FlextOracleOicTypes.JsonValue | None],
-        ]
-        """Two-level summary mapping (section -> field -> value-or-None)."""
+        SectionedSummary = FlextTapOracleOicTypingsBase.SectionedSummary
 
 
 t = FlextTapOracleOicTypes
