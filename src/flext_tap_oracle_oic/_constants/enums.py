@@ -154,18 +154,5 @@ class FlextTapOracleOicConstantsEnums:
 
 
 __all__: list[str] = [
-    "ConnectionStatus",
     "FlextTapOracleOicConstantsEnums",
-    "IntegrationStatus",
-    "OICResourceType",
-    "OicAgentStatus",
-    "OicAgentType",
-    "OicConnectionTestStatus",
-    "OicErrorSeverity",
-    "OicErrorType",
-    "OicHealthStatus",
-    "OicIntegrationStatus",
-    "OicIntegrationType",
-    "OicJobStatus",
-    "OicReplicationMethod",
 ]

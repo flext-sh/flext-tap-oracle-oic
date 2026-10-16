@@ -21,5 +21,4 @@ class FlextTapOracleOicTypingsBase:
 
 __all__: list[str] = [
     "FlextTapOracleOicTypingsBase",
-    "SectionedSummary",
 ]
