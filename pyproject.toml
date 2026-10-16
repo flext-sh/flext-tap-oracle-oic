@@ -70,6 +70,7 @@ Homepage = "https://github.com/flext-sh/flext"
 
 [dependency-groups]
 dev = [
+  "mkdocstrings-python>=2.0.9",
   "actionlint-py>=1.7.12.24",
   "bandit>=1.9.4",
   "deptry",
@@ -86,7 +87,6 @@ dev = [
   "mkdocs-redirects>=1.2.3",
   "mkdocs-section-index>=0.3.12",
   "mkdocstrings>=1.0.6",
-  "mkdocstrings-python>=2.0.8",
   "msgpack-types",
   "mypy>=2.3.1",
   "platformdirs>=4.12.0",
@@ -158,7 +158,6 @@ omit = [
 
 [tool.deptry]
 known_first_party = ["flext_tap_oracle_oic"]
-optional_dependencies_dev_groups = ["dev"]
 
 [tool.flext.docs]
 package_name = "flext_tap_oracle_oic"
@@ -170,7 +169,7 @@ scan_dirs = ["src"]
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-include = ["/src/flext_tap_oracle_oic/**"]
+only-include = ["src/flext_tap_oracle_oic"]
 
 [tool.hatch.build.targets.wheel.sources]
 "src/flext_tap_oracle_oic" = "flext_tap_oracle_oic"
@@ -179,7 +178,7 @@ include = ["/src/flext_tap_oracle_oic/**"]
 "pyproject.toml" = "flext_tap_oracle_oic/pyproject.toml"
 
 [tool.hatch.build.targets.sdist]
-include = ["/src/flext_tap_oracle_oic/**"]
+only-include = ["src/flext_tap_oracle_oic"]
 
 [tool.hatch.build.targets.sdist.force-include]
 "pyproject.toml" = "pyproject.toml"
@@ -475,9 +474,8 @@ runtime-evaluated-base-classes = [
   "flext_meltano.services.consumer_bases.tap_service_base.FlextMeltanoTapServiceBase",
   "flext_tap_oracle_oic.FlextTapOracleOicModels.TapOracleOic",
   "flext_tap_oracle_oic.FlextTapOracleOicSettings",
+  "flext_tap_oracle_oic._models.FlextTapOracleOicEnvelope",
   "flext_tap_oracle_oic._models.FlextTapOracleOicStreamBase",
-  "flext_tap_oracle_oic._models._envelope.FlextTapOracleOicEnvelope",
-  "flext_tap_oracle_oic._models.stream_base.FlextTapOracleOicStreamBase",
   "flext_tests.FlextTestsServiceBase",
   "flext_tests.FlextTestsSettings",
   "pydantic.BaseModel",
