@@ -20,12 +20,8 @@ from flext_tap_oracle_oic._protocols import FlextTapOracleOicProtocolsBase
 class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols):
     """Singer Oracle OIC tap protocols facade — composes Meltano + OracleOic."""
 
-    class TapOracleOic:
+    class TapOracleOic(FlextTapOracleOicProtocolsBase):
         """Singer Tap Oracle OIC structural protocols (consumer surface)."""
-
-        Paginator = FlextTapOracleOicProtocolsBase.Paginator
-        SingerProperty = FlextTapOracleOicProtocolsBase.SingerProperty
-        SchemaSource = FlextTapOracleOicProtocolsBase.SchemaSource
 
 
 p = FlextTapOracleOicProtocols
