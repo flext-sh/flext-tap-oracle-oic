@@ -1,3 +1,4 @@
+# AUTO-GENERATED FILE — Regenerate with: make gen
 """Singer tap utilities for Oracle OIC (Oracle Integration Cloud) operations.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
@@ -10,9 +11,7 @@ from __future__ import annotations
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_oic import FlextOracleOicUtilities
 
-from flext_tap_oracle_oic._utilities.validation import (
-    FlextTapOracleOicUtilitiesValidation,
-)
+from flext_tap_oracle_oic._utilities import FlextTapOracleOicUtilitiesValidation
 
 
 class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities):

@@ -1,3 +1,4 @@
+# AUTO-GENERATED FILE — Regenerate with: make gen
 """Singer Oracle OIC tap protocols for FLEXT ecosystem.
 
 Only ``TapOracleOic.Paginator`` (consumed by ``models.py``) remains; every
@@ -13,7 +14,7 @@ from __future__ import annotations
 from flext_meltano import FlextMeltanoProtocols
 from flext_oracle_oic import FlextOracleOicProtocols
 
-from flext_tap_oracle_oic._protocols.base import FlextTapOracleOicProtocolsBase
+from flext_tap_oracle_oic._protocols import FlextTapOracleOicProtocolsBase
 
 
 class FlextTapOracleOicProtocols(FlextMeltanoProtocols, FlextOracleOicProtocols):

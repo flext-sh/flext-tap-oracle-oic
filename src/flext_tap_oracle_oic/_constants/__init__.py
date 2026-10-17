@@ -14,11 +14,13 @@ from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic._constants.base import FlextTapOracleOicConstantsBase
+    from flext_tap_oracle_oic._constants.enums import FlextTapOracleOicConstantsEnums
     from flext_tap_oracle_oic._constants.values import FlextTapOracleOicConstantsValues
 
 
 __all__: tuple[str, ...] = (
     "FlextTapOracleOicConstantsBase",
+    "FlextTapOracleOicConstantsEnums",
     "FlextTapOracleOicConstantsValues",
 )
 
@@ -27,6 +29,7 @@ install_lazy_exports(
     globals(),
     MappingProxyType({
         "FlextTapOracleOicConstantsBase": ".base",
+        "FlextTapOracleOicConstantsEnums": ".enums",
         "FlextTapOracleOicConstantsValues": ".values",
     }),
     public_exports=__all__,
