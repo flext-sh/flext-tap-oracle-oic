@@ -12,6 +12,7 @@ from __future__ import annotations
 
 from typing import Annotated, ClassVar
 
+import flext_core
 from flext_meltano import FlextMeltanoModels, m
 from typing_extensions import TypeForm
 
@@ -36,7 +37,10 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
         m.Field(
             description="Runtime stream settings passed by the tap",
         ),
-    ] = m.Field(default_factory=m.empty(TypeForm(t.JsonMapping)))
+    ] = m.Field(
+        default_factory=lambda: flext_core.u.empty(TypeForm(t.JsonMapping))(),
+        validate_default=True,
+    )
     name: Annotated[
         str,
         m.Field(description="Canonical Singer stream name"),
@@ -50,7 +54,10 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
         m.Field(
             description="Singer JSON schema mapping for the stream",
         ),
-    ] = m.Field(default_factory=m.empty(TypeForm(t.JsonMapping)))
+    ] = m.Field(
+        default_factory=lambda: flext_core.u.empty(TypeForm(t.JsonMapping))(),
+        validate_default=True,
+    )
     requires_design_api: ClassVar[bool] = False
     requires_runtime_api: ClassVar[bool] = False
     api_path: ClassVar[str | None] = None
