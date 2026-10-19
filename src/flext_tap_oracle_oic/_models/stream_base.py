@@ -38,7 +38,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
             description="Runtime stream settings passed by the tap",
         ),
     ] = m.Field(
-        default_factory=lambda: flext_core.u.empty(TypeForm(t.JsonMapping))(),
+        default_factory=flext_core.u.empty(TypeForm(t.JsonMapping)),
         validate_default=True,
     )
     name: Annotated[
@@ -55,7 +55,7 @@ class FlextTapOracleOicStreamBase(FlextMeltanoModels.BaseModel):
             description="Singer JSON schema mapping for the stream",
         ),
     ] = m.Field(
-        default_factory=lambda: flext_core.u.empty(TypeForm(t.JsonMapping))(),
+        default_factory=flext_core.u.empty(TypeForm(t.JsonMapping)),
         validate_default=True,
     )
     requires_design_api: ClassVar[bool] = False
