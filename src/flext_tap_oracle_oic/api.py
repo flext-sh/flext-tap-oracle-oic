@@ -30,12 +30,12 @@ class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
     @override
     def create_tap_instance(
         self,
-        settings: p.Settings | t.JsonMapping | None = None,
+        _settings: p.Settings | t.JsonMapping | None = None,
     ) -> Never:
         """Raise ``TypeError``; tap instance creation is not supported.
 
         Args:
-            settings: Unused; accepted for the base-class signature.
+            _settings: Unused; accepted for the base-class signature.
 
         Raises:
             TypeError: Always; tap-oracle-oic uses CLI dispatch, not
