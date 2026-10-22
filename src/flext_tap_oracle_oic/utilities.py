@@ -19,7 +19,7 @@ class FlextTapOracleOicUtilities(FlextOracleOicUtilities, FlextMeltanoUtilities)
 
     Follows FLEXT unified class pattern with nested helper classes for
     domain-specific Singer tap functionality with Oracle Integration Cloud.
-
+    Extends ucific operations.
     """
 
     class TapOracleOic(FlextTapOracleOicUtilitiesValidation):
