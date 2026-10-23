@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import ClassVar, override
 
-from flext_meltano.services.abstractions import FlextMeltanoAbstractions
+from flext_meltano import FlextMeltanoAbstractions
 
 from flext_tap_oracle_oic import (
     FlextTapOracleOicAuthenticator,
