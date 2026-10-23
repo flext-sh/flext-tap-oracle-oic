@@ -142,12 +142,14 @@ package_name = "flext_tap_oracle_oic"
 scan_dirs = ["src"]
 
 [tool.hatch.build.targets.wheel]
+exclude = ["/src/flext_tap_oracle_oic/config"]
 only-include = ["src/flext_tap_oracle_oic"]
 
 [tool.hatch.build.targets.wheel.sources]
 "src/flext_tap_oracle_oic" = "flext_tap_oracle_oic"
 
 [tool.hatch.build.targets.wheel.force-include]
+"src/flext_tap_oracle_oic/config" = "flext_tap_oracle_oic/config"
 "pyproject.toml" = "flext_tap_oracle_oic/pyproject.toml"
 
 [tool.hatch.build.targets.sdist]
