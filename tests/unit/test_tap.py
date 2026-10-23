@@ -69,7 +69,7 @@ class TestsFlextTapOracleOic:
             request_id="paginator-page-empty",
             body={envelope_key: []},
         )
-        assert paginator.fetch_next(empty_response) is None
+        tm.that(paginator.fetch_next(empty_response), where=lambda value: value is None)
 
     @staticmethod
     @pytest.mark.parametrize("envelope_key", ["items", "data"])
