@@ -18,7 +18,7 @@ from tests import tm
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import FlextTapOracleOic
-    from tests import m, t
+from tests import m, t
 
 
 class TestsFlextTapOracleOicUtilities(FlextTestsUtilities, FlextTapOracleOicUtilities):
