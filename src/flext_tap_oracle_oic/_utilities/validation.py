@@ -59,7 +59,7 @@ class FlextTapOracleOicUtilitiesValidation:
 
         """
         config_validation = u.validate_value(
-            t.strict_json_mapping_adapter(),
+            u.strict_json_mapping_adapter(),
             stream_payload,
         )
         if config_validation.failure:
@@ -75,7 +75,7 @@ class FlextTapOracleOicUtilitiesValidation:
         if "page_size" not in stream_config:
             return r[bool].ok(value=True)
         page_size_validation = u.validate_value(
-            t.int_adapter(),
+            u.int_adapter(),
             stream_config["page_size"],
         )
         if page_size_validation.failure:
@@ -109,7 +109,7 @@ class FlextTapOracleOicUtilitiesValidation:
             )
         streams = settings["streams"]
         stream_validation = u.validate_value(
-            t.strict_json_mapping_adapter(),
+            u.strict_json_mapping_adapter(),
             streams,
         )
         if stream_validation.failure:
