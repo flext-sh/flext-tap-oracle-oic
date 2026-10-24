@@ -10,14 +10,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from flext_api import m as api_m
 
 from flext_tap_oracle_oic import FlextTapOracleOicPaginator, FlextTapOracleOicSettings
-from tests import c, tm, u
+from tests import c, m, t, tm, u
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import FlextTapOracleOic
-from tests import m, t
 
 
 class TestsFlextTapOracleOic:
@@ -54,7 +52,7 @@ class TestsFlextTapOracleOic:
             for index in range(c.TapOracleOic.DEFAULT_PAGINATOR_PAGE_SIZE)
         ]
         body: t.JsonDict = {envelope_key: records}
-        response = api_m.Api.HttpResponse(
+        response = m.Api.HttpResponse(
             status_code=200,
             request_id="paginator-page-1",
             body=body,
@@ -64,7 +62,7 @@ class TestsFlextTapOracleOic:
             paginator.fetch_next(response),
             eq=paginator.current_value + len(records),
         )
-        empty_response = api_m.Api.HttpResponse(
+        empty_response = m.Api.HttpResponse(
             status_code=200,
             request_id="paginator-page-empty",
             body={envelope_key: []},
@@ -75,7 +73,7 @@ class TestsFlextTapOracleOic:
     @pytest.mark.parametrize("envelope_key", ["items", "data"])
     def test_paginator_rejects_malformed_pages(envelope_key: str) -> None:
         """Malformed collection payloads cannot signal successful exhaustion."""
-        response = api_m.Api.HttpResponse(
+        response = m.Api.HttpResponse(
             status_code=200,
             request_id="paginator-page-malformed",
             body={envelope_key: "not-a-collection"},
