@@ -1,3 +1,4 @@
+# AUTO-GENERATED FILE — Regenerate with: make gen
 """Oracle Integration Cloud Models using standardized [Project]Models pattern.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
@@ -10,10 +11,12 @@ from __future__ import annotations
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import FlextOracleOicModels
 
-from flext_tap_oracle_oic._models._envelope import FlextTapOracleOicEnvelope
-from flext_tap_oracle_oic._models.base import FlextTapOracleOicModelsBase
-from flext_tap_oracle_oic._models.stream_base import FlextTapOracleOicStreamBase
-from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams
+from flext_tap_oracle_oic._models import (
+    FlextTapOracleOicEnvelope,
+    FlextTapOracleOicModelsBase,
+    FlextTapOracleOicModelsStreams,
+    FlextTapOracleOicStreamBase,
+)
 
 
 class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):

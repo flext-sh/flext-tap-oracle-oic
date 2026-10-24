@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import ClassVar, override
 
-from flext_meltano.services.abstractions import FlextMeltanoAbstractions
+from flext_meltano import FlextMeltanoAbstractions
 
 from flext_tap_oracle_oic import (
     FlextTapOracleOicAuthenticator,
@@ -77,7 +77,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
 
         """
         super().__init__()
-        self._tap_config = t.json_dict_adapter().validate_python(settings or {})
+        self._tap_config = u.json_dict_adapter().validate_python(settings or {})
         # NOTE (multi-agent): flat Singer config maps into the namespaced
         # settings SSOT (settings.TapOracleOic.*, ADR-005); unknown keys ignored.
         self._oic_settings = FlextTapOracleOicSettings.model_validate(
