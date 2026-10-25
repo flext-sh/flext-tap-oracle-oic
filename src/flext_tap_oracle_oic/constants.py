@@ -10,8 +10,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TypeAlias
-
 from flext_meltano import FlextMeltanoConstants
 from flext_oracle_oic import FlextOracleOicConstants
 
@@ -37,28 +35,6 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
         FlextTapOracleOicConstantsValues.TapOracleOic,
     ):
         """OIC connection configuration and domain enumerations."""
-
-        OicIntegrationStatus: TypeAlias = (
-            FlextTapOracleOicConstantsEnums.OicIntegrationStatus
-        )
-        OicJobStatus: TypeAlias = FlextTapOracleOicConstantsEnums.OicJobStatus
-        OicIntegrationType: TypeAlias = (
-            FlextTapOracleOicConstantsEnums.OicIntegrationType
-        )
-        OicAgentType: TypeAlias = FlextTapOracleOicConstantsEnums.OicAgentType
-        OicAgentStatus: TypeAlias = FlextTapOracleOicConstantsEnums.OicAgentStatus
-        OicHealthStatus: TypeAlias = FlextTapOracleOicConstantsEnums.OicHealthStatus
-        OicErrorSeverity: TypeAlias = FlextTapOracleOicConstantsEnums.OicErrorSeverity
-        OicConnectionTestStatus: TypeAlias = (
-            FlextTapOracleOicConstantsEnums.OicConnectionTestStatus
-        )
-        OicReplicationMethod: TypeAlias = (
-            FlextTapOracleOicConstantsEnums.OicReplicationMethod
-        )
-        OICResourceType: TypeAlias = FlextTapOracleOicConstantsEnums.OICResourceType
-        IntegrationStatus: TypeAlias = FlextTapOracleOicConstantsEnums.IntegrationStatus
-        ConnectionStatus: TypeAlias = FlextTapOracleOicConstantsEnums.ConnectionStatus
-        OicErrorType: TypeAlias = FlextTapOracleOicConstantsEnums.OicErrorType
 
 
 c = FlextTapOracleOicConstants
