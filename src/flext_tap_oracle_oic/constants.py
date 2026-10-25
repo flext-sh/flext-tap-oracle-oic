@@ -1,3 +1,4 @@
+# AUTO-GENERATED FILE — Regenerate with: make gen
 """FLEXT Oracle OIC TAP Constants extending flext-core platform constants.
 
 FLEXT Oracle OIC TAP specific constants that extend flext-core patterns.
@@ -9,14 +10,16 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from typing import TypeAlias
+
 from flext_meltano import FlextMeltanoConstants
 from flext_oracle_oic import FlextOracleOicConstants
 
 from flext_tap_oracle_oic._constants import (
     FlextTapOracleOicConstantsBase,
+    FlextTapOracleOicConstantsEnums,
     FlextTapOracleOicConstantsValues,
 )
-from flext_tap_oracle_oic._constants.enums import FlextTapOracleOicConstantsEnums
 
 
 class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants):
@@ -29,27 +32,33 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
     """
 
     class TapOracleOic(
-        FlextTapOracleOicConstantsValues.TapOracleOic,
-        FlextTapOracleOicConstantsValues,
         FlextTapOracleOicConstantsBase,
+        FlextTapOracleOicConstantsEnums,
+        FlextTapOracleOicConstantsValues.TapOracleOic,
     ):
         """OIC connection configuration and domain enumerations."""
 
-        OicIntegrationStatus = FlextTapOracleOicConstantsEnums.OicIntegrationStatus
-        OicJobStatus = FlextTapOracleOicConstantsEnums.OicJobStatus
-        OicIntegrationType = FlextTapOracleOicConstantsEnums.OicIntegrationType
-        OicAgentType = FlextTapOracleOicConstantsEnums.OicAgentType
-        OicAgentStatus = FlextTapOracleOicConstantsEnums.OicAgentStatus
-        OicHealthStatus = FlextTapOracleOicConstantsEnums.OicHealthStatus
-        OicErrorSeverity = FlextTapOracleOicConstantsEnums.OicErrorSeverity
-        OicConnectionTestStatus = (
+        OicIntegrationStatus: TypeAlias = (
+            FlextTapOracleOicConstantsEnums.OicIntegrationStatus
+        )
+        OicJobStatus: TypeAlias = FlextTapOracleOicConstantsEnums.OicJobStatus
+        OicIntegrationType: TypeAlias = (
+            FlextTapOracleOicConstantsEnums.OicIntegrationType
+        )
+        OicAgentType: TypeAlias = FlextTapOracleOicConstantsEnums.OicAgentType
+        OicAgentStatus: TypeAlias = FlextTapOracleOicConstantsEnums.OicAgentStatus
+        OicHealthStatus: TypeAlias = FlextTapOracleOicConstantsEnums.OicHealthStatus
+        OicErrorSeverity: TypeAlias = FlextTapOracleOicConstantsEnums.OicErrorSeverity
+        OicConnectionTestStatus: TypeAlias = (
             FlextTapOracleOicConstantsEnums.OicConnectionTestStatus
         )
-        OicReplicationMethod = FlextTapOracleOicConstantsEnums.OicReplicationMethod
-        OICResourceType = FlextTapOracleOicConstantsEnums.OICResourceType
-        IntegrationStatus = FlextTapOracleOicConstantsEnums.IntegrationStatus
-        ConnectionStatus = FlextTapOracleOicConstantsEnums.ConnectionStatus
-        OicErrorType = FlextTapOracleOicConstantsEnums.OicErrorType
+        OicReplicationMethod: TypeAlias = (
+            FlextTapOracleOicConstantsEnums.OicReplicationMethod
+        )
+        OICResourceType: TypeAlias = FlextTapOracleOicConstantsEnums.OICResourceType
+        IntegrationStatus: TypeAlias = FlextTapOracleOicConstantsEnums.IntegrationStatus
+        ConnectionStatus: TypeAlias = FlextTapOracleOicConstantsEnums.ConnectionStatus
+        OicErrorType: TypeAlias = FlextTapOracleOicConstantsEnums.OicErrorType
 
 
 c = FlextTapOracleOicConstants

@@ -1,4 +1,5 @@
 
+
 # @flext-generated: continuous
 # @flext-owner: flext-infra/config/codegen.yaml + flext-infra/src/flext_infra/templates/project/base/Makefile.j2
 # @flext-adjust: edit the owner configuration or template; never this projection
@@ -101,7 +102,7 @@ override FLEXT_PYTEST_TESTMON_DATABASE = $(if $(strip $(PYTEST_CACHE_HOME)),$(PY
 # Storage law: the pytest scratch root sits under the user home, keyed by the
 # absolute checkout path, never under /tmp and never inside a versioned tree.
 override FLEXT_PYTEST_SCRATCH_ROOT = $(if $(strip $(HOME)),$(HOME)/.local/state/.flext-runtime$(PROJECT_ROOT)/scratch)
-override PYTEST_RUN_TIMEOUT_SECONDS := 120
+override PYTEST_RUN_TIMEOUT_SECONDS := 60
 override PYTEST_TERMINATION_GRACE_SECONDS := 2
 override PYTEST_TIMEOUT_EXIT_CODE := 124
 override PYTEST_ENFORCEMENT_PLUGIN := flext_tests_enforcement
@@ -330,7 +331,7 @@ ifneq ($(.SHELLSTATUS),0)
 $(error Failed to inspect custom Make targets in $(CUSTOM_MAKEFILE))
 endif
 ifeq ($(APPROVAL_CONTEXT),Y)
-ifneq ($(filter setup gen check tests,$(CUSTOM_DECLARED_TARGETS)),)
+ifneq ($(filter setup check tests,$(CUSTOM_DECLARED_TARGETS)),)
 $(error Approval stages cannot be replaced by custom targets)
 endif
 
@@ -341,16 +342,6 @@ $(error Failed to inspect custom approval reference in $(CUSTOM_MAKEFILE))
 endif
 ifeq ($(CUSTOM_WRAPPER_REFERENCE_COUNT),0)
 $(error Approval stage _custom-setup must chain _builtin-setup (wrapper parity; replacements are forbidden))
-endif
-endif
-
-ifneq ($(filter _custom-gen,$(CUSTOM_DECLARED_TARGETS)),)
-override CUSTOM_WRAPPER_REFERENCE_COUNT := $(shell awk -v reference="_builtin-gen" 'index($$0, reference) { count++ } END { print count + 0 }' "$(CUSTOM_MAKEFILE)")
-ifneq ($(.SHELLSTATUS),0)
-$(error Failed to inspect custom approval reference in $(CUSTOM_MAKEFILE))
-endif
-ifeq ($(CUSTOM_WRAPPER_REFERENCE_COUNT),0)
-$(error Approval stage _custom-gen must chain _builtin-gen (wrapper parity; replacements are forbidden))
 endif
 endif
 
@@ -524,6 +515,14 @@ _bootstrap_setup_tools:
 	mkdir -p "$(PROJECT_ROOT)/.bin"; \
 	export MISE_INSTALL_FROM_GITHUB=1 MISE_INSTALL_SKIP_IF_EXISTS=1 MISE_INSTALL_HELP=0; \
 	export MISE_VERSION="2026.10.3"; \
+	mise_acquired=false; \
+	if [ -x "$(BOOTSTRAP_MISE)" ]; then \
+		mise_present="$$("$(BOOTSTRAP_MISE)" --version)"; \
+		if [ "$${mise_present%% *}" = "$${MISE_VERSION}" ]; then mise_acquired=true; fi; \
+	fi; \
+	if [ "$${mise_acquired}" = true ]; then \
+		printf 'setup: mise %s already acquired at %s\n' "$${MISE_VERSION}" "$(BOOTSTRAP_MISE)"; \
+	else \
 	case "$${OS:-}" in \
 		(Windows_NT) \
 			export MISE_INSTALL_PATH="$$(cygpath --windows "$(BOOTSTRAP_MISE)")"; \
@@ -534,9 +533,11 @@ _bootstrap_setup_tools:
 			curl --proto '=https' --tlsv1.2 -fsSL -o "$${mise_stage}/install.sh" https://mise.run; \
 			sh "$${mise_stage}/install.sh" ;; \
 	esac; \
+	fi; \
 	export MISE_SHIMS_DIR="$(PROJECT_ROOT)/.bin/shims"; \
+	export MISE_LOCKED=1; \
 	bootstrap_stage=tool-install; \
-	"$(BOOTSTRAP_MISE)" -C "$(PROJECT_ROOT)" install --yes "python" "github:jdx/mise" "uv" "github:direnv/direnv" "taplo" "aqua:ast-grep/ast-grep" "gitleaks" "aqua:boyter/scc" "node" "github:qltysh/qlty" "github:kucherenko/jscpd" "github:microsoft/waza"; \
+	"$(BOOTSTRAP_MISE)" -C "$(PROJECT_ROOT)" install --yes "python" "github:jdx/mise" "uv" "github:direnv/direnv" "taplo" "aqua:ast-grep/ast-grep" "gitleaks" "aqua:boyter/scc" "node" "github:qltysh/qlty" "github:kucherenko/jscpd" "github:microsoft/waza" "aqua:j178/prek"; \
 	mise_active="$$("$(BOOTSTRAP_MISE)" -C "$(PROJECT_ROOT)" tool "github:jdx/mise" --active)"; \
 	mise_binary="$$("$(BOOTSTRAP_MISE)" -C "$(PROJECT_ROOT)" which mise)"; \
 	if [ "$${OS:-}" = Windows_NT ]; then mise_binary="$$(cygpath --unix "$${mise_binary}")"; fi; \
@@ -550,10 +551,11 @@ _bootstrap_setup_tools:
 	bootstrap_stage=complete; bootstrap_completed=true
 _bootstrap_setup_tools: _builtin_require_workspace
 
-# Every repository evaluates only itself: a workspace root consumes its members
-# as installed libraries and each member runs its own lifecycle in its own
-# repository. Locally, the mutating verbs fmt/fix/mod then carry that same
-# member-own verb to every governed member (fleet_fanout); CI never fans out.
+# CI evaluates only its own repository. Locally, a workspace root's fmt and fix
+# process the root and every governed member together in one checker run
+# (operator ruling 2026-10-25: never member by member); each multi-root tool
+# runs once over their union.
+GATE_SCOPE := self
 # Local and CI consume the same native project/workspace declarations and lock.
 # Setup always bootstraps: `uv sync --frozen` installs exactly the committed
 # uv.lock without re-resolving or rewriting it, so manifest drift never blocks
@@ -567,7 +569,70 @@ INSTALL_RUNTIME_RECIPE = set -eu; \
 		printf 'ERROR[setup] Mise-resolved Python is not executable: %s\n' "$$desired_python" >&2; \
 		exit 2; \
 	fi; \
-	UV_PROJECT_ENVIRONMENT="$(RUNTIME_VENV)" timeout --signal=TERM --kill-after=5s 118s $(UV) sync --frozen --project "$(RUNTIME_ROOT)" --python "$$desired_python" --no-python-downloads $(SETUP_SYNC_ARGS)
+	UV_PROJECT_ENVIRONMENT="$(RUNTIME_VENV)" timeout --signal=TERM --kill-after=5s 118s $(UV) sync --frozen --project "$(RUNTIME_ROOT)" --python "$$desired_python" --no-python-downloads $(SETUP_SYNC_ARGS); \
+	$(FLEXT_EDITABLE_RECIPE)
+
+# `make setup FLEXT=<path>` (operator ruling 2026-10-24, tracker memory
+# operator-ruling-2026-10-24-setup-flext-editable-param): after the frozen
+# sync, flext-infra's typed selection owner reinstalls editable from <path>
+# every locked FLEXT distribution this environment installed that the FLEXT
+# workspace at <path> provides, and records exactly that selection in the
+# runtime's setup-operations receipt. A plain `make setup` restores the locked
+# installs and removes the receipt; CI installs only homologated frozen locks
+# and refuses FLEXT. The environment provenance gate admits an editable FLEXT
+# distribution only when that receipt names it, outside CI.
+FLEXT_EDITABLE_RECIPE = $(PROJECT_FLEXT_INFRA) workspace flext-editable --repository-root "$(RUNTIME_ROOT)"$(if $(strip $(FLEXT)), --flext-root "$(FLEXT)")
+
+
+# Local setup installs every declared Git hook stage into the effective hooks
+# directory (core.hooksPath included, created when absent) of this repository
+# and, in the same pass, of every governed gitlink declared in its
+# .gitmodules (operator ruling 2026-10-25: workspace verbs process all members
+# together, never member by member), so no configured hook path is ever
+# silently skipped. Each hook runs its checkout's projected validator with the
+# provisioned prek runner; CI installs none.
+INSTALL_GIT_HOOKS_RECIPE = set -eu; \
+	prek_binary="$$($(MISE) -C "$(RUNTIME_ROOT)" which prek)"; \
+	if [ "$${OS:-}" = Windows_NT ]; then prek_binary="$$(cygpath --unix "$$prek_binary")"; fi; \
+	if [ ! -x "$$prek_binary" ]; then \
+		printf 'ERROR[setup] Mise-resolved prek is not executable: %s\n' "$$prek_binary" >&2; \
+		exit 2; \
+	fi; \
+	set -f; \
+	root="$(PROJECT_ROOT)"; \
+	checkouts="."; \
+	if [ -f "$$root/.gitmodules" ]; then \
+		if paths=$$(git -C "$$root" config -f .gitmodules --get-regexp '^submodule\..*\.path$$'); then :; else \
+			status=$$?; [ "$$status" -eq 1 ] || exit "$$status"; paths=""; \
+		fi; \
+		key=""; \
+		for word in $$paths; do \
+			if [ -z "$$key" ]; then key="$$word"; continue; fi; \
+			path="$$word"; \
+			if managed=$$(git -C "$$root" config -f .gitmodules --type=bool --get "$${key%.path}.flext-managed"); then :; else \
+				status=$$?; [ "$$status" -eq 1 ] || exit "$$status"; managed=true; \
+			fi; \
+			key=""; \
+			[ "$$managed" = true ] || continue; \
+			if [ ! -e "$$root/$$path/.git" ]; then \
+				printf 'ERROR[setup] governed gitlink is not initialized: %s\n' "$$path" >&2; exit 2; \
+			fi; \
+			checkouts="$$checkouts $$path"; \
+		done; \
+		if [ -n "$$key" ]; then \
+			printf 'ERROR[setup] gitlink declaration without a path: %s\n' "$$key" >&2; exit 2; \
+		fi; \
+	fi; \
+	for checkout in $$checkouts; do \
+		hooks_dir="$$(git -C "$$root/$$checkout" rev-parse --path-format=absolute --git-path hooks)"; \
+		mkdir -p "$$hooks_dir"; \
+		for stage in pre-commit pre-push; do \
+			printf '\#!/bin/sh\n\# Generated by make setup (flext-infra); rerun make setup to refresh.\nPREK=%s\nexport PREK\nexec "$$(git rev-parse --show-toplevel)/.github/scripts/validate-git-hook.sh" %s\n' "$$prek_binary" "$$stage" > "$$hooks_dir/$$stage.pending"; \
+			chmod 0755 "$$hooks_dir/$$stage.pending"; \
+			mv "$$hooks_dir/$$stage.pending" "$$hooks_dir/$$stage"; \
+			printf 'setup: installed %s hook at %s\n' "$$stage" "$$hooks_dir/$$stage"; \
+		done; \
+	done
 
 # Reject borrowed environments before bootstrap, activation or custom hooks.
 # Members may use their containing workspace, never an unrelated checkout.
@@ -634,8 +699,8 @@ endef
 .PHONY: _builtin_gen_all
 
 
-VERB_DESCRIPTION_setup := Install the declared frozen locks, synchronize the physical environment and configure local integrations.
-VERB_ARGUMENTS_setup :=
+VERB_DESCRIPTION_setup := Install the declared frozen locks, synchronize the physical environment and configure local integrations; FLEXT=<path> reinstalls the FLEXT distributions that workspace provides as editable (local only).
+VERB_ARGUMENTS_setup := FLEXT
 
 VERB_DESCRIPTION_upg := Resolve declared dependency and tool updates and publish their resolution metadata and locks.
 VERB_ARGUMENTS_upg :=
@@ -772,6 +837,9 @@ _setup_activated:
 		Y:*) ;; \
 		*" post-setup "*) $(SELF_MAKE) post-setup ;; \
 	esac
+ifneq ($(CI),Y)
+	@$(INSTALL_GIT_HOOKS_RECIPE)
+endif
 
 _builtin-help:
 	@printf '%s\n' 'flext-tap-oracle-oic [standalone]' ''
@@ -946,13 +1014,12 @@ _builtin_build_artifacts:
 
 # Check is read-only: it runs the gates without --apply, so the tree is left
 # unchanged; fix applies the declared repairs of the fixable gates.
-# CI=Y keeps make.check_gates_ci, the strict complement of
-# make.check_gates_local; CI=N runs that local partition.
-# An absent CI token runs every active default gate.
+# Each gate's declared stage selects its partition: CI=Y runs
+# make.check_gates_ci, CI=C (the commit hook) runs
+# make.pre_commit_check_gates, CI=N runs
+# make.check_gates_local, and an absent CI token runs every active gate.
 _builtin_check_all: _builtin_require_environment
-	@set -eu; \
-		$(PROJECT_FLEXT_INFRA) workspace capture-gate --repository-root "$(PROJECT_ROOT)"; \
-		$(PROJECT_FLEXT_INFRA) codegen conform --root "$(PROJECT_ROOT)" --scope self --mode check
+	@$(PROJECT_FLEXT_INFRA) workspace check --repository-root "$(PROJECT_ROOT)"
 
 _builtin_tests_all: _builtin_require_environment
 	@set -eu; \
@@ -978,10 +1045,10 @@ TESTMON_DATAFILE="$$database" $(PROJECT_INFRA_RUN) -m flext_infra._pytest_entry 
 # lint repair belongs to `make fix`. Every repair requires read-only native
 # verification; remaining findings and tool failures both fail the verb.
 _builtin_fmt_all: _builtin_require_environment
-	@$(PROJECT_FLEXT_INFRA) check run --repository-root "$(PROJECT_ROOT)" --gate-set fmt --apply
+	@$(PROJECT_FLEXT_INFRA) check run --repository-root "$(PROJECT_ROOT)" --gate-set fmt --scope $(GATE_SCOPE) --apply
 
 _builtin_fix_all: _builtin_require_environment
-	@$(PROJECT_FLEXT_INFRA) check run --repository-root "$(PROJECT_ROOT)" --gate-set fix --apply
+	@$(PROJECT_FLEXT_INFRA) check run --repository-root "$(PROJECT_ROOT)" --gate-set fix --scope $(GATE_SCOPE) --apply
 	@$(PROJECT_FLEXT_INFRA) docs fix --repository-root "$(PROJECT_ROOT)" --output-dir ".reports/docs" --projects . --apply
 
 _builtin_clean_generated: _builtin_require_interpreter
@@ -991,23 +1058,17 @@ _builtin_gen_all: _builtin_require_interpreter
 	@set -eu; \
 	scope=all; \
 	if [ "$(strip $(CI))" = "Y" ]; then scope=self; fi; \
-	$(PROJECT_INFRA_RUN) -m flext_infra._profile_entry "$(PROJECT_ROOT)/.reports/codegen/gen.pstats" codegen generate --root "$(PROJECT_ROOT)" --scope "$$scope"
+	FLEXT_INFRA_PROFILE_OUTPUT="$(PROJECT_ROOT)/.reports/codegen/gen.pstats" $(PROJECT_FLEXT_INFRA) codegen generate --root "$(PROJECT_ROOT)" --scope "$$scope"
 
 # Structural rewrites use the target's existing semantic operation.
 _builtin_mod_apply: _builtin_require_environment
-	@$(PROJECT_INFRA_RUN) -m flext_infra._profile_entry "$(PROJECT_ROOT)/.reports/refactor/mod.pstats" refactor mod --repository-root "$(PROJECT_ROOT)" --apply
+	@FLEXT_INFRA_PROFILE_OUTPUT="$(PROJECT_ROOT)/.reports/refactor/mod.pstats" $(PROJECT_FLEXT_INFRA) refactor mod --repository-root "$(PROJECT_ROOT)" --apply
 
 # Public operations invoke only their own canonical implementation.
 _builtin-build: _builtin_build_artifacts
 	@$(PROJECT_FLEXT_INFRA) docs build --repository-root "$(PROJECT_ROOT)" --output-dir ".reports/docs" --projects .
 
 _builtin-check: _builtin_check_all
-ifneq ($(CI),Y)
-	@$(PROJECT_FLEXT_INFRA) workspace verify-lanes --repo-root "$(PROJECT_ROOT)"
-endif
-	@$(PROJECT_FLEXT_INFRA) docs validate --repository-root "$(PROJECT_ROOT)" --output-dir ".reports/docs" --projects .
-	@$(PROJECT_FLEXT_INFRA) docs audit --repository-root "$(PROJECT_ROOT)" --output-dir ".reports/docs" --projects .
-	@$(PROJECT_FLEXT_INFRA) workspace verify-clean --repo-root "$(PROJECT_ROOT)"
 
 _builtin-tests: _builtin_tests_all
 _builtin-fmt: _builtin_fmt_all

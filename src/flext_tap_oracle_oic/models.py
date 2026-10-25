@@ -29,10 +29,10 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     """
 
     class TapOracleOic(
-        FlextTapOracleOicEnvelope,
         FlextTapOracleOicModelsBase,
-        FlextTapOracleOicStreamBase,
         FlextTapOracleOicModelsStreams,
+        FlextTapOracleOicEnvelope,
+        FlextTapOracleOicStreamBase,
     ):
         """TapOracleOic domain namespace."""
 
