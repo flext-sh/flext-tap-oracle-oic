@@ -9,8 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flext_tap_oracle_oic import c, t
-from flext_tap_oracle_oic._models import FlextTapOracleOicEnvelope
+from flext_tap_oracle_oic import c, m, t
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels
@@ -116,7 +115,7 @@ class FlextTapOracleOicPaginator:
 
 
         """
-        envelope = FlextTapOracleOicEnvelope.model_validate(data, strict=True)
+        envelope = m.TapOracleOic.Envelope.model_validate(data, strict=True)
         if envelope.items is not None:
             items: t.SequenceOf[t.JsonMapping] = envelope.items
             return items
