@@ -12,10 +12,9 @@ from flext_meltano import FlextMeltanoModels
 from flext_oracle_oic import FlextOracleOicModels
 
 from flext_tap_oracle_oic._models import (
-    FlextTapOracleOicEnvelope,
     FlextTapOracleOicModelsBase,
+    FlextTapOracleOicModelsEnvelope,
     FlextTapOracleOicModelsStreams,
-    FlextTapOracleOicStreamBase,
 )
 
 
@@ -31,8 +30,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
     class TapOracleOic(
         FlextTapOracleOicModelsBase,
         FlextTapOracleOicModelsStreams,
-        FlextTapOracleOicEnvelope,
-        FlextTapOracleOicStreamBase,
+        FlextTapOracleOicModelsEnvelope,
+        FlextTapOracleOicModelsBase.StreamBase,
     ):
         """TapOracleOic domain namespace."""
 

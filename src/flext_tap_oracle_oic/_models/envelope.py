@@ -14,7 +14,7 @@ from flext_meltano import FlextMeltanoModels, m
 from flext_tap_oracle_oic import t
 
 
-class FlextTapOracleOicEnvelope:
+class FlextTapOracleOicModelsEnvelope:
     """Envelope namespace composed into ``m.TapOracleOic``."""
 
     class Envelope(FlextMeltanoModels.Entity):
@@ -47,4 +47,4 @@ class FlextTapOracleOicEnvelope:
         ] = None
 
 
-__all__: list[str] = ["FlextTapOracleOicEnvelope"]
+__all__: list[str] = ["FlextTapOracleOicModelsEnvelope"]

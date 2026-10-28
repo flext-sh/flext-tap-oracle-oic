@@ -23,8 +23,8 @@ from flext_tap_oracle_oic import (
     u,
 )
 from flext_tap_oracle_oic._models import (
+    FlextTapOracleOicModelsBase,
     FlextTapOracleOicModelsStreams,
-    FlextTapOracleOicStreamBase,
 )
 
 
@@ -123,7 +123,9 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             )
         return self._client
 
-    def discover_oic_streams(self) -> t.SequenceOf[FlextTapOracleOicStreamBase]:
+    def discover_oic_streams(
+        self,
+    ) -> t.SequenceOf[FlextTapOracleOicModelsBase.StreamBase]:
         """Discover OIC stream class instances for this tap.
 
         Returns:
@@ -138,11 +140,13 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             stream_names.extend(c.TapOracleOic.INFRASTRUCTURE_STREAMS)
         # The registry derives from the declaring namespace: every stream class
         # owns its ``name`` default, so no hand-maintained name→class table exists.
-        registry: t.MutableMappingKV[str, type[FlextTapOracleOicStreamBase]] = {}
+        registry: t.MutableMappingKV[
+            str, type[FlextTapOracleOicModelsBase.StreamBase]
+        ] = {}
         for member in vars(FlextTapOracleOicModelsStreams).values():
             if not isinstance(member, type) or not issubclass(
                 member,
-                FlextTapOracleOicStreamBase,
+                FlextTapOracleOicModelsBase.StreamBase,
             ):
                 continue
             registry[str(member.model_fields["name"].default)] = member

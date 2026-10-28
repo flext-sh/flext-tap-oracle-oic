@@ -609,7 +609,7 @@ runtime-evaluated-base-classes = [
   "flext_tap_oracle_oic.FlextTapOracleOicModels.TapOracleOic",
   "flext_tap_oracle_oic.FlextTapOracleOicSettings",
   "flext_tap_oracle_oic._models.FlextTapOracleOicEnvelope",
-  "flext_tap_oracle_oic._models.FlextTapOracleOicStreamBase",
+  "flext_tap_oracle_oic._models.FlextTapOracleOicModelsBase.StreamBase",
   "flext_tests.FlextTestsServiceBase",
   "flext_tests.FlextTestsSettings",
   "pydantic.BaseModel",
