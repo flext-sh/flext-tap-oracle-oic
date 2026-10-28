@@ -67,7 +67,11 @@ class TestsFlextTapOracleOic:
             request_id="paginator-page-empty",
             body={envelope_key: []},
         )
-        tm.that(paginator.fetch_next(empty_response), where=lambda value: value is None)
+
+        def exhausted(value: object) -> bool:
+            return value is None
+
+        tm.that(paginator.fetch_next(empty_response), where=exhausted)
 
     @staticmethod
     @pytest.mark.parametrize("envelope_key", ["items", "data"])
