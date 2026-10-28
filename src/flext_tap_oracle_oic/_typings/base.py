@@ -6,15 +6,17 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
+
 from flext_oracle_oic import FlextOracleOicTypes
 
 
 class FlextTapOracleOicTypingsBase:
     """Tap Oracle OIC adapter type aliases composed into ``t.TapOracleOic``."""
 
-    type SectionedSummary = FlextOracleOicTypes.MappingKV[
+    type SectionedSummary = Mapping[
         str,
-        FlextOracleOicTypes.MappingKV[str, FlextOracleOicTypes.JsonValue | None],
+        Mapping[str, FlextOracleOicTypes.JsonValue | None],
     ]
     """Two-level summary mapping (section -> field -> value-or-None)."""
 

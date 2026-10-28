@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import Annotated
 
 from flext_meltano import FlextMeltanoModels, m
@@ -26,11 +27,11 @@ class FlextTapOracleOicModelsEnvelope:
         """
 
         items: Annotated[
-            t.SequenceOf[t.JsonMapping] | None,
+            Sequence[t.JsonMapping] | None,
             m.Field(None, description="Records in the returned page"),
         ] = None
         data: Annotated[
-            t.SequenceOf[t.JsonMapping] | None,
+            Sequence[t.JsonMapping] | None,
             m.Field(None, description="Alternative records payload returned by OIC"),
         ] = None
         total_size: Annotated[

@@ -11,6 +11,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import ClassVar
 
 from flext_meltano import FlextMeltanoModels, t, u
@@ -36,7 +37,7 @@ class FlextTapOracleOicModelsStreams:
 
         name: str = "integrations"
         path: str = "/integrations"
-        primary_keys: ClassVar[t.StrSequence] = ["id"]
+        primary_keys: ClassVar[Sequence[str]] = ["id"]
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "core"
         requires_design_api: ClassVar[bool] = True
@@ -146,7 +147,7 @@ class FlextTapOracleOicModelsStreams:
 
         name: str = "connections"
         path: str = "/connections"
-        primary_keys: ClassVar[t.StrSequence] = ["id"]
+        primary_keys: ClassVar[Sequence[str]] = ["id"]
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "core"
         requires_design_api: ClassVar[bool] = True
@@ -239,7 +240,7 @@ class FlextTapOracleOicModelsStreams:
 
         name: str = "packages"
         path: str = "/packages"
-        primary_keys: ClassVar[t.StrSequence] = ["id"]
+        primary_keys: ClassVar[Sequence[str]] = ["id"]
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "core"
         default_sort: ClassVar[str | None] = "lastUpdated:desc"
@@ -310,7 +311,7 @@ class FlextTapOracleOicModelsStreams:
 
         name: str = "lookups"
         path: str = "/lookups"
-        primary_keys: ClassVar[t.StrSequence] = ["name"]
+        primary_keys: ClassVar[Sequence[str]] = ["name"]
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "core"
         stream_schema: t.JsonMapping = u.json_mapping_adapter().validate_python(
@@ -371,7 +372,7 @@ class FlextTapOracleOicModelsStreams:
 
         name: str = "libraries"
         path: str = "/libraries"
-        primary_keys: ClassVar[t.StrSequence] = ["id"]
+        primary_keys: ClassVar[Sequence[str]] = ["id"]
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "infrastructure"
         stream_schema: t.JsonMapping = u.json_mapping_adapter().validate_python(
@@ -439,7 +440,7 @@ class FlextTapOracleOicModelsStreams:
 
         name: str = "certificates"
         path: str = "/certificates"
-        primary_keys: ClassVar[t.StrSequence] = ["name"]
+        primary_keys: ClassVar[Sequence[str]] = ["name"]
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "security"
         stream_schema: t.JsonMapping = u.json_mapping_adapter().validate_python(
@@ -524,7 +525,7 @@ class FlextTapOracleOicModelsStreams:
 
         name: str = "adapters"
         path: str = "/adapters"
-        primary_keys: ClassVar[t.StrSequence] = ["id"]
+        primary_keys: ClassVar[Sequence[str]] = ["id"]
         replication_key: str | None = None
         api_category: ClassVar[str] = "infrastructure"
         stream_schema: t.JsonMapping = u.json_mapping_adapter().validate_python(
@@ -608,7 +609,7 @@ class FlextTapOracleOicModelsStreams:
 
         name: str = "projects"
         path: str = "/projects"
-        primary_keys: ClassVar[t.StrSequence] = ["id"]
+        primary_keys: ClassVar[Sequence[str]] = ["id"]
         replication_key: str | None = "lastUpdated"
         api_category: ClassVar[str] = "extended"
         requires_design_api: ClassVar[bool] = True
@@ -674,7 +675,7 @@ class FlextTapOracleOicModelsStreams:
 
         name: str = "executions"
         path: str = "/monitoring/v1/integrations"
-        primary_keys: ClassVar[t.StrSequence] = ["instanceId"]
+        primary_keys: ClassVar[Sequence[str]] = ["instanceId"]
         replication_key: str | None = "startTime"
         api_category: ClassVar[str] = "monitoring"
         requires_monitoring_api: ClassVar[bool] = True
@@ -750,7 +751,7 @@ class FlextTapOracleOicModelsStreams:
 
         name: str = "metrics"
         path: str = "/monitoring/v1/metrics"
-        primary_keys: ClassVar[t.StrSequence] = ["metricId", "timestamp"]
+        primary_keys: ClassVar[Sequence[str]] = ["metricId", "timestamp"]
         replication_key: str | None = "timestamp"
         api_category: ClassVar[str] = "monitoring"
         requires_monitoring_api: ClassVar[bool] = True

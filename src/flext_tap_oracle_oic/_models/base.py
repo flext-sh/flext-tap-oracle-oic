@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import Annotated, ClassVar
 
 from flext_meltano import m, u
@@ -67,7 +68,7 @@ class FlextTapOracleOicModelsBase:
         api_path: ClassVar[str | None] = None
         api_category: ClassVar[str] = "core"
         default_sort: ClassVar[str | None] = None
-        primary_keys: ClassVar[t.StrSequence] = []
+        primary_keys: ClassVar[Sequence[str]] = []
         # Audit-trail properties carried by every OIC stream schema; declared
         # once here and spread into each stream's SingerPropertiesList.
         oic_common_properties: ClassVar[tuple[p.TapOracleOic.SingerProperty, ...]] = (

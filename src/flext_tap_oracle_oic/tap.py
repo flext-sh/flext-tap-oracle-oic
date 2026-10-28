@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import MutableMapping, Sequence
 from typing import ClassVar, override
 
 from flext_meltano import FlextMeltanoAbstractions
@@ -32,7 +33,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
     """Oracle Integration Cloud tap implementation using flext-oracle-oic."""
 
     name: ClassVar[str] = "tap-oracle-oic"
-    capabilities: ClassVar[t.StrSequence] = ["catalog", "state", "discover"]
+    capabilities: ClassVar[Sequence[str]] = ["catalog", "state", "discover"]
     config_jsonschema: ClassVar[t.JsonMapping] = {
         "type": "object",
         "properties": {
@@ -125,7 +126,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
 
     def discover_oic_streams(
         self,
-    ) -> t.SequenceOf[FlextTapOracleOicModelsBase.StreamBase]:
+    ) -> Sequence[FlextTapOracleOicModelsBase.StreamBase]:
         """Discover OIC stream class instances for this tap.
 
         Returns:
@@ -140,9 +141,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             stream_names.extend(c.TapOracleOic.INFRASTRUCTURE_STREAMS)
         # The registry derives from the declaring namespace: every stream class
         # owns its ``name`` default, so no hand-maintained name→class table exists.
-        registry: t.MutableMappingKV[
-            str, type[FlextTapOracleOicModelsBase.StreamBase]
-        ] = {}
+        registry: MutableMapping[str, type[FlextTapOracleOicModelsBase.StreamBase]] = {}
         for member in vars(FlextTapOracleOicModelsStreams).values():
             if not isinstance(member, type) or not issubclass(
                 member,
