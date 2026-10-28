@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_meltano import FlextMeltanoModels
-from flext_oracle_oic import FlextOracleOicModels
+from flext_oracle_oic import FlextModelsOracleOic
 
 from flext_tap_oracle_oic._models import (
     FlextTapOracleOicModelsBase,
@@ -18,7 +18,7 @@ from flext_tap_oracle_oic._models import (
 )
 
 
-class FlextTapOracleOicModels(FlextMeltanoModels, FlextOracleOicModels):
+class FlextTapOracleOicModels(FlextMeltanoModels, FlextModelsOracleOic):
     """Oracle Integration Cloud tap models extending flext-core m.
 
     Provides the OIC stream namespace, envelope, and stream base composed from
