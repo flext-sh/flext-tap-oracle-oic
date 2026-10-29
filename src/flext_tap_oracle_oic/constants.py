@@ -10,8 +10,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_meltano import FlextMeltanoConstants
-from flext_oracle_oic import FlextOracleOicConstants
+from flext_meltano import c as flext_meltano_c
+from flext_oracle_oic import c as flext_oracle_oic_c
 
 from flext_tap_oracle_oic._constants import (
     FlextTapOracleOicConstantsBase,
@@ -20,7 +20,7 @@ from flext_tap_oracle_oic._constants import (
 )
 
 
-class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants):
+class FlextTapOracleOicConstants(flext_meltano_c, flext_oracle_oic_c):
     """FLEXT Oracle OIC TAP constants extending flext-core platform constants.
 
     Composes with FlextOracleOicConstants to avoid duplication and ensure consistency.
@@ -38,5 +38,4 @@ class FlextTapOracleOicConstants(FlextMeltanoConstants, FlextOracleOicConstants)
 
 
 c = FlextTapOracleOicConstants
-
-__all__: tuple[str, ...] = ("FlextTapOracleOicConstants", "c")
+__all__: list[str] = ["FlextTapOracleOicConstants", "c"]

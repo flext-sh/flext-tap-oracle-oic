@@ -1,5 +1,5 @@
 # AUTO-GENERATED FILE — Regenerate with: make gen
-"""Internal package for models.
+"""Flext Tap Oracle Oic. Models package.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from flext_tap_oracle_oic._models.base import FlextTapOracleOicModelsBase
     from flext_tap_oracle_oic._models.envelope import FlextTapOracleOicModelsEnvelope
     from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams
+
 
 __all__: tuple[str, ...] = (
     "FlextTapOracleOicModelsBase",

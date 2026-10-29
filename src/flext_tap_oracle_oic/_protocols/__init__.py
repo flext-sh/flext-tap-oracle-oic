@@ -14,13 +14,24 @@ from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic._protocols.base import FlextTapOracleOicProtocolsBase
+    from flext_tap_oracle_oic._protocols.generated_models_taporacleoic import (
+        FlextTapOracleOicProtocolsGeneratedModelsTapOracleOic,
+    )
 
 
-__all__: tuple[str, ...] = ("FlextTapOracleOicProtocolsBase",)
+__all__: tuple[str, ...] = (
+    "FlextTapOracleOicProtocolsBase",
+    "FlextTapOracleOicProtocolsGeneratedModelsTapOracleOic",
+)
 
 install_lazy_exports(
     __name__,
     globals(),
-    MappingProxyType({"FlextTapOracleOicProtocolsBase": ".base"}),
+    MappingProxyType({
+        "FlextTapOracleOicProtocolsBase": ".base",
+        "FlextTapOracleOicProtocolsGeneratedModelsTapOracleOic": (
+            ".generated_models_taporacleoic"
+        ),
+    }),
     public_exports=__all__,
 )

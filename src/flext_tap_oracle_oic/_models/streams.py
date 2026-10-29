@@ -14,8 +14,9 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import ClassVar
 
-from flext_meltano import FlextMeltanoModels, t, u
+from flext_meltano import FlextMeltanoModels
 
+from flext_tap_oracle_oic import t, u
 from flext_tap_oracle_oic._models import FlextTapOracleOicModelsBase
 
 

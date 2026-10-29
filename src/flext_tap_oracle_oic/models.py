@@ -8,8 +8,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_meltano import FlextMeltanoModels
-from flext_oracle_oic import FlextModelsOracleOic
+from flext_meltano import m as flext_meltano_m
+from flext_oracle_oic import m as flext_oracle_oic_m
 
 from flext_tap_oracle_oic._models import (
     FlextTapOracleOicModelsBase,
@@ -18,7 +18,7 @@ from flext_tap_oracle_oic._models import (
 )
 
 
-class FlextTapOracleOicModels(FlextMeltanoModels, FlextModelsOracleOic):
+class FlextTapOracleOicModels(flext_meltano_m, flext_oracle_oic_m):
     """Oracle Integration Cloud tap models extending flext-core m.
 
     Provides the OIC stream namespace, envelope, and stream base composed from
@@ -28,9 +28,8 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextModelsOracleOic):
     """
 
     class TapOracleOic(
-        FlextTapOracleOicModelsBase,
-        FlextTapOracleOicModelsStreams,
         FlextTapOracleOicModelsEnvelope,
+        FlextTapOracleOicModelsStreams,
         FlextTapOracleOicModelsBase.StreamBase,
     ):
         """TapOracleOic domain namespace."""
@@ -38,5 +37,4 @@ class FlextTapOracleOicModels(FlextMeltanoModels, FlextModelsOracleOic):
 
 # Short alias
 m = FlextTapOracleOicModels
-
 __all__: list[str] = ["FlextTapOracleOicModels", "m"]

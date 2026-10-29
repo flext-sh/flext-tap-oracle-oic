@@ -12,13 +12,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_meltano import FlextMeltanoTypes
-from flext_oracle_oic import FlextOracleOicTypes
+from flext_meltano import t as flext_meltano_t
+from flext_oracle_oic import t as flext_oracle_oic_t
 
 from flext_tap_oracle_oic._typings import FlextTapOracleOicTypingsBase
 
 
-class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
+class FlextTapOracleOicTypes(flext_meltano_t, flext_oracle_oic_t):
     """MRO facade composing Meltano + Oracle OIC type namespaces."""
 
     class TapOracleOic(FlextTapOracleOicTypingsBase):
@@ -26,5 +26,4 @@ class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
 
 
 t = FlextTapOracleOicTypes
-
 __all__: list[str] = ["FlextTapOracleOicTypes", "t"]
