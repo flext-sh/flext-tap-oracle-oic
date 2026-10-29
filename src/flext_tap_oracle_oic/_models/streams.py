@@ -23,7 +23,8 @@ class FlextTapOracleOicModelsStreams:
     """Stream model definitions for Oracle Integration Cloud.
 
     Contains all OIC stream classes as inner classes; shared audit-trail
-    properties come from ``FlextTapOracleOicModelsBase.StreamBase.oic_common_properties``.
+    properties come from
+    ``FlextTapOracleOicModelsBase.StreamBase.oic_common_properties``.
 
     """
 
