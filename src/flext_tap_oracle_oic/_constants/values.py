@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import re
 
-from flext_oracle_oic import FlextOracleOicConstants
+from flext_oracle_oic import FlextOracleOicConstants, t
 
 
 class FlextTapOracleOicConstantsValues:
@@ -25,7 +25,7 @@ class FlextTapOracleOicConstantsValues:
         """Tap Oracle OIC scalar constants."""
 
         # === Regex authority for the TapOracleOic domain ===
-        OCI_REGION_RE: re.Pattern[str] = re.compile(r"(\w+-\w+-\d+)")
+        OCI_REGION_RE: t.RegexPattern = re.compile(r"(\w+-\w+-\d+)")
 
         DEFAULT_BATCH_SIZE: int = 100
         MAX_RETRIES: int = 3
