@@ -8,8 +8,12 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import re
+from typing import TYPE_CHECKING
 
-from flext_oracle_oic import FlextOracleOicConstants, t
+from flext_oracle_oic import FlextOracleOicConstants
+
+if TYPE_CHECKING:
+    from flext_tap_oracle_oic import t
 
 
 class FlextTapOracleOicConstantsValues:
