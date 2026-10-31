@@ -7,9 +7,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import MutableMapping, Sequence
 from typing import ClassVar, override
 
-from flext_meltano.services.abstractions import FlextMeltanoAbstractions
+from flext_meltano import FlextMeltanoAbstractions
 
 from flext_tap_oracle_oic import (
     FlextTapOracleOicAuthenticator,
@@ -23,8 +24,8 @@ from flext_tap_oracle_oic import (
     u,
 )
 from flext_tap_oracle_oic._models import (
+    FlextTapOracleOicModelsBase,
     FlextTapOracleOicModelsStreams,
-    FlextTapOracleOicStreamBase,
 )
 
 
@@ -32,7 +33,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
     """Oracle Integration Cloud tap implementation using flext-oracle-oic."""
 
     name: ClassVar[str] = "tap-oracle-oic"
-    capabilities: ClassVar[t.StrSequence] = ["catalog", "state", "discover"]
+    capabilities: ClassVar[Sequence[str]] = ["catalog", "state", "discover"]
     config_jsonschema: ClassVar[t.JsonMapping] = {
         "type": "object",
         "properties": {
@@ -77,7 +78,7 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
 
         """
         super().__init__()
-        self._tap_config = t.json_dict_adapter().validate_python(settings or {})
+        self._tap_config = u.json_dict_adapter().validate_python(settings or {})
         # NOTE (multi-agent): flat Singer config maps into the namespaced
         # settings SSOT (settings.TapOracleOic.*, ADR-005); unknown keys ignored.
         self._oic_settings = FlextTapOracleOicSettings.model_validate(
@@ -123,7 +124,9 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             )
         return self._client
 
-    def discover_oic_streams(self) -> t.SequenceOf[FlextTapOracleOicStreamBase]:
+    def discover_oic_streams(
+        self,
+    ) -> Sequence[FlextTapOracleOicModelsBase.StreamBase]:
         """Discover OIC stream class instances for this tap.
 
         Returns:
@@ -138,11 +141,11 @@ class FlextTapOracleOic(FlextMeltanoAbstractions):
             stream_names.extend(c.TapOracleOic.INFRASTRUCTURE_STREAMS)
         # The registry derives from the declaring namespace: every stream class
         # owns its ``name`` default, so no hand-maintained name→class table exists.
-        registry: t.MutableMappingKV[str, type[FlextTapOracleOicStreamBase]] = {}
+        registry: MutableMapping[str, type[FlextTapOracleOicModelsBase.StreamBase]] = {}
         for member in vars(FlextTapOracleOicModelsStreams).values():
             if not isinstance(member, type) or not issubclass(
                 member,
-                FlextTapOracleOicStreamBase,
+                FlextTapOracleOicModelsBase.StreamBase,
             ):
                 continue
             registry[str(member.model_fields["name"].default)] = member

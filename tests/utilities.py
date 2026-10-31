@@ -18,7 +18,7 @@ from tests import tm
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import FlextTapOracleOic
-    from tests import m, t
+from tests import m
 
 
 class TestsFlextTapOracleOicUtilities(FlextTestsUtilities, FlextTapOracleOicUtilities):
@@ -34,7 +34,7 @@ class TestsFlextTapOracleOicUtilities(FlextTestsUtilities, FlextTapOracleOicUtil
             def discover_stream_names(
                 tap: FlextTapOracleOic,
                 tap_instance: m.Meltano.TapInstance,
-            ) -> t.StrSequence:
+            ) -> Sequence[str]:
                 """Return stream identifiers from the public Singer catalog.
 
                 Raises:

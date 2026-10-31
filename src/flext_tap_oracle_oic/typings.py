@@ -1,3 +1,4 @@
+# AUTO-GENERATED FILE — Regenerate with: make gen
 """FLEXT Tap Oracle OIC Types — MRO composition of parent type namespaces.
 
 All Singer protocol types are in ``m.Meltano.*``.
@@ -11,23 +12,18 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_meltano import FlextMeltanoTypes
-from flext_oracle_oic import FlextOracleOicTypes
+from flext_meltano import t as flext_meltano_t
+from flext_oracle_oic import t as flext_oracle_oic_t
+
+from flext_tap_oracle_oic._typings import FlextTapOracleOicTypingsBase
 
 
-class FlextTapOracleOicTypes(FlextMeltanoTypes, FlextOracleOicTypes):
+class FlextTapOracleOicTypes(flext_meltano_t, flext_oracle_oic_t):
     """MRO facade composing Meltano + Oracle OIC type namespaces."""
 
-    class TapOracleOic:
-        """Tap Oracle OIC-specific adapter namespace."""
-
-        type SectionedSummary = FlextOracleOicTypes.MappingKV[
-            str,
-            FlextOracleOicTypes.MappingKV[str, FlextOracleOicTypes.JsonValue | None],
-        ]
-        """Two-level summary mapping (section -> field -> value-or-None)."""
+    class TapOracleOic(FlextTapOracleOicTypingsBase):
+        """Tap Oracle OIC namespace composing the ``_typings`` family base."""
 
 
 t = FlextTapOracleOicTypes
-
 __all__: list[str] = ["FlextTapOracleOicTypes", "t"]

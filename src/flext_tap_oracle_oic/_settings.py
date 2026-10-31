@@ -27,7 +27,7 @@ class FlextTapOracleOicSettings(FlextSettings):
         extra="ignore",
     )
 
-    class _TapOracleOic(m.BaseModel):
+    class _TapOracleOic(m.StrictModel):
         """Namespaced Oracle OIC tap settings."""
 
         oauth_client_id: Annotated[str, m.Field(description="OAuth client id")] = ""

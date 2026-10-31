@@ -13,27 +13,24 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_tap_oracle_oic._models._envelope import FlextTapOracleOicEnvelope
     from flext_tap_oracle_oic._models.base import FlextTapOracleOicModelsBase
-    from flext_tap_oracle_oic._models.stream_base import FlextTapOracleOicStreamBase
+    from flext_tap_oracle_oic._models.envelope import FlextTapOracleOicModelsEnvelope
     from flext_tap_oracle_oic._models.streams import FlextTapOracleOicModelsStreams
 
 
 __all__: tuple[str, ...] = (
-    "FlextTapOracleOicEnvelope",
     "FlextTapOracleOicModelsBase",
+    "FlextTapOracleOicModelsEnvelope",
     "FlextTapOracleOicModelsStreams",
-    "FlextTapOracleOicStreamBase",
 )
 
 install_lazy_exports(
     __name__,
     globals(),
     MappingProxyType({
-        "FlextTapOracleOicEnvelope": "._envelope",
         "FlextTapOracleOicModelsBase": ".base",
+        "FlextTapOracleOicModelsEnvelope": ".envelope",
         "FlextTapOracleOicModelsStreams": ".streams",
-        "FlextTapOracleOicStreamBase": ".stream_base",
     }),
     public_exports=__all__,
 )
