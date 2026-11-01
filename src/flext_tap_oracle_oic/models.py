@@ -18,7 +18,13 @@ from flext_tap_oracle_oic._models import (
 )
 
 
-class FlextTapOracleOicModels(flext_meltano_m, flext_oracle_oic_m):
+class FlextTapOracleOicModels(
+    flext_meltano_m,
+    flext_oracle_oic_m,
+    FlextTapOracleOicModelsBase,
+    FlextTapOracleOicModelsEnvelope,
+    FlextTapOracleOicModelsStreams,
+):
     """Oracle Integration Cloud tap models extending flext-core m.
 
     Provides the OIC stream namespace, envelope, and stream base composed from
