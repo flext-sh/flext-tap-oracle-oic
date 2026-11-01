@@ -14,13 +14,19 @@ from __future__ import annotations
 from flext_meltano import p as flext_meltano_p
 from flext_oracle_oic import p as flext_oracle_oic_p
 
-from flext_tap_oracle_oic._protocols import FlextTapOracleOicProtocolsBase
+from flext_tap_oracle_oic._protocols import (
+    FlextTapOracleOicProtocolsBase,
+    FlextTapOracleOicProtocolsGeneratedModelsTapOracleOic,
+)
 
 
 class FlextTapOracleOicProtocols(flext_meltano_p, flext_oracle_oic_p):
     """Singer Oracle OIC tap protocols facade — composes Meltano + OracleOic."""
 
-    class TapOracleOic(FlextTapOracleOicProtocolsBase):
+    class TapOracleOic(
+        FlextTapOracleOicProtocolsBase,
+        FlextTapOracleOicProtocolsGeneratedModelsTapOracleOic,
+    ):
         """Singer Tap Oracle OIC structural protocols (consumer surface)."""
 
 
