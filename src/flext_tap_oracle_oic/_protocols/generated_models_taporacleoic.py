@@ -8,12 +8,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
+from collections.abc import Mapping as collections_abc_Mapping
+from typing import Protocol, runtime_checkable
 
-if TYPE_CHECKING:
-    from collections.abc import Mapping as collections_abc_Mapping
-
-    import pydantic
+import pydantic
 
 
 class FlextTapOracleOicProtocolsGeneratedModelsTapOracleOic:
