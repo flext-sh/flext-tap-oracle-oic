@@ -143,7 +143,7 @@ class FlextTapOracleOicClient:
         if not data:
             return None
         return (
-            t
+            u
             .json_mapping_adapter()
             .dump_json(u.json_mapping_adapter().validate_python(data))
             .decode(c.DEFAULT_ENCODING)
