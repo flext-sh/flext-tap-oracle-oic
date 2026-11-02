@@ -10,7 +10,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Annotated, ClassVar
 
-from flext_meltano import m, p, u
+from flext_meltano import m, u
 
 from flext_tap_oracle_oic import p, t
 
