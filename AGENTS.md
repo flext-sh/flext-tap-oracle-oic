@@ -1,12 +1,13 @@
 # AGENTS.md — flext-tap-oracle-oic
 
-> **Parent workspace law** lives in [`../AGENTS.md`](../AGENTS.md) — read it first.
-> Universal engineering core: `~/.agents/UNIVERSAL_CORE.md`. Composition: global
-> skills + parent/root `AGENTS.md` + this scope delta. Do not re-embed universal law.
->
-> **Standalone / independent mode:** when `../AGENTS.md` does not resolve, pin the
-> parent raw `AGENTS.md` URL to the same branch/release as this package (never
-> `main`): <https://raw.githubusercontent.com/flext-sh/flext/0.12.0-dev/AGENTS.md>
+Read the branch-matched [FLEXT root](../AGENTS.md) and its local flext-law through
+that root's authority entry point. In standalone mode resolve the same branch or
+release; a coincidental parent instruction file does not establish FLEXT authority.
+This file adds only this package's domain delta. Command routing, architecture
+and universal execution stay with their parent owners.
+
+Embedded AI Hub or Beads generated blocks are retired delivery material, not
+active local rules. Their withdrawal remains the publisher's responsibility.
 
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
 
@@ -18,41 +19,15 @@
 Singer **tap** (extractor) for Oracle Integration Cloud. Thin driver over
 `flext-meltano` (ADR-006), delegating REST access to `flext-oracle-oic`.
 
-## Structure
-
-```text
-src/flext_tap_oracle_oic/
-├── api.py            # FlextTapOracleOicService(FlextMeltanoTapServiceBase)
-├── tap.py            # OAuth2 client-credentials authentication
-├── tap_streams.py    # stream topology (+ _models/streams.py::ALL_STREAMS)
-├── constants.py typings.py protocols.py models.py utilities.py   # AUTO-GENERATED facets
-└── _models/
-```
-
-## Code Map
-
-| Symbol                     | Kind  | Location | Role                                                |
-| -------------------------- | ----- | -------- | --------------------------------------------------- |
-| `FlextTapOracleOicService` | class | `api.py` | `FlextMeltanoTapServiceBase`                        |
-| tap                        | code  | `tap.py` | OAuth2 auth; uses `_models/streams.py::ALL_STREAMS` |
-
 ## Conventions (specific to this package)
 
 - Settings use `settings.TapOracleOic.*`.
-- Config/settings canonical pattern: ADR-012.
-- Codemod governance (ast-grep + make mod): ADR-014.
 
 ## Anti-Patterns / Gotchas
 
-- **`_models/*` deliberately imports `flext_meltano` utilities directly** (not the own
-  facade) to avoid facade import cycles — keep that pattern.
-
-## Commands
-
-```bash
-make check
-make test # tests/unit
-```
+- Implementation pending where legacy model declarations import utility behavior:
+  repair the declaring owner under the parent layer law; do not preserve a local
+  import exception as an alternative architectural contract.
 
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
 
