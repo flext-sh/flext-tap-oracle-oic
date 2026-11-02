@@ -10,7 +10,7 @@ from __future__ import annotations
 import pytest
 
 from flext_tap_oracle_oic import FlextTapOracleOic
-from tests import m, u
+from tests import m, p, u
 
 
 @pytest.fixture
@@ -20,7 +20,7 @@ def tap_oracle_oic() -> FlextTapOracleOic:
 
 
 @pytest.fixture
-def tap_instance(tap_oracle_oic: FlextTapOracleOic) -> m.Meltano.TapInstance:
+def tap_instance(tap_oracle_oic: FlextTapOracleOic) -> p.Meltano.TapInstance:
     """Build the public Meltano request from the tap's typed settings.
 
     Returns:
@@ -35,7 +35,7 @@ def tap_instance(tap_oracle_oic: FlextTapOracleOic) -> m.Meltano.TapInstance:
         connection_config=connection_config,
         stream_config={},
     )
-    instance: m.Meltano.TapInstance = m.Meltano.TapInstance.model_validate({
+    instance: p.Meltano.TapInstance = m.Meltano.TapInstance.model_validate({
         "tap_type": tap_oracle_oic.name,
         "config": config,
     })
