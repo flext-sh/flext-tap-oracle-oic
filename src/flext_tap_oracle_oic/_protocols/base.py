@@ -58,32 +58,17 @@ class FlextTapOracleOicProtocolsBase:
             ...
 
     @runtime_checkable
-    class ConfigNamespace(FlextMeltanoProtocols.Model, Protocol):
+    class ConfigNamespace(FlextMeltanoProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
     @runtime_checkable
-    class StreamBase(FlextMeltanoProtocols.Model, Protocol):
+    class StreamBase(FlextMeltanoProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def settings(self) -> t.JsonMapping:
-            """Runtime stream settings passed by the tap."""
-            ...
-
-        @property
-        def name(self) -> str:
-            """Canonical Singer stream name."""
-            ...
-
-        @property
-        def replication_key(self) -> str | None:
-            """Incremental replication key field."""
-            ...
-
-        @property
-        def stream_schema(self) -> t.JsonMapping:
-            """Singer JSON schema mapping for the stream."""
-            ...
+        settings: t.JsonMapping
+        name: str
+        replication_key: str | None
+        stream_schema: t.JsonMapping
 
 
 __all__: list[str] = ["FlextTapOracleOicProtocolsBase"]

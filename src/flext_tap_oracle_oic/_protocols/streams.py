@@ -8,154 +8,75 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
-from flext_meltano import FlextMeltanoProtocols
+from flext_tap_oracle_oic._protocols import FlextTapOracleOicProtocolsBase
 
-from flext_tap_oracle_oic import t
+if TYPE_CHECKING:
+    pass
 
 
 class FlextTapOracleOicProtocolsStreams:
     """Own the structural contracts declared by its model source."""
 
     @runtime_checkable
-    class IntegrationsStream(FlextMeltanoProtocols.Model, Protocol):
+    class IntegrationsStream(FlextTapOracleOicProtocolsBase.StreamBase, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def settings(self) -> t.JsonMapping:
-            """Runtime stream settings passed by the tap."""
-            ...
-
-        name: str
-        replication_key: str | None
-        stream_schema: t.JsonMapping
         path: str
 
     @runtime_checkable
-    class ConnectionsStream(FlextMeltanoProtocols.Model, Protocol):
+    class ConnectionsStream(FlextTapOracleOicProtocolsBase.StreamBase, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def settings(self) -> t.JsonMapping:
-            """Runtime stream settings passed by the tap."""
-            ...
-
-        name: str
-        replication_key: str | None
-        stream_schema: t.JsonMapping
         path: str
 
     @runtime_checkable
-    class PackagesStream(FlextMeltanoProtocols.Model, Protocol):
+    class PackagesStream(FlextTapOracleOicProtocolsBase.StreamBase, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def settings(self) -> t.JsonMapping:
-            """Runtime stream settings passed by the tap."""
-            ...
-
-        name: str
-        replication_key: str | None
-        stream_schema: t.JsonMapping
         path: str
 
     @runtime_checkable
-    class LookupsStream(FlextMeltanoProtocols.Model, Protocol):
+    class LookupsStream(FlextTapOracleOicProtocolsBase.StreamBase, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def settings(self) -> t.JsonMapping:
-            """Runtime stream settings passed by the tap."""
-            ...
-
-        name: str
-        replication_key: str | None
-        stream_schema: t.JsonMapping
         path: str
 
     @runtime_checkable
-    class LibrariesStream(FlextMeltanoProtocols.Model, Protocol):
+    class LibrariesStream(FlextTapOracleOicProtocolsBase.StreamBase, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def settings(self) -> t.JsonMapping:
-            """Runtime stream settings passed by the tap."""
-            ...
-
-        name: str
-        replication_key: str | None
-        stream_schema: t.JsonMapping
         path: str
 
     @runtime_checkable
-    class CertificatesStream(FlextMeltanoProtocols.Model, Protocol):
+    class CertificatesStream(FlextTapOracleOicProtocolsBase.StreamBase, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def settings(self) -> t.JsonMapping:
-            """Runtime stream settings passed by the tap."""
-            ...
-
-        name: str
-        replication_key: str | None
-        stream_schema: t.JsonMapping
         path: str
 
     @runtime_checkable
-    class AdaptersStream(FlextMeltanoProtocols.Model, Protocol):
+    class AdaptersStream(FlextTapOracleOicProtocolsBase.StreamBase, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def settings(self) -> t.JsonMapping:
-            """Runtime stream settings passed by the tap."""
-            ...
-
-        name: str
-        replication_key: str | None
-        stream_schema: t.JsonMapping
         path: str
 
     @runtime_checkable
-    class ProjectsStream(FlextMeltanoProtocols.Model, Protocol):
+    class ProjectsStream(FlextTapOracleOicProtocolsBase.StreamBase, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def settings(self) -> t.JsonMapping:
-            """Runtime stream settings passed by the tap."""
-            ...
-
-        name: str
-        replication_key: str | None
-        stream_schema: t.JsonMapping
         path: str
 
     @runtime_checkable
-    class ExecutionsStream(FlextMeltanoProtocols.Model, Protocol):
+    class ExecutionsStream(FlextTapOracleOicProtocolsBase.StreamBase, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def settings(self) -> t.JsonMapping:
-            """Runtime stream settings passed by the tap."""
-            ...
-
-        name: str
-        replication_key: str | None
-        stream_schema: t.JsonMapping
         path: str
 
     @runtime_checkable
-    class MetricsStream(FlextMeltanoProtocols.Model, Protocol):
+    class MetricsStream(FlextTapOracleOicProtocolsBase.StreamBase, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def settings(self) -> t.JsonMapping:
-            """Runtime stream settings passed by the tap."""
-            ...
-
-        name: str
-        replication_key: str | None
-        stream_schema: t.JsonMapping
         path: str
 
 
