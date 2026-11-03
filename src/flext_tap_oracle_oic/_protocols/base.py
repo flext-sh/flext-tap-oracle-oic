@@ -12,6 +12,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
+from flext_meltano import FlextMeltanoProtocols
+
 from flext_tap_oracle_oic import t
 
 if TYPE_CHECKING:
@@ -53,6 +55,34 @@ class FlextTapOracleOicProtocolsBase:
 
         def to_dict(self) -> t.JsonMapping:
             """Dump the carrier to a JSON Schema mapping."""
+            ...
+
+    @runtime_checkable
+    class ConfigNamespace(FlextMeltanoProtocols.Model, Protocol):
+        """Structural data contract projected from the owning model."""
+
+    @runtime_checkable
+    class StreamBase(FlextMeltanoProtocols.Model, Protocol):
+        """Structural data contract projected from the owning model."""
+
+        @property
+        def settings(self) -> t.JsonMapping:
+            """Runtime stream settings passed by the tap."""
+            ...
+
+        @property
+        def name(self) -> str:
+            """Canonical Singer stream name."""
+            ...
+
+        @property
+        def replication_key(self) -> str | None:
+            """Incremental replication key field."""
+            ...
+
+        @property
+        def stream_schema(self) -> t.JsonMapping:
+            """Singer JSON schema mapping for the stream."""
             ...
 
 
