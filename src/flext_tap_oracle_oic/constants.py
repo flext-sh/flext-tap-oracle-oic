@@ -30,9 +30,9 @@ class FlextTapOracleOicConstants(flext_meltano_c, flext_oracle_oic_c):
     """
 
     class TapOracleOic(
+        FlextTapOracleOicConstantsValues.TapOracleOic,
         FlextTapOracleOicConstantsBase,
         FlextTapOracleOicConstantsEnums,
-        FlextTapOracleOicConstantsValues.TapOracleOic,
     ):
         """OIC connection configuration and domain enumerations."""
 
