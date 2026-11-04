@@ -11,6 +11,7 @@ from collections.abc import Sequence
 from typing import Annotated, ClassVar
 
 from flext_meltano import m, u
+from typing_extensions import TypeForm
 
 from flext_tap_oracle_oic import p, t
 
@@ -42,7 +43,7 @@ class FlextTapOracleOicModelsBase:
                 description="Runtime stream settings passed by the tap",
             ),
         ] = m.Field(
-            default_factory=u.empty(t.TypeForm(t.JsonMapping)),
+            default_factory=u.empty(TypeForm(t.JsonMapping)),
             validate_default=True,
         )
         name: Annotated[
@@ -59,7 +60,7 @@ class FlextTapOracleOicModelsBase:
                 description="Singer JSON schema mapping for the stream",
             ),
         ] = m.Field(
-            default_factory=u.empty(t.TypeForm(t.JsonMapping)),
+            default_factory=u.empty(TypeForm(t.JsonMapping)),
             validate_default=True,
         )
         requires_design_api: ClassVar[bool] = False
