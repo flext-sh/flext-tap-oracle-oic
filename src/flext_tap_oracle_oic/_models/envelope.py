@@ -12,7 +12,7 @@ from typing import Annotated
 
 from flext_meltano import FlextMeltanoModels, m
 
-from flext_tap_oracle_oic import t
+from flext_tap_oracle_oic.typings import t
 
 
 class FlextTapOracleOicModelsEnvelope:

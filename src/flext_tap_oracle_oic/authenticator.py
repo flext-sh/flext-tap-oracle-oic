@@ -11,7 +11,11 @@ from typing import TYPE_CHECKING, ClassVar
 
 from flext_api import FlextApi, FlextApiSettings
 
-from flext_tap_oracle_oic import c, p, r, t, u
+from flext_tap_oracle_oic.constants import c
+from flext_tap_oracle_oic.protocols import p
+from flext_tap_oracle_oic.result import r
+from flext_tap_oracle_oic.typings import t
+from flext_tap_oracle_oic.utilities import u
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import FlextTapOracleOicSettings
@@ -34,7 +38,6 @@ class FlextTapOracleOicAuthenticator:
                 credentials and token URL.
             api_client: HTTP client used for token requests; a default
                 ``FlextApi`` is constructed when omitted.
-
 
         """
         # NOTE (multi-agent): settings live on self; methods read
@@ -64,7 +67,6 @@ class FlextTapOracleOicAuthenticator:
             Result succeeding with the fetched access token (also stored on
             the authenticator), or failing with the request, HTTP-status,
             or response-payload error.
-
 
         """
 

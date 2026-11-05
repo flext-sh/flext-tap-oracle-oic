@@ -12,7 +12,11 @@ from typing import TYPE_CHECKING
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 
-from flext_tap_oracle_oic import c, p, r, t, u
+from flext_tap_oracle_oic.constants import c
+from flext_tap_oracle_oic.protocols import p
+from flext_tap_oracle_oic.result import r
+from flext_tap_oracle_oic.typings import t
+from flext_tap_oracle_oic.utilities import u
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import (
@@ -36,7 +40,6 @@ class FlextTapOracleOicClient:
                 and HTTP timeout.
             authenticator: Authenticator providing the OAuth2 bearer token.
 
-
         """
         # NOTE (multi-agent): settings live on self; fetch/post read
         # self.settings.TapOracleOic.base_url (namespaced SSOT, ADR-005).
@@ -58,7 +61,6 @@ class FlextTapOracleOicClient:
             Result succeeding with the HTTP response, or failing with the
             auth, transport, or HTTP-status error.
 
-
         """
         return self._dispatch(endpoint)
 
@@ -76,7 +78,6 @@ class FlextTapOracleOicClient:
         Returns:
             Result succeeding with the HTTP response, or failing with the
             auth, transport, or HTTP-status error.
-
 
         """
         return self._dispatch(endpoint, is_post=True, body=self._encode_body(data))
@@ -98,7 +99,6 @@ class FlextTapOracleOicClient:
         Returns:
             Result succeeding with the HTTP response, or failing with the
             auth, transport, or HTTP-status error.
-
 
         """
         headers_result = self._get_auth_headers()
@@ -139,7 +139,6 @@ class FlextTapOracleOicClient:
         Returns:
             JSON-encoded body string, or ``None`` when no data is given.
 
-
         """
         if not data:
             return None
@@ -156,7 +155,6 @@ class FlextTapOracleOicClient:
         Returns:
             Result succeeding with the request headers, or failing when the
             access token cannot be fetched.
-
 
         """
         token_result = self.authenticator.fetch_access_token()

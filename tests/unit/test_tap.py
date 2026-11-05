@@ -83,5 +83,5 @@ class TestsFlextTapOracleOic:
             body={envelope_key: "not-a-collection"},
         )
 
-        with pytest.raises(c.ValidationError):
+        with u.Tests.raises(c.ValidationError):
             FlextTapOracleOicPaginator().fetch_next(response)

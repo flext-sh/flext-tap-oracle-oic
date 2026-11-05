@@ -16,8 +16,9 @@ from typing import ClassVar
 
 from flext_meltano import FlextMeltanoModels
 
-from flext_tap_oracle_oic import t, u
 from flext_tap_oracle_oic._models import FlextTapOracleOicModelsBase
+from flext_tap_oracle_oic.typings import t
+from flext_tap_oracle_oic.utilities import u
 
 
 class FlextTapOracleOicModelsStreams:
