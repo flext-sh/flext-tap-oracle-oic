@@ -10,9 +10,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
-from flext_tap_oracle_oic.constants import c
-from flext_tap_oracle_oic.models import m
-from flext_tap_oracle_oic.typings import t
+from flext_tap_oracle_oic import c, m, t
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels

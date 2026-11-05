@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from flext_meltano import FlextMeltanoProtocols
 
-from flext_tap_oracle_oic.typings import t
+from flext_tap_oracle_oic import t
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels

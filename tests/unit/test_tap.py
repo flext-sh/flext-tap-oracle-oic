@@ -9,8 +9,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import pytest
-
 from flext_tap_oracle_oic import FlextTapOracleOicPaginator, FlextTapOracleOicSettings
 from tests import c, m, p, t, tm, u
 
@@ -41,7 +39,7 @@ class TestsFlextTapOracleOic:
         tm.that(names, eq=tuple(c.TapOracleOic.CORE_STREAMS))
 
     @staticmethod
-    @pytest.mark.parametrize("envelope_key", ["items", "data"])
+    @c.Tests.MARK.parametrize("envelope_key", ["items", "data"])
     def test_paginator_returns_raw_tokens_and_stops_on_empty_pages(
         envelope_key: str,
     ) -> None:
@@ -74,7 +72,7 @@ class TestsFlextTapOracleOic:
         tm.that(paginator.fetch_next(empty_response), where=exhausted)
 
     @staticmethod
-    @pytest.mark.parametrize("envelope_key", ["items", "data"])
+    @c.Tests.MARK.parametrize("envelope_key", ["items", "data"])
     def test_paginator_rejects_malformed_pages(envelope_key: str) -> None:
         """Malformed collection payloads cannot signal successful exhaustion."""
         response = m.Api.HttpResponse(
