@@ -12,11 +12,7 @@ from typing import TYPE_CHECKING
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
 
-from flext_tap_oracle_oic.constants import c
-from flext_tap_oracle_oic.protocols import p
-from flext_tap_oracle_oic.result import r
-from flext_tap_oracle_oic.typings import t
-from flext_tap_oracle_oic.utilities import u
+from flext_tap_oracle_oic import c, p, r, t, u
 
 if TYPE_CHECKING:
     from flext_tap_oracle_oic import (
