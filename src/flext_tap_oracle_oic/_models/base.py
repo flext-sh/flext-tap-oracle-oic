@@ -10,10 +10,12 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Annotated, ClassVar
 
-from flext_meltano import m, u
+from flext_meltano import m
 from typing_extensions import TypeForm
 
-from flext_tap_oracle_oic import p, t
+from flext_tap_oracle_oic.protocols import p
+from flext_tap_oracle_oic.typings import t
+from flext_tap_oracle_oic.utilities import u
 
 
 class FlextTapOracleOicModelsBase:

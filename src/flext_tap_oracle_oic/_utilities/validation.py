@@ -8,9 +8,11 @@ from __future__ import annotations
 
 from urllib.parse import urlparse
 
-from flext_meltano import u
-
-from flext_tap_oracle_oic import c, p, r, t
+from flext_tap_oracle_oic.constants import c
+from flext_tap_oracle_oic.protocols import p
+from flext_tap_oracle_oic.result import r
+from flext_tap_oracle_oic.typings import t
+from flext_tap_oracle_oic.utilities import u
 
 
 class FlextTapOracleOicUtilitiesValidation:
@@ -26,7 +28,6 @@ class FlextTapOracleOicUtilitiesValidation:
         Returns:
             Result succeeding with the validated URL, or failing when
             the URL is empty, malformed, or not an OIC endpoint.
-
 
         """
         if not endpoint_url:
@@ -55,7 +56,6 @@ class FlextTapOracleOicUtilitiesValidation:
         Returns:
             Result succeeding with ``True`` when the entry is valid, or
             the failure describing the first violated rule.
-
 
         """
         config_validation = u.validate_value(
@@ -100,7 +100,6 @@ class FlextTapOracleOicUtilitiesValidation:
         Returns:
             Result succeeding with the validated settings mapping, or
             the failure describing the first invalid stream.
-
 
         """
         if "streams" not in settings:

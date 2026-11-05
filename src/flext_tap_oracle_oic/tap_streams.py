@@ -10,7 +10,9 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
-from flext_tap_oracle_oic import c, m, t
+from flext_tap_oracle_oic.constants import c
+from flext_tap_oracle_oic.models import m
+from flext_tap_oracle_oic.typings import t
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels
@@ -36,7 +38,6 @@ class FlextTapOracleOicPaginator:
             page_size: Initial number of records requested per page; later
                 adapted to observed response times within configured bounds.
 
-
         """
         self.current_value: int = start_value
         self._page_size: int = page_size
@@ -54,7 +55,6 @@ class FlextTapOracleOicPaginator:
         Returns:
             Next offset when the page is full, or ``None`` when the
             collection is exhausted; malformed payloads raise.
-
 
         """
         data = self._normalize_response_payload(response)
@@ -75,7 +75,6 @@ class FlextTapOracleOicPaginator:
         Raises:
             TypeError: If Pagination requires a JSON object response body.
 
-
         """
         match response.body:
             case dict() as body_map:
@@ -93,7 +92,6 @@ class FlextTapOracleOicPaginator:
         Returns:
             Next offset when the page holds a full page of items, or
             ``None`` when pagination is exhausted.
-
 
         """
         items = self._extract_items_from_response(data)
@@ -114,7 +112,6 @@ class FlextTapOracleOicPaginator:
             Item mappings from the ``items`` or ``data`` envelope field, or
             ``None`` when neither is present.
 
-
         """
         envelope = m.TapOracleOic.Envelope.model_validate(data, strict=True)
         if envelope.items is not None:
@@ -130,7 +127,6 @@ class FlextTapOracleOicPaginator:
 
         Args:
             response_time: Observed request duration in seconds.
-
 
         """
         self._response_times.append(response_time)

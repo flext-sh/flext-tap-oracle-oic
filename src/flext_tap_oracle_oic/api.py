@@ -14,7 +14,9 @@ from typing import Annotated, Never, override
 
 from flext_meltano import FlextMeltanoTapServiceBase
 
-from flext_tap_oracle_oic import m, p, t
+from flext_tap_oracle_oic.models import m
+from flext_tap_oracle_oic.protocols import p
+from flext_tap_oracle_oic.typings import t
 
 
 class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
