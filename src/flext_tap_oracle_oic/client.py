@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import TYPE_CHECKING
 
 from flext_api import FlextApi, FlextApiModels, FlextApiSettings
@@ -35,7 +36,6 @@ class FlextTapOracleOicClient:
                 and HTTP timeout.
             authenticator: Authenticator providing the OAuth2 bearer token.
 
-
         """
         # NOTE (multi-agent): settings live on self; fetch/post read
         # self.settings.TapOracleOic.base_url (namespaced SSOT, ADR-005).
@@ -57,14 +57,13 @@ class FlextTapOracleOicClient:
             Result succeeding with the HTTP response, or failing with the
             auth, transport, or HTTP-status error.
 
-
         """
         return self._dispatch(endpoint)
 
     def post(
         self,
         endpoint: str,
-        data: t.MappingKV[str, t.JsonMapping] | None = None,
+        data: Mapping[str, t.JsonMapping] | None = None,
     ) -> p.Result[FlextApiModels.Api.HttpResponse]:
         """Perform an authenticated POST request to the OIC API.
 
@@ -75,7 +74,6 @@ class FlextTapOracleOicClient:
         Returns:
             Result succeeding with the HTTP response, or failing with the
             auth, transport, or HTTP-status error.
-
 
         """
         return self._dispatch(endpoint, is_post=True, body=self._encode_body(data))
@@ -97,7 +95,6 @@ class FlextTapOracleOicClient:
         Returns:
             Result succeeding with the HTTP response, or failing with the
             auth, transport, or HTTP-status error.
-
 
         """
         headers_result = self._get_auth_headers()
@@ -129,7 +126,7 @@ class FlextTapOracleOicClient:
             return r[FlextApiModels.Api.HttpResponse].fail_op("OIC API request", e)
 
     @staticmethod
-    def _encode_body(data: t.MappingKV[str, t.JsonMapping] | None) -> str | None:
+    def _encode_body(data: Mapping[str, t.JsonMapping] | None) -> str | None:
         """Encode an optional JSON request body.
 
         Args:
@@ -138,29 +135,27 @@ class FlextTapOracleOicClient:
         Returns:
             JSON-encoded body string, or ``None`` when no data is given.
 
-
         """
         if not data:
             return None
         return (
-            t
+            u
             .json_mapping_adapter()
             .dump_json(u.json_mapping_adapter().validate_python(data))
             .decode(c.DEFAULT_ENCODING)
         )
 
-    def _get_auth_headers(self) -> p.Result[t.StrMapping]:
+    def _get_auth_headers(self) -> p.Result[Mapping[str, str]]:
         """Build the authorization headers carrying the OAuth2 bearer token.
 
         Returns:
             Result succeeding with the request headers, or failing when the
             access token cannot be fetched.
 
-
         """
         token_result = self.authenticator.fetch_access_token()
         if token_result.failure:
-            return r[t.StrMapping].fail(
+            return r[Mapping[str, str]].fail(
                 f"Failed to fetch access token: {token_result.error}",
             )
         headers: t.MutableStrMapping = {
@@ -168,7 +163,7 @@ class FlextTapOracleOicClient:
             "Content-Type": "application/json",
         }
         headers["Authorization"] = f"Bearer {token_result.value}"
-        return r[t.StrMapping].ok(headers)
+        return r[Mapping[str, str]].ok(headers)
 
 
 __all__: list[str] = ["FlextTapOracleOicClient"]

@@ -12,9 +12,7 @@ from __future__ import annotations
 
 from typing import Annotated, Never, override
 
-from flext_meltano.services.consumer_bases.tap_service_base import (
-    FlextMeltanoTapServiceBase,
-)
+from flext_meltano import FlextMeltanoTapServiceBase
 
 from flext_tap_oracle_oic import m, p, t
 
@@ -30,12 +28,12 @@ class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
     @override
     def create_tap_instance(
         self,
-        settings: p.Settings | t.JsonMapping | None = None,
+        _settings: p.Settings | t.JsonMapping | None = None,
     ) -> Never:
         """Raise ``TypeError``; tap instance creation is not supported.
 
         Args:
-            settings: Unused; accepted for the base-class signature.
+            _settings: Unused; accepted for the base-class signature.
 
         Raises:
             TypeError: Always; tap-oracle-oic uses CLI dispatch, not

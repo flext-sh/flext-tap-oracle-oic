@@ -18,14 +18,16 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tap_oracle_oic import FlextTapOracleOicService, t
+from collections.abc import Sequence
+
+from flext_tap_oracle_oic import FlextTapOracleOicService
 
 
 class FlextTapOracleOicCli:
     """CLI wrapper bound to the tap-oracle-oic service facade."""
 
     @classmethod
-    def run(cls, args: t.StrSequence | None = None) -> int:
+    def run(cls, args: Sequence[str] | None = None) -> int:
         """Execute the canonical tap-oracle-oic CLI entry point.
 
         Args:
@@ -40,7 +42,7 @@ class FlextTapOracleOicCli:
         return FlextTapOracleOicService().cli_main(args)
 
 
-def main(args: t.StrSequence | None = None) -> int:
+def main(args: Sequence[str] | None = None) -> int:
     """Execute the Oracle OIC tap through its CLI entry point.
 
     This function serves as the primary entry point for the tap when

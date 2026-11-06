@@ -10,7 +10,7 @@ from typing import override
 
 from flext_tests import FlextTestsServiceBase
 
-from tests import TestsFlextTapOracleOicSettings, m
+from tests import TestsFlextTapOracleOicSettings, m, p
 
 
 class TestsFlextTapOracleOicServiceBase(FlextTestsServiceBase):
@@ -20,7 +20,7 @@ class TestsFlextTapOracleOicServiceBase(FlextTestsServiceBase):
     # declares only its more-specific bootstrap settings type.
     @classmethod
     @override
-    def runtime_bootstrap_options(cls) -> m.RuntimeBootstrapOptions:
+    def runtime_bootstrap_options(cls) -> p.RuntimeBootstrapOptions:
         return m.RuntimeBootstrapOptions(settings_type=TestsFlextTapOracleOicSettings)
 
 

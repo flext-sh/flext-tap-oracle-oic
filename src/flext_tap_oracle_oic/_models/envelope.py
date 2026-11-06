@@ -1,0 +1,51 @@
+"""OIC API response envelope model.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+
+"""
+
+from __future__ import annotations
+
+from collections.abc import Sequence
+from typing import Annotated
+
+from flext_meltano import FlextMeltanoModels, m
+
+from flext_tap_oracle_oic import t
+
+
+class FlextTapOracleOicModelsEnvelope:
+    """Envelope namespace composed into ``m.TapOracleOic``."""
+
+    class Envelope(FlextMeltanoModels.Entity):
+        """OIC API response envelope for paginated list endpoints.
+
+        Parses the outer wrapper that Oracle OIC returns for list responses,
+        normalizing between 'items', 'data', 'count', and 'totalSize' fields.
+
+        """
+
+        items: Annotated[
+            Sequence[t.JsonMapping] | None,
+            m.Field(None, description="Records in the returned page"),
+        ] = None
+        data: Annotated[
+            Sequence[t.JsonMapping] | None,
+            m.Field(None, description="Alternative records payload returned by OIC"),
+        ] = None
+        total_size: Annotated[
+            int | None,
+            m.Field(
+                None,
+                alias="totalSize",
+                description="Total number of records available server-side",
+            ),
+        ] = None
+        count: Annotated[
+            int | None,
+            m.Field(None, description="Number of records present in this response"),
+        ] = None
+
+
+__all__: list[str] = ["FlextTapOracleOicModelsEnvelope"]
