@@ -10,7 +10,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import TYPE_CHECKING
 
-from flext_api import FlextApi, FlextApiModels, FlextApiSettings
+from flext_api import FlextApi, FlextApiProtocols, FlextApiSettings
 
 from flext_tap_oracle_oic import c, p, r, t, u
 
@@ -47,7 +47,7 @@ class FlextTapOracleOicClient:
         })
         self._api_client = FlextApi(runtime_settings=api_config)
 
-    def get(self, endpoint: str) -> p.Result[FlextApiModels.Api.HttpResponse]:
+    def get(self, endpoint: str) -> p.Result[FlextApiProtocols.Api.HttpResponse]:
         """Perform an authenticated GET request to the OIC API.
 
         Args:
@@ -64,7 +64,7 @@ class FlextTapOracleOicClient:
         self,
         endpoint: str,
         data: Mapping[str, t.JsonMapping] | None = None,
-    ) -> p.Result[FlextApiModels.Api.HttpResponse]:
+    ) -> p.Result[FlextApiProtocols.Api.HttpResponse]:
         """Perform an authenticated POST request to the OIC API.
 
         Args:
@@ -84,7 +84,7 @@ class FlextTapOracleOicClient:
         *,
         is_post: bool = False,
         body: str | None = None,
-    ) -> p.Result[FlextApiModels.Api.HttpResponse]:
+    ) -> p.Result[FlextApiProtocols.Api.HttpResponse]:
         """Send one authenticated request and normalize its outcome.
 
         Args:
@@ -99,7 +99,7 @@ class FlextTapOracleOicClient:
         """
         headers_result = self._get_auth_headers()
         if headers_result.failure:
-            return r[FlextApiModels.Api.HttpResponse].fail(
+            return r[FlextApiProtocols.Api.HttpResponse].fail(
                 f"Failed to get auth headers: {headers_result.error}",
             )
         url = (
@@ -112,18 +112,18 @@ class FlextTapOracleOicClient:
                 else self._api_client.get(url, headers=headers_result.value)
             )
             if response_result.failure:
-                return r[FlextApiModels.Api.HttpResponse].fail_op(
+                return r[FlextApiProtocols.Api.HttpResponse].fail_op(
                     "OIC API request",
                     response_result.error,
                 )
             response = response_result.value
             if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
-                return r[FlextApiModels.Api.HttpResponse].fail(
+                return r[FlextApiProtocols.Api.HttpResponse].fail(
                     f"OIC API request failed with status {response.status_code}",
                 )
-            return r[FlextApiModels.Api.HttpResponse].ok(response)
+            return r[FlextApiProtocols.Api.HttpResponse].ok(response)
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
-            return r[FlextApiModels.Api.HttpResponse].fail_op("OIC API request", e)
+            return r[FlextApiProtocols.Api.HttpResponse].fail_op("OIC API request", e)
 
     @staticmethod
     def _encode_body(data: Mapping[str, t.JsonMapping] | None) -> str | None:

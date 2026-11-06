@@ -33,9 +33,9 @@ class FlextTapOracleOicProtocols(
     """Singer Oracle OIC tap protocols facade — composes Meltano + OracleOic."""
 
     class TapOracleOic(
+        FlextTapOracleOicProtocolsGeneratedModelsTapOracleOic.TapOracleOic,
         FlextTapOracleOicProtocolsBase,
         FlextTapOracleOicProtocolsEnvelope,
-        FlextTapOracleOicProtocolsGeneratedModelsTapOracleOic,
         FlextTapOracleOicProtocolsStreams,
     ):
         """Singer Tap Oracle OIC structural protocols (consumer surface)."""
