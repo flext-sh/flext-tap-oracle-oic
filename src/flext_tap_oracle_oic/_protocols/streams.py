@@ -8,12 +8,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 from flext_tap_oracle_oic._protocols import FlextTapOracleOicProtocolsBase
-
-if TYPE_CHECKING:
-    pass
 
 
 class FlextTapOracleOicProtocolsStreams:
