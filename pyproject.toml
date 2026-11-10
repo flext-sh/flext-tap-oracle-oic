@@ -20,11 +20,12 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "flext-api @ git+https://github.com/flext-sh/flext-api.git@0.12.0-dev",
-  "flext-core @ git+https://github.com/flext-sh/flext-core.git@0.12.0-dev",
-  "flext-meltano @ git+https://github.com/flext-sh/flext-meltano.git@0.12.0-dev",
-  "flext-oracle-oic @ git+https://github.com/flext-sh/flext-oracle-oic.git@0.12.0-dev",
-  "typing-extensions>=4.16.0",
+    "flext-api @ git+https://github.com/flext-sh/flext-api.git@0.12.0-dev",
+    "flext-core @ git+https://github.com/flext-sh/flext-core.git@0.12.0-dev",
+    "flext-meltano @ git+https://github.com/flext-sh/flext-meltano.git@0.12.0-dev",
+    "flext-oracle-oic @ git+https://github.com/flext-sh/flext-oracle-oic.git@0.12.0-dev",
+    "typing-extensions>=4.16.0",
+    "pydantic",
 ]
 description = "FLEXT Tap Oracle OIC - Singer Tap for Oracle Integration Cloud"
 keywords = [
