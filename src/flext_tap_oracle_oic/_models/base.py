@@ -10,10 +10,10 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Annotated, ClassVar
 
-from flext_meltano import m
+from flext_meltano import m, t, u
 from typing_extensions import TypeForm
 
-from flext_tap_oracle_oic import p, t, u
+from flext_tap_oracle_oic._protocols import FlextTapOracleOicProtocolsBase
 
 
 class FlextTapOracleOicModelsBase:
@@ -71,7 +71,9 @@ class FlextTapOracleOicModelsBase:
         primary_keys: ClassVar[Sequence[str]] = []
         # Audit-trail properties carried by every OIC stream schema; declared
         # once here and spread into each stream's SingerPropertiesList.
-        oic_common_properties: ClassVar[tuple[p.TapOracleOic.SingerProperty, ...]] = (
+        oic_common_properties: ClassVar[
+            tuple[FlextTapOracleOicProtocolsBase.SingerProperty, ...]
+        ] = (
             m.Meltano.SingerProperty(
                 "created",
                 m.Meltano.SingerDateTimeType(),
@@ -95,7 +97,9 @@ class FlextTapOracleOicModelsBase:
         )
 
         @staticmethod
-        def schema_mapping(properties: p.TapOracleOic.SchemaSource) -> t.JsonMapping:
+        def schema_mapping(
+            properties: FlextTapOracleOicProtocolsBase.SchemaSource,
+        ) -> t.JsonMapping:
             """Dump one Singer property list into the typed stream schema contract.
 
             Args:
