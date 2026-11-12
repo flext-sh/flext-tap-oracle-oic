@@ -38,8 +38,9 @@ class FlextTapOracleOicUtilitiesValidation:
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             return r[str].fail(f"URL validation error: {e}", exception=e)
 
-    @staticmethod
+    @classmethod
     def validate_single_stream(
+        cls,
         stream_name: str,
         stream_payload: t.JsonValue,
     ) -> p.Result[bool]:
@@ -63,27 +64,76 @@ class FlextTapOracleOicUtilitiesValidation:
                 f"Stream '{stream_name}' configuration must be a dictionary: "
                 f"{config_validation.error}",
             )
-        stream_config = config_validation.value
+        return (
+            r[t.JsonMapping]
+            .ok(config_validation.value)
+            .flat_map(
+                lambda stream_config: cls._require_selected(
+                    stream_name,
+                    stream_config,
+                ),
+            )
+            .flat_map(
+                lambda stream_config: cls._validate_page_size(
+                    stream_name,
+                    stream_config,
+                ),
+            )
+            .map(lambda _: True)
+        )
+
+    @staticmethod
+    def _require_selected(
+        stream_name: str,
+        stream_config: t.JsonMapping,
+    ) -> p.Result[t.JsonMapping]:
+        """Require the Singer ``selected`` flag on one stream entry.
+
+        Args:
+            stream_name: Name of the stream entry being validated.
+            stream_config: Validated stream entry mapping.
+
+        Returns:
+            Result succeeding with the entry, or the missing-flag failure.
+
+        """
         if "selected" not in stream_config:
-            return r[bool].fail(
+            return r[t.JsonMapping].fail(
                 f"Stream '{stream_name}' must have 'selected' field",
             )
+        return r[t.JsonMapping].ok(stream_config)
+
+    @staticmethod
+    def _validate_page_size(
+        stream_name: str,
+        stream_config: t.JsonMapping,
+    ) -> p.Result[t.JsonMapping]:
+        """Validate the optional ``page_size`` bound of one stream entry.
+
+        Args:
+            stream_name: Name of the stream entry being validated.
+            stream_config: Validated stream entry mapping.
+
+        Returns:
+            Result succeeding with the entry, or the page-size failure.
+
+        """
         if "page_size" not in stream_config:
-            return r[bool].ok(value=True)
+            return r[t.JsonMapping].ok(stream_config)
         page_size_validation = u.validate_value(
             u.int_adapter(),
             stream_config["page_size"],
         )
         if page_size_validation.failure:
-            return r[bool].from_failure(page_size_validation)
+            return r[t.JsonMapping].from_failure(page_size_validation)
         page_size = page_size_validation.value
         max_page_size = c.MAX_PAGE_SIZE
         if page_size <= 0 or page_size > max_page_size:
-            return r[bool].fail(
+            return r[t.JsonMapping].fail(
                 f"Stream '{stream_name}' page_size must be between 1 and "
                 f"{max_page_size}",
             )
-        return r[bool].ok(value=True)
+        return r[t.JsonMapping].ok(stream_config)
 
     @staticmethod
     def validate_stream_config(settings: t.JsonMapping) -> p.Result[t.JsonMapping]:

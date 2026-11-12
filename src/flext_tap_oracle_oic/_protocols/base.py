@@ -65,6 +65,7 @@ class FlextTapOracleOicProtocolsBase:
 
         settings: t.JsonMapping
         name: str
+        path: str
         replication_key: str | None
         stream_schema: t.JsonMapping
 

@@ -50,6 +50,10 @@ class FlextTapOracleOicModelsBase:
             str,
             m.Field(description="Canonical Singer stream name"),
         ] = ""
+        path: Annotated[
+            str,
+            m.Field(description="OIC API resource path for the stream"),
+        ] = ""
         replication_key: Annotated[
             str | None,
             m.Field(description="Incremental replication key field"),

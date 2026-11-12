@@ -8,12 +8,8 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import TYPE_CHECKING
 
-from flext_tap_oracle_oic import c, m, t
-
-if TYPE_CHECKING:
-    from flext_api import FlextApiModels
+from flext_tap_oracle_oic import c, m, p, t
 
 
 class FlextTapOracleOicPaginator:
@@ -44,7 +40,12 @@ class FlextTapOracleOicPaginator:
         self._adaptive_sizing: bool = True
         self._response_times: list[float] = []
 
-    def fetch_next(self, response: FlextApiModels.Api.HttpResponse) -> int | None:
+    @property
+    def page_size(self) -> int:
+        """Current number of records requested per page from the OIC API."""
+        return self._page_size
+
+    def fetch_next(self, response: p.Api.HttpResponse) -> int | None:
         """Return the raw Singer page token for one response.
 
         Args:
@@ -55,12 +56,31 @@ class FlextTapOracleOicPaginator:
             collection is exhausted; malformed payloads raise.
 
         """
-        data = self._normalize_response_payload(response)
-        return self._calculate_next_offset(data)
+        items = self.items(response)
+        if not items or len(items) < self._page_size:
+            return None
+        return self.current_value + len(items)
+
+    def items(self, response: p.Api.HttpResponse) -> Sequence[t.JsonMapping]:
+        """Return the records carried by one OIC response page.
+
+        Args:
+            response: HTTP response of the page just fetched.
+
+        Returns:
+            Records declared by the page's ``items`` or ``data`` envelope.
+
+        """
+        return (
+            self._extract_items_from_response(
+                self._normalize_response_payload(response),
+            )
+            or ()
+        )
 
     @staticmethod
     def _normalize_response_payload(
-        response: FlextApiModels.Api.HttpResponse,
+        response: p.Api.HttpResponse,
     ) -> t.JsonMapping:
         """Normalize flext-api response bodies to OIC pagination payloads.
 
@@ -80,22 +100,6 @@ class FlextTapOracleOicPaginator:
             case _:
                 msg = "Pagination requires a JSON object response body"
                 raise TypeError(msg)
-
-    def _calculate_next_offset(self, data: t.JsonMapping) -> int | None:
-        """Calculate the next offset based on the OIC response format.
-
-        Args:
-            data: Normalized JSON payload of the response.
-
-        Returns:
-            Next offset when the page holds a full page of items, or
-            ``None`` when pagination is exhausted.
-
-        """
-        items = self._extract_items_from_response(data)
-        if items is None or not items or len(items) < self._page_size:
-            return None
-        return self.current_value + len(items)
 
     @staticmethod
     def _extract_items_from_response(
