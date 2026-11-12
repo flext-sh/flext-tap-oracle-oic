@@ -10,9 +10,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Annotated
 
-from flext_meltano import FlextMeltanoModels, m
-
-from flext_tap_oracle_oic import t
+from flext_meltano import FlextMeltanoModels, m, t
 
 
 class FlextTapOracleOicModelsEnvelope:

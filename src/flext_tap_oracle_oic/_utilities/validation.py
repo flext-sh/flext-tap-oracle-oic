@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from urllib.parse import urlparse
 
-from flext_tap_oracle_oic import c, p, r, t, u
+from flext_meltano import c, p, r, t, u
 
 
 class FlextTapOracleOicUtilitiesValidation:

@@ -12,9 +12,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
-from flext_meltano import FlextMeltanoProtocols
-
-from flext_tap_oracle_oic import t
+from flext_meltano import FlextMeltanoProtocols, t
 
 if TYPE_CHECKING:
     from flext_api import FlextApiModels
