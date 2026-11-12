@@ -22,7 +22,7 @@ class FlextTapOracleOicModelsBase:
     class ConfigNamespace(m.BaseModel):
         """Open, frozen namespace exposing every ``config/*.yaml`` domain."""
 
-        model_config = m.ConfigDict(extra="allow", frozen=True)
+        model_config: ClassVar[t.ConfigDict] = m.ConfigDict(extra="allow", frozen=True)
 
     class StreamBase(m.BaseModel):
         """Base stream model for Oracle Integration Cloud APIs.
