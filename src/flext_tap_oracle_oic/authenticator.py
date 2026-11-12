@@ -65,50 +65,68 @@ class FlextTapOracleOicAuthenticator:
             or response-payload error.
 
         """
-
-        def _run_fetch_access_token() -> p.Result[str]:
-            token_request_data = "&".join(
-                f"{key}={value}"
-                for key, value in {
-                    "grant_type": "client_credentials",
-                    "client_id": self.settings.TapOracleOic.oauth_client_id,
-                    "client_secret": self.settings.TapOracleOic.oauth_client_secret,
-                    "audience": self.settings.TapOracleOic.oauth_audience,
-                }.items()
-            )
-            response_result = self._api_client.post(
-                self.settings.TapOracleOic.oauth_token_url,
-                data=token_request_data,
-                headers={"Content-Type": "application/x-www-form-urlencoded"},
-            )
-            if response_result.failure:
-                return r[str].fail_op("OAuth2 request", response_result.error)
-            response = response_result.value
-            if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
-                return r[str].fail(
-                    f"OAuth2 request failed with status {response.status_code}",
-                )
-            token_data: t.JsonMapping
-            match response.body:
-                case dict() as token_dict:
-                    token_data = token_dict
-                case str() as body_str:
-                    token_data = u.json_mapping_adapter().validate_json(body_str)
-                case _:
-                    return r[str].fail("Empty or invalid OAuth response body")
-            access_token = token_data.get("access_token")
-            match access_token:
-                case str() as access_token_str if access_token_str:
-                    self._access_token = access_token_str
-                    self.logger.info("OAuth2 access token obtained successfully")
-                    return r[str].ok(access_token_str)
-                case _:
-                    return r[str].fail("No valid access token in response")
-
         try:
-            return _run_fetch_access_token()
+            return self._token_response().flat_map(self._extract_access_token)
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as e:
             return r[str].fail_op("OAuth2 authentication", e)
+
+    def _token_response(self) -> p.Result[t.JsonMapping]:
+        """Post the client-credentials request and return its JSON payload.
+
+        Returns:
+            Result succeeding with the token response mapping, or failing with
+            the request, HTTP-status, or payload error.
+
+        """
+        token_request_data = "&".join(
+            f"{key}={value}"
+            for key, value in {
+                "grant_type": "client_credentials",
+                "client_id": self.settings.TapOracleOic.oauth_client_id,
+                "client_secret": self.settings.TapOracleOic.oauth_client_secret,
+                "audience": self.settings.TapOracleOic.oauth_audience,
+            }.items()
+        )
+        response_result = self._api_client.post(
+            self.settings.TapOracleOic.oauth_token_url,
+            data=token_request_data,
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+        if response_result.failure:
+            return r[t.JsonMapping].fail_op("OAuth2 request", response_result.error)
+        response = response_result.value
+        if response.status_code >= c.TapOracleOic.HTTP_ERROR_STATUS_THRESHOLD:
+            return r[t.JsonMapping].fail(
+                f"OAuth2 request failed with status {response.status_code}",
+            )
+        match response.body:
+            case dict() as token_dict:
+                return r[t.JsonMapping].ok(token_dict)
+            case str() as body_str:
+                return r[t.JsonMapping].ok(
+                    u.json_mapping_adapter().validate_json(body_str),
+                )
+            case _:
+                return r[t.JsonMapping].fail("Empty or invalid OAuth response body")
+
+    def _extract_access_token(self, token_data: t.JsonMapping) -> p.Result[str]:
+        """Store and return the access token carried by a token response.
+
+        Args:
+            token_data: Parsed OAuth2 token response mapping.
+
+        Returns:
+            Result succeeding with the access token, or failing when the
+            response carries no valid token.
+
+        """
+        match token_data.get("access_token"):
+            case str() as access_token_str if access_token_str:
+                self._access_token = access_token_str
+                self.logger.info("OAuth2 access token obtained successfully")
+                return r[str].ok(access_token_str)
+            case _:
+                return r[str].fail("No valid access token in response")
 
 
 __all__: list[str] = ["FlextTapOracleOicAuthenticator"]
