@@ -21,15 +21,16 @@
 - Keywords: `data-extraction`, `enterprise`, `etl`, `flext`, `singer`, `tap`, `typed`
 - Main facades: `FlextTapOracleOic`, `FlextTapOracleOicAuthenticator`,
   `FlextTapOracleOicCli`, `FlextTapOracleOicClient`, `FlextTapOracleOicConfig`,
-  `FlextTapOracleOicConstants`, `FlextTapOracleOicModels`, `FlextTapOracleOicPaginator`
-  (+6 more)
+  `FlextTapOracleOicConstants`, `FlextTapOracleOicExtractService`,
+  `FlextTapOracleOicModels` (+7 more)
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
 - Public symbol exports: `FlextTapOracleOic`, `FlextTapOracleOicAuthenticator`,
   `FlextTapOracleOicCli`, `FlextTapOracleOicClient`, `FlextTapOracleOicConfig`,
-  `FlextTapOracleOicConstants`, `FlextTapOracleOicModels`, `FlextTapOracleOicPaginator`,
-  `FlextTapOracleOicProtocols`, `FlextTapOracleOicService` (+8 more)
+  `FlextTapOracleOicConstants`, `FlextTapOracleOicExtractService`,
+  `FlextTapOracleOicModels`, `FlextTapOracleOicPaginator`, `FlextTapOracleOicProtocols`
+  (+9 more)
 - Exported module shortcuts: *none*
-- Generated module pages: `11`
+- Generated module pages: `12`
 
 ## Next Pages
 
