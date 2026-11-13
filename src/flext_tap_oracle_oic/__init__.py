@@ -32,6 +32,7 @@ if TYPE_CHECKING:
     from flext_tap_oracle_oic.cli import FlextTapOracleOicCli, main
     from flext_tap_oracle_oic.client import FlextTapOracleOicClient
     from flext_tap_oracle_oic.constants import FlextTapOracleOicConstants, c
+    from flext_tap_oracle_oic.extract import FlextTapOracleOicExtractService
     from flext_tap_oracle_oic.models import FlextTapOracleOicModels, m
     from flext_tap_oracle_oic.protocols import FlextTapOracleOicProtocols, p
     from flext_tap_oracle_oic.tap import FlextTapOracleOic
@@ -47,6 +48,7 @@ __all__: tuple[str, ...] = (
     "FlextTapOracleOicClient",
     "FlextTapOracleOicConfig",
     "FlextTapOracleOicConstants",
+    "FlextTapOracleOicExtractService",
     "FlextTapOracleOicModels",
     "FlextTapOracleOicPaginator",
     "FlextTapOracleOicProtocols",
@@ -90,6 +92,7 @@ install_lazy_exports(
         "FlextTapOracleOicClient": ".client",
         "FlextTapOracleOicConfig": "._config",
         "FlextTapOracleOicConstants": ".constants",
+        "FlextTapOracleOicExtractService": ".extract",
         "FlextTapOracleOicModels": ".models",
         "FlextTapOracleOicPaginator": ".tap_streams",
         "FlextTapOracleOicProtocols": ".protocols",

@@ -57,7 +57,7 @@ required validation.
   classes listed under Module Map above.
 - Public extensions exposed by this project: `FlextTapOracleOic`,
   `FlextTapOracleOicAuthenticator`, `FlextTapOracleOicCli`, `FlextTapOracleOicClient`,
-  `FlextTapOracleOicConfig`, `FlextTapOracleOicConstants` (+8 more).
+  `FlextTapOracleOicConfig`, `FlextTapOracleOicConstants` (+9 more).
 - Library abstraction boundaries: see the project `AGENTS.md` and the referenced parent
   architecture rules.
 

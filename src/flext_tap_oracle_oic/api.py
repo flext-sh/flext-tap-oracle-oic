@@ -1,7 +1,9 @@
 """FLEXT service orchestrator for tap-oracle-oic.
 
 Thin facade — all infrastructure from ``FlextMeltanoTapServiceBase`` via MRO.
-The tap uses FlextMeltanoAbstractions (CLI dispatch), not singer_sdk.Tap.
+The Singer CLI runs through ``FlextMeltanoDeclarativeTap``: the canonical
+stream registry declares the catalog and ``FlextTapOracleOicExtractService``
+fetches records from the authenticated OIC client.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -10,15 +12,21 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Annotated, Never, override
+from typing import Annotated, override
 
 from flext_meltano import FlextMeltanoTapServiceBase
 
-from flext_tap_oracle_oic import m, p, t
+from flext_tap_oracle_oic import (
+    FlextTapOracleOic,
+    FlextTapOracleOicExtractService,
+    m,
+    p,
+    t,
+)
 
 
 class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
-    """Orchestrator for tap-oracle-oic. CLI dispatch, not Singer SDK."""
+    """Orchestrator for tap-oracle-oic over the declarative Singer contract."""
 
     tap_name: Annotated[
         t.NonEmptyStr,
@@ -29,19 +37,35 @@ class FlextTapOracleOicService(FlextMeltanoTapServiceBase):
     def create_tap_instance(
         self,
         _settings: p.Settings | t.JsonMapping | None = None,
-    ) -> Never:
-        """Raise ``TypeError``; tap instance creation is not supported.
+    ) -> p.Meltano.SingerTapInstance:
+        """Build the declarative Singer tap from the canonical stream registry.
 
         Args:
-            _settings: Unused; accepted for the base-class signature.
+            _settings: Unused; the Singer CLI parses ``--config`` after the
+                instance exists, so the catalog is built config-free.
 
-        Raises:
-            TypeError: Always; tap-oracle-oic uses CLI dispatch, not
-                singer_sdk.Tap, so build ``FlextTapOracleOic`` directly.
+        Returns:
+            The resulting ``p.Meltano.SingerTapInstance``.
 
         """
-        msg = "tap-oracle-oic uses CLI dispatch, not singer_sdk.Tap"
-        raise TypeError(msg)
+        tap = FlextTapOracleOic(validate_config=False)
+        spec = m.Meltano.TapSpec(
+            tap_name=self.tap_name,
+            config_jsonschema=tap.config_jsonschema,
+            streams=tuple(
+                m.Meltano.StreamSpec(
+                    name=stream.name,
+                    json_schema=stream.stream_schema,
+                    primary_keys=tuple(stream.primary_keys),
+                    replication_key=stream.replication_key,
+                )
+                for stream in tap.discover_oic_streams()
+            ),
+        )
+        return self.build_declarative_tap(
+            spec,
+            FlextTapOracleOicExtractService(),
+        )
 
 
 tap_oracle_oic: FlextTapOracleOicService = FlextTapOracleOicService.fetch_global()

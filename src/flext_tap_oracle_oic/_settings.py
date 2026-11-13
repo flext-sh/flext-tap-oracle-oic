@@ -11,9 +11,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated
+from typing import TYPE_CHECKING, Annotated, ClassVar
 
-from flext_core import FlextSettings, m
+from flext_core import FlextSettings, m, t
 
 _DEFAULT_BASE_URL = "https://localhost.integration.ocp.oraclecloud.com"
 
@@ -21,7 +21,7 @@ _DEFAULT_BASE_URL = "https://localhost.integration.ocp.oraclecloud.com"
 class FlextTapOracleOicSettings(FlextSettings):
     """Oracle OIC Singer tap settings; fields under ``settings.TapOracleOic.*``."""
 
-    model_config = m.SettingsConfigDict(
+    model_config: ClassVar[t.SettingsConfigDict] = m.SettingsConfigDict(
         env_prefix="FLEXT_TAP_ORACLE_OIC_",
         env_nested_delimiter="__",
         extra="ignore",
