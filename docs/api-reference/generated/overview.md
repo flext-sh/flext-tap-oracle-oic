@@ -28,7 +28,7 @@
   `FlextTapOracleOicCli`, `FlextTapOracleOicClient`, `FlextTapOracleOicConfig`,
   `FlextTapOracleOicConstants`, `FlextTapOracleOicModels`, `FlextTapOracleOicPaginator`,
   `FlextTapOracleOicProtocols`, `FlextTapOracleOicService` (+8 more)
-- Exported module shortcuts: _none_
+- Exported module shortcuts: *none*
 - Generated module pages: `11`
 
 ## Next Pages
