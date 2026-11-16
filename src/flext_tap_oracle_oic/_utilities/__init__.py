@@ -24,4 +24,13 @@ install_lazy_exports(
     globals(),
     {"FlextTapOracleOicUtilitiesValidation": ".validation"},
     public_exports=__all__,
+    deferred_members={
+        "FlextTapOracleOicUtilitiesValidation": (
+            "validate_oic_endpoint",
+            "validate_single_stream",
+            "_require_selected",
+            "_validate_page_size",
+            "validate_stream_config",
+        ),
+    },
 )
