@@ -32,21 +32,5 @@ install_lazy_exports(
         "FlextTapOracleOicConstantsValues": ".values",
     },
     public_exports=__all__,
-    deferred_members={
-        "FlextTapOracleOicConstantsEnums": (
-            "OicIntegrationStatus",
-            "OicJobStatus",
-            "OicIntegrationType",
-            "OicAgentType",
-            "OicAgentStatus",
-            "OicHealthStatus",
-            "OicErrorSeverity",
-            "OicConnectionTestStatus",
-            "OicReplicationMethod",
-            "OICResourceType",
-            "IntegrationStatus",
-            "ConnectionStatus",
-            "OicErrorType",
-        ),
-    },
+    deferred_members=("FlextTapOracleOicConstantsEnums",),
 )

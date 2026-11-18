@@ -32,23 +32,9 @@ install_lazy_exports(
         "FlextTapOracleOicModelsStreams": ".streams",
     },
     public_exports=__all__,
-    deferred_members={
-        "FlextTapOracleOicModelsBase": (
-            "ConfigNamespace",
-            "StreamBase",
-        ),
-        "FlextTapOracleOicModelsEnvelope": ("Envelope",),
-        "FlextTapOracleOicModelsStreams": (
-            "IntegrationsStream",
-            "ConnectionsStream",
-            "PackagesStream",
-            "LookupsStream",
-            "LibrariesStream",
-            "CertificatesStream",
-            "AdaptersStream",
-            "ProjectsStream",
-            "ExecutionsStream",
-            "MetricsStream",
-        ),
-    },
+    deferred_members=(
+        "FlextTapOracleOicModelsBase",
+        "FlextTapOracleOicModelsEnvelope",
+        "FlextTapOracleOicModelsStreams",
+    ),
 )
