@@ -1,0 +1,1 @@
+{"id":"exports--flext_tap_oracle_oic._constants","language":"Python","rule":{"regex":"^(?:FlextTapOracleOicConstantsBase|FlextTapOracleOicConstantsEnums|FlextTapOracleOicConstantsValues)$"}}

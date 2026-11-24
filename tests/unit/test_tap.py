@@ -9,11 +9,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flext_tap_oracle_oic import FlextTapOracleOicPaginator, FlextTapOracleOicSettings
-from tests import c, m, p, t, tm, u
+from tests import (
+    FlextTapOracleOicPaginator,
+    FlextTapOracleOicSettings,
+    c,
+    m,
+    p,
+    t,
+    tm,
+    u,
+)
 
 if TYPE_CHECKING:
-    from flext_tap_oracle_oic import FlextTapOracleOic
+    from tests import FlextTapOracleOic
 
 
 class TestsFlextTapOracleOic:
@@ -34,7 +42,7 @@ class TestsFlextTapOracleOic:
         tap_instance: p.Meltano.TapInstance,
     ) -> None:
         """Discovery returns exactly the streams owned by the public constants."""
-        names = u.TapOracleOic.Tests.discover_stream_names(tap_oracle_oic, tap_instance)
+        names = u.Tests.discover_stream_names(tap_oracle_oic, tap_instance)
 
         tm.that(names, eq=tuple(c.TapOracleOic.CORE_STREAMS))
 

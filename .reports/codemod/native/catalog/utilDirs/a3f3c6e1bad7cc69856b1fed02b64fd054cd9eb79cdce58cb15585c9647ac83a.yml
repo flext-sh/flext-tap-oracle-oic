@@ -1,0 +1,1 @@
+{"id":"exports--flext_tap_oracle_oic._protocols","language":"Python","rule":{"regex":"^(?:FlextTapOracleOicProtocolsBase|FlextTapOracleOicProtocolsEnvelope|FlextTapOracleOicProtocolsGeneratedModelsTapOracleOic|FlextTapOracleOicProtocolsStreams)$"}}

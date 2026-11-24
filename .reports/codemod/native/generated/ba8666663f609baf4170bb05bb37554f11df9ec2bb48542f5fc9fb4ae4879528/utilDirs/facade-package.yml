@@ -1,0 +1,1 @@
+{"id":"facade-package","language":"Python","rule":{"regex":"^(?:flext_api|flext_core|flext_meltano|flext_oracle_oic|flext_tap_oracle_oic|flext_tests|tests)(?:[.\\s]|$)"}}
