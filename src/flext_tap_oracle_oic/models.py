@@ -21,9 +21,6 @@ from flext_tap_oracle_oic._models import (
 class FlextTapOracleOicModels(
     FlextMeltanoModels,
     FlextOracleOicModels,
-    FlextTapOracleOicModelsBase,
-    FlextTapOracleOicModelsEnvelope,
-    FlextTapOracleOicModelsStreams,
 ):
     """Oracle Integration Cloud tap models extending flext-core m.
 
@@ -34,9 +31,10 @@ class FlextTapOracleOicModels(
     """
 
     class TapOracleOic(
+        FlextTapOracleOicModelsBase.StreamBase,
+        FlextTapOracleOicModelsBase,
         FlextTapOracleOicModelsEnvelope,
         FlextTapOracleOicModelsStreams,
-        FlextTapOracleOicModelsBase.StreamBase,
     ):
         """TapOracleOic domain namespace."""
 

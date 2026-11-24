@@ -17,7 +17,6 @@ from flext_oracle_oic import FlextOracleOicProtocols
 from flext_tap_oracle_oic._protocols import (
     FlextTapOracleOicProtocolsBase,
     FlextTapOracleOicProtocolsEnvelope,
-    FlextTapOracleOicProtocolsGeneratedModelsTapOracleOic,
     FlextTapOracleOicProtocolsStreams,
 )
 
@@ -25,15 +24,10 @@ from flext_tap_oracle_oic._protocols import (
 class FlextTapOracleOicProtocols(
     FlextMeltanoProtocols,
     FlextOracleOicProtocols,
-    FlextTapOracleOicProtocolsBase,
-    FlextTapOracleOicProtocolsEnvelope,
-    FlextTapOracleOicProtocolsGeneratedModelsTapOracleOic,
-    FlextTapOracleOicProtocolsStreams,
 ):
     """Singer Oracle OIC tap protocols facade — composes Meltano + OracleOic."""
 
     class TapOracleOic(
-        FlextTapOracleOicProtocolsGeneratedModelsTapOracleOic.TapOracleOic,
         FlextTapOracleOicProtocolsBase,
         FlextTapOracleOicProtocolsEnvelope,
         FlextTapOracleOicProtocolsStreams,
